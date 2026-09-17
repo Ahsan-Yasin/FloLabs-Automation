@@ -7,6 +7,7 @@ from core.models import JobRecord, JobStatus
 from decide import build_segments, get_decisions
 from edl import build_edl
 from ingest.validate import AVSyncError, validate_video
+from ingest.youtube import YoutubeDownloadError, download_youtube
 from slice.pipeline import render_output
 from slice.transcript import remap_transcript
 from transcribe import flag_overlaps, transcribe
@@ -44,7 +45,7 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
         job.status = JobStatus.DECIDING
         update(job)
         segments = build_segments(words)
-        decisions = get_decisions(segments)
+        decisions = get_decisions(segments, mode=job.mode)
 
         job.status = JobStatus.BUILDING_EDL
         update(job)
@@ -73,3 +74,21 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
 
 def _write_json(path: Path, data) -> None:
     path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+
+
+def run_youtube_pipeline(job: JobRecord, update: "callable[[JobRecord], None]", url: str) -> None:
+    """Download a YouTube URL first, then run the normal pipeline against the local file."""
+    job.status = JobStatus.DOWNLOADING
+    update(job)
+    try:
+        _, path = download_youtube(url)
+    except YoutubeDownloadError as exc:
+        logger.warning("job %s: youtube download failed: %s", job.job_id, exc)
+        job.status = JobStatus.FAILED
+        job.error = str(exc)
+        update(job)
+        return
+
+    job.source_path = str(path)
+    update(job)
+    run_pipeline(job, update)

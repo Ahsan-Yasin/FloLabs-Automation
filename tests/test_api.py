@@ -12,6 +12,22 @@ def _fake_run_pipeline(job, update):
     update(job)
 
 
+def _fake_run_youtube_pipeline(job, update, url):
+    job.status = JobStatus.DONE
+    job.source_path = "/tmp/fake.mp4"
+    update(job)
+
+
+def _wait_until_done(client, job_id):
+    fetched = None
+    for _ in range(50):
+        fetched = client.get(f"/jobs/{job_id}")
+        if fetched.json()["status"] in (JobStatus.DONE.value, JobStatus.FAILED.value):
+            break
+        time.sleep(0.05)
+    return fetched
+
+
 def test_create_and_fetch_job(monkeypatch):
     monkeypatch.setattr(api_main, "run_pipeline", _fake_run_pipeline)
     client = TestClient(api_main.app)
@@ -52,3 +68,33 @@ def test_unknown_job_returns_404():
     client = TestClient(api_main.app)
     response = client.get("/jobs/does-not-exist")
     assert response.status_code == 404
+
+
+def test_create_youtube_job(monkeypatch):
+    monkeypatch.setattr(api_main, "run_youtube_pipeline", _fake_run_youtube_pipeline)
+    client = TestClient(api_main.app)
+
+    response = client.post("/jobs/youtube", json={"url": "https://youtube.com/watch?v=abc", "mode": "highlights"})
+    assert response.status_code == 200
+    job = response.json()
+    assert job["mode"] == "highlights"
+    assert job["source_url"] == "https://youtube.com/watch?v=abc"
+
+    fetched = _wait_until_done(client, job["job_id"])
+    assert fetched.json()["status"] == JobStatus.DONE.value
+
+
+def test_youtube_job_rejects_empty_url(monkeypatch):
+    monkeypatch.setattr(api_main, "run_youtube_pipeline", _fake_run_youtube_pipeline)
+    client = TestClient(api_main.app)
+
+    response = client.post("/jobs/youtube", json={"url": "   "})
+    assert response.status_code == 400
+
+
+def test_index_serves_html():
+    client = TestClient(api_main.app)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+    assert "Highlight Cutter" in response.text

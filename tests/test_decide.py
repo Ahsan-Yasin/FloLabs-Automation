@@ -45,7 +45,7 @@ def test_retries_once_on_malformed_json_then_succeeds(monkeypatch):
         ]
     )
 
-    def fake_call(client, model, segments, retry_note=""):
+    def fake_call(client, model, segments, system_prompt, retry_note=""):
         calls["n"] += 1
         if calls["n"] == 1:
             return "not json"
@@ -68,3 +68,26 @@ def test_empty_segments_short_circuits(monkeypatch):
         gemini_client, "_call_gemini", lambda *a, **k: (_ for _ in ()).throw(AssertionError("should not be called"))
     )
     assert get_decisions([]) == []
+
+
+def test_highlights_mode_uses_highlights_prompt(monkeypatch):
+    captured = {}
+    valid = json.dumps(
+        [
+            {"start": 0.0, "end": 2.0, "decision": "remove", "reason": "setup"},
+            {"start": 2.0, "end": 2.5, "decision": "keep", "reason": "punchline"},
+        ]
+    )
+
+    def fake_call(client, model, segments, system_prompt, retry_note=""):
+        captured["system_prompt"] = system_prompt
+        return valid
+
+    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
+    get_decisions(_segments(), mode="highlights")
+    assert captured["system_prompt"] == gemini_client.HIGHLIGHTS_SYSTEM_PROMPT
+
+
+def test_unknown_mode_raises():
+    with pytest.raises(ValueError):
+        get_decisions(_segments(), mode="bogus")

@@ -49,6 +49,7 @@ class EditDecisionList(BaseModel):
 
 class JobStatus(str, Enum):
     QUEUED = "queued"
+    DOWNLOADING = "downloading"
     TRANSCRIBING = "transcribing"
     DECIDING = "deciding"
     BUILDING_EDL = "building_edl"
@@ -58,10 +59,15 @@ class JobStatus(str, Enum):
     SKIPPED_DESYNC = "skipped_desync"
 
 
+EditMode = Literal["crosstalk", "highlights"]
+
+
 class JobRecord(BaseModel):
     job_id: str
     status: JobStatus = JobStatus.QUEUED
-    source_path: str
+    mode: EditMode = "highlights"
+    source_path: str = ""
+    source_url: str | None = None
     error: str | None = None
     output_video_path: str | None = None
     edl_path: str | None = None

@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -38,4 +39,19 @@ def get_settings() -> Settings:
     settings = Settings()
     settings.videos_dir.mkdir(parents=True, exist_ok=True)
     settings.jobs_dir.mkdir(parents=True, exist_ok=True)
+    _ensure_ffmpeg_on_path(settings)
     return settings
+
+
+def _ensure_ffmpeg_on_path(settings: Settings) -> None:
+    """Some libraries (WhisperX's internal audio loader) shell out to a bare
+    "ffmpeg"/"ffprobe" they resolve via PATH, ignoring our FFMPEG_BIN setting.
+    If FFMPEG_BIN/FFPROBE_BIN point at actual files, make sure their directory
+    is on this process's PATH so those subprocess calls still find them.
+    """
+    for bin_path in (settings.ffmpeg_bin, settings.ffprobe_bin):
+        path = Path(bin_path)
+        if path.is_file():
+            bin_dir = str(path.parent)
+            if bin_dir not in os.environ.get("PATH", "").split(os.pathsep):
+                os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")

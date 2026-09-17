@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Highlight Cutter</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #14171f;
+    --border: #262b36;
+    --text: #e8eaf0;
+    --muted: #8a90a2;
+    --accent: #7c5cff;
+    --accent-2: #22d3a8;
+    --danger: #ff5c72;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(1200px 600px at 50% -10%, #1a1030 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 48px 16px;
+  }
+  .card {
+    width: 100%;
+    max-width: 640px;
+  }
+  h1 {
+    font-size: 26px;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    color: var(--muted);
+    margin: 0 0 32px;
+    font-size: 14px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  input[type="text"] {
+    width: 100%;
+    background: #0e1016;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    outline: none;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  .mode-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #0e1016;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    text-align: left;
+  }
+  .mode-btn strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; }
+  .mode-btn span { font-size: 12px; }
+  .mode-btn.active {
+    border-color: var(--accent);
+    background: rgba(124, 92, 255, 0.12);
+  }
+  .mode-btn.active strong { color: var(--accent); }
+  button.submit {
+    width: 100%;
+    margin-top: 20px;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), #5b3df0);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button.submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .status-panel { margin-top: 20px; display: none; }
+  .status-panel.visible { display: block; }
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .steps li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--muted);
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); flex-shrink: 0;
+  }
+  .steps li.done .dot { background: var(--accent-2); }
+  .steps li.active .dot { background: var(--accent); box-shadow: 0 0 0 4px rgba(124,92,255,0.18); }
+  .steps li.done { color: var(--text); }
+  .steps li.active { color: var(--text); font-weight: 600; }
+  .error-box {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,92,114,0.4);
+    background: rgba(255,92,114,0.08);
+    color: var(--danger);
+    font-size: 13px;
+    display: none;
+  }
+  .error-box.visible { display: block; }
+  .result { margin-top: 24px; display: none; }
+  .result.visible { display: block; }
+  video { width: 100%; border-radius: 12px; border: 1px solid var(--border); background: #000; }
+  .result-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .result-actions a {
+    flex: 1; text-align: center; padding: 10px; border-radius: 10px;
+    text-decoration: none; font-size: 13px; font-weight: 600;
+    border: 1px solid var(--border); color: var(--text);
+  }
+  .result-actions a.primary { background: var(--accent-2); color: #06251d; border-color: transparent; }
+  footer { margin-top: 20px; color: var(--muted); font-size: 12px; text-align: center; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Highlight Cutter</h1>
+    <p class="subtitle">Paste a YouTube link, get back a trimmed video with only the good parts.</p>
+
+    <div class="panel">
+      <label for="url">YouTube URL</label>
+      <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." />
+
+      <div class="mode-row">
+        <button type="button" class="mode-btn active" data-mode="highlights">
+          <strong>Highlights</strong>
+          <span>Aggressive cut — only the best moments</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="crosstalk">
+          <strong>Light cleanup</strong>
+          <span>Keep everything, just remove crosstalk</span>
+        </button>
+      </div>
+
+      <button class="submit" id="submitBtn">Generate</button>
+
+      <div class="error-box" id="errorBox"></div>
+
+      <div class="status-panel" id="statusPanel">
+        <ul class="steps" id="steps"></ul>
+      </div>
+
+      <div class="result" id="result">
+        <video id="video" controls></video>
+        <div class="result-actions">
+          <a href="#" id="downloadLink" class="primary" download>Download video</a>
+          <a href="#" id="transcriptLink" target="_blank">View transcript</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>Runs WhisperX + Gemini locally against this machine's API — nothing is uploaded elsewhere.</footer>
+  </div>
+
+<script>
+const STEP_ORDER = ["queued", "downloading", "transcribing", "deciding", "building_edl", "slicing", "done"];
+const STEP_LABELS = {
+  queued: "Queued",
+  downloading: "Downloading video",
+  transcribing: "Transcribing & identifying speakers",
+  deciding: "AI selecting the good parts",
+  building_edl: "Building the edit list",
+  slicing: "Cutting & rendering the final video",
+  done: "Done",
+};
+
+let selectedMode = "highlights";
+let pollTimer = null;
+
+const urlInput = document.getElementById("url");
+const submitBtn = document.getElementById("submitBtn");
+const errorBox = document.getElementById("errorBox");
+const statusPanel = document.getElementById("statusPanel");
+const stepsEl = document.getElementById("steps");
+const resultEl = document.getElementById("result");
+const videoEl = document.getElementById("video");
+const downloadLink = document.getElementById("downloadLink");
+const transcriptLink = document.getElementById("transcriptLink");
+
+document.querySelectorAll(".mode-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedMode = btn.dataset.mode;
+  });
+});
+
+function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add("visible");
+}
+
+function clearError() {
+  errorBox.textContent = "";
+  errorBox.classList.remove("visible");
+}
+
+function renderSteps(status) {
+  stepsEl.innerHTML = "";
+  const currentIndex = STEP_ORDER.indexOf(status);
+  STEP_ORDER.forEach((step, i) => {
+    const li = document.createElement("li");
+    if (currentIndex > i || status === "done") li.className = "done";
+    else if (i === currentIndex) li.className = "active";
+    li.innerHTML = `<span class="dot"></span>${STEP_LABELS[step]}`;
+    stepsEl.appendChild(li);
+  });
+}
+
+function setBusy(busy) {
+  submitBtn.disabled = busy;
+  submitBtn.textContent = busy ? "Working..." : "Generate";
+}
+
+async function submit() {
+  const url = urlInput.value.trim();
+  if (!url) {
+    showError("Paste a YouTube URL first.");
+    return;
+  }
+  clearError();
+  resultEl.classList.remove("visible");
+  statusPanel.classList.add("visible");
+  setBusy(true);
+  renderSteps("queued");
+
+  if (pollTimer) clearTimeout(pollTimer);
+
+  let res;
+  try {
+    res = await fetch("/jobs/youtube", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, mode: selectedMode }),
+    });
+  } catch (e) {
+    showError("Could not reach the API: " + e.message);
+    setBusy(false);
+    return;
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ detail: res.statusText }));
+    showError(body.detail || "Failed to start job.");
+    setBusy(false);
+    return;
+  }
+
+  const job = await res.json();
+  poll(job.job_id);
+}
+
+async function poll(jobId) {
+  let res;
+  try {
+    res = await fetch(`/jobs/${jobId}`);
+  } catch (e) {
+    showError("Lost connection to the API: " + e.message);
+    setBusy(false);
+    return;
+  }
+
+  if (!res.ok) {
+    showError("Job lookup failed.");
+    setBusy(false);
+    return;
+  }
+
+  const job = await res.json();
+
+  if (job.status === "failed") {
+    renderSteps("failed");
+    showError(job.error || "The job failed.");
+    setBusy(false);
+    return;
+  }
+
+  if (job.status === "skipped_desync") {
+    showError("Skipped: " + (job.error || "audio and video are out of sync in this source."));
+    setBusy(false);
+    return;
+  }
+
+  renderSteps(job.status);
+
+  if (job.status === "done") {
+    setBusy(false);
+    videoEl.src = `/jobs/${jobId}/video`;
+    downloadLink.href = `/jobs/${jobId}/video`;
+    transcriptLink.href = `/jobs/${jobId}/transcript`;
+    resultEl.classList.add("visible");
+    return;
+  }
+
+  pollTimer = setTimeout(() => poll(jobId), 3000);
+}
+
+submitBtn.addEventListener("click", submit);
+urlInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") submit();
+});
+</script>
+</body>
+</html>
