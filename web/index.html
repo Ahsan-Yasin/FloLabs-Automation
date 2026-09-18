@@ -4,266 +4,384 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Highlight Cutter</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23232f27'/><circle cx='9' cy='8' r='2.4' fill='%23a83a2c'/><circle cx='9' cy='24' r='2.4' fill='%23a83a2c'/><path d='M11.3 9.6 L23 23 M11.3 22.4 L23 9' stroke='%23e8c23a' stroke-width='2.2' stroke-linecap='round' fill='none'/></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #17120d;
-    --panel: #221a13;
-    --surface: #1b140e;
-    --border: #3d3021;
-    --text: #f4ead9;
-    --muted: #a89579;
-    --accent: #c1682f;
-    --accent-strong: #9c5225;
-    --accent-2: #8ea06a;
-    --accent-2-ink: #1a2410;
-    --danger: #c15a42;
+    --blotter: #232f27;
+    --bond: #e8e3d3;
+    --bond-dim: #dcd6c4;
+    --ink: #211f1a;
+    --ink-muted: #6f6a5c;
+    --red: #a83a2c;
+    --red-wash: rgba(168, 58, 44, 0.09);
+    --blue: #2e4c6d;
+    --blue-wash: rgba(46, 76, 109, 0.09);
+    --highlighter: #e8c23a;
+    --highlighter-wash: rgba(232, 194, 58, 0.4);
+    --line: rgba(33, 31, 26, 0.16);
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     min-height: 100vh;
-    background: radial-gradient(1100px 560px at 50% -10%, #2c2013 0%, var(--bg) 62%);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--blotter);
+    background-image: radial-gradient(900px 500px at 50% 0%, rgba(255,255,255,0.03), transparent 70%);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
     display: flex;
     justify-content: center;
-    padding: 48px 16px;
+    padding: 56px 16px;
   }
-  .card {
+  .desk {
     width: 100%;
-    max-width: 640px;
+    max-width: 740px;
+  }
+  .sheet {
+    background: var(--bond);
+    padding: 32px 32px 28px;
+    box-shadow: 9px 9px 0 rgba(11, 15, 12, 0.28);
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+  @media (min-width: 760px) {
+    .sheet { grid-template-columns: 1fr 204px; column-gap: 30px; }
+  }
+  .sheet-main { min-width: 0; }
+  .sheet-margin { padding-top: 4px; }
+
+  .sheet-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
   }
   h1 {
-    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font-family: 'Source Serif 4', serif;
     font-weight: 600;
-    font-size: 28px;
-    margin: 0 0 6px;
+    font-size: 27px;
     letter-spacing: -0.01em;
-    color: var(--text);
+    margin: 0;
+    color: var(--ink);
   }
-  .subtitle {
-    color: var(--muted);
-    margin: 0 0 32px;
-    font-size: 14px;
-    line-height: 1.5;
+  .slug {
+    font-family: 'Courier Prime', monospace;
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 260px;
   }
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 26px;
-    box-shadow: 0 24px 60px -32px rgba(0,0,0,0.7);
+  .rule {
+    height: 1px;
+    background: var(--line);
+    margin: 14px 0 22px;
   }
-  label {
-    display: block;
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 8px;
+
+  .prompt {
+    font-family: 'Source Serif 4', serif;
+    font-size: 17px;
+    color: var(--ink);
+    margin: 0 0 12px;
   }
-  input[type="text"] {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.15s ease;
-  }
-  input[type="text"]:focus { border-color: var(--accent); }
+
   .source-tabs {
     display: flex;
-    gap: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 4px;
-    margin-bottom: 16px;
+    gap: 2px;
+    margin-bottom: 10px;
   }
   .source-tab {
-    flex: 1;
-    padding: 8px 10px;
-    border-radius: 7px;
+    padding: 6px 3px;
     border: none;
+    border-bottom: 2px solid transparent;
     background: transparent;
-    color: var(--muted);
+    color: var(--ink-muted);
+    font-family: 'IBM Plex Sans';
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    margin-right: 18px;
   }
-  .source-tab.active { background: var(--accent); color: #fff5ec; }
+  .source-tab.active { color: var(--ink); border-bottom-color: var(--red); font-weight: 600; }
+  .source-tab:focus-visible, .cut-slot:focus-within, button:focus-visible, a:focus-visible, input:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
   .source-panel { display: none; }
   .source-panel.active { display: block; }
-  .file-drop {
+
+  .cut-slot {
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 6px;
-    min-height: 46px;
-    background: var(--surface);
-    border: 1px dashed var(--border);
-    color: var(--muted);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: border-color 0.15s ease;
-  }
-  .file-drop:hover { border-color: var(--accent); }
-  .file-drop.has-file { color: var(--text); border-style: solid; border-color: var(--accent); }
-  .file-drop.dragover { border-color: var(--accent-2); background: rgba(142,160,106,0.1); }
-  .mode-row {
-    display: flex;
     gap: 8px;
-    margin-top: 16px;
-  }
-  .mode-btn {
-    flex: 1;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--muted);
+    min-height: 46px;
+    background: var(--bond-dim);
+    border: 1.5px dashed var(--ink-muted);
+    padding: 11px 14px;
+    color: var(--ink-muted);
+    font-family: 'IBM Plex Sans';
+    font-size: 13.5px;
     cursor: pointer;
-    font-size: 13px;
+  }
+  .cut-slot.has-file { color: var(--ink); border-style: solid; border-color: var(--ink); background: var(--bond); }
+  .cut-slot.dragover { border-color: var(--blue); background: var(--blue-wash); }
+  .cut-slot input[type="text"] {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: 'IBM Plex Sans';
+    font-size: 13.5px;
+    outline: none;
+    padding: 0;
+  }
+  .cut-slot input[type="text"]::placeholder { color: var(--ink-muted); }
+  .cut-slot-small { min-height: 38px; font-size: 12.5px; margin-top: 10px; }
+  .hint { color: var(--ink-muted); font-size: 12px; margin: 8px 0 0; line-height: 1.5; }
+
+  .stamps {
+    display: flex;
+    gap: 14px;
+    margin: 20px 0 4px;
+  }
+  .stamp {
+    flex: 1;
     text-align: left;
-    transition: border-color 0.15s ease, background 0.15s ease;
+    padding: 11px 13px;
+    background: transparent;
+    border: 1.5px solid var(--ink-muted);
+    color: var(--ink-muted);
+    cursor: pointer;
+    font-family: 'IBM Plex Sans';
   }
-  .mode-btn strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; }
-  .mode-btn span { font-size: 12px; }
-  .mode-btn.active {
-    border-color: var(--accent);
-    background: rgba(193, 104, 47, 0.12);
+  .stamp strong { display: block; font-size: 13.5px; color: var(--ink); margin-bottom: 2px; font-weight: 600; }
+  .stamp span { font-size: 12px; }
+  .stamp.stamp-red.active {
+    border-color: var(--red);
+    color: var(--red);
+    background: var(--red-wash);
+    transform: rotate(-0.6deg);
   }
-  .mode-btn.active strong { color: var(--accent); }
+  .stamp.stamp-red.active strong { color: var(--red); }
+  .stamp.stamp-blue.active {
+    border-color: var(--blue);
+    color: var(--blue);
+    background: var(--blue-wash);
+    transform: rotate(0.6deg);
+  }
+  .stamp.stamp-blue.active strong { color: var(--blue); }
+
   button.submit {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 22px;
     padding: 13px;
-    border-radius: 10px;
     border: none;
-    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-    color: #fff5ec;
+    background: var(--red);
+    color: var(--bond);
+    font-family: 'IBM Plex Sans';
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.15s ease;
   }
-  button.submit:hover:not(:disabled) { opacity: 0.92; }
-  button.submit:disabled { opacity: 0.5; cursor: not-allowed; }
-  .hint { color: var(--muted); font-size: 12px; margin: 8px 0 0; line-height: 1.5; }
-  .file-drop-small { min-height: 38px; font-size: 12px; padding: 10px 12px; }
-  .status-panel { margin-top: 20px; display: none; }
-  .status-panel.visible { display: block; }
-  .transcript-note {
-    display: none;
-    margin-top: 12px;
-    font-size: 12px;
-    color: var(--accent-2);
-  }
-  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-  .steps li {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 13px; color: var(--muted);
-  }
-  .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--border); flex-shrink: 0;
-  }
-  .steps li.done .dot { background: var(--accent-2); }
-  .steps li.active .dot { background: var(--accent); box-shadow: 0 0 0 4px rgba(193,104,47,0.18); }
-  .steps li.done { color: var(--text); }
-  .steps li.active { color: var(--text); font-weight: 600; }
-  .error-box {
-    margin-top: 16px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(193,90,66,0.4);
-    background: rgba(193,90,66,0.1);
-    color: var(--danger);
+  button.submit:hover:not(:disabled) { background: #8f3125; }
+  button.submit:disabled { background: var(--ink-muted); cursor: not-allowed; }
+
+  .error-note {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-left: 3px solid var(--red);
+    background: var(--red-wash);
+    color: var(--red);
     font-size: 13px;
     display: none;
   }
-  .error-box.visible { display: block; }
-  .result { margin-top: 24px; display: none; }
-  .result.visible { display: block; }
-  video { width: 100%; border-radius: 12px; border: 1px solid var(--border); background: #000; }
-  .result-actions { display: flex; gap: 10px; margin-top: 12px; }
-  .result-actions a {
-    flex: 1; text-align: center; padding: 10px; border-radius: 10px;
-    text-decoration: none; font-size: 13px; font-weight: 600;
-    border: 1px solid var(--border); color: var(--text);
-    transition: opacity 0.15s ease;
+  .error-note.visible { display: block; }
+
+  .log-title {
+    font-family: 'IBM Plex Sans';
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin: 24px 0 10px;
   }
-  .result-actions a:hover { opacity: 0.85; }
-  .result-actions a.primary { background: var(--accent-2); color: var(--accent-2-ink); border-color: transparent; }
-  footer { margin-top: 20px; color: var(--muted); font-size: 12px; text-align: center; }
+  @media (min-width: 760px) { .log-title { margin-top: 2px; } }
+  .status-panel { display: none; }
+  .status-panel.visible { display: block; }
+  .signoffs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .signoffs li {
+    display: flex; align-items: baseline; gap: 7px;
+    font-size: 12.5px; color: var(--ink-muted); font-family: 'IBM Plex Sans';
+  }
+  .signoffs li .dot { display: none; }
+  .signoffs li::before {
+    content: "·";
+    width: 12px;
+    flex-shrink: 0;
+    color: var(--ink-muted);
+  }
+  .signoffs li.done { color: var(--ink); }
+  .signoffs li.done::before { content: "✓"; color: var(--blue); }
+  .signoffs li.active { color: var(--ink); font-weight: 600; }
+  .signoffs li.active::before { content: "—"; color: var(--red); }
+  .transcript-note {
+    display: none;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--blue);
+    line-height: 1.5;
+  }
+  .stage-progress { display: none; margin-top: 12px; }
+  .stage-progress.visible { display: block; }
+  .stage-progress-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+  .stage-progress-track {
+    height: 4px;
+    background: var(--bond-dim);
+    margin-top: 5px;
+  }
+  .stage-progress-fill {
+    height: 100%;
+    background: var(--blue);
+    width: 0%;
+  }
+
+  .result { margin-top: 26px; display: none; }
+  .result.visible { display: block; }
+  video { width: 100%; background: #000; border: 1px solid var(--ink); display: block; }
+  .result-actions { display: flex; gap: 18px; margin-top: 12px; }
+  .result-actions a {
+    font-family: 'IBM Plex Sans';
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 1px;
+  }
+  .result-actions a:hover { color: var(--red); border-color: var(--red); }
+
+  .marked-transcript-wrap { display: none; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .marked-transcript-wrap.visible { display: block; }
+  .marked-transcript-label {
+    font-family: 'Source Serif 4', serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+  .marked-transcript-legend { font-size: 11.5px; color: var(--ink-muted); margin: 0 0 12px; }
+  .marked-transcript {
+    font-family: 'Courier Prime', monospace;
+    font-size: 13.5px;
+    line-height: 2;
+    max-height: 340px;
+    overflow-y: auto;
+  }
+  .marked-transcript .w.cut {
+    color: var(--ink-muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 1.4px;
+  }
+  .marked-transcript .w.kept {
+    background: var(--highlighter-wash);
+    box-shadow: 2px 0 0 var(--highlighter-wash), -2px 0 0 var(--highlighter-wash);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
 </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Highlight Cutter</h1>
-    <p class="subtitle">Paste a YouTube link or upload a file, get back a trimmed video with only the good parts.</p>
-
-    <div class="panel">
-      <div class="source-tabs">
-        <button type="button" class="source-tab active" data-source="youtube">YouTube URL</button>
-        <button type="button" class="source-tab" data-source="upload">Upload file</button>
-      </div>
-
-      <div class="source-panel active" id="youtubePanel">
-        <label for="url">YouTube URL</label>
-        <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." />
-        <p class="hint">If the video already has captions, we'll reuse them instead of transcribing from scratch.</p>
-      </div>
-
-      <div class="source-panel" id="uploadPanel">
-        <label for="file">Video file</label>
-        <div class="file-drop" id="fileDrop">
-          <span id="fileLabel">Click to choose, or drop a video file (.mp4, .mkv, .mov)</span>
+  <div class="desk">
+    <div class="sheet">
+      <div class="sheet-main">
+        <div class="sheet-head">
+          <h1>Highlight Cutter</h1>
+          <div class="slug" id="slug"></div>
         </div>
-        <input type="file" id="file" accept=".mp4,.mkv,.mov,video/mp4,video/x-matroska,video/quicktime" hidden />
+        <div class="rule"></div>
 
-        <label for="transcriptFile" style="margin-top:14px;">Transcript file (optional)</label>
-        <div class="file-drop file-drop-small" id="transcriptDrop">
-          <span id="transcriptLabel">Have a transcript already (e.g. from Zoom)? Attach it to skip transcription.</span>
+        <p class="prompt">Paste a link, or drop a file.</p>
+
+        <div class="source-tabs">
+          <button type="button" class="source-tab active" data-source="youtube">Paste a link</button>
+          <button type="button" class="source-tab" data-source="upload">Drop a file</button>
         </div>
-        <input type="file" id="transcriptFile" accept=".vtt,.srt" hidden />
-      </div>
 
-      <div class="mode-row">
-        <button type="button" class="mode-btn active" data-mode="highlights">
-          <strong>Highlights</strong>
-          <span>Aggressive cut — only the best moments</span>
-        </button>
-        <button type="button" class="mode-btn" data-mode="crosstalk">
-          <strong>Light cleanup</strong>
-          <span>Keep everything, just remove crosstalk</span>
-        </button>
-      </div>
+        <div class="source-panel active" id="youtubePanel">
+          <div class="cut-slot">
+            <input type="text" id="url" placeholder="youtube.com/watch?v=…" />
+          </div>
+          <p class="hint">If the video already has captions, we reuse them instead of transcribing from scratch.</p>
+        </div>
 
-      <button class="submit" id="submitBtn">Generate</button>
+        <div class="source-panel" id="uploadPanel">
+          <div class="cut-slot" id="fileDrop">
+            <span id="fileLabel">Drop a recording here, or click to choose (.mp4, .mkv, .mov)</span>
+          </div>
+          <input type="file" id="file" accept=".mp4,.mkv,.mov,video/mp4,video/x-matroska,video/quicktime" hidden />
 
-      <div class="error-box" id="errorBox"></div>
+          <div class="cut-slot cut-slot-small" id="transcriptDrop">
+            <span id="transcriptLabel">Already have a transcript? Attach it to skip transcribing (.vtt, .srt)</span>
+          </div>
+          <input type="file" id="transcriptFile" accept=".vtt,.srt" hidden />
+        </div>
 
-      <div class="status-panel" id="statusPanel">
-        <ul class="steps" id="steps"></ul>
-        <div class="transcript-note" id="transcriptNote"></div>
-      </div>
+        <p class="prompt" style="margin-top:22px;">Mark it up.</p>
+        <div class="stamps">
+          <button type="button" class="stamp stamp-red active" data-mode="highlights">
+            <strong>Highlights</strong>
+            <span>Only the best moments</span>
+          </button>
+          <button type="button" class="stamp stamp-blue" data-mode="crosstalk">
+            <strong>Light cleanup</strong>
+            <span>Keep everything, drop the crosstalk</span>
+          </button>
+        </div>
 
-      <div class="result" id="result">
-        <video id="video" controls></video>
-        <div class="result-actions">
-          <a href="#" id="downloadLink" class="primary" download>Download video</a>
-          <a href="#" id="transcriptLink" target="_blank">View transcript</a>
+        <button class="submit" id="submitBtn">Start cutting</button>
+
+        <div class="error-note" id="errorBox"></div>
+
+        <div class="result" id="result">
+          <video id="video" controls></video>
+          <div class="result-actions">
+            <a href="#" id="downloadLink" download>Download the cut</a>
+            <a href="#" id="transcriptLink" target="_blank">Raw transcript (JSON)</a>
+          </div>
+          <div class="marked-transcript-wrap" id="markedTranscriptWrap">
+            <p class="marked-transcript-label">What made the cut</p>
+            <p class="marked-transcript-legend">Struck-through text was cut; highlighted text made it into the final video.</p>
+            <div class="marked-transcript" id="markedTranscript"></div>
+          </div>
         </div>
       </div>
+
+      <aside class="sheet-margin">
+        <div class="log-title">Progress</div>
+        <div class="status-panel" id="statusPanel">
+          <ul class="signoffs" id="steps"></ul>
+          <div class="stage-progress" id="stageProgress">
+            <div class="stage-progress-label" id="stageProgressLabel"></div>
+            <div class="stage-progress-track">
+              <div class="stage-progress-fill" id="stageProgressFill"></div>
+            </div>
+          </div>
+          <div class="transcript-note" id="transcriptNote"></div>
+        </div>
+      </aside>
     </div>
 
-    <footer>Runs WhisperX + Gemini locally against this machine's API — nothing is uploaded elsewhere.</footer>
   </div>
 
 <script>
@@ -306,15 +424,35 @@ const errorBox = document.getElementById("errorBox");
 const statusPanel = document.getElementById("statusPanel");
 const stepsEl = document.getElementById("steps");
 const transcriptNote = document.getElementById("transcriptNote");
+const stageProgress = document.getElementById("stageProgress");
+const stageProgressLabel = document.getElementById("stageProgressLabel");
+const stageProgressFill = document.getElementById("stageProgressFill");
+const PROGRESS_UNIT_LABELS = {
+  deciding: "segments judged",
+  slicing: "clips rendered",
+};
 const resultEl = document.getElementById("result");
 const videoEl = document.getElementById("video");
 const downloadLink = document.getElementById("downloadLink");
 const transcriptLink = document.getElementById("transcriptLink");
-const TRANSCRIPT_PLACEHOLDER = "Have a transcript already (e.g. from Zoom)? Attach it to skip transcription.";
+const slugEl = document.getElementById("slug");
+const markedTranscriptWrap = document.getElementById("markedTranscriptWrap");
+const markedTranscriptEl = document.getElementById("markedTranscript");
+const TRANSCRIPT_PLACEHOLDER = "Already have a transcript? Attach it to skip transcribing (.vtt, .srt)";
 
-document.querySelectorAll(".mode-btn").forEach((btn) => {
+function updateSlug() {
+  if (selectedSource === "upload" && selectedFile) {
+    slugEl.textContent = selectedFile.name;
+  } else if (selectedSource === "youtube" && urlInput.value.trim()) {
+    slugEl.textContent = urlInput.value.trim();
+  } else {
+    slugEl.textContent = "";
+  }
+}
+
+document.querySelectorAll(".stamp").forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll(".stamp").forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     selectedMode = btn.dataset.mode;
   });
@@ -328,8 +466,11 @@ document.querySelectorAll(".source-tab").forEach((tab) => {
     youtubePanel.classList.toggle("active", selectedSource === "youtube");
     uploadPanel.classList.toggle("active", selectedSource === "upload");
     clearError();
+    updateSlug();
   });
 });
+
+urlInput.addEventListener("input", updateSlug);
 
 function setSelectedFile(file) {
   selectedFile = file || null;
@@ -337,9 +478,10 @@ function setSelectedFile(file) {
     fileLabel.textContent = selectedFile.name;
     fileDrop.classList.add("has-file");
   } else {
-    fileLabel.textContent = "Click to choose, or drop a video file (.mp4, .mkv, .mov)";
+    fileLabel.textContent = "Drop a recording here, or click to choose (.mp4, .mkv, .mov)";
     fileDrop.classList.remove("has-file");
   }
+  updateSlug();
 }
 
 fileDrop.addEventListener("click", () => fileInput.click());
@@ -417,7 +559,19 @@ function renderSteps(status) {
 
 function setBusy(busy) {
   submitBtn.disabled = busy;
-  submitBtn.textContent = busy ? "Working..." : "Generate";
+  submitBtn.textContent = busy ? "Cutting…" : "Start cutting";
+}
+
+function renderStageProgress(job) {
+  const unit = PROGRESS_UNIT_LABELS[job.status];
+  if (unit && job.progress_total > 0) {
+    const pct = Math.round((job.progress_current / job.progress_total) * 100);
+    stageProgressLabel.textContent = `${job.progress_current} of ${job.progress_total} ${unit} (${pct}%)`;
+    stageProgressFill.style.width = pct + "%";
+    stageProgress.classList.add("visible");
+  } else {
+    stageProgress.classList.remove("visible");
+  }
 }
 
 function renderTranscriptSource(job) {
@@ -427,6 +581,33 @@ function renderTranscriptSource(job) {
   } else {
     transcriptNote.style.display = "none";
   }
+}
+
+async function renderMarkedTranscript(jobId) {
+  let words, edl;
+  try {
+    const [wordsRes, edlRes] = await Promise.all([
+      fetch(`/jobs/${jobId}/transcript?clean=false`),
+      fetch(`/jobs/${jobId}/edl`),
+    ]);
+    if (!wordsRes.ok || !edlRes.ok) return;
+    words = await wordsRes.json();
+    edl = await edlRes.json();
+  } catch (e) {
+    return; // this view is a bonus on top of the raw JSON link — fail quietly
+  }
+
+  const ranges = edl.ranges || [];
+  const isKept = (w) => ranges.some((r) => w.start >= r.start && w.end <= r.end);
+
+  markedTranscriptEl.innerHTML = "";
+  words.forEach((w) => {
+    const span = document.createElement("span");
+    span.className = "w " + (isKept(w) ? "kept" : "cut");
+    span.textContent = w.word + " ";
+    markedTranscriptEl.appendChild(span);
+  });
+  markedTranscriptWrap.classList.add("visible");
 }
 
 async function submit() {
@@ -460,8 +641,10 @@ async function submit() {
 
   clearError();
   resultEl.classList.remove("visible");
+  markedTranscriptWrap.classList.remove("visible");
   statusPanel.classList.add("visible");
   transcriptNote.style.display = "none";
+  stageProgress.classList.remove("visible");
   setBusy(true);
   renderSteps("queued");
 
@@ -471,14 +654,14 @@ async function submit() {
   try {
     res = await request();
   } catch (e) {
-    showError("Could not reach the API: " + e.message);
+    showError("Can't reach the server: " + e.message);
     setBusy(false);
     return;
   }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }));
-    showError(body.detail || "Failed to start job.");
+    showError(body.detail || "Couldn't start the job.");
     setBusy(false);
     return;
   }
@@ -492,13 +675,13 @@ async function poll(jobId) {
   try {
     res = await fetch(`/jobs/${jobId}`);
   } catch (e) {
-    showError("Lost connection to the API: " + e.message);
+    showError("Lost the connection: " + e.message);
     setBusy(false);
     return;
   }
 
   if (!res.ok) {
-    showError("Job lookup failed.");
+    showError("Couldn't look up the job.");
     setBusy(false);
     return;
   }
@@ -520,6 +703,7 @@ async function poll(jobId) {
 
   renderSteps(job.status);
   renderTranscriptSource(job);
+  renderStageProgress(job);
 
   if (job.status === "done") {
     setBusy(false);
@@ -527,6 +711,7 @@ async function poll(jobId) {
     downloadLink.href = `/jobs/${jobId}/video`;
     transcriptLink.href = `/jobs/${jobId}/transcript`;
     resultEl.classList.add("visible");
+    renderMarkedTranscript(jobId);
     return;
   }
 

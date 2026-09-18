@@ -14,13 +14,22 @@ from .ffmpeg_wrapper import (
 logger = get_logger(__name__)
 
 
-def render_output(source: Path, edl: EditDecisionList, out_path: Path, work_dir: Path) -> Path:
+def render_output(
+    source: Path,
+    edl: EditDecisionList,
+    out_path: Path,
+    work_dir: Path,
+    on_progress: "callable[[int, int], None] | None" = None,
+) -> Path:
     """Extract each KEEP range and concatenate them into the final output (section 4).
 
     Intermediate per-segment clips are always cleaned up, even on failure.
+    `on_progress(clips_rendered, total_clips)` is called after each segment is
+    extracted, before the final concat step.
     """
     work_dir.mkdir(parents=True, exist_ok=True)
     clip_paths: list[Path] = []
+    total = len(edl.ranges)
 
     try:
         # Keep the keyframe probe inside the try too: it's the same ffprobe
@@ -36,6 +45,8 @@ def render_output(source: Path, edl: EditDecisionList, out_path: Path, work_dir:
             extract_segment(source, r.start, r.end, clip_path, mode)
             clip_paths.append(clip_path)
             logger.info("sliced range %d [%.2f, %.2f) mode=%s", i, r.start, r.end, mode)
+            if on_progress:
+                on_progress(i + 1, total)
 
         out_path.parent.mkdir(parents=True, exist_ok=True)
         if len(clip_paths) == 1:

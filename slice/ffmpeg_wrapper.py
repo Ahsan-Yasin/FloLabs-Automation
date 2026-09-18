@@ -7,7 +7,7 @@ from core.logging import get_logger
 
 logger = get_logger(__name__)
 
-KEYFRAME_SNAP_TOLERANCE_SECONDS = 0.5
+KEYFRAME_SNAP_TOLERANCE_SECONDS = 2.0
 
 
 def probe_keyframe_timestamps(path: Path) -> list[float]:
@@ -70,7 +70,7 @@ def extract_segment(src: Path, start: float, end: float, dest: Path, mode: Liter
             "-i", str(src),
             "-ss", f"{start:.3f}",
             "-t", f"{duration:.3f}",
-            "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+            "-c:v", "libx264", "-preset", "ultrafast", "-crf", "18",
             "-c:a", "aac",
             str(dest),
         ]
@@ -109,7 +109,7 @@ def concat_filter(clips: list[Path], dest: Path) -> None:
         *inputs,
         "-filter_complex", filter_complex,
         "-map", "[outv]", "-map", "[outa]",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
+        "-c:v", "libx264", "-preset", "ultrafast", "-crf", "18",
         "-c:a", "aac",
         str(dest),
     ]

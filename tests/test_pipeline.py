@@ -21,12 +21,20 @@ def _patch_common(monkeypatch, transcribe_calls, decisions_segment_lists):
 
     monkeypatch.setattr(pipeline_module, "transcribe", fake_transcribe)
 
-    def fake_get_decisions(segments, mode="crosstalk"):
+    def fake_get_decisions(segments, mode="crosstalk", on_progress=None):
         decisions_segment_lists.append(segments)
+        if on_progress:
+            on_progress(len(segments), len(segments))
         return []
 
     monkeypatch.setattr(pipeline_module, "get_decisions", fake_get_decisions)
-    monkeypatch.setattr(pipeline_module, "render_output", lambda source, edl, out_path, work_dir: out_path)
+
+    def fake_render_output(source, edl, out_path, work_dir, on_progress=None):
+        if on_progress:
+            on_progress(len(edl.ranges), len(edl.ranges))
+        return out_path
+
+    monkeypatch.setattr(pipeline_module, "render_output", fake_render_output)
 
 
 def _make_job(job_id, **kwargs):
@@ -99,6 +107,48 @@ def test_falls_back_to_whisperx_when_no_youtube_captions(monkeypatch):
     assert len(transcribe_calls) == 1
     assert job.transcript_source == "asr"
     assert job.status == JobStatus.DONE
+
+
+def test_progress_resets_between_stages_and_reports_real_values(monkeypatch):
+    transcribe_calls = []
+    segment_lists = []
+    _patch_common(monkeypatch, transcribe_calls, segment_lists)
+
+    def fake_get_decisions(segments, mode="crosstalk", on_progress=None):
+        if on_progress:
+            on_progress(1, 2)
+            on_progress(2, 2)
+        return []
+
+    monkeypatch.setattr(pipeline_module, "get_decisions", fake_get_decisions)
+
+    def fake_render_output(source, edl, out_path, work_dir, on_progress=None):
+        if on_progress:
+            on_progress(1, 3)
+            on_progress(2, 3)
+            on_progress(3, 3)
+        return out_path
+
+    monkeypatch.setattr(pipeline_module, "render_output", fake_render_output)
+
+    job = _make_job("job-progress")
+    snapshots = []
+    pipeline_module.run_pipeline(
+        job, lambda j: snapshots.append((j.status, j.progress_current, j.progress_total))
+    )
+
+    assert (JobStatus.DECIDING, 1, 2) in snapshots
+    assert (JobStatus.DECIDING, 2, 2) in snapshots
+    assert (JobStatus.SLICING, 1, 3) in snapshots
+    assert (JobStatus.SLICING, 3, 3) in snapshots
+    # each stage starts from a clean 0/0 rather than carrying over the
+    # previous stage's numbers
+    assert (JobStatus.BUILDING_EDL, 0, 0) in snapshots
+    assert (JobStatus.SLICING, 0, 0) in snapshots
+
+    assert job.status == JobStatus.DONE
+    assert job.progress_current == 0
+    assert job.progress_total == 0
 
 
 def test_plain_upload_uses_whisperx_as_before(monkeypatch):

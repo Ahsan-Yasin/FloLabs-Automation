@@ -14,6 +14,7 @@ from transcribe import (
     fetch_youtube_transcript,
     flag_overlaps,
     load_uploaded_transcript,
+    segments_to_words,
     transcribe,
 )
 
@@ -69,8 +70,15 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
                 job.transcript_source = "youtube_captions"
 
         if native is not None:
-            words, segments = native
+            _, segments = native
+            # Work at sentence granularity throughout, not the original
+            # per-cue granularity — a cue is a caption-display unit, not a
+            # meaningful cut boundary (see transcribe.native for why), so
+            # EDL snapping needs these finer, real sentence boundaries too.
+            words = segments_to_words(segments)
             words = flag_overlaps(words)
+            for seg, w in zip(segments, words):
+                seg.overlap_candidate = w.overlap_candidate
         else:
             job.transcript_source = "asr"
             words = transcribe(source_path)
@@ -81,20 +89,28 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
         job.transcript_path = str(job_dir / "transcript.json")
 
         job.status = JobStatus.DECIDING
+        job.progress_current = 0
+        job.progress_total = 0
         update(job)
-        decisions = get_decisions(segments, mode=job.mode)
+        decisions = get_decisions(segments, mode=job.mode, on_progress=_progress_updater(job, update))
 
         job.status = JobStatus.BUILDING_EDL
+        job.progress_current = 0
+        job.progress_total = 0
         update(job)
         edl = build_edl(decisions, words, video_info.duration)
         _write_json(job_dir / "edl.json", edl.model_dump())
         job.edl_path = str(job_dir / "edl.json")
 
         job.status = JobStatus.SLICING
+        job.progress_current = 0
+        job.progress_total = 0
         update(job)
         out_path = job_dir / f"output{source_path.suffix}"
-        render_output(source_path, edl, out_path, job_dir / "tmp")
+        render_output(source_path, edl, out_path, job_dir / "tmp", on_progress=_progress_updater(job, update))
         job.output_video_path = str(out_path)
+        job.progress_current = 0
+        job.progress_total = 0
 
         clean_words = remap_transcript(words, edl)
         _write_json(job_dir / "clean_transcript.json", [w.model_dump() for w in clean_words])
@@ -111,6 +127,15 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
 
 def _write_json(path: Path, data) -> None:
     path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+
+
+def _progress_updater(job: JobRecord, update: "callable[[JobRecord], None]") -> "callable[[int, int], None]":
+    def on_progress(current: int, total: int) -> None:
+        job.progress_current = current
+        job.progress_total = total
+        update(job)
+
+    return on_progress
 
 
 def run_youtube_pipeline(job: JobRecord, update: "callable[[JobRecord], None]", url: str) -> None:

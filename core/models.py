@@ -72,6 +72,13 @@ class JobRecord(BaseModel):
     source_url: str | None = None
     native_transcript_path: str | None = None
     transcript_source: TranscriptSource = "asr"
+    # Real, measured progress within the current status (e.g. segments judged so
+    # far / total, or clips rendered so far / total) — 0/0 whenever the current
+    # stage has no countable unit of work (e.g. transcribing), so the UI can
+    # honestly fall back to a plain "in progress" indicator instead of faking a
+    # percentage for a stage we can't actually measure.
+    progress_current: int = 0
+    progress_total: int = 0
     error: str | None = None
     output_video_path: str | None = None
     edl_path: str | None = None

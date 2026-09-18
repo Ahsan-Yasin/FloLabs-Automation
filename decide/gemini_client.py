@@ -11,10 +11,11 @@ logger = get_logger(__name__)
 
 _decision_list_adapter = TypeAdapter(list[Decision])
 
-CROSSTALK_SYSTEM_PROMPT = """You are editing a meeting recording transcript to remove crosstalk \
-and low-value overlapping speech, while keeping every segment that carries real content.
+CROSSTALK_SYSTEM_PROMPT = """You are lightly cleaning up a meeting recording transcript. The goal \
+is to keep only what is actually on the meeting's agenda — the substance people came \
+for — and cut everything else, while staying a light trim, not a highlight reel.
 
-You will be given a JSON list of speaker-turn segments in chronological order. Each has:
+You will be given a JSON list of sentence-level segments in chronological order. Each has:
 - speaker: a diarization label (may be wrong — do not use it to judge importance)
 - start, end: seconds
 - text: what was said
@@ -22,15 +23,26 @@ You will be given a JSON list of speaker-turn segments in chronological order. E
 time with an adjacent segment from a different speaker
 
 For EVERY segment, decide "keep" or "remove":
-- "remove" ONLY for crosstalk/interruptions/simultaneous speech that carries no \
-distinguishable content on its own (filler like "yeah", "mhm", "sorry go ahead", \
-false starts talked over, someone trying to interject without landing a point).
-- "keep" for anything that makes a point, answers a question, asks a question, or \
-would be missed by a listener — even if overlap_candidate is true. Overlap alone is \
-NOT a reason to remove; only remove when the overlapping speech is actually low-value.
-- When in doubt, keep it. Under-removing is much cheaper than cutting real content.
-also remove  talk unreated to the meeting like my weekedn was fun and unrelated generla talk like that\
-the context of the meeting is important and if the segment is not related to the meeting then remove it.\
+
+Remove — anything that is not the actual agenda content, even if it is on-topic-adjacent \
+and nobody is interrupting:
+- Crosstalk/interruptions/simultaneous speech that carries no distinguishable content on \
+its own (filler like "yeah", "mhm", "sorry go ahead", false starts talked over).
+- Greetings, small talk, and pleasantries ("how was your weekend", "good morning everyone", \
+"can you hear me", "let me turn my camera on").
+- Round-robin self-introductions and "welcome to the team" ceremony — "please introduce \
+yourself" / "hi, I'm X, I study Y" — even though it's on-topic, it is not agenda content.
+- Waiting-for-people-to-join dead air, technical housekeeping (audio/video troubleshooting), \
+and meta-commentary about the meeting itself ("let's wait for everyone", "can we start now").
+- Any tangent that isn't the thing the meeting was called to discuss.
+
+Keep — the actual agenda:
+- Anything that makes a point, answers a substantive question, asks a substantive question, \
+states a decision, or would be missed by someone who only wants the meeting's real content. \
+This includes status updates, blockers, and task assignments even when they're introduced by \
+someone being called on by name ("can you give us an update?") — being called on is not the \
+same as being asked to introduce yourself; judge the answer by whether it's substance or filler.
+- Overlap alone is NOT a reason to remove.
 
 Return a JSON array with exactly one object per input segment, in the same order, \
 each with fields: start (number), end (number), decision ("keep" or "remove"), \
@@ -216,10 +228,20 @@ def _decisions_for_chunk(client, model: str, segments: list[Segment], system_pro
     raise DecisionError(f"LLM returned invalid decisions after retry: {last_error}") from last_error
 
 
-def get_decisions(segments: list[Segment], mode: str = "crosstalk") -> list[Decision]:
+def get_decisions(
+    segments: list[Segment],
+    mode: str = "crosstalk",
+    on_progress: "callable[[int, int], None] | None" = None,
+) -> list[Decision]:
     """LLM edit-decision pass (section 3.3), batched so long meetings with many
     segments can't produce a single response large enough to hit the model's
-    max output tokens and get cut off mid-JSON."""
+    max output tokens and get cut off mid-JSON.
+
+    `on_progress(segments_decided, total_segments)` is called after each
+    top-level chunk resolves (a chunk may itself have split into smaller calls
+    internally — that's invisible here, since what matters for progress is how
+    many of the original segments now have a decision).
+    """
     if not segments:
         return []
     if mode not in _SYSTEM_PROMPTS:
@@ -234,7 +256,10 @@ def get_decisions(segments: list[Segment], mode: str = "crosstalk") -> list[Deci
     client = genai.Client(api_key=settings.gemini_api_key)
     system_prompt = _SYSTEM_PROMPTS[mode]
 
+    total = len(segments)
     decisions: list[Decision] = []
     for chunk in _chunk(segments, settings.gemini_max_segments_per_call):
         decisions.extend(_decisions_for_chunk(client, settings.gemini_model, chunk, system_prompt))
+        if on_progress:
+            on_progress(len(decisions), total)
     return decisions
