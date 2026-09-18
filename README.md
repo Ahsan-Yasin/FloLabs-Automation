@@ -22,6 +22,38 @@ Module layout matches the spec's suggested repo structure: `ingest/`,
 `transcribe/`, `decide/`, `edl/`, `slice/`, `api/`, plus `core/` for shared
 config/models, `pipeline.py` tying the stages together, and `web/` for the UI.
 
+### Reusing an existing transcript
+
+Running WhisperX is the slowest, most compute-heavy stage in the pipeline. If
+a platform-provided transcript is already available, the pipeline uses it
+instead and skips WhisperX (ASR + alignment + diarization) entirely:
+
+- **YouTube** — automatic, no setup needed. Before downloading, the pipeline
+  checks the video for its own captions (creator-uploaded captions are
+  preferred over auto-generated ones) via `transcribe/native.py`, fetched
+  through `yt-dlp`. If a usable English track exists, it's parsed and used
+  directly; otherwise the pipeline transcribes the video itself as before.
+- **Direct uploads (e.g. Zoom)** — attach a transcript when creating the job:
+  `POST /jobs` accepts an optional `transcript` file field (`.vtt` or `.srt`
+  — this is exactly what Zoom's cloud recordings export as
+  `audio_transcript.vtt`). If provided and it parses, it's used instead of
+  WhisperX. The web UI's upload panel has a matching optional drop zone.
+
+Either way, if no transcript is available — or it fails to parse — the
+pipeline transparently falls back to self-hosted WhisperX transcription. A
+job's `transcript_source` field (`asr` | `youtube_captions` |
+`uploaded_transcript`) reports which path was actually used; the web UI shows
+this once a job passes the transcribing stage.
+
+**Caveat for crosstalk/"Light cleanup" mode:** platform transcripts are a
+single serialized caption stream — by the time captions exist, simultaneous
+speech has already been collapsed into whichever speaker was picked up, so
+there's no overlap information left to detect. Crosstalk mode still runs
+against a native transcript, but it will typically find no overlaps and the
+EDL builder's safe-fallback (section 3.4) keeps the full video unchanged. Use
+a direct WhisperX transcription (no attached transcript) for real crosstalk
+removal; native transcripts are best suited to highlights mode.
+
 ## Setup
 
 WhisperX's dependency chain (torch, faster-whisper, pyannote-audio) is not
@@ -70,8 +102,9 @@ file, pick Highlights vs. Light cleanup, watch it process, preview/download
 the result). Or drive it directly:
 
 - `POST /jobs` — multipart upload (`file`, optional `mode` form field:
-  `highlights` | `crosstalk`), starts the pipeline in the background, returns
-  a `job_id`.
+  `highlights` | `crosstalk`, optional `transcript` file field — `.vtt`/`.srt`,
+  e.g. Zoom's exported transcript — to skip WhisperX), starts the pipeline in
+  the background, returns a `job_id`.
 - `POST /jobs/youtube` — JSON body `{"url": "...", "mode": "highlights"}`,
   downloads via yt-dlp then runs the same pipeline.
 - `GET /jobs/{job_id}` — status/progress/paths.
@@ -90,8 +123,10 @@ pytest
 ```
 
 The test suite covers the deterministic logic (overlap detection, EDL
-sorting/de-overlap/snapping/merging, transcript remapping, API wiring) with
-WhisperX, yt-dlp, and Gemini calls mocked out — it does not require ffmpeg,
+sorting/de-overlap/snapping/merging, transcript remapping, native-transcript
+parsing (VTT/SRT/json3), the transcript-source pipeline branching, API
+wiring) with WhisperX, yt-dlp, and Gemini calls mocked out — it does not
+require ffmpeg,
 torch, or network access. The full pipeline has also been verified end to
 end against a real YouTube video with real WhisperX transcription/diarization
 and a real Gemini call. The golden-recording tests from spec section 9

@@ -61,6 +61,8 @@ class JobStatus(str, Enum):
 
 EditMode = Literal["crosstalk", "highlights"]
 
+TranscriptSource = Literal["asr", "youtube_captions", "uploaded_transcript"]
+
 
 class JobRecord(BaseModel):
     job_id: str
@@ -68,6 +70,8 @@ class JobRecord(BaseModel):
     mode: EditMode = "highlights"
     source_path: str = ""
     source_url: str | None = None
+    native_transcript_path: str | None = None
+    transcript_source: TranscriptSource = "asr"
     error: str | None = None
     output_video_path: str | None = None
     edl_path: str | None = None

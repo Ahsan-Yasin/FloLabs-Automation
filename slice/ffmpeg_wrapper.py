@@ -26,6 +26,7 @@ def probe_keyframe_timestamps(path: Path) -> list[float]:
         capture_output=True,
         text=True,
         check=True,
+        timeout=settings.ffprobe_timeout_seconds,
     )
     timestamps = []
     for line in result.stdout.splitlines():
@@ -75,7 +76,7 @@ def extract_segment(src: Path, start: float, end: float, dest: Path, mode: Liter
         ]
 
     logger.debug("extract_segment[%s]: %s", mode, " ".join(cmd))
-    subprocess.run(cmd, capture_output=True, text=True, check=True)
+    subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=settings.ffmpeg_timeout_seconds)
 
 
 def concat_demuxer(clips: list[Path], dest: Path, filelist_path: Path) -> None:
@@ -90,7 +91,7 @@ def concat_demuxer(clips: list[Path], dest: Path, filelist_path: Path) -> None:
         "-c", "copy",
         str(dest),
     ]
-    subprocess.run(cmd, capture_output=True, text=True, check=True)
+    subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=settings.ffmpeg_timeout_seconds)
 
 
 def concat_filter(clips: list[Path], dest: Path) -> None:
@@ -112,7 +113,7 @@ def concat_filter(clips: list[Path], dest: Path) -> None:
         "-c:a", "aac",
         str(dest),
     ]
-    subprocess.run(cmd, capture_output=True, text=True, check=True)
+    subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=settings.ffmpeg_timeout_seconds)
 
 
 def concat_clips(clips: list[Path], dest: Path, filelist_path: Path) -> None:

@@ -7,10 +7,15 @@ from core.models import JobRecord, JobStatus
 from decide import build_segments, get_decisions
 from edl import build_edl
 from ingest.validate import AVSyncError, validate_video
-from ingest.youtube import YoutubeDownloadError, download_youtube
+from ingest.youtube import download_youtube
 from slice.pipeline import render_output
 from slice.transcript import remap_transcript
-from transcribe import flag_overlaps, transcribe
+from transcribe import (
+    fetch_youtube_transcript,
+    flag_overlaps,
+    load_uploaded_transcript,
+    transcribe,
+)
 
 logger = get_logger(__name__)
 
@@ -33,18 +38,50 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
         job.error = str(exc)
         update(job)
         return
+    except Exception as exc:
+        # ffprobe itself can fail in ways that aren't AVSyncError (corrupt/
+        # truncated upload, missing ffprobe binary, a hung process past
+        # ffprobe_timeout_seconds, unparsable output). Without this, those
+        # exceptions escaped run_pipeline entirely and left the job stuck in
+        # QUEUED forever since job.status was never updated.
+        logger.exception("job %s: pre-flight validation failed", job.job_id)
+        job.status = JobStatus.FAILED
+        job.error = str(exc)
+        update(job)
+        return
 
     try:
         job.status = JobStatus.TRANSCRIBING
         update(job)
-        words = transcribe(source_path)
-        words = flag_overlaps(words)
+
+        # Reuse a platform-provided transcript when we have one (a user-supplied
+        # export for uploads, or YouTube's own captions) — skips the WhisperX
+        # ASR/diarization pass entirely. Falls back to self-hosted transcription
+        # whenever no transcript is available or it fails to parse.
+        native = None
+        if job.native_transcript_path:
+            native = load_uploaded_transcript(Path(job.native_transcript_path))
+            if native is not None:
+                job.transcript_source = "uploaded_transcript"
+        if native is None and job.source_url:
+            native = fetch_youtube_transcript(job.source_url)
+            if native is not None:
+                job.transcript_source = "youtube_captions"
+
+        if native is not None:
+            words, segments = native
+            words = flag_overlaps(words)
+        else:
+            job.transcript_source = "asr"
+            words = transcribe(source_path)
+            words = flag_overlaps(words)
+            segments = build_segments(words)
+
         _write_json(job_dir / "transcript.json", [w.model_dump() for w in words])
         job.transcript_path = str(job_dir / "transcript.json")
 
         job.status = JobStatus.DECIDING
         update(job)
-        segments = build_segments(words)
         decisions = get_decisions(segments, mode=job.mode)
 
         job.status = JobStatus.BUILDING_EDL
@@ -82,7 +119,10 @@ def run_youtube_pipeline(job: JobRecord, update: "callable[[JobRecord], None]", 
     update(job)
     try:
         _, path = download_youtube(url)
-    except YoutubeDownloadError as exc:
+    except Exception as exc:  # noqa: BLE001
+        # download_youtube wraps most failures as YoutubeDownloadError already,
+        # but anything it doesn't catch (e.g. yt_dlp itself missing) must still
+        # mark the job FAILED rather than escape and leave it stuck DOWNLOADING.
         logger.warning("job %s: youtube download failed: %s", job.job_id, exc)
         job.status = JobStatus.FAILED
         job.error = str(exc)

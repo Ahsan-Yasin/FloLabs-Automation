@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from core.logging import configure_logging
 from core.models import EditMode, JobRecord, JobStatus
-from ingest.store import store_video
+from ingest.store import store_transcript, store_video
 from pipeline import run_pipeline, run_youtube_pipeline
 
 from .jobs import job_store
@@ -31,14 +31,30 @@ async def index() -> str:
 
 @app.post("/jobs", response_model=JobRecord)
 async def create_job(
-    background_tasks: BackgroundTasks, file: UploadFile, mode: EditMode = Form("crosstalk")  # noqa: B008
+    background_tasks: BackgroundTasks,
+    file: UploadFile,
+    mode: EditMode = Form("crosstalk"),  # noqa: B008
+    transcript: UploadFile | None = None,
 ) -> JobRecord:
     try:
         job_id, path = store_video(file.filename or "upload.mp4", file.file)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    job = JobRecord(job_id=job_id, status=JobStatus.QUEUED, mode=mode, source_path=str(path))
+    native_transcript_path = None
+    if transcript is not None and transcript.filename:
+        try:
+            native_transcript_path = str(store_transcript(transcript.filename, transcript.file))
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    job = JobRecord(
+        job_id=job_id,
+        status=JobStatus.QUEUED,
+        mode=mode,
+        source_path=str(path),
+        native_transcript_path=native_transcript_path,
+    )
     job_store.create(job)
 
     background_tasks.add_task(run_pipeline, job, job_store.update)

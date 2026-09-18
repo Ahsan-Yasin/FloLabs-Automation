@@ -20,10 +20,16 @@ def render_output(source: Path, edl: EditDecisionList, out_path: Path, work_dir:
     Intermediate per-segment clips are always cleaned up, even on failure.
     """
     work_dir.mkdir(parents=True, exist_ok=True)
-    keyframes = probe_keyframe_timestamps(source)
     clip_paths: list[Path] = []
 
     try:
+        # Keep the keyframe probe inside the try too: it's the same ffprobe
+        # call as everything else here (can fail on a corrupt/oddly-encoded
+        # source, or time out), and work_dir was already created above — if it
+        # raised before entering this block, the finally below never ran and
+        # work_dir (job_dir/tmp) was left behind as an orphaned empty directory.
+        keyframes = probe_keyframe_timestamps(source)
+
         for i, r in enumerate(edl.ranges):
             mode = choose_mode(r.start, keyframes)
             clip_path = work_dir / f"clip_{i:04d}{source.suffix}"

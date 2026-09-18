@@ -4,5 +4,5 @@ pydantic>=2.7
 pydantic-settings>=2.3
 python-multipart>=0.0.9
 google-genai>=0.3
-yt-dlp>=2024.8.6
+yt-dlp @ git+https://github.com/yt-dlp/yt-dlp.git
 whisperx @ git+https://github.com/m-bain/whisperX.git

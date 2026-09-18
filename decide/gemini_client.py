@@ -1,4 +1,5 @@
 import json
+import time
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -28,6 +29,8 @@ false starts talked over, someone trying to interject without landing a point).
 would be missed by a listener — even if overlap_candidate is true. Overlap alone is \
 NOT a reason to remove; only remove when the overlapping speech is actually low-value.
 - When in doubt, keep it. Under-removing is much cheaper than cutting real content.
+also remove  talk unreated to the meeting like my weekedn was fun and unrelated generla talk like that\
+the context of the meeting is important and if the segment is not related to the meeting then remove it.\
 
 Return a JSON array with exactly one object per input segment, in the same order, \
 each with fields: start (number), end (number), decision ("keep" or "remove"), \
@@ -82,16 +85,14 @@ def _segments_payload(segments: list[Segment]) -> str:
     )
 
 
-def _call_gemini(
-    client, model: str, segments: list[Segment], system_prompt: str, retry_note: str = ""
-) -> str:
+def _call_gemini(client, model: str, segments: list[Segment], system_prompt: str, retry_note: str = ""):
     from google.genai import types
 
     prompt = _segments_payload(segments)
     if retry_note:
         prompt = f"{retry_note}\n\n{prompt}"
 
-    response = client.models.generate_content(
+    return client.models.generate_content(
         model=model,
         contents=prompt,
         config=types.GenerateContentConfig(
@@ -99,7 +100,6 @@ def _call_gemini(
             response_mime_type="application/json",
         ),
     )
-    return response.text
 
 
 def _parse(raw: str) -> list[Decision]:
@@ -107,38 +107,92 @@ def _parse(raw: str) -> list[Decision]:
     return _decision_list_adapter.validate_python(data)
 
 
-def get_decisions(segments: list[Segment], mode: str = "crosstalk") -> list[Decision]:
-    """LLM edit-decision pass (section 3.3). Validates schema, retries once, fails loudly."""
-    if not segments:
-        return []
-    if mode not in _SYSTEM_PROMPTS:
-        raise ValueError(f"unknown decide mode {mode!r}, expected one of {sorted(_SYSTEM_PROMPTS)}")
+def _finish_reason(response) -> str:
+    candidates = getattr(response, "candidates", None) or []
+    if candidates and candidates[0].finish_reason is not None:
+        return str(candidates[0].finish_reason)
+    return "unknown"
 
-    from google import genai
 
-    settings = get_settings()
-    if not settings.gemini_api_key:
-        raise DecisionError("GEMINI_API_KEY is not set")
+def _chunk(segments: list[Segment], size: int) -> list[list[Segment]]:
+    size = max(1, size)
+    return [segments[i : i + size] for i in range(0, len(segments), size)]
 
+
+def _split_and_retry(client, model: str, segments: list[Segment], system_prompt: str) -> list[Decision]:
+    mid = len(segments) // 2
+    logger.warning("splitting a %d-segment chunk into %d + %d and retrying", len(segments), mid, len(segments) - mid)
+    return _decisions_for_chunk(client, model, segments[:mid], system_prompt) + _decisions_for_chunk(
+        client, model, segments[mid:], system_prompt
+    )
+
+
+def _decisions_for_chunk(client, model: str, segments: list[Segment], system_prompt: str) -> list[Decision]:
+    """One chunk's worth of the LLM edit-decision pass (section 3.3). Validates
+    schema, retries once, then falls back to splitting the chunk, fails loudly
+    only once a single segment can't be resolved.
+
+    A fixed `gemini_max_segments_per_call` only bounds segment *count* — it does
+    nothing for a chunk whose segments happen to carry a lot of text (long
+    monologue turns, verbose reasons), which can still blow past the model's
+    max output tokens and truncate mid-JSON (finish_reason=MAX_TOKENS). Retrying
+    that exact same chunk is pointless there: same input size in, same
+    truncation out, so a MAX_TOKENS truncation splits immediately rather than
+    spending the retry on an unchanged request.
+
+    Separately — not a truncation at all — the model can also return a
+    complete, valid JSON array that's individually wrong: one or more entries
+    missing a required field (seen in practice: `decision` silently dropped on
+    a handful of entries scattered through a long response), or the wrong
+    number of entries. Unlike truncation this genuinely can succeed on a
+    same-size retry (it's model drift on a long generation, not a hard
+    ceiling), so it still gets the normal retry first — but if that also
+    fails, the fallback is the same: shrink the batch and retry the halves
+    independently, since compliance reliably improves as batch size drops.
+    This converges to single segments, where a persistent failure still
+    surfaces via DecisionError instead of silently dropping content.
+    """
     from google.genai import errors as genai_errors
 
-    client = genai.Client(api_key=settings.gemini_api_key)
-    system_prompt = _SYSTEM_PROMPTS[mode]
-
     last_error: Exception | None = None
+    attempt = 0
     for attempt, retry_note in enumerate(
         ["", "Your previous response was not a valid JSON array matching the required schema. Try again, strictly."]
     ):
+        response = None
         try:
-            raw = _call_gemini(client, settings.gemini_model, segments, system_prompt, retry_note)
-            decisions = _parse(raw)
+            response = _call_gemini(client, model, segments, system_prompt, retry_note)
+            decisions = _parse(response.text)
         except (json.JSONDecodeError, ValidationError, KeyError) as exc:
-            logger.warning("gemini decision parse failed on attempt %d: %s", attempt + 1, exc)
+            reason = _finish_reason(response) if response is not None else "no response"
+            if "MAX_TOKENS" in reason:
+                logger.warning(
+                    "gemini response for a %d-segment chunk was truncated (finish_reason=MAX_TOKENS) on "
+                    "attempt %d — lower gemini_max_segments_per_call if this recurs: %s",
+                    len(segments), attempt + 1, exc,
+                )
+                if len(segments) > 1:
+                    return _split_and_retry(client, model, segments, system_prompt)
+            else:
+                logger.warning(
+                    "gemini decision parse failed on attempt %d (finish_reason=%s): %s",
+                    attempt + 1, reason, exc,
+                )
             last_error = exc
             continue
         except genai_errors.APIError as exc:
             # Transient overload/rate-limit (5xx/429) — worth one retry, not just malformed output.
-            logger.warning("gemini API error on attempt %d: %s", attempt + 1, exc)
+            # A 429 (free-tier RPM/TPM quota) needs an actual pause before the retry: firing the
+            # retry immediately just resends into the same rate-limit window and fails again.
+            if getattr(exc, "code", None) == 429:
+                logger.warning(
+                    "gemini rate limit (429) hit on attempt %d for a %d-segment chunk — "
+                    "backing off before retrying: %s",
+                    attempt + 1, len(segments), exc,
+                )
+                time.sleep(20)
+            else:
+                logger.warning("gemini API error on attempt %d: %s", attempt + 1, exc)
             last_error = exc
             continue
 
@@ -152,4 +206,35 @@ def get_decisions(segments: list[Segment], mode: str = "crosstalk") -> list[Deci
 
         return decisions
 
+    if len(segments) > 1:
+        logger.warning(
+            "gemini failed on a %d-segment chunk after %d attempts (%s) — splitting and retrying",
+            len(segments), attempt + 1, last_error,
+        )
+        return _split_and_retry(client, model, segments, system_prompt)
+
     raise DecisionError(f"LLM returned invalid decisions after retry: {last_error}") from last_error
+
+
+def get_decisions(segments: list[Segment], mode: str = "crosstalk") -> list[Decision]:
+    """LLM edit-decision pass (section 3.3), batched so long meetings with many
+    segments can't produce a single response large enough to hit the model's
+    max output tokens and get cut off mid-JSON."""
+    if not segments:
+        return []
+    if mode not in _SYSTEM_PROMPTS:
+        raise ValueError(f"unknown decide mode {mode!r}, expected one of {sorted(_SYSTEM_PROMPTS)}")
+
+    from google import genai
+
+    settings = get_settings()
+    if not settings.gemini_api_key:
+        raise DecisionError("GEMINI_API_KEY is not set")
+
+    client = genai.Client(api_key=settings.gemini_api_key)
+    system_prompt = _SYSTEM_PROMPTS[mode]
+
+    decisions: list[Decision] = []
+    for chunk in _chunk(segments, settings.gemini_max_segments_per_call):
+        decisions.extend(_decisions_for_chunk(client, settings.gemini_model, chunk, system_prompt))
+    return decisions

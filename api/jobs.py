@@ -1,4 +1,5 @@
 import json
+import os
 import threading
 
 from core.config import get_settings
@@ -44,7 +45,19 @@ class JobStore:
     def _persist(self, job: JobRecord) -> None:
         path = self._path(job.job_id)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(job.model_dump_json(indent=2), encoding="utf-8")
+        # A job.json is rewritten many times per job (once per pipeline stage,
+        # see pipeline.py's `update(job)` calls), and a straight write_text()
+        # truncates the file before writing the new bytes. A reader (a GET
+        # /jobs/{id} landing in the disk-fallback path of get(), e.g. right
+        # after a process restart) that opens the file in that window — or a
+        # process killed mid-write — sees/leaves a truncated, non-JSON file.
+        # Once that happens, every future get() for that job permanently
+        # raises JSONDecodeError, since nothing ever rewrites a "corrupt" file
+        # with a fresh full one. Write to a temp file and rename atomically so
+        # a reader never observes a partial write.
+        tmp_path = path.with_suffix(path.suffix + ".tmp")
+        tmp_path.write_text(job.model_dump_json(indent=2), encoding="utf-8")
+        os.replace(tmp_path, path)
 
 
 job_store = JobStore()
