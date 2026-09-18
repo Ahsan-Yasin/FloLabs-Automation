@@ -1,0 +1,95 @@
+/* Shared design system for the whole site — "The Marked Page": a manuscript /
+   copy-editor's desk. Red pencil = cut, blue pencil = note/progress,
+   highlighter = kept. Every page (landing, app) draws from these same
+   tokens and the same nav/sheet/stamp components so the product reads as
+   one thing, not a marketing page bolted onto a separate demo. */
+
+:root {
+  --blotter: #232f27;
+  --bond: #e8e3d3;
+  --bond-dim: #dcd6c4;
+  --ink: #211f1a;
+  --ink-muted: #5f5a4d;
+  --red: #a83a2c;
+  --red-wash: rgba(168, 58, 44, 0.09);
+  --blue: #2e4c6d;
+  --blue-wash: rgba(46, 76, 109, 0.09);
+  --highlighter: #e8c23a;
+  --highlighter-wash: rgba(232, 194, 58, 0.4);
+  --line: rgba(33, 31, 26, 0.16);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--blotter);
+  background-image: radial-gradient(900px 500px at 50% 0%, rgba(255, 255, 255, 0.03), transparent 70%);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", -apple-system, sans-serif;
+}
+
+a { color: inherit; }
+
+button, input { font: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* -- Site nav — appears on every page, same markup/classes everywhere -- */
+
+.site-nav {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 26px 16px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  row-gap: 8px;
+}
+.site-nav .wordmark {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  color: var(--bond);
+  font-family: "Source Serif 4", serif;
+  font-weight: 600;
+  font-size: 17px;
+}
+.site-nav .wordmark svg { display: block; }
+.site-nav .nav-link {
+  text-decoration: none;
+  color: var(--bond);
+  opacity: 0.75;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-bottom: 1.5px solid transparent;
+  padding-bottom: 1px;
+}
+.site-nav .nav-link:hover { opacity: 1; border-color: var(--bond); }
+.site-nav .nav-link.cta {
+  opacity: 1;
+  color: var(--blotter);
+  background: var(--highlighter);
+  padding: 8px 14px;
+  font-weight: 600;
+}
+.site-nav .nav-link.cta:hover { background: #dcae1f; }
+
+/* -- The physical "sheet" — a page of paper on the blotter desk -- */
+
+.sheet {
+  background: var(--bond);
+  box-shadow: 9px 9px 0 rgba(11, 15, 12, 0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

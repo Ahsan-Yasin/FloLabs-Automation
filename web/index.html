@@ -4,724 +4,202 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Highlight Cutter</title>
+<meta name="description" content="Paste a link or drop a recording. An AI editor marks up the transcript; ffmpeg cuts exactly that." />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23232f27'/><circle cx='9' cy='8' r='2.4' fill='%23a83a2c'/><circle cx='9' cy='24' r='2.4' fill='%23a83a2c'/><path d='M11.3 9.6 L23 23 M11.3 22.4 L23 9' stroke='%23e8c23a' stroke-width='2.2' stroke-linecap='round' fill='none'/></svg>" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Courier+Prime:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
 <style>
-  :root {
-    --blotter: #232f27;
-    --bond: #e8e3d3;
-    --bond-dim: #dcd6c4;
-    --ink: #211f1a;
-    --ink-muted: #6f6a5c;
-    --red: #a83a2c;
-    --red-wash: rgba(168, 58, 44, 0.09);
-    --blue: #2e4c6d;
-    --blue-wash: rgba(46, 76, 109, 0.09);
-    --highlighter: #e8c23a;
-    --highlighter-wash: rgba(232, 194, 58, 0.4);
-    --line: rgba(33, 31, 26, 0.16);
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--blotter);
-    background-image: radial-gradient(900px 500px at 50% 0%, rgba(255,255,255,0.03), transparent 70%);
-    color: var(--ink);
-    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
-    display: flex;
-    justify-content: center;
-    padding: 56px 16px;
-  }
   .desk {
+    padding: 20px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .desk-inner {
     width: 100%;
     max-width: 740px;
-  }
-  .sheet {
-    background: var(--bond);
-    padding: 32px 32px 28px;
-    box-shadow: 9px 9px 0 rgba(11, 15, 12, 0.28);
-    display: grid;
-    grid-template-columns: 1fr;
-    row-gap: 0;
-  }
-  @media (min-width: 760px) {
-    .sheet { grid-template-columns: 1fr 204px; column-gap: 30px; }
-  }
-  .sheet-main { min-width: 0; }
-  .sheet-margin { padding-top: 4px; }
-
-  .sheet-head {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 14px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 22px;
   }
-  h1 {
+  .sheet-pad { padding: 36px 34px; }
+  .rotate-a { transform: rotate(-0.35deg); }
+  .rotate-b { transform: rotate(0.3deg); }
+
+  /* -- Hero -- */
+  .kicker {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    margin: 0 0 10px;
+  }
+  h1.headline {
     font-family: 'Source Serif 4', serif;
     font-weight: 600;
-    font-size: 27px;
+    font-size: clamp(28px, 5vw, 38px);
+    line-height: 1.18;
     letter-spacing: -0.01em;
-    margin: 0;
+    margin: 0 0 16px;
     color: var(--ink);
+    max-width: 15ch;
   }
-  .slug {
-    font-family: 'Courier Prime', monospace;
-    font-size: 12.5px;
+  .subhead {
+    font-size: 15.5px;
+    line-height: 1.65;
     color: var(--ink-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 260px;
+    max-width: 46ch;
+    margin: 0 0 26px;
   }
-  .rule {
-    height: 1px;
-    background: var(--line);
-    margin: 14px 0 22px;
-  }
-
-  .prompt {
-    font-family: 'Source Serif 4', serif;
-    font-size: 17px;
-    color: var(--ink);
-    margin: 0 0 12px;
-  }
-
-  .source-tabs {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 10px;
-  }
-  .source-tab {
-    padding: 6px 3px;
-    border: none;
-    border-bottom: 2px solid transparent;
-    background: transparent;
-    color: var(--ink-muted);
-    font-family: 'IBM Plex Sans';
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-right: 18px;
-  }
-  .source-tab.active { color: var(--ink); border-bottom-color: var(--red); font-weight: 600; }
-  .source-tab:focus-visible, .cut-slot:focus-within, button:focus-visible, a:focus-visible, input:focus-visible {
-    outline: 2px solid var(--blue);
-    outline-offset: 2px;
-  }
-  .source-panel { display: none; }
-  .source-panel.active { display: block; }
-
-  .cut-slot {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 46px;
-    background: var(--bond-dim);
-    border: 1.5px dashed var(--ink-muted);
-    padding: 11px 14px;
-    color: var(--ink-muted);
-    font-family: 'IBM Plex Sans';
-    font-size: 13.5px;
-    cursor: pointer;
-  }
-  .cut-slot.has-file { color: var(--ink); border-style: solid; border-color: var(--ink); background: var(--bond); }
-  .cut-slot.dragover { border-color: var(--blue); background: var(--blue-wash); }
-  .cut-slot input[type="text"] {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--ink);
-    font-family: 'IBM Plex Sans';
-    font-size: 13.5px;
-    outline: none;
-    padding: 0;
-  }
-  .cut-slot input[type="text"]::placeholder { color: var(--ink-muted); }
-  .cut-slot-small { min-height: 38px; font-size: 12.5px; margin-top: 10px; }
-  .hint { color: var(--ink-muted); font-size: 12px; margin: 8px 0 0; line-height: 1.5; }
-
-  .stamps {
-    display: flex;
-    gap: 14px;
-    margin: 20px 0 4px;
-  }
-  .stamp {
-    flex: 1;
-    text-align: left;
-    padding: 11px 13px;
-    background: transparent;
-    border: 1.5px solid var(--ink-muted);
-    color: var(--ink-muted);
-    cursor: pointer;
-    font-family: 'IBM Plex Sans';
-  }
-  .stamp strong { display: block; font-size: 13.5px; color: var(--ink); margin-bottom: 2px; font-weight: 600; }
-  .stamp span { font-size: 12px; }
-  .stamp.stamp-red.active {
-    border-color: var(--red);
-    color: var(--red);
-    background: var(--red-wash);
-    transform: rotate(-0.6deg);
-  }
-  .stamp.stamp-red.active strong { color: var(--red); }
-  .stamp.stamp-blue.active {
-    border-color: var(--blue);
-    color: var(--blue);
-    background: var(--blue-wash);
-    transform: rotate(0.6deg);
-  }
-  .stamp.stamp-blue.active strong { color: var(--blue); }
-
-  button.submit {
-    width: 100%;
-    margin-top: 22px;
-    padding: 13px;
+  .btn {
+    display: inline-block;
+    padding: 13px 22px;
     border: none;
     background: var(--red);
     color: var(--bond);
     font-family: 'IBM Plex Sans';
     font-size: 14px;
     font-weight: 600;
+    text-decoration: none;
     cursor: pointer;
   }
-  button.submit:hover:not(:disabled) { background: #8f3125; }
-  button.submit:disabled { background: var(--ink-muted); cursor: not-allowed; }
+  .btn:hover { background: #8f3125; }
 
-  .error-note {
-    margin-top: 14px;
-    padding: 10px 12px;
-    border-left: 3px solid var(--red);
-    background: var(--red-wash);
-    color: var(--red);
-    font-size: 13px;
-    display: none;
-  }
-  .error-note.visible { display: block; }
-
-  .log-title {
-    font-family: 'IBM Plex Sans';
-    font-size: 11px;
-    color: var(--ink-muted);
-    margin: 24px 0 10px;
-  }
-  @media (min-width: 760px) { .log-title { margin-top: 2px; } }
-  .status-panel { display: none; }
-  .status-panel.visible { display: block; }
-  .signoffs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
-  .signoffs li {
-    display: flex; align-items: baseline; gap: 7px;
-    font-size: 12.5px; color: var(--ink-muted); font-family: 'IBM Plex Sans';
-  }
-  .signoffs li .dot { display: none; }
-  .signoffs li::before {
-    content: "·";
-    width: 12px;
-    flex-shrink: 0;
-    color: var(--ink-muted);
-  }
-  .signoffs li.done { color: var(--ink); }
-  .signoffs li.done::before { content: "✓"; color: var(--blue); }
-  .signoffs li.active { color: var(--ink); font-weight: 600; }
-  .signoffs li.active::before { content: "—"; color: var(--red); }
-  .transcript-note {
-    display: none;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid var(--line);
-    font-size: 12px;
-    color: var(--blue);
-    line-height: 1.5;
-  }
-  .stage-progress { display: none; margin-top: 12px; }
-  .stage-progress.visible { display: block; }
-  .stage-progress-label {
-    font-family: 'Courier Prime', monospace;
-    font-size: 11px;
-    color: var(--ink-muted);
-  }
-  .stage-progress-track {
-    height: 4px;
-    background: var(--bond-dim);
-    margin-top: 5px;
-  }
-  .stage-progress-fill {
-    height: 100%;
-    background: var(--blue);
-    width: 0%;
-  }
-
-  .result { margin-top: 26px; display: none; }
-  .result.visible { display: block; }
-  video { width: 100%; background: #000; border: 1px solid var(--ink); display: block; }
-  .result-actions { display: flex; gap: 18px; margin-top: 12px; }
-  .result-actions a {
-    font-family: 'IBM Plex Sans';
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    color: var(--ink);
-    border-bottom: 1.5px solid var(--ink);
-    padding-bottom: 1px;
-  }
-  .result-actions a:hover { color: var(--red); border-color: var(--red); }
-
-  .marked-transcript-wrap { display: none; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .marked-transcript-wrap.visible { display: block; }
-  .marked-transcript-label {
-    font-family: 'Source Serif 4', serif;
-    font-size: 14.5px;
-    color: var(--ink);
-    margin: 0 0 4px;
-  }
-  .marked-transcript-legend { font-size: 11.5px; color: var(--ink-muted); margin: 0 0 12px; }
-  .marked-transcript {
+  .mock-rule { height: 1px; background: var(--line); margin: 30px 0 18px; }
+  .mock-caption { font-family: 'Source Serif 4', serif; font-style: italic; font-size: 13px; color: var(--ink-muted); margin: 0 0 4px; }
+  .mock-legend { font-size: 11.5px; color: var(--ink-muted); margin: 0 0 12px; }
+  .mock-transcript {
     font-family: 'Courier Prime', monospace;
     font-size: 13.5px;
     line-height: 2;
-    max-height: 340px;
-    overflow-y: auto;
   }
-  .marked-transcript .w.cut {
+  .mock-transcript .w.cut {
     color: var(--ink-muted);
     text-decoration: line-through;
     text-decoration-color: var(--red);
     text-decoration-thickness: 1.4px;
   }
-  .marked-transcript .w.kept {
+  .mock-transcript .w.kept {
     background: var(--highlighter-wash);
     box-shadow: 2px 0 0 var(--highlighter-wash), -2px 0 0 var(--highlighter-wash);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; animation: none !important; }
+  /* -- How it works -- */
+  h2 {
+    font-family: 'Source Serif 4', serif;
+    font-weight: 600;
+    font-size: 21px;
+    margin: 0 0 22px;
+    color: var(--ink);
   }
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 20px; }
+  .step { display: flex; gap: 16px; }
+  .step-num {
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    color: var(--red);
+    flex-shrink: 0;
+    padding-top: 1px;
+    width: 22px;
+  }
+  .step-body strong { display: block; font-size: 14.5px; color: var(--ink); font-weight: 600; margin-bottom: 3px; }
+  .step-body span { font-size: 13.5px; color: var(--ink-muted); line-height: 1.6; }
+
+  /* -- Two ways to cut -- */
+  .modes { display: flex; flex-direction: column; gap: 14px; }
+  @media (min-width: 620px) { .modes { flex-direction: row; } }
+  .mode-card {
+    flex: 1;
+    padding: 16px 17px;
+    border: 1.5px solid var(--ink-muted);
+  }
+  .mode-card.mode-red { border-color: var(--red); color: var(--red); background: var(--red-wash); }
+  .mode-card.mode-red strong { color: var(--red); }
+  .mode-card.mode-blue { border-color: var(--blue); color: var(--blue); background: var(--blue-wash); }
+  .mode-card.mode-blue strong { color: var(--blue); }
+  .mode-card strong { display: block; font-size: 14.5px; font-weight: 600; margin-bottom: 6px; }
+  .mode-card p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--ink); }
+
+  /* -- Closing -- */
+  .closing { text-align: left; }
+  .closing h2 { margin-bottom: 10px; }
+  .closing p { font-size: 14px; color: var(--ink-muted); margin: 0 0 20px; max-width: 44ch; line-height: 1.6; }
 </style>
 </head>
 <body>
+  <nav class="site-nav">
+    <a class="wordmark" href="/">
+      <svg width="20" height="20" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#232f27"/><circle cx="9" cy="8" r="2.4" fill="#a83a2c"/><circle cx="9" cy="24" r="2.4" fill="#a83a2c"/><path d="M11.3 9.6 L23 23 M11.3 22.4 L23 9" stroke="#e8c23a" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>
+      Highlight Cutter
+    </a>
+    <a class="nav-link cta" href="/app">Start cutting</a>
+  </nav>
+
   <div class="desk">
-    <div class="sheet">
-      <div class="sheet-main">
-        <div class="sheet-head">
-          <h1>Highlight Cutter</h1>
-          <div class="slug" id="slug"></div>
+    <div class="desk-inner">
+
+      <section class="sheet sheet-pad rotate-a">
+        <p class="kicker">A copy edit for your recordings</p>
+        <h1 class="headline">We mark up the transcript. Then we cut the video.</h1>
+        <p class="subhead">Paste a link or drop a recording. An AI editor reads the real transcript, marks every sentence keep or cut, and ffmpeg cuts exactly that — no manual scrubbing.</p>
+        <a class="btn" href="/app">Start cutting</a>
+
+        <div class="mock-rule"></div>
+        <p class="mock-caption">A real Highlight Cutter transcript, marked up</p>
+        <p class="mock-legend">Struck-through text gets cut; highlighted text makes it into the final video.</p>
+        <div class="mock-transcript" aria-hidden="true">
+          <span class="w cut">Can everyone hear me okay? Great, let's get started. </span>
+          <span class="w kept">This quarter we shipped the transcript-reuse pipeline, which cut a third of our compute. </span>
+          <span class="w cut">Sorry, one second, my dog is barking. </span>
+          <span class="w kept">The remaining blocker is the rate limit on long recordings, which we handle with backoff. </span>
         </div>
-        <div class="rule"></div>
+      </section>
 
-        <p class="prompt">Paste a link, or drop a file.</p>
+      <section class="sheet sheet-pad rotate-b">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-num">01</span>
+            <span class="step-body"><strong>Paste a link, or drop a file</strong><span>A YouTube URL, or an .mp4/.mkv/.mov recording — optionally with its own .vtt/.srt transcript attached.</span></span>
+          </li>
+          <li class="step">
+            <span class="step-num">02</span>
+            <span class="step-body"><strong>We get a transcript</strong><span>Reuses YouTube's own captions or your uploaded transcript when there is one; otherwise transcribes and identifies speakers itself.</span></span>
+          </li>
+          <li class="step">
+            <span class="step-num">03</span>
+            <span class="step-body"><strong>An AI editor marks it up</strong><span>Real sentences, not caption fragments, are judged keep or cut against the mode you chose.</span></span>
+          </li>
+          <li class="step">
+            <span class="step-num">04</span>
+            <span class="step-body"><strong>ffmpeg cuts exactly that</strong><span>A keyframe-aware cut and concat, with a marked-up transcript showing what made it in.</span></span>
+          </li>
+        </ol>
+      </section>
 
-        <div class="source-tabs">
-          <button type="button" class="source-tab active" data-source="youtube">Paste a link</button>
-          <button type="button" class="source-tab" data-source="upload">Drop a file</button>
-        </div>
-
-        <div class="source-panel active" id="youtubePanel">
-          <div class="cut-slot">
-            <input type="text" id="url" placeholder="youtube.com/watch?v=…" />
-          </div>
-          <p class="hint">If the video already has captions, we reuse them instead of transcribing from scratch.</p>
-        </div>
-
-        <div class="source-panel" id="uploadPanel">
-          <div class="cut-slot" id="fileDrop">
-            <span id="fileLabel">Drop a recording here, or click to choose (.mp4, .mkv, .mov)</span>
-          </div>
-          <input type="file" id="file" accept=".mp4,.mkv,.mov,video/mp4,video/x-matroska,video/quicktime" hidden />
-
-          <div class="cut-slot cut-slot-small" id="transcriptDrop">
-            <span id="transcriptLabel">Already have a transcript? Attach it to skip transcribing (.vtt, .srt)</span>
-          </div>
-          <input type="file" id="transcriptFile" accept=".vtt,.srt" hidden />
-        </div>
-
-        <p class="prompt" style="margin-top:22px;">Mark it up.</p>
-        <div class="stamps">
-          <button type="button" class="stamp stamp-red active" data-mode="highlights">
+      <section class="sheet sheet-pad rotate-a">
+        <h2>Two ways to cut</h2>
+        <div class="modes">
+          <div class="mode-card mode-red">
             <strong>Highlights</strong>
-            <span>Only the best moments</span>
-          </button>
-          <button type="button" class="stamp stamp-blue" data-mode="crosstalk">
+            <p>Only the best moments. Built for turning a long recording into a tight reel — a thirty-minute call becomes a two-minute one.</p>
+          </div>
+          <div class="mode-card mode-blue">
             <strong>Light cleanup</strong>
-            <span>Keep everything, drop the crosstalk</span>
-          </button>
-        </div>
-
-        <button class="submit" id="submitBtn">Start cutting</button>
-
-        <div class="error-note" id="errorBox"></div>
-
-        <div class="result" id="result">
-          <video id="video" controls></video>
-          <div class="result-actions">
-            <a href="#" id="downloadLink" download>Download the cut</a>
-            <a href="#" id="transcriptLink" target="_blank">Raw transcript (JSON)</a>
-          </div>
-          <div class="marked-transcript-wrap" id="markedTranscriptWrap">
-            <p class="marked-transcript-label">What made the cut</p>
-            <p class="marked-transcript-legend">Struck-through text was cut; highlighted text made it into the final video.</p>
-            <div class="marked-transcript" id="markedTranscript"></div>
+            <p>Keep everything, drop the crosstalk. Trims filler, greetings, and round-robin introductions — the substance stays intact.</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <aside class="sheet-margin">
-        <div class="log-title">Progress</div>
-        <div class="status-panel" id="statusPanel">
-          <ul class="signoffs" id="steps"></ul>
-          <div class="stage-progress" id="stageProgress">
-            <div class="stage-progress-label" id="stageProgressLabel"></div>
-            <div class="stage-progress-track">
-              <div class="stage-progress-fill" id="stageProgressFill"></div>
-            </div>
-          </div>
-          <div class="transcript-note" id="transcriptNote"></div>
-        </div>
-      </aside>
+      <section class="sheet sheet-pad rotate-b closing">
+        <h2>Ready to cut something?</h2>
+        <p>Drop in a recording and watch it get marked up in real time — progress, transcript, and all.</p>
+        <a class="btn" href="/app">Start cutting</a>
+      </section>
+
     </div>
-
   </div>
-
-<script>
-const STEP_LABELS = {
-  queued: "Queued",
-  downloading: "Downloading video",
-  transcribing: "Transcribing & identifying speakers",
-  deciding: "AI selecting the good parts",
-  building_edl: "Building the edit list",
-  slicing: "Cutting & rendering the final video",
-  done: "Done",
-};
-const STEPS_WITH_DOWNLOAD = ["queued", "downloading", "transcribing", "deciding", "building_edl", "slicing", "done"];
-const STEPS_NO_DOWNLOAD = STEPS_WITH_DOWNLOAD.filter((s) => s !== "downloading");
-const PAST_TRANSCRIBING = ["deciding", "building_edl", "slicing", "done"];
-const TRANSCRIPT_SOURCE_LABELS = {
-  asr: "Transcribed from scratch with WhisperX.",
-  youtube_captions: "Reused YouTube's own captions — skipped transcription.",
-  uploaded_transcript: "Reused your uploaded transcript — skipped transcription.",
-};
-let activeSteps = STEPS_WITH_DOWNLOAD;
-
-let selectedMode = "highlights";
-let selectedSource = "youtube";
-let selectedFile = null;
-let selectedTranscript = null;
-let pollTimer = null;
-
-const urlInput = document.getElementById("url");
-const fileInput = document.getElementById("file");
-const fileDrop = document.getElementById("fileDrop");
-const fileLabel = document.getElementById("fileLabel");
-const transcriptInput = document.getElementById("transcriptFile");
-const transcriptDrop = document.getElementById("transcriptDrop");
-const transcriptLabelEl = document.getElementById("transcriptLabel");
-const youtubePanel = document.getElementById("youtubePanel");
-const uploadPanel = document.getElementById("uploadPanel");
-const submitBtn = document.getElementById("submitBtn");
-const errorBox = document.getElementById("errorBox");
-const statusPanel = document.getElementById("statusPanel");
-const stepsEl = document.getElementById("steps");
-const transcriptNote = document.getElementById("transcriptNote");
-const stageProgress = document.getElementById("stageProgress");
-const stageProgressLabel = document.getElementById("stageProgressLabel");
-const stageProgressFill = document.getElementById("stageProgressFill");
-const PROGRESS_UNIT_LABELS = {
-  deciding: "segments judged",
-  slicing: "clips rendered",
-};
-const resultEl = document.getElementById("result");
-const videoEl = document.getElementById("video");
-const downloadLink = document.getElementById("downloadLink");
-const transcriptLink = document.getElementById("transcriptLink");
-const slugEl = document.getElementById("slug");
-const markedTranscriptWrap = document.getElementById("markedTranscriptWrap");
-const markedTranscriptEl = document.getElementById("markedTranscript");
-const TRANSCRIPT_PLACEHOLDER = "Already have a transcript? Attach it to skip transcribing (.vtt, .srt)";
-
-function updateSlug() {
-  if (selectedSource === "upload" && selectedFile) {
-    slugEl.textContent = selectedFile.name;
-  } else if (selectedSource === "youtube" && urlInput.value.trim()) {
-    slugEl.textContent = urlInput.value.trim();
-  } else {
-    slugEl.textContent = "";
-  }
-}
-
-document.querySelectorAll(".stamp").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".stamp").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    selectedMode = btn.dataset.mode;
-  });
-});
-
-document.querySelectorAll(".source-tab").forEach((tab) => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".source-tab").forEach((t) => t.classList.remove("active"));
-    tab.classList.add("active");
-    selectedSource = tab.dataset.source;
-    youtubePanel.classList.toggle("active", selectedSource === "youtube");
-    uploadPanel.classList.toggle("active", selectedSource === "upload");
-    clearError();
-    updateSlug();
-  });
-});
-
-urlInput.addEventListener("input", updateSlug);
-
-function setSelectedFile(file) {
-  selectedFile = file || null;
-  if (selectedFile) {
-    fileLabel.textContent = selectedFile.name;
-    fileDrop.classList.add("has-file");
-  } else {
-    fileLabel.textContent = "Drop a recording here, or click to choose (.mp4, .mkv, .mov)";
-    fileDrop.classList.remove("has-file");
-  }
-  updateSlug();
-}
-
-fileDrop.addEventListener("click", () => fileInput.click());
-fileInput.addEventListener("change", () => setSelectedFile(fileInput.files[0]));
-
-["dragover", "dragenter"].forEach((evt) =>
-  fileDrop.addEventListener(evt, (e) => {
-    e.preventDefault();
-    fileDrop.classList.add("dragover");
-  })
-);
-["dragleave", "drop"].forEach((evt) =>
-  fileDrop.addEventListener(evt, (e) => {
-    e.preventDefault();
-    fileDrop.classList.remove("dragover");
-  })
-);
-fileDrop.addEventListener("drop", (e) => {
-  const file = e.dataTransfer.files[0];
-  if (file) setSelectedFile(file);
-});
-
-function setSelectedTranscript(file) {
-  selectedTranscript = file || null;
-  if (selectedTranscript) {
-    transcriptLabelEl.textContent = selectedTranscript.name;
-    transcriptDrop.classList.add("has-file");
-  } else {
-    transcriptLabelEl.textContent = TRANSCRIPT_PLACEHOLDER;
-    transcriptDrop.classList.remove("has-file");
-  }
-}
-
-transcriptDrop.addEventListener("click", () => transcriptInput.click());
-transcriptInput.addEventListener("change", () => setSelectedTranscript(transcriptInput.files[0]));
-
-["dragover", "dragenter"].forEach((evt) =>
-  transcriptDrop.addEventListener(evt, (e) => {
-    e.preventDefault();
-    transcriptDrop.classList.add("dragover");
-  })
-);
-["dragleave", "drop"].forEach((evt) =>
-  transcriptDrop.addEventListener(evt, (e) => {
-    e.preventDefault();
-    transcriptDrop.classList.remove("dragover");
-  })
-);
-transcriptDrop.addEventListener("drop", (e) => {
-  const file = e.dataTransfer.files[0];
-  if (file) setSelectedTranscript(file);
-});
-
-function showError(message) {
-  errorBox.textContent = message;
-  errorBox.classList.add("visible");
-}
-
-function clearError() {
-  errorBox.textContent = "";
-  errorBox.classList.remove("visible");
-}
-
-function renderSteps(status) {
-  stepsEl.innerHTML = "";
-  const currentIndex = activeSteps.indexOf(status);
-  activeSteps.forEach((step, i) => {
-    const li = document.createElement("li");
-    if (currentIndex > i || status === "done") li.className = "done";
-    else if (i === currentIndex) li.className = "active";
-    li.innerHTML = `<span class="dot"></span>${STEP_LABELS[step]}`;
-    stepsEl.appendChild(li);
-  });
-}
-
-function setBusy(busy) {
-  submitBtn.disabled = busy;
-  submitBtn.textContent = busy ? "Cutting…" : "Start cutting";
-}
-
-function renderStageProgress(job) {
-  const unit = PROGRESS_UNIT_LABELS[job.status];
-  if (unit && job.progress_total > 0) {
-    const pct = Math.round((job.progress_current / job.progress_total) * 100);
-    stageProgressLabel.textContent = `${job.progress_current} of ${job.progress_total} ${unit} (${pct}%)`;
-    stageProgressFill.style.width = pct + "%";
-    stageProgress.classList.add("visible");
-  } else {
-    stageProgress.classList.remove("visible");
-  }
-}
-
-function renderTranscriptSource(job) {
-  if (PAST_TRANSCRIBING.includes(job.status) && job.transcript_source) {
-    transcriptNote.textContent = TRANSCRIPT_SOURCE_LABELS[job.transcript_source] || "";
-    transcriptNote.style.display = "block";
-  } else {
-    transcriptNote.style.display = "none";
-  }
-}
-
-async function renderMarkedTranscript(jobId) {
-  let words, edl;
-  try {
-    const [wordsRes, edlRes] = await Promise.all([
-      fetch(`/jobs/${jobId}/transcript?clean=false`),
-      fetch(`/jobs/${jobId}/edl`),
-    ]);
-    if (!wordsRes.ok || !edlRes.ok) return;
-    words = await wordsRes.json();
-    edl = await edlRes.json();
-  } catch (e) {
-    return; // this view is a bonus on top of the raw JSON link — fail quietly
-  }
-
-  const ranges = edl.ranges || [];
-  const isKept = (w) => ranges.some((r) => w.start >= r.start && w.end <= r.end);
-
-  markedTranscriptEl.innerHTML = "";
-  words.forEach((w) => {
-    const span = document.createElement("span");
-    span.className = "w " + (isKept(w) ? "kept" : "cut");
-    span.textContent = w.word + " ";
-    markedTranscriptEl.appendChild(span);
-  });
-  markedTranscriptWrap.classList.add("visible");
-}
-
-async function submit() {
-  let request;
-
-  if (selectedSource === "youtube") {
-    const url = urlInput.value.trim();
-    if (!url) {
-      showError("Paste a YouTube URL first.");
-      return;
-    }
-    activeSteps = STEPS_WITH_DOWNLOAD;
-    request = () =>
-      fetch("/jobs/youtube", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, mode: selectedMode }),
-      });
-  } else {
-    if (!selectedFile) {
-      showError("Choose a video file first.");
-      return;
-    }
-    activeSteps = STEPS_NO_DOWNLOAD;
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("mode", selectedMode);
-    if (selectedTranscript) formData.append("transcript", selectedTranscript);
-    request = () => fetch("/jobs", { method: "POST", body: formData });
-  }
-
-  clearError();
-  resultEl.classList.remove("visible");
-  markedTranscriptWrap.classList.remove("visible");
-  statusPanel.classList.add("visible");
-  transcriptNote.style.display = "none";
-  stageProgress.classList.remove("visible");
-  setBusy(true);
-  renderSteps("queued");
-
-  if (pollTimer) clearTimeout(pollTimer);
-
-  let res;
-  try {
-    res = await request();
-  } catch (e) {
-    showError("Can't reach the server: " + e.message);
-    setBusy(false);
-    return;
-  }
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({ detail: res.statusText }));
-    showError(body.detail || "Couldn't start the job.");
-    setBusy(false);
-    return;
-  }
-
-  const job = await res.json();
-  poll(job.job_id);
-}
-
-async function poll(jobId) {
-  let res;
-  try {
-    res = await fetch(`/jobs/${jobId}`);
-  } catch (e) {
-    showError("Lost the connection: " + e.message);
-    setBusy(false);
-    return;
-  }
-
-  if (!res.ok) {
-    showError("Couldn't look up the job.");
-    setBusy(false);
-    return;
-  }
-
-  const job = await res.json();
-
-  if (job.status === "failed") {
-    renderSteps("failed");
-    showError(job.error || "The job failed.");
-    setBusy(false);
-    return;
-  }
-
-  if (job.status === "skipped_desync") {
-    showError("Skipped: " + (job.error || "audio and video are out of sync in this source."));
-    setBusy(false);
-    return;
-  }
-
-  renderSteps(job.status);
-  renderTranscriptSource(job);
-  renderStageProgress(job);
-
-  if (job.status === "done") {
-    setBusy(false);
-    videoEl.src = `/jobs/${jobId}/video`;
-    downloadLink.href = `/jobs/${jobId}/video`;
-    transcriptLink.href = `/jobs/${jobId}/transcript`;
-    resultEl.classList.add("visible");
-    renderMarkedTranscript(jobId);
-    return;
-  }
-
-  pollTimer = setTimeout(() => poll(jobId), 3000);
-}
-
-submitBtn.addEventListener("click", submit);
-urlInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") submit();
-});
-</script>
 </body>
 </html>

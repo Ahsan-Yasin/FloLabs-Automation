@@ -29,6 +29,16 @@ async def index() -> str:
     return (WEB_DIR / "index.html").read_text(encoding="utf-8")
 
 
+@app.get("/app", response_class=HTMLResponse)
+async def app_page() -> str:
+    return (WEB_DIR / "app.html").read_text(encoding="utf-8")
+
+
+@app.get("/styles.css")
+async def styles() -> FileResponse:
+    return FileResponse(WEB_DIR / "styles.css", media_type="text/css")
+
+
 @app.post("/jobs", response_model=JobRecord)
 async def create_job(
     background_tasks: BackgroundTasks,
