@@ -120,6 +120,8 @@ def get_decisions(segments: list[Segment], mode: str = "crosstalk") -> list[Deci
     if not settings.gemini_api_key:
         raise DecisionError("GEMINI_API_KEY is not set")
 
+    from google.genai import errors as genai_errors
+
     client = genai.Client(api_key=settings.gemini_api_key)
     system_prompt = _SYSTEM_PROMPTS[mode]
 
@@ -132,6 +134,11 @@ def get_decisions(segments: list[Segment], mode: str = "crosstalk") -> list[Deci
             decisions = _parse(raw)
         except (json.JSONDecodeError, ValidationError, KeyError) as exc:
             logger.warning("gemini decision parse failed on attempt %d: %s", attempt + 1, exc)
+            last_error = exc
+            continue
+        except genai_errors.APIError as exc:
+            # Transient overload/rate-limit (5xx/429) — worth one retry, not just malformed output.
+            logger.warning("gemini API error on attempt %d: %s", attempt + 1, exc)
             last_error = exc
             continue
 

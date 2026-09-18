@@ -34,7 +34,9 @@ def transcribe(path: Path) -> list[Word]:
             "gated pyannote diarization models used by WhisperX."
         )
 
-    diarize_model = whisperx.diarize.DiarizationPipeline(use_auth_token=settings.hf_token, device=device)
+    diarize_model = whisperx.diarize.DiarizationPipeline(
+        model_name=settings.whisperx_diarize_model, token=settings.hf_token, device=device
+    )
     diarize_segments = diarize_model(audio)
     result = whisperx.assign_word_speakers(diarize_segments, result)
 

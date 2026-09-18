@@ -10,11 +10,12 @@ class Settings(BaseSettings):
 
     hf_token: str = ""
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-3.5-flash-lite"
 
     whisperx_model: str = "small"
     whisperx_device: str = "cpu"
     whisperx_compute_type: str = "int8"
+    whisperx_diarize_model: str = "pyannote/speaker-diarization-3.1"
 
     storage_dir: Path = Path("./storage")
 

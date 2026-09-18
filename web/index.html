@@ -6,22 +6,25 @@
 <title>Highlight Cutter</title>
 <style>
   :root {
-    --bg: #0b0d12;
-    --panel: #14171f;
-    --border: #262b36;
-    --text: #e8eaf0;
-    --muted: #8a90a2;
-    --accent: #7c5cff;
-    --accent-2: #22d3a8;
-    --danger: #ff5c72;
+    --bg: #17120d;
+    --panel: #221a13;
+    --surface: #1b140e;
+    --border: #3d3021;
+    --text: #f4ead9;
+    --muted: #a89579;
+    --accent: #c1682f;
+    --accent-strong: #9c5225;
+    --accent-2: #8ea06a;
+    --accent-2-ink: #1a2410;
+    --danger: #c15a42;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     min-height: 100vh;
-    background: radial-gradient(1200px 600px at 50% -10%, #1a1030 0%, var(--bg) 60%);
+    background: radial-gradient(1100px 560px at 50% -10%, #2c2013 0%, var(--bg) 62%);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex;
     justify-content: center;
     padding: 48px 16px;
@@ -31,20 +34,25 @@
     max-width: 640px;
   }
   h1 {
-    font-size: 26px;
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font-weight: 600;
+    font-size: 28px;
     margin: 0 0 6px;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
+    color: var(--text);
   }
   .subtitle {
     color: var(--muted);
     margin: 0 0 32px;
     font-size: 14px;
+    line-height: 1.5;
   }
   .panel {
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
+    border-radius: 16px;
+    padding: 26px;
+    box-shadow: 0 24px 60px -32px rgba(0,0,0,0.7);
   }
   label {
     display: block;
@@ -54,15 +62,59 @@
   }
   input[type="text"] {
     width: 100%;
-    background: #0e1016;
+    background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text);
     border-radius: 10px;
     padding: 12px 14px;
     font-size: 14px;
     outline: none;
+    transition: border-color 0.15s ease;
   }
   input[type="text"]:focus { border-color: var(--accent); }
+  .source-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 16px;
+  }
+  .source-tab {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .source-tab.active { background: var(--accent); color: #fff5ec; }
+  .source-panel { display: none; }
+  .source-panel.active { display: block; }
+  .file-drop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+    min-height: 46px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .file-drop:hover { border-color: var(--accent); }
+  .file-drop.has-file { color: var(--text); border-style: solid; border-color: var(--accent); }
+  .file-drop.dragover { border-color: var(--accent-2); background: rgba(142,160,106,0.1); }
   .mode-row {
     display: flex;
     gap: 8px;
@@ -73,17 +125,18 @@
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid var(--border);
-    background: #0e1016;
+    background: var(--surface);
     color: var(--muted);
     cursor: pointer;
     font-size: 13px;
     text-align: left;
+    transition: border-color 0.15s ease, background 0.15s ease;
   }
   .mode-btn strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 2px; }
   .mode-btn span { font-size: 12px; }
   .mode-btn.active {
     border-color: var(--accent);
-    background: rgba(124, 92, 255, 0.12);
+    background: rgba(193, 104, 47, 0.12);
   }
   .mode-btn.active strong { color: var(--accent); }
   button.submit {
@@ -92,12 +145,14 @@
     padding: 13px;
     border-radius: 10px;
     border: none;
-    background: linear-gradient(135deg, var(--accent), #5b3df0);
-    color: white;
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    color: #fff5ec;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
+    transition: opacity 0.15s ease;
   }
+  button.submit:hover:not(:disabled) { opacity: 0.92; }
   button.submit:disabled { opacity: 0.5; cursor: not-allowed; }
   .status-panel { margin-top: 20px; display: none; }
   .status-panel.visible { display: block; }
@@ -111,15 +166,15 @@
     background: var(--border); flex-shrink: 0;
   }
   .steps li.done .dot { background: var(--accent-2); }
-  .steps li.active .dot { background: var(--accent); box-shadow: 0 0 0 4px rgba(124,92,255,0.18); }
+  .steps li.active .dot { background: var(--accent); box-shadow: 0 0 0 4px rgba(193,104,47,0.18); }
   .steps li.done { color: var(--text); }
   .steps li.active { color: var(--text); font-weight: 600; }
   .error-box {
     margin-top: 16px;
     padding: 12px 14px;
     border-radius: 10px;
-    border: 1px solid rgba(255,92,114,0.4);
-    background: rgba(255,92,114,0.08);
+    border: 1px solid rgba(193,90,66,0.4);
+    background: rgba(193,90,66,0.1);
     color: var(--danger);
     font-size: 13px;
     display: none;
@@ -133,19 +188,36 @@
     flex: 1; text-align: center; padding: 10px; border-radius: 10px;
     text-decoration: none; font-size: 13px; font-weight: 600;
     border: 1px solid var(--border); color: var(--text);
+    transition: opacity 0.15s ease;
   }
-  .result-actions a.primary { background: var(--accent-2); color: #06251d; border-color: transparent; }
+  .result-actions a:hover { opacity: 0.85; }
+  .result-actions a.primary { background: var(--accent-2); color: var(--accent-2-ink); border-color: transparent; }
   footer { margin-top: 20px; color: var(--muted); font-size: 12px; text-align: center; }
 </style>
 </head>
 <body>
   <div class="card">
     <h1>Highlight Cutter</h1>
-    <p class="subtitle">Paste a YouTube link, get back a trimmed video with only the good parts.</p>
+    <p class="subtitle">Paste a YouTube link or upload a file, get back a trimmed video with only the good parts.</p>
 
     <div class="panel">
-      <label for="url">YouTube URL</label>
-      <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." />
+      <div class="source-tabs">
+        <button type="button" class="source-tab active" data-source="youtube">YouTube URL</button>
+        <button type="button" class="source-tab" data-source="upload">Upload file</button>
+      </div>
+
+      <div class="source-panel active" id="youtubePanel">
+        <label for="url">YouTube URL</label>
+        <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." />
+      </div>
+
+      <div class="source-panel" id="uploadPanel">
+        <label for="file">Video file</label>
+        <div class="file-drop" id="fileDrop">
+          <span id="fileLabel">Click to choose, or drop a video file (.mp4, .mkv, .mov)</span>
+        </div>
+        <input type="file" id="file" accept=".mp4,.mkv,.mov,video/mp4,video/x-matroska,video/quicktime" hidden />
+      </div>
 
       <div class="mode-row">
         <button type="button" class="mode-btn active" data-mode="highlights">
@@ -179,7 +251,6 @@
   </div>
 
 <script>
-const STEP_ORDER = ["queued", "downloading", "transcribing", "deciding", "building_edl", "slicing", "done"];
 const STEP_LABELS = {
   queued: "Queued",
   downloading: "Downloading video",
@@ -189,11 +260,21 @@ const STEP_LABELS = {
   slicing: "Cutting & rendering the final video",
   done: "Done",
 };
+const STEPS_WITH_DOWNLOAD = ["queued", "downloading", "transcribing", "deciding", "building_edl", "slicing", "done"];
+const STEPS_NO_DOWNLOAD = STEPS_WITH_DOWNLOAD.filter((s) => s !== "downloading");
+let activeSteps = STEPS_WITH_DOWNLOAD;
 
 let selectedMode = "highlights";
+let selectedSource = "youtube";
+let selectedFile = null;
 let pollTimer = null;
 
 const urlInput = document.getElementById("url");
+const fileInput = document.getElementById("file");
+const fileDrop = document.getElementById("fileDrop");
+const fileLabel = document.getElementById("fileLabel");
+const youtubePanel = document.getElementById("youtubePanel");
+const uploadPanel = document.getElementById("uploadPanel");
 const submitBtn = document.getElementById("submitBtn");
 const errorBox = document.getElementById("errorBox");
 const statusPanel = document.getElementById("statusPanel");
@@ -211,6 +292,48 @@ document.querySelectorAll(".mode-btn").forEach((btn) => {
   });
 });
 
+document.querySelectorAll(".source-tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".source-tab").forEach((t) => t.classList.remove("active"));
+    tab.classList.add("active");
+    selectedSource = tab.dataset.source;
+    youtubePanel.classList.toggle("active", selectedSource === "youtube");
+    uploadPanel.classList.toggle("active", selectedSource === "upload");
+    clearError();
+  });
+});
+
+function setSelectedFile(file) {
+  selectedFile = file || null;
+  if (selectedFile) {
+    fileLabel.textContent = selectedFile.name;
+    fileDrop.classList.add("has-file");
+  } else {
+    fileLabel.textContent = "Click to choose, or drop a video file (.mp4, .mkv, .mov)";
+    fileDrop.classList.remove("has-file");
+  }
+}
+
+fileDrop.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", () => setSelectedFile(fileInput.files[0]));
+
+["dragover", "dragenter"].forEach((evt) =>
+  fileDrop.addEventListener(evt, (e) => {
+    e.preventDefault();
+    fileDrop.classList.add("dragover");
+  })
+);
+["dragleave", "drop"].forEach((evt) =>
+  fileDrop.addEventListener(evt, (e) => {
+    e.preventDefault();
+    fileDrop.classList.remove("dragover");
+  })
+);
+fileDrop.addEventListener("drop", (e) => {
+  const file = e.dataTransfer.files[0];
+  if (file) setSelectedFile(file);
+});
+
 function showError(message) {
   errorBox.textContent = message;
   errorBox.classList.add("visible");
@@ -223,8 +346,8 @@ function clearError() {
 
 function renderSteps(status) {
   stepsEl.innerHTML = "";
-  const currentIndex = STEP_ORDER.indexOf(status);
-  STEP_ORDER.forEach((step, i) => {
+  const currentIndex = activeSteps.indexOf(status);
+  activeSteps.forEach((step, i) => {
     const li = document.createElement("li");
     if (currentIndex > i || status === "done") li.className = "done";
     else if (i === currentIndex) li.className = "active";
@@ -239,11 +362,33 @@ function setBusy(busy) {
 }
 
 async function submit() {
-  const url = urlInput.value.trim();
-  if (!url) {
-    showError("Paste a YouTube URL first.");
-    return;
+  let request;
+
+  if (selectedSource === "youtube") {
+    const url = urlInput.value.trim();
+    if (!url) {
+      showError("Paste a YouTube URL first.");
+      return;
+    }
+    activeSteps = STEPS_WITH_DOWNLOAD;
+    request = () =>
+      fetch("/jobs/youtube", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url, mode: selectedMode }),
+      });
+  } else {
+    if (!selectedFile) {
+      showError("Choose a video file first.");
+      return;
+    }
+    activeSteps = STEPS_NO_DOWNLOAD;
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("mode", selectedMode);
+    request = () => fetch("/jobs", { method: "POST", body: formData });
   }
+
   clearError();
   resultEl.classList.remove("visible");
   statusPanel.classList.add("visible");
@@ -254,11 +399,7 @@ async function submit() {
 
   let res;
   try {
-    res = await fetch("/jobs/youtube", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, mode: selectedMode }),
-    });
+    res = await request();
   } catch (e) {
     showError("Could not reach the API: " + e.message);
     setBusy(false);
