@@ -64,7 +64,7 @@ and share on its own.
 - "remove" for setup, filler, rambling, small talk, repeated points, low-energy \
 moments, and anything that isn't independently compelling — even if it's on-topic and \
 coherent. Most segments should be "remove"; this is an aggressive highlight cut, not a \
-light trim.
+light trim.  
 - A segment does not qualify just because it makes sense in context — it must stand on \
 its own as something worth watching out of order, in a short reel.
 
@@ -76,6 +76,11 @@ _SYSTEM_PROMPTS = {
     "crosstalk": CROSSTALK_SYSTEM_PROMPT,
     "highlights": HIGHLIGHTS_SYSTEM_PROMPT,
 }
+
+
+
+
+
 
 
 class DecisionError(RuntimeError):
