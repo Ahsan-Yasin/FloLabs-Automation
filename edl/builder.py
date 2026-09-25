@@ -125,8 +125,8 @@ def build_edl(
 
     coalesce -> snap to words -> snap to frames -> coalesce -> merge gaps
     shorter than max(min_gap_merge_seconds, (d+1)/F) (put back, never shown as
-    a cut) -> merge/drop keeps shorter than max(min_segment_s, 2d/F) -> clamp
-    to the source -> validate.
+    a cut) -> merge/drop keeps shorter than max(min_segment_s, 2d/F) (2d/F
+    only when there are 2+ keeps) -> clamp to the source -> validate.
     """
     settings = get_settings()
     min_segment_s = settings.min_segment_seconds if min_segment_s is None else min_segment_s
@@ -255,7 +255,10 @@ def _finish_frame_edl(
     fr = _merge_small_gaps(fr, min_gap)
     merged_count, merged_frames = before - len(fr), gap_total - _gap_total(fr)
 
-    min_keep = max(to_f(min_segment_s), 2 * d, 1)
+    # 2d only matters where there are cuts to dissolve across; a lone keep
+    # shorter than that (in a source shorter than 2d frames) would otherwise
+    # be dropped and wrongly reported as the "nothing kept" fallback.
+    min_keep = max(to_f(min_segment_s), 2 * d if len(fr) > 1 else 0, 1)
     fr, absorbed = _fix_short_keeps(fr, min_keep, min_gap, to_f(settings.removed_video_min_gap_s), total)
     merged_count += len(absorbed)
     merged_frames += sum(absorbed)
@@ -296,7 +299,9 @@ def _finish_frame_edl(
 def validate_edl(edl: EditDecisionList) -> None:
     """Assert the EDL invariants from section 9: sorted, non-overlapping; on a
     frame grid also: whole frames inside the source, gaps and keeps long
-    enough for the dissolve."""
+    enough for the dissolve. A lone range has no cut and needs no dissolve,
+    so it may be shorter than 2d (a source shorter than 2d frames must still
+    produce a valid EDL, e.g. its full-video fallback)."""
     prev_end = None
     prev_end_frame = None
     d = edl.fade_frames
@@ -310,7 +315,7 @@ def validate_edl(edl: EditDecisionList) -> None:
                 raise ValueError(f"frame-grid EDL range is missing frame indices: {r}")
             if r.start_frame < 0 or (edl.total_frames is not None and r.end_frame > edl.total_frames):
                 raise ValueError(f"EDL range outside the source: {r}")
-            if d and r.end_frame - r.start_frame < 2 * d:
+            if d and len(edl.ranges) > 1 and r.end_frame - r.start_frame < 2 * d:
                 raise ValueError(f"EDL range shorter than two dissolves ({2 * d} frames): {r}")
             if prev_end_frame is not None and d and r.start_frame - prev_end_frame < d + 1:
                 raise ValueError(f"EDL gap shorter than the dissolve before {r}")

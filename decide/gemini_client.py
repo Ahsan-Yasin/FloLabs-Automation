@@ -1,18 +1,20 @@
 """Gemini calls for the v2 decide stage (plan D4, D17).
 
 `GeminiCaller` is the one place that talks to the API: it enforces a
-client-side requests-per-minute limit, backs off on 429 using the server's own
-retryDelay, fails fast with `llm_quota_exhausted` when a DAILY quota is hit
-(retrying can't help until it resets), retries transient 5xx, enforces the
-decide stage's wall-clock limit and counts calls/tokens.
+client-side requests-per-minute limit and a per-request HTTP timeout, backs
+off on 429 using the server's own retryDelay, fails fast with
+`llm_quota_exhausted` when a DAILY quota is hit (retrying can't help until it
+resets), retries transient 5xx and network errors, enforces the current
+stage's wall-clock limit and counts calls/tokens.
 
 `judge_segments` is the per-chunk cleanup + scoring pass. It keeps the
 hard-won robustness of the v1 client — a truncated (MAX_TOKENS) chunk is split
 immediately, an invalid-but-complete one gets one same-size retry and is then
 split, a single segment that still fails raises DecisionError — and adds:
 index echo + exact index-set validation (so a split chunk can never be
-mis-assigned), and incremental persistence to decisions.json so a crash or a
-decide_only run never pays for the same chunk twice.
+mis-assigned), read-only context lines at chunk edges, one re-score of a chunk
+whose scores collapsed to zero, and incremental persistence to decisions.json
+so a crash or a decide_only run never pays for the same chunk twice.
 """
 
 from __future__ import annotations
@@ -24,6 +26,7 @@ import re
 import time
 from collections import deque
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -34,46 +37,62 @@ from core.logging import get_logger
 from core.models import Decision, Moment, Segment, SegmentJudgment
 
 from .prompts import (
-    cleanup_scoring_prompt,
-    judgment_schema,
+    HIGHLIGHT_CODES,
+    REMOVAL_CODES,
+    RESCORE_NOTE,
+    judge_prompt,
     rerank_prompt,
-    rerank_schema,
+    transcript_lines,
 )
 
 logger = get_logger(__name__)
 
 RETRY_NOTE = (
-    "Your previous response was not valid: it must be a JSON object matching the required schema with exactly "
-    "one judgment per input segment, each echoing that segment's index. Try again, strictly."
+    "Your previous answer was not valid: answer with exactly one line per JUDGE line, in order, in the form "
+    '"<n> <k|r> <score> <removal code or -> <highlight code or ->", and nothing else. Try again, strictly.'
 )
-DECISIONS_VERSION = 2
+DECISIONS_VERSION = 3
 MAX_RATE_LIMIT_RETRIES = 6
 MAX_SERVER_ERROR_RETRIES = 3
 DEFAULT_429_WAIT_S = 20.0
 MAX_429_WAIT_S = 90.0
+# 4xx that retrying the same request can never fix (bad key, bad model name,
+# bad request, no permission).
+PERMANENT_HTTP_CODES = {400, 401, 403, 404}
 
 
 class DecisionError(RuntimeError):
-    """Raised when the LLM fails to return a valid decision list after retrying."""
+    """The LLM step failed. `retryable` says whether re-running the job can help
+    (a flaky answer or network) or not (a bad API key or model name)."""
+
+    def __init__(self, message: str, retryable: bool = True):
+        super().__init__(message)
+        self.retryable = retryable
 
 
 # ------------------------------------------------------------------ transport
 
 
-def _call_gemini(client, model: str, system_prompt: str, contents: str, schema: dict):
-    """The single network call (tests replace this)."""
+def _call_gemini(client, model: str, system_prompt: str, contents: str, schema: dict | None = None):
+    """The single network call (tests replace this). With a JSON schema the
+    answer is constrained JSON; without one it is plain text (what the v2
+    prompts use: pretty-printed JSON cost ~4x the output tokens)."""
     from google.genai import types
 
-    return client.models.generate_content(
-        model=model,
-        contents=contents,
-        config=types.GenerateContentConfig(
+    if schema is not None:
+        config = types.GenerateContentConfig(
             system_instruction=system_prompt,
             response_mime_type="application/json",
             response_json_schema=schema,
             automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
-        ),
-    )
+        )
+    else:
+        config = types.GenerateContentConfig(
+            system_instruction=system_prompt,
+            response_mime_type="text/plain",
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+        )
+    return client.models.generate_content(model=model, contents=contents, config=config)
 
 
 def _finish_reason(response) -> str:
@@ -150,6 +169,28 @@ def _quota_info(exc) -> tuple[bool, float | None]:
     return daily, delay
 
 
+def seconds_until_quota_reset(now: datetime | None = None) -> int:
+    """Gemini's per-day quotas reset at midnight Pacific time."""
+    try:
+        from zoneinfo import ZoneInfo
+
+        tz = ZoneInfo("America/Los_Angeles")
+    except Exception:  # noqa: BLE001 — no tz database: fall back to an hour
+        return 3600
+    now = (now or datetime.now(tz)).astimezone(tz)
+    midnight = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+    return max(60, int((midnight - now).total_seconds()))
+
+
+def _network_errors() -> tuple[type[BaseException], ...]:
+    try:
+        import httpx
+
+        return (httpx.TransportError,)
+    except ImportError:  # pragma: no cover
+        return ()
+
+
 class GeminiCaller:
     def __init__(self, client, model: str, rpm: int, max_wall_s: float | None = None) -> None:
         self.client = client
@@ -157,14 +198,22 @@ class GeminiCaller:
         self.limiter = RateLimiter(rpm)
         self.usage = LLMUsage()
         self.deadline = time.monotonic() + max_wall_s if max_wall_s else None
+        self.stage = "decide"
 
-    def generate(self, system_prompt: str, contents: str, schema: dict):
+    def start_stage(self, name: str, max_wall_s: float | None) -> None:
+        """Each stage (decide, chapters) gets its own wall-clock budget, so time
+        spent rendering between them never eats into the next one."""
+        self.stage = name
+        self.deadline = time.monotonic() + max_wall_s if max_wall_s else None
+
+    def generate(self, system_prompt: str, contents: str, schema: dict | None = None):
         from google.genai import errors as genai_errors
 
+        network = _network_errors()
         rate_limited = server_errors = 0
         while True:
             if self.deadline is not None and time.monotonic() > self.deadline:
-                raise PipelineError("the AI decision stage ran past decide_max_wall_s", code="timeout",
+                raise PipelineError(f"the AI {self.stage} stage ran past its time limit", code="timeout",
                                     retryable=True)
             self.usage.rate_limit_wait_s += self.limiter.acquire()
             try:
@@ -176,7 +225,7 @@ class GeminiCaller:
                     if daily:
                         raise PipelineError(
                             f"Gemini daily quota exhausted: {exc}", code="llm_quota_exhausted", retryable=True,
-                            retry_after_s=int(delay or 3600),
+                            retry_after_s=seconds_until_quota_reset(),
                         ) from exc
                     rate_limited += 1
                     if rate_limited > MAX_RATE_LIMIT_RETRIES:
@@ -189,18 +238,28 @@ class GeminiCaller:
                     continue
                 if code is not None and 500 <= int(code) < 600 and server_errors < MAX_SERVER_ERROR_RETRIES:
                     server_errors += 1
-                    wait = 5.0 * server_errors
-                    logger.warning("gemini server error %s, retrying in %.0fs: %s", code, wait, exc)
-                    time.sleep(wait)
-                    self.usage.retries += 1
+                    self._backoff(server_errors, f"server error {code}", exc)
                     continue
-                raise DecisionError(f"Gemini API error: {exc}") from exc
+                permanent = code is not None and int(code) in PERMANENT_HTTP_CODES
+                raise DecisionError(f"Gemini API error: {exc}", retryable=not permanent) from exc
+            except network as exc:
+                if server_errors < MAX_SERVER_ERROR_RETRIES:
+                    server_errors += 1
+                    self._backoff(server_errors, "network error", exc)
+                    continue
+                raise DecisionError(f"Gemini network error: {exc}") from exc
             self.usage.calls += 1
             meta = getattr(response, "usage_metadata", None)
             if meta is not None:
                 self.usage.prompt_tokens += int(getattr(meta, "prompt_token_count", 0) or 0)
                 self.usage.output_tokens += int(getattr(meta, "candidates_token_count", 0) or 0)
             return response
+
+    def _backoff(self, attempt: int, what: str, exc: BaseException) -> None:
+        wait = 5.0 * attempt
+        logger.warning("gemini %s, retrying in %.0fs: %s", what, wait, exc)
+        time.sleep(wait)
+        self.usage.retries += 1
 
 
 class LazyCaller:
@@ -211,79 +270,140 @@ class LazyCaller:
         self.model = get_settings().gemini_model
         self.usage = LLMUsage()
         self._real: GeminiCaller | None = None
+        self._stage: tuple[str, float | None] = ("decide", get_settings().decide_max_wall_s)
 
-    def generate(self, system_prompt: str, contents: str, schema: dict):
+    def start_stage(self, name: str, max_wall_s: float | None) -> None:
+        self._stage = (name, max_wall_s)
+        if self._real is not None:
+            self._real.start_stage(name, max_wall_s)
+
+    def generate(self, system_prompt: str, contents: str, schema: dict | None = None):
         if self._real is None:
             self._real = make_caller()
             self._real.usage = self.usage
+            self._real.start_stage(*self._stage)
         return self._real.generate(system_prompt, contents, schema)
 
 
 def make_caller() -> GeminiCaller:
     from google import genai
+    from google.genai import types
 
     settings = get_settings()
     if not settings.gemini_api_key:
-        raise DecisionError("GEMINI_API_KEY is not set")
-    client = genai.Client(api_key=settings.gemini_api_key)
+        raise DecisionError("GEMINI_API_KEY is not set", retryable=False)
+    client = genai.Client(
+        api_key=settings.gemini_api_key,
+        http_options=types.HttpOptions(timeout=int(settings.gemini_request_timeout_s * 1000)),
+    )
     return GeminiCaller(client, settings.gemini_model, settings.gemini_rpm, settings.decide_max_wall_s)
 
 
 # ------------------------------------------------------------------ judging
 
 
-def _segments_payload(chunk: list[tuple[int, Segment]]) -> str:
-    return json.dumps(
-        [
-            {
-                "index": i,
-                "speaker": s.speaker,
-                "start": round(s.start, 2),
-                "end": round(s.end, 2),
-                "text": s.text,
-                "overlap_candidate": s.overlap_candidate,
-            }
-            for i, s in chunk
-        ],
-        ensure_ascii=False,
-    )
+def _judge_contents(chunk: list[tuple[int, Segment]], before: list[tuple[int, Segment]],
+                    after: list[tuple[int, Segment]], note: str = "") -> str:
+    parts = [note] if note else []
+    if before:
+        parts += ["CONTEXT (do not judge):", *transcript_lines(before, prefix="~")]
+    parts += ["JUDGE:", *transcript_lines(chunk)]
+    if after:
+        parts += ["CONTEXT (do not judge):", *transcript_lines(after, prefix="~")]
+    return "\n".join(parts)
+
+
+_JUDGE_LINE = re.compile(r"^~?\[?(\d+)\]?[.:]?\s+([kr])\s+(\d{1,2})((?:\s+\S+){0,3})$", re.IGNORECASE)
+
+
+def _answer_lines(raw: str) -> list[str]:
+    """Non-empty lines of a plain-text answer, without markdown code fences."""
+    return [ln.strip() for ln in (raw or "").splitlines() if ln.strip() and not ln.strip().startswith("```")]
+
+
+def parse_judge_lines(raw: str) -> list[dict]:
+    """'312 r 0 fill -' lines -> dicts. The model sometimes drops one of the
+    '-' placeholders ('313 k 5 arch'); the codes are told apart by value
+    (removal and highlight codes never overlap). Any other deviation makes the
+    whole answer invalid (-> retry / split)."""
+    items = []
+    for line in _answer_lines(raw):
+        m = _JUDGE_LINE.match(line)
+        if not m:
+            raise ValueError(f"unparsable judgment line {line[:60]!r}")
+        n, d, score, codes = m.groups()
+        removal = highlight = "-"
+        for token in codes.split():
+            token = token.lower()
+            if token in REMOVAL_CODES:
+                removal = token
+            elif token in HIGHLIGHT_CODES:
+                highlight = token
+            elif token.isdigit():
+                continue  # the model occasionally repeats a number ("126 k 4 4 idea"); the first one is the score
+            elif token != "-":
+                raise ValueError(f"unknown code {token!r} in {line[:60]!r}")
+        items.append({"i": int(n), "d": d.lower(), "s": int(score), "c": removal, "h": highlight})
+    if not items:
+        raise ValueError("empty answer")
+    return items
 
 
 def _parse_judgments(raw: str, chunk: list[tuple[int, Segment]]) -> list[SegmentJudgment]:
-    data = json.loads(raw)
-    items = data.get("judgments") if isinstance(data, dict) else data
-    if not isinstance(items, list):
-        raise TypeError("response has no judgments list")
+    items = parse_judge_lines(raw)
+    expected = {i for i, _ in chunk}
     by_index: dict[int, dict] = {}
     for item in items:
-        idx = item["index"]
+        idx = item["i"]
+        if idx not in expected:
+            # the model sometimes also answers for the read-only context
+            # lines; those answers are ignored (rejecting them cost a retry
+            # and a cascade of splits on the real meeting)
+            continue
         if idx in by_index:
-            raise ValueError(f"index {idx} judged twice")
+            raise ValueError(f"line {idx} judged twice")
         by_index[idx] = item
-    expected = [i for i, _ in chunk]
-    if set(by_index) != set(expected):
-        missing = sorted(set(expected) - set(by_index))[:5]
-        extra = sorted(set(by_index) - set(expected))[:5]
-        raise ValueError(f"judged indices do not match the input (missing {missing}, unexpected {extra})")
+    if set(by_index) != expected:
+        missing = sorted(expected - set(by_index))[:5]
+        raise ValueError(f"judged lines do not match the input (missing {missing})")
     out = []
     for i, seg in chunk:
-        item = dict(by_index[i])
-        item.update(index=i, start=seg.start, end=seg.end, speaker=seg.speaker, text=seg.text)
-        if item.get("decision") == "keep":
-            item["removal_category"] = "none"
-        out.append(SegmentJudgment.model_validate(item))
+        item = by_index[i]
+        decision = {"k": "keep", "r": "remove"}.get(item["d"])
+        if decision is None:
+            raise ValueError(f"line {i}: bad decision {item['d']!r}")
+        score = int(item["s"])
+        if not 0 <= score <= 10:
+            raise ValueError(f"line {i}: score {score} out of range")
+        category = HIGHLIGHT_CODES.get(item.get("h", ""), "none")
+        # categories mean "worth a look" from 3 up; a joke keeps its tag from 2
+        # so light moments can still become shorts
+        if score < 2 or (score < 3 and category != "funny"):
+            category = "none"
+        removal = REMOVAL_CODES.get(item.get("c", ""), "none") if decision == "remove" else "none"
+        out.append(SegmentJudgment(
+            index=i, start=seg.start, end=seg.end, speaker=seg.speaker, text=seg.text,
+            decision=decision, reason="", removal_category=removal, highlight_score=score,
+            highlight_category=category,
+        ))
     return out
 
 
-def _judge_chunk(caller: GeminiCaller, system_prompt: str, chunk: list[tuple[int, Segment]]) -> list[SegmentJudgment]:
+def _context(chunk, indexed, context):
+    first, last = chunk[0][0], chunk[-1][0]
+    return indexed[max(0, first - context) : first], indexed[last + 1 : last + 1 + context]
+
+
+def _judge_chunk(caller, system_prompt: str, chunk: list[tuple[int, Segment]], indexed: list[tuple[int, Segment]],
+                 context: int) -> list[SegmentJudgment]:
     """Validate, retry once, split on truncation or on a second failure; a
     single segment that still fails raises DecisionError."""
+    before, after = _context(chunk, indexed, context)
     last_error: Exception | None = None
     for attempt, note in enumerate(["", RETRY_NOTE]):
         response = None
-        payload = _segments_payload(chunk)
         try:
-            response = caller.generate(system_prompt, f"{note}\n\n{payload}" if note else payload, judgment_schema())
+            response = caller.generate(system_prompt, _judge_contents(chunk, before, after, note))
             return _parse_judgments(response.text, chunk)
         except (json.JSONDecodeError, ValidationError, KeyError, TypeError, ValueError) as exc:
             reason = _finish_reason(response) if response is not None else "no response"
@@ -293,26 +413,47 @@ def _judge_chunk(caller: GeminiCaller, system_prompt: str, chunk: list[tuple[int
                     "— lower gemini_max_segments_per_call if this recurs: %s", len(chunk), attempt + 1, exc,
                 )
                 if len(chunk) > 1:
-                    return _split(caller, system_prompt, chunk)
+                    return _split(caller, system_prompt, chunk, indexed, context)
             else:
                 logger.warning("gemini judgment parse failed on attempt %d (finish_reason=%s): %s",
                                attempt + 1, reason, exc)
             last_error = exc
     if len(chunk) > 1:
         logger.warning("gemini failed twice on a %d-segment chunk (%s) — splitting", len(chunk), last_error)
-        return _split(caller, system_prompt, chunk)
+        return _split(caller, system_prompt, chunk, indexed, context)
     raise DecisionError(f"LLM returned invalid judgments after retry: {last_error}") from last_error
 
 
-def _split(caller, system_prompt, chunk):
+def _split(caller, system_prompt, chunk, indexed, context):
     mid = len(chunk) // 2
     logger.warning("splitting a %d-segment chunk into %d + %d and retrying", len(chunk), mid, len(chunk) - mid)
-    return _judge_chunk(caller, system_prompt, chunk[:mid]) + _judge_chunk(caller, system_prompt, chunk[mid:])
+    return (_judge_chunk(caller, system_prompt, chunk[:mid], indexed, context)
+            + _judge_chunk(caller, system_prompt, chunk[mid:], indexed, context))
 
 
-def _fingerprint(model: str, system_prompt: str, segments: list[Segment]) -> str:
+def scores_collapsed(judgments: list[SegmentJudgment], min_kept: int = 12) -> bool:
+    """True when a chunk kept plenty of content but scored all of it 0 — seen
+    on real meetings for whole chunks of substantive talk."""
+    kept = [j for j in judgments if j.decision == "keep"]
+    return len(kept) >= min_kept and all(j.highlight_score == 0 for j in kept)
+
+
+def _rescore(caller, system_prompt, chunk, indexed, context, first_try):
+    """One more attempt with a note about the anchors; keep the original
+    answer if the retry is no better or fails."""
+    before, after = _context(chunk, indexed, context)
+    try:
+        response = caller.generate(system_prompt, _judge_contents(chunk, before, after, RESCORE_NOTE))
+        second = _parse_judgments(response.text, chunk)
+    except (json.JSONDecodeError, ValidationError, KeyError, TypeError, ValueError, DecisionError) as exc:
+        logger.warning("re-score of a collapsed chunk failed, keeping the first answer: %s", exc)
+        return first_try
+    return first_try if scores_collapsed(second) else second
+
+
+def _fingerprint(model: str, system_prompt: str, segments: list[Segment], chunk_size: int, context: int) -> str:
     h = hashlib.sha256()
-    h.update(f"v{DECISIONS_VERSION}|{model}|".encode())
+    h.update(f"v{DECISIONS_VERSION}|{model}|{chunk_size}|{context}|".encode())
     h.update(system_prompt.encode())
     for s in segments:
         h.update(f"|{s.start:.3f}|{s.end:.3f}|{s.speaker}|{s.text}".encode())
@@ -353,31 +494,38 @@ def _save(path: Path | None, fingerprint: str, model: str, judged: dict[int, Seg
 def judge_segments(
     segments: list[Segment],
     *,
-    caller: GeminiCaller | None = None,
+    caller: GeminiCaller | LazyCaller | None = None,
     highlights_criteria: str | None = None,
     on_progress: callable[[int, int], None] | None = None,
     persist_path: Path | None = None,
 ) -> list[SegmentJudgment]:
-    """One multi-label judgment per segment (keep/remove + highlight score),
-    in chunks of `gemini_max_segments_per_call`, saved after every chunk."""
+    """One judgment per segment (keep/remove + highlight score), in chunks of
+    `gemini_max_segments_per_call`, saved after every chunk."""
     if not segments:
         return []
     settings = get_settings()
     caller = caller or make_caller()
-    system_prompt = cleanup_scoring_prompt(highlights_criteria or settings.highlights_criteria)
-    fingerprint = _fingerprint(caller.model, system_prompt, segments)
+    system_prompt = judge_prompt(highlights_criteria or settings.highlights_criteria)
+    size = max(1, settings.gemini_max_segments_per_call)
+    context = max(0, settings.gemini_context_segments)
+    fingerprint = _fingerprint(caller.model, system_prompt, segments, size, context)
     judged = _load_saved(persist_path, fingerprint)
     if judged:
         logger.info("reusing %d saved judgments from %s", len(judged), persist_path)
 
     indexed = list(enumerate(segments))
-    size = max(1, settings.gemini_max_segments_per_call)
     total = len(segments)
+    rescores_left = settings.gemini_max_rescores
     for start in range(0, total, size):
         chunk = indexed[start : start + size]
         todo = [(i, s) for i, s in chunk if i not in judged]
         if todo:
-            for j in _judge_chunk(caller, system_prompt, todo):
+            results = _judge_chunk(caller, system_prompt, todo, indexed, context)
+            if rescores_left > 0 and scores_collapsed(results):
+                rescores_left -= 1
+                logger.info("chunk at segment %d scored every kept line 0 — re-scoring once", todo[0][0])
+                results = _rescore(caller, system_prompt, todo, indexed, context, results)
+            for j in results:
                 judged[j.index] = j
             _save(persist_path, fingerprint, caller.model, judged, total)
         if on_progress:
@@ -405,6 +553,33 @@ def _clean_title(text: str, limit: int) -> str:
     return text
 
 
+_CONNECTIVE = re.compile(
+    r"^(?:and|but|so|or|which|because|then|that|also|plus|um|uh|like|the (?:first|second|third|next|other) one)\b",
+    re.IGNORECASE,
+)
+_SENTENCE_END = re.compile(r"[.!?][\"')\]]*$")
+
+
+def complete_window(first: int, last: int, judgments: list[SegmentJudgment], limit_lo: int, limit_hi: int,
+                    max_steps: int = 2) -> tuple[int, int]:
+    """Don't start a clip mid-thought or end it mid-sentence: step back over
+    lines that start with a connective or a lowercase letter, and forward
+    while the last line has no sentence end (at most `max_steps` each way,
+    within [limit_lo, limit_hi])."""
+    steps = 0
+    while steps < max_steps and first > limit_lo:
+        text = judgments[first].text.strip()
+        if not text or not (text[0].islower() or _CONNECTIVE.match(text)):
+            break
+        first -= 1
+        steps += 1
+    steps = 0
+    while steps < max_steps and last < limit_hi and not _SENTENCE_END.search(judgments[last].text.strip()):
+        last += 1
+        steps += 1
+    return first, last
+
+
 @dataclass
 class RerankResult:
     moments: list[Moment]
@@ -413,84 +588,115 @@ class RerankResult:
     raw: list = field(default_factory=list)
 
 
+def _rerank_contents(candidates: list[Moment], judgments: list[SegmentJudgment], ctx: int) -> str:
+    last = len(judgments) - 1
+    blocks = []
+    for m in candidates:
+        lo, hi = max(0, m.first_index - ctx), min(last, m.last_index + ctx)
+        lines = [f"#{m.id} core {m.first_index}-{m.last_index}"]
+        prev_speaker = None
+        for j in judgments[lo : hi + 1]:
+            mark = "" if m.first_index <= j.index <= m.last_index else "~"
+            who = f"{j.speaker}: " if j.speaker and j.speaker != prev_speaker else ""
+            prev_speaker = j.speaker or prev_speaker
+            lines.append(f"{mark}[{j.index}] {who}{j.text}")
+        blocks.append("\n".join(lines))
+    return "\n\n".join(blocks)
+
+
+_RERANK_LINE = re.compile(r"^#?(\d+)\s*\|\s*(\d{1,2})\s*\|\s*(\w+)\s*\|\s*~?\[?(\d+)\]?\s*\|\s*~?\[?(\d+)\]?"
+                          r"\s*\|\s*([yn])\w*\s*\|([^|]*)\|?(.*)$", re.IGNORECASE)
+
+
+def parse_rerank_lines(raw: str) -> list[dict]:
+    """'<id>|<score>|<code>|<a>|<b>|<y/n>|<title>|<why>' lines. Lines that
+    don't fit are skipped (the candidate then counts as unanswered)."""
+    items = []
+    for line in _answer_lines(raw):
+        m = _RERANK_LINE.match(line)
+        if m:
+            cid, score, code, a, b, short, title, hook = m.groups()
+            # the model sometimes closes the line with a stray "|" ("...for sharing.|")
+            items.append({"id": int(cid), "s": int(score), "h": code.lower(), "a": int(a), "b": int(b),
+                          "sh": short.lower() == "y", "t": title.strip(" |\t"), "k": hook.strip(" |\t")})
+    return items
+
+
+def _apply_rerank(m: Moment, item: dict, judgments: list[SegmentJudgment], ctx: int) -> Moment:
+    last = len(judgments) - 1
+    first, last_i = int(item["a"]), int(item["b"])
+    score = max(0, min(10, int(item["s"])))
+    lo, hi = max(0, m.first_index - ctx), min(last, m.last_index + ctx)
+    first, last_i = max(lo, min(first, hi)), max(lo, min(last_i, hi))
+    if first > last_i or last_i < m.first_index or first > m.last_index:
+        first, last_i = m.first_index, m.last_index  # window must overlap the scored core
+    first, last_i = complete_window(first, last_i, judgments, max(0, lo - 2), min(last, hi + 2))
+    category = HIGHLIGHT_CODES.get(item.get("h", ""), m.category)
+    peak = m.peak_index if m.peak_index is not None and first <= m.peak_index <= last_i else None
+    return m.model_copy(update={
+        "first_index": first,
+        "last_index": last_i,
+        "start": judgments[first].start,
+        "end": judgments[last_i].end,
+        "score": float(score),
+        "category": category,
+        "peak_index": peak,
+        "title": _clean_title(item.get("t", ""), 60),
+        "hook": _clean_title(item.get("k", ""), 140),
+        "short_worthy": bool(item.get("sh")),
+        "reranked": True,
+    })
+
+
 def rerank_moments(
     candidates: list[Moment],
     judgments: list[SegmentJudgment],
     *,
-    caller: GeminiCaller | None = None,
+    caller: GeminiCaller | LazyCaller | None = None,
     highlights_criteria: str | None = None,
     shorts_criteria: str | None = None,
     context_segments: int | None = None,
 ) -> RerankResult:
     """One global call over the best candidates: calibrated scores, titles,
-    hooks, short-worthiness and a complete window. Never fatal: on failure the
-    per-segment scores are used as they are."""
+    hooks, short-worthiness and a complete window; one follow-up call only
+    for candidates the answer skipped. Never fatal for bad answers or API
+    errors: unanswered candidates keep their per-segment scores."""
     if not candidates:
         return RerankResult([], True)
     settings = get_settings()
     caller = caller or make_caller()
     ctx = settings.rerank_context_segments if context_segments is None else context_segments
-    last = len(judgments) - 1
-    payload = []
-    for m in candidates:
-        lo, hi = max(0, m.first_index - ctx), min(last, m.last_index + ctx)
-        payload.append({
-            "id": m.id,
-            "first_index": m.first_index,
-            "last_index": m.last_index,
-            "category": m.category,
-            "segments": [
-                {"index": j.index, "start": round(j.start, 1), "speaker": j.speaker, "text": j.text,
-                 "context": not (m.first_index <= j.index <= m.last_index)}
-                for j in judgments[lo : hi + 1]
-            ],
-        })
     system_prompt = rerank_prompt(highlights_criteria or settings.highlights_criteria,
                                   shorts_criteria or settings.shorts_criteria)
-    contents = json.dumps(payload, ensure_ascii=False)
     by_id = {m.id: m for m in candidates}
+    updated: dict[int, Moment] = {}
+    raw_items: list = []
     last_error = ""
-    for attempt, note in enumerate(["", "Return one entry per candidate id, strictly matching the schema."]):
+    pending = list(candidates)
+    for attempt in range(2):
+        note = "" if attempt == 0 else (
+            "Answer for these candidates too — exactly one line per id, in the same format.")
+        contents = _rerank_contents(pending, judgments, ctx)
         try:
-            response = caller.generate(system_prompt, f"{note}\n\n{contents}" if note else contents, rerank_schema())
-            data = json.loads(response.text)
-            items = data.get("moments") if isinstance(data, dict) else data
-            if not isinstance(items, list):
-                raise TypeError("no moments list")
-        except (json.JSONDecodeError, ValueError, TypeError, AttributeError, DecisionError) as exc:
+            response = caller.generate(system_prompt, f"{note}\n\n{contents}" if note else contents)
+            items = parse_rerank_lines(response.text)
+        except (ValueError, TypeError, AttributeError, DecisionError) as exc:
             last_error = str(exc)
             logger.warning("re-rank failed on attempt %d: %s", attempt + 1, exc)
             continue
-        updated: dict[int, Moment] = {}
         for item in items:
-            try:
-                m = by_id[int(item["id"])]
-                first, last_i = int(item["first_index"]), int(item["last_index"])
-                score = max(0, min(10, int(item["score"])))
-            except (KeyError, TypeError, ValueError):
+            m = by_id.get(item["id"])
+            if m is None or m.id in updated:
                 continue
-            lo, hi = max(0, m.first_index - ctx), min(last, m.last_index + ctx)
-            first, last_i = max(lo, min(first, hi)), max(lo, min(last_i, hi))
-            if first > last_i or last_i < m.first_index or first > m.last_index:
-                first, last_i = m.first_index, m.last_index  # window must overlap the scored core
-            category = item.get("category") if item.get("category") in _HIGHLIGHT_OK else m.category
-            updated[m.id] = m.model_copy(update={
-                "first_index": first,
-                "last_index": last_i,
-                "start": judgments[first].start,
-                "end": judgments[last_i].end,
-                "score": float(score),
-                "category": category,
-                "title": _clean_title(item.get("title", ""), 60),
-                "hook": _clean_title(item.get("hook", ""), 140),
-                "short_worthy": bool(item.get("short_worthy")),
-                "reranked": True,
-            })
-        moments = [updated.get(m.id, m) for m in candidates]
-        missing = len(candidates) - len(updated)
-        note_text = f"{missing} candidate(s) missing from the re-rank answer" if missing else ""
-        return RerankResult(moments, True, note_text, items)
-    return RerankResult(list(candidates), False, f"re-rank failed, using per-segment scores ({last_error})")
-
-
-_HIGHLIGHT_OK = {"funny", "new_architecture", "new_feature", "concept", "decision", "insight"}
+            updated[m.id] = _apply_rerank(m, item, judgments, ctx)
+            raw_items.append(item)
+        pending = [m for m in candidates if m.id not in updated]
+        if not pending:
+            break
+        logger.warning("re-rank answered %d of %d candidates", len(updated), len(candidates))
+    if not updated:
+        return RerankResult(list(candidates), False, f"re-rank failed, using per-segment scores ({last_error})")
+    moments = [updated.get(m.id, m) for m in candidates]
+    missing = len(candidates) - len(updated)
+    note_text = f"{missing} candidate(s) missing from the re-rank answer" if missing else ""
+    return RerankResult(moments, True, note_text, raw_items)

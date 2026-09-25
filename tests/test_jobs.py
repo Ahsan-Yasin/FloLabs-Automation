@@ -27,6 +27,21 @@ def test_get_returns_none_for_unknown_job():
     assert store.get("does-not-exist") is None
 
 
+def test_get_ignores_ids_that_are_not_plain_job_ids():
+    """On Windows "job-1." and "job-1 " open job-1's folder, and "..\\" climbs
+    out of jobs/: such ids must never be looked up on disk."""
+    from api.jobs import is_valid_job_id
+
+    store_a = JobStore()
+    store_a.create(_job())
+    store_b = JobStore()  # disk path, not the cache
+    for odd in ("job-1.", "job-1 ", "..\\jobs\\job-1", "../jobs/job-1", "", "a" * 65, "job-1\n"):
+        assert not is_valid_job_id(odd), repr(odd)
+        assert store_b.get(odd) is None, repr(odd)
+    assert store_b.get("job-1") is not None
+    assert is_valid_job_id("7b93aa4cd7ef436895213e6fff9365a3") and is_valid_job_id("stuck_job-2")
+
+
 def test_persist_is_atomic_no_leftover_tmp_file():
     """A crash mid-write must never leave readers looking at a half-written
     job.json. Writing succeeds via a temp file + atomic rename, so no `.tmp`

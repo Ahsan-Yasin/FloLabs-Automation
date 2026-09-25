@@ -19,6 +19,7 @@ import time
 from collections import deque
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 
 from core.config import get_settings
 from core.errors import JobCancelled, JobTimedOut
@@ -26,7 +27,7 @@ from core.logging import get_logger
 from core.models import TERMINAL_STATUSES, JobRecord, JobStatus
 from core.proc import set_poll_hook
 
-from .jobs import JobStore
+from .jobs import JobStore, is_valid_job_id
 
 logger = get_logger(__name__)
 
@@ -221,13 +222,62 @@ def is_protected(job_id: str) -> bool:
 
 
 def delete_job_files(store: JobStore, job_id: str) -> None:
-    """Remove everything the job owns: its folder, plus a legacy upload stored
-    as videos/{job_id}.* before sources moved into the job folder."""
+    """Remove everything the job owns: its folder, a YouTube download it left
+    in videos/ (see _owned_download), plus a legacy upload stored as
+    videos/{job_id}.* before sources moved into the job folder.
+
+    Refuses ids that are not plain job ids (on Windows "<id>." names a running
+    job's folder, and "..\\" climbs out of jobs/) and `.keep`-protected jobs:
+    every caller already checks protection, but this is the function that
+    actually deletes, so the regression fixture must be safe here too."""
     settings = get_settings()
+    if not is_valid_job_id(job_id):
+        logger.warning("refusing to delete files for invalid job id %r", job_id)
+        return
+    if is_protected(job_id):
+        logger.warning("refusing to delete protected job %s (it has a %s marker)", job_id, KEEP_MARKER)
+        return
+    download = _owned_download(store, job_id)  # read job.json before forget() and rmtree
     store.forget(job_id)
     shutil.rmtree(settings.jobs_dir / job_id, ignore_errors=True)
     for legacy in settings.videos_dir.glob(f"{job_id}.*"):
         legacy.unlink(missing_ok=True)
+    if download is not None:
+        download.unlink(missing_ok=True)
+
+
+def _owned_download(store: JobStore, job_id: str) -> Path | None:
+    """The job's source file when it sits directly in videos/ under a name the
+    legacy {job_id}.* glob can't match: download_youtube(url) saves to
+    videos/<random>.<ext>, so without this every YouTube job leaked its
+    download past DELETE and the retention sweep.
+
+    Only a file directly inside videos/ is ever returned (never anything
+    elsewhere, e.g. a source the caller pointed at by path), and not one that
+    another job still names as its source (or when that can't be checked
+    because a job.json is unreadable): a shared file isn't this job's to
+    delete."""
+    try:
+        job = store.get(job_id)
+    except Exception as exc:  # noqa: BLE001 — an unreadable job.json must not block deleting its folder
+        logger.warning("job %s: can't read job.json, leaving its source alone: %s", job_id, exc)
+        return None
+    if job is None or not job.source_path:
+        return None
+    source = Path(job.source_path).resolve()
+    if source.parent != get_settings().videos_dir.resolve() or not source.is_file():
+        return None
+    for other_id in store.list_ids():
+        if other_id == job_id:
+            continue
+        try:
+            other = store.get(other_id)
+        except Exception as exc:  # noqa: BLE001 — unknown owner: keep the file rather than guess
+            logger.warning("job %s: can't read job %s (%s), leaving %s alone", job_id, other_id, exc, source)
+            return None
+        if other is not None and other.source_path and Path(other.source_path).resolve() == source:
+            return None
+    return source
 
 
 # ----------------------------------------------------------------- startup

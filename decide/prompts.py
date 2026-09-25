@@ -1,25 +1,64 @@
 """Prompts and JSON schemas for the v2 decide stage (plan D4, D10).
 
 Three kinds of call:
-1. cleanup + scoring, one per chunk of ~30 sentences: keep/remove for the
+1. cleanup + scoring, one per chunk of ~60 sentences: keep/remove for the
    cleaned meeting and, independently, a 0-10 highlight score;
 2. one global re-rank over the best candidate moments: calibrated scores,
-   titles, hooks, whether a moment works as a stand-alone short, and a window
-   that includes the setup/punchline;
+   titles, hooks, whether a moment works as a stand-alone short, and a
+   complete window (setup + payoff);
 3. chapters over the cleaned transcript.
 
+Token budget matters (the owner asked for it explicitly), so the exchange is
+compact: sentences go in as numbered plain-text lines (the speaker name only
+when it changes), and answers come back as plain text, one short line per
+item ("312 r 0 fill -"), with short category codes that are mapped back to
+the full names here. JSON answers were tried first: the model pretty-prints
+them, and indentation made up ~80% of the output tokens (37 tokens per
+sentence vs ~10 for a line).
+
 The keep/remove rules are the light-cleanup prompt that was stress-tested on
-the real 98-minute meeting (see SESSION_HANDOFF.md) — change them carefully.
+the real 98-minute meeting (see SESSION_HANDOFF.md), plus three rules added
+after reviewing the v2 output (transitions/praise, bare answers, sentence
+tails) — change them carefully.
 """
 
 from __future__ import annotations
 
-from typing import get_args
+from core.models import Segment
 
-from core.models import HighlightCategory, RemovalCategory
+# wire code -> internal category name
+REMOVAL_CODES = {
+    "fill": "filler",
+    "greet": "greeting_small_talk",
+    "intro": "ceremony_intros",
+    "house": "housekeeping",
+    "xtalk": "crosstalk",
+    "tang": "tangent",
+    "rep": "repetition",
+    "dead": "dead_air",
+}
+HIGHLIGHT_CODES = {
+    "fun": "funny",
+    "arch": "new_architecture",
+    "feat": "new_feature",
+    "idea": "concept",
+    "dec": "decision",
+    "ins": "insight",
+}
+HIGHLIGHT_TO_CODE = {v: k for k, v in HIGHLIGHT_CODES.items()}
 
-REMOVAL_CATEGORIES = list(get_args(RemovalCategory))
-HIGHLIGHT_CATEGORIES = list(get_args(HighlightCategory))
+# Human wording used in the removed-parts labels and the report.
+REMOVAL_LABELS = {
+    "filler": "filler",
+    "greeting_small_talk": "greetings / small talk",
+    "ceremony_intros": "introductions",
+    "housekeeping": "housekeeping",
+    "crosstalk": "crosstalk",
+    "tangent": "off-topic tangent",
+    "repetition": "repetition",
+    "dead_air": "dead air",
+    "none": "removed",
+}
 
 CLEANUP_RULES = """You are lightly cleaning up a meeting recording transcript. The goal \
 is to keep only what is actually on the meeting's agenda — the substance people came \
@@ -38,6 +77,13 @@ yourself" / "hi, I'm X, I study Y" — even though it's on-topic, it is not agen
 - Waiting-for-people-to-join dead air, technical housekeeping (audio/video troubleshooting), \
 and meta-commentary about the meeting itself ("let's wait for everyone", "can we start now").
 - Any tangent that isn't the thing the meeting was called to discuss.
+- Hand-offs and bare calls to speak that only pass the floor ("let's move to the design \
+team", "any updates?", "go ahead", "you can share your screen") and praise with no content \
+("looks great", "nice work") — always remove these as housekeeping, wherever they occur. A \
+question about the substance itself ("what changed compared to the current version?") is \
+content: keep it.
+- A question whose only answer is a bare no/nothing ("any blockers?" — "not really"): remove \
+the question and the answer.
 
 Keep — the actual agenda:
 - Anything that makes a point, answers a substantive question, asks a substantive question, \
@@ -45,134 +91,81 @@ states a decision, or would be missed by someone who only wants the meeting's re
 This includes status updates, blockers, and task assignments even when they're introduced by \
 someone being called on by name ("can you give us an update?") — being called on is not the \
 same as being asked to introduce yourself; judge the answer by whether it's substance or filler.
+- A segment that only finishes a kept sentence (the previous segment stops mid-sentence) \
+takes the same decision as that sentence — never cut a sentence in half.
 - Overlap alone is NOT a reason to remove."""
 
-CLEANUP_SCORING_TEMPLATE = CLEANUP_RULES + """
+JUDGE_TEMPLATE = CLEANUP_RULES + """
 
-You will be given a JSON list of sentence-level segments in chronological order. Each has:
-- index: the segment's id — copy it exactly into your answer
-- speaker: a speaker label (may be wrong — do not use it to judge importance)
-- start, end: seconds
-- text: what was said
-- overlap_candidate: true if timing suggests this segment overlaps an adjacent one
+INPUT: numbered transcript lines "[n] Speaker: text" (the speaker is shown only when it \
+changes; speaker labels may be wrong). Lines starting with "~" (under "CONTEXT") are only \
+there so you can follow the conversation — never include them in your answer. "(overlap)" \
+marks timing overlap with a neighbour.
 
-For every segment also return:
-- removal_category: why it is removed, one of {removal_categories}; use "none" when kept.
-- highlight_score: an integer 0-10 for how much this segment deserves a place in a short \
-3-5 minute highlights reel of the whole meeting. Highlight-worthy means: {highlights_criteria}. \
-Score independently of keep/remove (a removed joke during small talk can still score high). \
-Use the full range: 0-2 routine or filler, 3-5 useful but ordinary, 6-7 notable, 8-10 one of \
-the best moments of the meeting. Most segments should score 0-3.
-- highlight_category: the best-fitting one of {highlight_categories}; "none" when the score is \
-below 4.
-- reason: a few words.
+OUTPUT: plain text, exactly one line per JUDGE line, in order, nothing else:
+<n> <k|r> <score> <removal code or -> <highlight code or ->
+for example "312 r 0 fill -" or "313 k 6 - arch".
+- k keep, r remove. The removal code (only when removing) says why: {removal_codes}.
+- score 0-10: how much this moment deserves a place in a 3-5 minute highlights reel of the \
+whole meeting. Highlight-worthy means: {highlights_criteria}. Judge the whole thought, not \
+the single line: every line of a strong explanation, demo, decision or joke gets the score \
+of that moment. Anchors: 0-2 logistics, filler, routine status ("I worked on X, still on \
+it"); 3-5 useful substance (a concrete update, a real question answered); 6-7 a clear \
+decision, an architecture or feature explained or demoed, a surprising fact or number, a \
+genuine laugh; 8-10 headline material you would put in a trailer of this meeting. Score \
+independently of keep/remove (a removed joke during small talk can still score high).
+- highlight code when the score is 3 or more (a joke from 2), the best fit: {highlight_codes}"""
 
-Return {{"judgments": [...]}} with exactly one judgment per input segment, in the same order."""
+RESCORE_NOTE = (
+    "Your previous answer scored every kept line 0. Re-read the scoring anchors: routine status is 0-2, but "
+    "useful substance is 3-5 and explanations, demos, decisions and laughs are 6-7. Score again."
+)
 
-RERANK_TEMPLATE = """You are choosing highlight moments from a whole meeting. You get candidate \
-moments that an earlier pass scored per sentence, each with a little context before and after \
-(context segments have their own index). Highlight-worthy means: {highlights_criteria}.
+RERANK_TEMPLATE = """You are choosing highlight moments from a whole meeting. Below are \
+candidate moments that an earlier pass scored line by line. Each block starts "#<id> core \
+<a>-<b>" followed by numbered lines "[n] Speaker: text"; lines marked "~" are context around \
+the core. Highlight-worthy means: {highlights_criteria}.
 
-For each candidate return:
-- id: copy it.
-- score: 0-10, calibrated ACROSS all candidates (the best moments of this meeting get 8-10; \
-be strict — at most about a quarter of candidates should be 7 or higher).
-- category: one of {highlight_categories}.
-- title: at most 60 characters, specific ("Switching the session store to Redis"), no quotes.
-- hook: one sentence (at most 140 characters) saying why it is worth watching.
-- first_index, last_index: the segment range that makes the moment complete and understandable \
-on its own — include the setup a viewer needs and the payoff; you may use the context segments \
-shown; keep it tight.
-- short_worthy: true only if, on its own as a 20-60 second vertical clip, it fits: \
-{shorts_criteria}.
+Compare the candidates WITH EACH OTHER. Answer in plain text with exactly one line for EVERY \
+candidate id (even weak ones), nothing else:
+<id>|<score>|<code>|<a>|<b>|<y or n>|<title>|<why>
+- score 0-10, spread across the candidates: the best ~15% get 8-10, the weakest 1-3
+- code: the category, one of {highlight_codes}
+- a, b: first and last line number of a clip that works on its own: start where the thought \
+starts (include the setup; never start on "which", "and", "so", "the first one"…), end after \
+the payoff; usually 15-45 seconds; you may use the "~" lines
+- y only if, as a 20-60 second vertical clip on its own, it genuinely is: {shorts_criteria}. A \
+useful or well-explained moment is NOT enough on its own. Otherwise n
+- title: at most 60 characters, specific ("Moving the session store to Redis"), no "|"
+- why: one sentence (at most 140 characters) on why it is worth watching, no "|"
+Example: 12|8|arch|402|409|n|Moving the session store to Redis|Cuts API latency from 800 to 120 ms."""
 
-Return {{"moments": [...]}} with one entry per candidate id."""
-
-CHAPTERS_TEMPLATE = """You are writing YouTube chapters for an edited meeting recording. You get \
-the transcript as numbered blocks in order, each with its start time. Choose where topics change.
+CHAPTERS_TEMPLATE = """You are writing YouTube chapters for an edited meeting recording. You \
+get the kept transcript as lines "[n mm:ss] text" in order.
 
 Rules:
-- The first chapter starts at block 0.
-- Between {min_chapters} and {max_chapters} chapters; a new chapter only where the topic really \
-changes; chapters at least {min_gap_s} seconds apart.
-- Titles: at most 60 characters, specific and descriptive, no timestamps, no quotes, no "<" or ">".
+- The first chapter starts at line 0.
+- Start a new chapter whenever the speaker's topic, team or agenda item changes — each team \
+update, demo or review item is its own chapter. Use the line that introduces the new topic.
+- Between {min_chapters} and {max_chapters} chapters, at least {min_gap_s} seconds apart; \
+no chapter longer than about {max_chapter_min} minutes.
+- Each title (at most 60 characters) must describe the WHOLE chapter; no timestamps, no \
+quotes, no "<" or ">".
 
-Return {{"chapters": [{{"block": <block number>, "title": "..."}}, ...]}} in order."""
-
-
-def judgment_schema() -> dict:
-    return {
-        "type": "object",
-        "properties": {
-            "judgments": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "index": {"type": "integer"},
-                        "decision": {"type": "string", "enum": ["keep", "remove"]},
-                        "reason": {"type": "string"},
-                        "removal_category": {"type": "string", "enum": REMOVAL_CATEGORIES},
-                        "highlight_score": {"type": "integer", "minimum": 0, "maximum": 10},
-                        "highlight_category": {"type": "string", "enum": HIGHLIGHT_CATEGORIES},
-                    },
-                    "required": ["index", "decision", "reason", "removal_category", "highlight_score",
-                                 "highlight_category"],
-                },
-            }
-        },
-        "required": ["judgments"],
-    }
+Answer in plain text, one line per chapter in order, nothing else: <line number>|<title>
+Example of the format (not of the content):
+0|Welcome and agenda
+37|Payments team: checkout API migration"""
 
 
-def rerank_schema() -> dict:
-    return {
-        "type": "object",
-        "properties": {
-            "moments": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "id": {"type": "integer"},
-                        "score": {"type": "integer", "minimum": 0, "maximum": 10},
-                        "category": {"type": "string", "enum": HIGHLIGHT_CATEGORIES},
-                        "title": {"type": "string"},
-                        "hook": {"type": "string"},
-                        "first_index": {"type": "integer"},
-                        "last_index": {"type": "integer"},
-                        "short_worthy": {"type": "boolean"},
-                    },
-                    "required": ["id", "score", "category", "title", "hook", "first_index", "last_index",
-                                 "short_worthy"],
-                },
-            }
-        },
-        "required": ["moments"],
-    }
+def _codes(mapping: dict[str, str]) -> str:
+    return ", ".join(f'"{k}" {v.replace("_", " ")}' for k, v in mapping.items())
 
 
-def chapters_schema() -> dict:
-    return {
-        "type": "object",
-        "properties": {
-            "chapters": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {"block": {"type": "integer"}, "title": {"type": "string"}},
-                    "required": ["block", "title"],
-                },
-            }
-        },
-        "required": ["chapters"],
-    }
-
-
-def cleanup_scoring_prompt(highlights_criteria: str) -> str:
-    return CLEANUP_SCORING_TEMPLATE.format(
-        removal_categories=", ".join(f'"{c}"' for c in REMOVAL_CATEGORIES),
-        highlight_categories=", ".join(f'"{c}"' for c in HIGHLIGHT_CATEGORIES),
+def judge_prompt(highlights_criteria: str) -> str:
+    return JUDGE_TEMPLATE.format(
+        removal_codes=_codes(REMOVAL_CODES),
+        highlight_codes=_codes(HIGHLIGHT_CODES),
         highlights_criteria=highlights_criteria.strip(),
     )
 
@@ -181,9 +174,22 @@ def rerank_prompt(highlights_criteria: str, shorts_criteria: str) -> str:
     return RERANK_TEMPLATE.format(
         highlights_criteria=highlights_criteria.strip(),
         shorts_criteria=shorts_criteria.strip(),
-        highlight_categories=", ".join(f'"{c}"' for c in HIGHLIGHT_CATEGORIES if c != "none"),
+        highlight_codes=_codes(HIGHLIGHT_CODES),
     )
 
 
-def chapters_prompt(min_chapters: int, max_chapters: int, min_gap_s: int = 10) -> str:
-    return CHAPTERS_TEMPLATE.format(min_chapters=min_chapters, max_chapters=max_chapters, min_gap_s=min_gap_s)
+def chapters_prompt(min_chapters: int, max_chapters: int, min_gap_s: int = 10, max_chapter_min: int = 10) -> str:
+    return CHAPTERS_TEMPLATE.format(min_chapters=min_chapters, max_chapters=max_chapters, min_gap_s=min_gap_s,
+                                    max_chapter_min=max_chapter_min)
+
+
+def transcript_lines(items: list[tuple[int, Segment]], prefix: str = "") -> list[str]:
+    """'[n] Speaker: text' lines; the speaker only when it changes."""
+    lines, last_speaker = [], None
+    for n, seg in items:
+        speaker = seg.speaker if seg.speaker and seg.speaker != last_speaker else ""
+        last_speaker = seg.speaker or last_speaker
+        overlap = " (overlap)" if seg.overlap_candidate else ""
+        who = f"{speaker}: " if speaker else ""
+        lines.append(f"{prefix}[{n}] {who}{seg.text}{overlap}")
+    return lines

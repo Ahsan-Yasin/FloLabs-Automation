@@ -211,6 +211,22 @@
     padding-bottom: 1px;
   }
   .result-actions a:hover { color: var(--red); border-color: var(--red); }
+  .result-actions { flex-wrap: wrap; row-gap: 8px; }
+  .result-actions a.primary { color: var(--red); border-color: var(--red); }
+
+  .extra-video { display: none; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .extra-video.visible { display: block; }
+  .extra-video summary {
+    cursor: pointer; font-family: 'Source Serif 4', serif; font-size: 14.5px; color: var(--ink);
+  }
+  .extra-video video { margin-top: 8px; }
+  .shorts-wrap { display: none; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .shorts-wrap.visible { display: block; }
+  .shorts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+  .shorts-grid figure { margin: 0; }
+  .shorts-grid video { aspect-ratio: 9 / 16; object-fit: contain; }
+  .shorts-grid figcaption { font-family: 'IBM Plex Sans'; font-size: 12px; margin-top: 5px; line-height: 1.35; }
+  .shorts-grid figcaption a { color: var(--ink-muted); font-size: 11.5px; }
 
   .opt {
     display: flex; align-items: center; gap: 8px; margin-top: 10px;
@@ -243,6 +259,13 @@
     .picks td.score { text-align: left; margin-left: 8px; }
     .picks td.score::before { content: "score "; }
   }
+
+  .warnings-note {
+    display: none; margin-top: 14px; font-family: 'IBM Plex Sans';
+    font-size: 12px; line-height: 1.5; color: var(--ink-muted);
+  }
+  .warnings-note.visible { display: block; }
+  .warnings-note p { margin: 0 0 2px; }
 
   .chapters-wrap { display: none; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
   .chapters-wrap.visible { display: block; }
@@ -352,10 +375,19 @@
         </div>
 
         <div class="result" id="result">
-          <video id="video" controls></video>
-          <div class="result-actions">
-            <a href="#" id="downloadLink" download>Download the cut</a>
-            <a href="#" id="transcriptLink" target="_blank">Raw transcript (JSON)</a>
+          <p class="marked-transcript-label">Final video</p>
+          <p class="marked-transcript-legend" id="finalNote"></p>
+          <video id="video" controls preload="metadata"></video>
+          <div class="result-actions" id="resultActions"></div>
+          <details class="extra-video" id="removedWrap">
+            <summary id="removedSummary">Removed parts</summary>
+            <p class="marked-transcript-legend">Every cut of a second or more, labelled with its time in the original recording and why it went.</p>
+            <video id="removedVideo" controls preload="none"></video>
+          </details>
+          <div class="shorts-wrap" id="shortsWrap">
+            <p class="marked-transcript-label">Shorts</p>
+            <p class="marked-transcript-legend">Vertical clips with captions, ready to post.</p>
+            <div class="shorts-grid" id="shortsGrid"></div>
           </div>
           <div class="chapters-wrap" id="chaptersWrap">
             <p class="marked-transcript-label">YouTube chapters</p>
@@ -369,6 +401,7 @@
             <div class="marked-transcript" id="markedTranscript"></div>
           </div>
         </div>
+        <div class="warnings-note" id="warningsNote" role="note"></div>
       </div>
 
       <aside class="sheet-margin">
@@ -426,15 +459,21 @@ const STEP_LABELS = {
   transcribing: "Transcribing & identifying speakers",
   deciding: "AI selecting the good parts",
   building_edl: "Building the edit list",
-  slicing: "Cutting & rendering the final video",
-  reporting: "Writing YouTube chapters",
+  slicing: "Rendering the cleaned meeting",
+  rendering_highlights: "Rendering the highlights reel",
+  assembling: "Joining reel + meeting into the final video",
+  rendering_removed: "Rendering the removed-parts video",
+  rendering_shorts: "Rendering shorts",
+  reporting: "Writing transcripts, chapters & report",
+  bundling: "Packing the zip",
   done: "Done",
 };
 const STEPS_WITH_DOWNLOAD = [
-  "queued", "downloading", "transcribing", "deciding", "building_edl", "slicing", "reporting", "done",
+  "queued", "downloading", "transcribing", "deciding", "building_edl", "slicing", "rendering_highlights",
+  "assembling", "rendering_removed", "rendering_shorts", "reporting", "bundling", "done",
 ];
 const STEPS_NO_DOWNLOAD = STEPS_WITH_DOWNLOAD.filter((s) => s !== "downloading");
-const PAST_TRANSCRIBING = ["deciding", "building_edl", "slicing", "reporting", "decided", "done"];
+const PAST_TRANSCRIBING = STEPS_WITH_DOWNLOAD.slice(STEPS_WITH_DOWNLOAD.indexOf("deciding")).concat(["decided"]);
 const TRANSCRIPT_SOURCE_LABELS = {
   asr: "Transcribed from scratch with WhisperX.",
   youtube_captions: "Reused YouTube's own captions — skipped transcription.",
@@ -466,12 +505,20 @@ const stageProgressLabel = document.getElementById("stageProgressLabel");
 const stageProgressFill = document.getElementById("stageProgressFill");
 const PROGRESS_UNIT_LABELS = {
   deciding: "segments judged",
-  slicing: "clips rendered",
+  slicing: "render steps",
+  rendering_highlights: "render steps",
+  rendering_removed: "render steps",
+  rendering_shorts: "shorts rendered",
 };
 const resultEl = document.getElementById("result");
 const videoEl = document.getElementById("video");
-const downloadLink = document.getElementById("downloadLink");
-const transcriptLink = document.getElementById("transcriptLink");
+const finalNoteEl = document.getElementById("finalNote");
+const resultActionsEl = document.getElementById("resultActions");
+const removedWrap = document.getElementById("removedWrap");
+const removedSummary = document.getElementById("removedSummary");
+const removedVideo = document.getElementById("removedVideo");
+const shortsWrap = document.getElementById("shortsWrap");
+const shortsGrid = document.getElementById("shortsGrid");
 const slugEl = document.getElementById("slug");
 const markedTranscriptWrap = document.getElementById("markedTranscriptWrap");
 const markedTranscriptEl = document.getElementById("markedTranscript");
@@ -482,7 +529,10 @@ const picksBodyEl = document.getElementById("picksBody");
 const renderBtn = document.getElementById("renderBtn");
 const chaptersWrap = document.getElementById("chaptersWrap");
 const chaptersText = document.getElementById("chaptersText");
+const warningsNote = document.getElementById("warningsNote");
 let currentJobId = null;
+// Statuses where the result or the picks are on screen, so a note under them makes sense.
+const WARNING_STATUSES = ["decided", "done", "failed"];
 const CATEGORY_LABELS = {
   funny: "Funny", new_architecture: "Architecture", new_feature: "New feature", concept: "Concept",
   decision: "Decision", insight: "Insight", none: "",
@@ -602,6 +652,24 @@ function clearError() {
   errorBox.classList.remove("visible");
 }
 
+// Server strings ("chapters skipped: …") go in via textContent only.
+function renderWarnings(warnings) {
+  const list = Array.isArray(warnings) ? warnings : [];
+  warningsNote.textContent = "";
+  list.forEach((w) => {
+    const p = document.createElement("p");
+    p.textContent = "Note: " + w;
+    warningsNote.appendChild(p);
+  });
+  warningsNote.classList.toggle("visible", list.length > 0);
+}
+
+// Mirrors the server's rule for POST /jobs/{id}/render on a failed job: the
+// render failed or was interrupted after the picks were saved.
+function canRerender(job) {
+  return job.status === "failed" && job.retryable === true && !!job.selection_path && !!job.decisions_path;
+}
+
 function renderSteps(status) {
   stepsEl.innerHTML = "";
   // a previewed ("decided") job has finished everything before rendering
@@ -699,9 +767,12 @@ async function submit() {
 
   clearError();
   resultEl.classList.remove("visible");
+  removedWrap.classList.remove("visible");
+  shortsWrap.classList.remove("visible");
   markedTranscriptWrap.classList.remove("visible");
   picksEl.classList.remove("visible");
   chaptersWrap.classList.remove("visible");
+  renderWarnings([]);
   statusPanel.classList.add("visible");
   transcriptNote.style.display = "none";
   stageProgress.classList.remove("visible");
@@ -731,7 +802,23 @@ async function submit() {
   }
 
   const job = await res.json();
+  rememberJob(job.job_id);
   poll(job.job_id);
+}
+
+// /app?job=<id> reopens a job (after a refresh, or from a link n8n sends).
+function rememberJob(jobId) {
+  try { history.replaceState(null, "", `?job=${encodeURIComponent(jobId)}`); } catch (e) { /* not important */ }
+}
+
+function resumeFromUrl() {
+  const jobId = new URLSearchParams(window.location.search).get("job");
+  if (!jobId || !/^[0-9a-zA-Z_-]{1,64}$/.test(jobId)) return;
+  activeSteps = STEPS_NO_DOWNLOAD;
+  statusPanel.classList.add("visible");
+  renderSteps("queued");
+  setBusy(true);
+  poll(jobId);
 }
 
 async function poll(jobId) {
@@ -751,11 +838,17 @@ async function poll(jobId) {
   }
 
   const job = await res.json();
+  renderWarnings(WARNING_STATUSES.includes(job.status) ? job.warnings : []);
 
   if (job.status === "failed" || job.status === "cancelled") {
     renderSteps("failed");
     showError(job.error || (job.status === "cancelled" ? "The job was cancelled." : "The job failed."));
     setBusy(false);
+    if (canRerender(job)) {
+      // The picks survived the failed render: offer "Render now" again.
+      currentJobId = jobId;
+      renderPicks(jobId, true);
+    }
     return;
   }
 
@@ -765,6 +858,7 @@ async function poll(jobId) {
     return;
   }
 
+  clearError(); // e.g. a stale "busy" message from an earlier Render now click
   renderSteps(job.status);
   renderTranscriptSource(job);
   renderStageProgress(job);
@@ -778,9 +872,7 @@ async function poll(jobId) {
 
   if (job.status === "done") {
     setBusy(false);
-    videoEl.src = `/jobs/${jobId}/video`;
-    downloadLink.href = `/jobs/${jobId}/video`;
-    transcriptLink.href = `/jobs/${jobId}/transcript`;
+    renderResults(job);
     resultEl.classList.add("visible");
     renderMarkedTranscript(jobId);
     renderPicks(jobId, false);
@@ -789,6 +881,97 @@ async function poll(jobId) {
   }
 
   pollTimer = setTimeout(() => poll(jobId), 3000);
+}
+
+function artifactUrl(jobId, name, download) {
+  const path = name.split("/").map(encodeURIComponent).join("/");
+  return `/jobs/${jobId}/artifacts/${path}` + (download ? "?download=true" : "");
+}
+
+function addLink(parent, href, text, opts = {}) {
+  const a = document.createElement("a");
+  a.href = href;
+  a.textContent = text;
+  if (opts.download) a.setAttribute("download", "");
+  if (opts.newTab) a.target = "_blank";
+  if (opts.primary) a.className = "primary";
+  parent.appendChild(a);
+  return a;
+}
+
+// Everything the job delivered, from job.artifacts (only files that are ok
+// and still on disk get a player or a link; the zip always has them all).
+function renderResults(job) {
+  const arts = job.artifacts || {};
+  const has = (name) => arts[name] && arts[name].status === "ok" && arts[name].on_disk !== false;
+  const id = job.job_id;
+
+  videoEl.removeAttribute("src");
+  if (has("final.mp4")) {
+    videoEl.src = artifactUrl(id, "final.mp4");
+    videoEl.style.display = "block";
+  } else {
+    videoEl.style.display = "none";
+  }
+  const offset = job.final_offset_s || 0;
+  finalNoteEl.textContent = offset > 0
+    ? `Opens with the highlights reel; the full meeting starts at ${clock(offset)}.`
+    : "The cleaned meeting (no highlights reel for this one).";
+
+  resultActionsEl.textContent = "";
+  if (job.bundle_path) addLink(resultActionsEl, `/jobs/${id}/bundle`, "Download everything (.zip)", { download: true, primary: true });
+  if (has("final.mp4")) addLink(resultActionsEl, artifactUrl(id, "final.mp4", true), "Final video", { download: true });
+  if (has("report.pdf")) addLink(resultActionsEl, artifactUrl(id, "report.pdf"), "Report (PDF)", { newTab: true });
+  if (has("transcript_removed.txt")) addLink(resultActionsEl, artifactUrl(id, "transcript_removed.txt"), "Removed text", { newTab: true });
+  if (has("transcript_clean.txt")) addLink(resultActionsEl, artifactUrl(id, "transcript_clean.txt"), "Transcript", { newTab: true });
+
+  removedVideo.removeAttribute("src");
+  if (has("removed.mp4")) {
+    removedVideo.src = artifactUrl(id, "removed.mp4");
+    const secs = arts["removed.mp4"].duration_s;
+    removedSummary.textContent = "Removed parts" + (secs ? ` (${clock(secs)})` : "");
+    removedWrap.classList.add("visible");
+  } else {
+    removedWrap.classList.remove("visible");
+  }
+
+  shortsGrid.textContent = "";
+  const shorts = Object.keys(arts).filter((n) => n.startsWith("shorts/") && n.endsWith(".mp4") && has(n));
+  shorts.forEach((name) => {
+    const fig = document.createElement("figure");
+    fig.dataset.name = name;
+    const v = document.createElement("video");
+    v.controls = true;
+    v.preload = "metadata";
+    v.src = artifactUrl(id, name);
+    fig.appendChild(v);
+    const cap = document.createElement("figcaption");
+    cap.textContent = name.replace("shorts/", "");
+    cap.appendChild(document.createElement("br"));
+    addLink(cap, artifactUrl(id, name, true), "download", { download: true });
+    fig.appendChild(cap);
+    shortsGrid.appendChild(fig);
+  });
+  shortsWrap.classList.toggle("visible", shorts.length > 0);
+  if (shorts.length) loadShortTitles(id, has("shorts/shorts.json"));
+}
+
+async function loadShortTitles(jobId, available) {
+  if (!available) return;
+  try {
+    const res = await fetch(artifactUrl(jobId, "shorts/shorts.json"));
+    if (!res.ok) return;
+    const list = await res.json();
+    shortsGrid.querySelectorAll("figure").forEach((fig) => {
+      const item = list.find((s) => s.file === fig.dataset.name);
+      if (!item || !item.title) return;
+      const title = document.createElement("div");
+      title.textContent = item.title;
+      fig.querySelector("figcaption").prepend(title);
+    });
+  } catch (e) {
+    /* titles are a nicety */
+  }
 }
 
 function clock(seconds) {
@@ -842,6 +1025,7 @@ async function renderPicks(jobId, canRender) {
     picksBodyEl.appendChild(tr);
   });
   renderBtn.style.display = canRender ? "block" : "none";
+  if (canRender) renderBtn.disabled = false; // it stays disabled after a successful click
   picksEl.classList.add("visible");
 }
 
@@ -857,13 +1041,24 @@ async function renderChapters(jobId) {
 }
 
 renderBtn.addEventListener("click", async () => {
-  if (!currentJobId) return;
+  if (!currentJobId || renderBtn.disabled) return;
   clearError();
-  const res = await fetch(`/jobs/${currentJobId}/render`, { method: "POST" });
+  // Disabled while the request is in flight: a second click used to send
+  // another POST that got a confusing 409 (the job was already queued).
+  renderBtn.disabled = true;
+  let res;
+  try {
+    res = await fetch(`/jobs/${currentJobId}/render`, { method: "POST" });
+  } catch (e) {
+    showError("Can't reach the server: " + e.message);
+    renderBtn.disabled = false;
+    return;
+  }
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     showError(body.error_code === "busy" ? "Another job is still running. Try again when it has finished."
       : (typeof body.detail === "string" ? body.detail : "Couldn't start rendering."));
+    renderBtn.disabled = false;
     return;
   }
   picksEl.classList.remove("visible");
@@ -883,6 +1078,7 @@ submitBtn.addEventListener("click", submit);
 urlInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") submit();
 });
+resumeFromUrl();
 </script>
 </body>
 </html>

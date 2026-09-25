@@ -55,6 +55,9 @@ class VideoPart:
     frames: int
     fade_frames: int = 0
     range_indices: list[int] = field(default_factory=list)
+    # the range each input reads from (same order as `inputs`), so per-range
+    # overlays (removed.mp4 labels) land on the right input
+    input_ranges: list[int] = field(default_factory=list)
 
     def xfade_offsets(self) -> list[int]:
         """Frame offset of each dissolve start within this part's output."""
@@ -85,14 +88,16 @@ def split_into_atoms(ranges: list[tuple[int, int]], max_atom_frames: int) -> lis
 
 def check_ranges(ranges: list[tuple[int, int]], fade_frames: int, total_frames: int | None = None) -> None:
     """The invariants the half-extension relies on (the EDL builder enforces
-    them; the renderer re-checks so a bad EDL fails loudly, not silently)."""
+    them; the renderer re-checks so a bad EDL fails loudly, not silently).
+    A lone range has no cut, so no dissolve and no minimum length: a clip
+    shorter than d frames (full-video fallback of a 0.3 s file) must render."""
     d = fade_frames
     for i, (s, e) in enumerate(ranges):
         if e <= s:
             raise PlanError(f"range {i} is empty: [{s}, {e})")
         if s < 0 or (total_frames is not None and e > total_frames):
             raise PlanError(f"range {i} [{s}, {e}) is outside the source (0..{total_frames})")
-        if d and e - s < d:
+        if d and len(ranges) > 1 and e - s < d:
             raise PlanError(f"range {i} is {e - s} frames, shorter than the {d}-frame dissolve")
         if i:
             gap = s - ranges[i - 1][1]
@@ -152,13 +157,15 @@ def plan_video(
         joins = len(spans) - 1
         join = "none" if joins == 0 else ("xfade" if d else "concat")
         frames = sum(sp.frames for sp in spans) - joins * d
-        parts.append(VideoPart("batch", spans, join, frames, d, sorted({a.range_index for a in group})))
+        parts.append(VideoPart("batch", spans, join, frames, d, sorted({a.range_index for a in group}),
+                               [a.range_index for a in group]))
         if g < len(groups) - 1 and boundaries[g] == "seam":
             e = group[-1].end
             s_next = groups[g + 1][0].start
+            pair = [group[-1].range_index, groups[g + 1][0].range_index]
             parts.append(
                 VideoPart("seam", [InputSpan(e - h, e + h), InputSpan(s_next - h, s_next + h)], "xfade", d, d,
-                          [group[-1].range_index, groups[g + 1][0].range_index])
+                          pair, pair)
             )
 
     expected = sum(e - s for s, e in ranges)

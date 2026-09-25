@@ -11,15 +11,25 @@ class Settings(BaseSettings):
     hf_token: str = ""
     gemini_api_key: str = ""
     gemini_model: str = "gemini-3.5-flash-lite"
-    # Segments are batched into calls of at most this size so a single response
-    # (all decisions for the batch) can't grow past the model's max output
-    # tokens and get truncated mid-JSON — see decide/gemini_client.py. 30
-    # sentences ≈ 2k output tokens with the v2 multi-label schema.
-    gemini_max_segments_per_call: int = 30
+    # Sentences judged per call. The v2 exchange is compact (numbered text
+    # lines in, 1-letter JSON keys out, ~15 output tokens per sentence), so 60
+    # fit comfortably; fewer calls also means the system prompt is re-sent
+    # less often. A truncated answer still splits the chunk automatically.
+    gemini_max_segments_per_call: int = 60
+    # Read-only neighbours shown on each side of a chunk so sentences at a
+    # chunk edge are judged in context.
+    gemini_context_segments: int = 3
     # Client-side limiter (the free tier allows 15 requests/minute).
     gemini_rpm: int = 14
-    # The whole decide stage (all chunks + re-rank) must finish within this.
+    # Per-request HTTP timeout, so a stalled call can never wedge the worker.
+    gemini_request_timeout_s: float = 120.0
+    # The decide stage (all chunks + re-rank) must finish within this;
+    # chapters (after rendering) get their own, smaller budget.
     decide_max_wall_s: float = 1800.0
+    chapters_max_wall_s: float = 300.0
+    # A chunk whose kept sentences all score 0 is re-scored once (scores
+    # sometimes collapse for a whole chunk); at most this many per job.
+    gemini_max_rescores: int = 4
 
     # --- v2 highlights / shorts / chapters (plan D4, D6, D7, D10) ----------
     # What counts as "interesting" is the owner's call and will change; these
@@ -40,19 +50,31 @@ class Settings(BaseSettings):
     highlights_max_fraction: float = 0.3
     # Less than this much qualifying material -> no reel at all.
     highlights_min_s: float = 60.0
-    highlights_min_moment_s: float = 8.0
-    highlights_join_gap_s: float = 3.0
-    # Selection starts at the first threshold and lowers it until the reel
-    # reaches highlights_fill_s (or the budget).
-    highlights_thresholds: list[int] = [7, 6, 5, 4]
-    highlights_fill_s: float = 180.0
+    # Reel clips shorter than this are widened with neighbouring sentences.
+    highlights_min_moment_s: float = 12.0
+    # Candidates are ranked by the re-rank's score and given a calibrated
+    # 0-10 score from their rank (the model's own scores swing too much from
+    # run to run to use as absolute thresholds). Moments below this calibrated
+    # score (~the bottom half) never enter the reel or the shorts, and neither
+    # does anything the re-rank itself scored below highlights_min_raw_score.
+    highlights_min_score: float = 5.0
+    highlights_min_raw_score: float = 2.0
+    # No more than this share of the reel may come from any one stretch of
+    # highlights_diversity_window_s of the meeting (relaxed if the reel would
+    # otherwise stay short).
+    highlights_max_share_per_window: float = 0.35
+    highlights_diversity_window_s: float = 600.0
+    # Candidate moments: sentences scoring >= floor (funny ones from
+    # funny_floor) joined across pauses <= join gap / <= 2 bridged lines.
+    highlights_candidate_floor: int = 3
+    highlights_funny_floor: int = 2
+    highlights_join_gap_s: float = 10.0
     rerank_max_candidates: int = 60
     rerank_context_segments: int = 3
     shorts_count: int = 4
     shorts_min_s: float = 20.0
     shorts_max_s: float = 60.0
     chapters_enabled: bool = True
-    chapter_block_s: float = 50.0
 
     whisperx_model: str = "small"
     whisperx_device: str = "cpu"
@@ -95,6 +117,29 @@ class Settings(BaseSettings):
     # drawtext/subtitles need an explicit font file (fontconfig lookups crash
     # the Windows ffmpeg build). Empty = auto-detect DejaVu/Arial.
     font_file: str = ""
+
+    # --- v2 outputs (plan D8, D9, D12, D18) ---------------------------------
+    # "<topic> / Full meeting" card between the highlights reel and the
+    # cleaned meeting in final.mp4 (0 = none). Only used when there is a reel.
+    title_card_s: float = 2.0
+    # Also ship the highlights reel on its own (it is the start of final.mp4).
+    highlights_file_enabled: bool = True
+    # final.mp4 already contains the cleaned meeting; a separate copy doubles
+    # disk and upload size, so it is off by default.
+    keep_cleaned_separately: bool = False
+    shorts_width: int = 1080
+    shorts_height: int = 1920
+    # Burn captions (and the moment's title) into the shorts; an .srt is
+    # shipped next to each short either way.
+    shorts_burn_captions: bool = True
+    report_enabled: bool = True
+    # After bundle.zip is written: False = delete the individual files and keep
+    # only the zip + manifest (EC2, where disk is tight); True = keep them so
+    # the UI can play them (local).
+    serve_individual_artifacts: bool = True
+    # Delete the source recording when the job is done, if it lives inside the
+    # job folder (Zoom downloads/uploads; never a file elsewhere). EC2: true.
+    delete_source_when_done: bool = False
 
     # --- v2 service / lifecycle (plan D14-D16) -----------------------------
     # X-API-Key for every route except /health and the static UI pages.

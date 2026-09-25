@@ -5,10 +5,14 @@ Every video piece is re-encoded exactly once with the STANDARD profile
 previous keyframe, which put ~78 s of removed content back into the 98-minute
 regression job. Cut points are whole source frames:
 
-* video inputs seek half a frame early (`-ss`), so the first frame kept by
-  ffmpeg's accurate seek is exactly frame `a`; the filter chain then resets
-  timestamps, forces CFR, pads the tail by cloning (so a short source can never
-  make a piece a frame short) and trims to exactly N frames;
+* video inputs seek a quarter frame early (`-ss`) and `fps` resamples onto a
+  grid anchored at the SEEK POINT (start_time=0, round=down), so output frame j
+  is whatever is on screen at source time (a + j)/F. Anchoring on the first
+  decoded frame instead (setpts=PTS-STARTPTS) shifted whole ranges out of A/V
+  sync when that frame is late: a VFR held frame across the cut, or a video
+  stream that starts after the audio. The chain then pads the tail by cloning
+  (so a short source can never make a piece a frame short) and trims to
+  exactly N frames;
 * audio is cut from a timestamp-normalised 48 kHz FLAC by sample count, with
   cumulative sample boundaries so the total is exact even at 29.97 fps.
 
@@ -28,6 +32,7 @@ from core.logging import get_logger
 from core.proc import run_checked
 from core.timeline import AUDIO_RATE, rate_str, ts
 
+from .fonts import filter_path
 from .plan import InputSpan, VideoPart
 from .profile import AUDIO_ARGS, BASE_ARGS, ffmpeg_timeout, video_args
 
@@ -47,30 +52,53 @@ def ffmpeg_bin() -> str:
 
 
 def video_input_args(src: Path, span: InputSpan, fps: Fraction) -> list[str]:
-    """Seek half a frame before `span.start` so frame `span.start` is the first
-    one kept, and read a few frames past the end (the graph trims exactly)."""
+    """Seek a quarter frame before `span.start` and read a few frames past the
+    end (the graph trims exactly). After the seek, frame n sits at (n - a +
+    1/4)/F, so the chain's round-down fps grid maps it to slot n - a with a
+    quarter-frame margin either side: frame a-1 is dropped by the accurate
+    seek, and a coarse track timescale (e.g. 1/fps, where half a frame is not
+    representable) or the microsecond -ss rounding cannot move a frame into
+    the neighbouring slot."""
     args: list[str] = []
     if span.start > 0:
-        args += ["-ss", ts(Fraction(2 * span.start - 1, 2) / fps)]
+        args += ["-ss", ts(Fraction(4 * span.start - 1, 4) / fps)]
     args += ["-t", ts(Fraction(span.frames + 3) / fps), "-i", str(src)]
     return args
 
 
-def video_input_chain(k: int, span: InputSpan, fps: Fraction, width: int, height: int, label: str) -> str:
-    return (
-        f"[{k}:v]setpts=PTS-STARTPTS,fps={rate_str(fps)},scale={width}:{height},setsar=1,format=yuv420p,"
-        f"tpad=stop_mode=clone:stop=3,trim=end_frame={span.frames},setpts=PTS-STARTPTS[{label}]"
-    )
+def exact_frames_chain(k: int, frames: int, fps: Fraction, normalise: str = "") -> str:
+    """The start of every video input chain: exactly `frames` frames on the
+    source grid, timestamps from 0 (`normalise`, if given, ends with ",").
+
+    No setpts before `fps`: the input timestamps are already relative to the
+    seek point (or to the file start, which is also where the audio FLAC
+    starts), and `start_time=0` keeps that anchor, padding with the first
+    decoded frame if it arrives late. Re-anchoring on the first frame would
+    pull everything after a late first frame early, out of sync with audio."""
+    return (f"[{k}:v]fps={rate_str(fps)}:start_time=0:round=down,{normalise}"
+            f"tpad=stop_mode=clone:stop=3,trim=end_frame={frames},setpts=PTS-STARTPTS")
 
 
-def build_video_part_graph(part: VideoPart, fps: Fraction, width: int, height: int) -> str:
-    """Filter graph for one batch/seam: per-input normalise+trim, then an
-    xfade chain (dissolves) or a concat (hard cuts). Output label [vout]."""
+def video_input_chain(k: int, span: InputSpan, fps: Fraction, width: int, height: int, label: str,
+                      overlay: str = "") -> str:
+    """Normalised input: `overlay` (e.g. a drawtext label) is applied after the trim."""
+    chain = exact_frames_chain(k, span.frames, fps, f"scale={width}:{height},setsar=1,format=yuv420p,")
+    return f"{chain}{',' + overlay if overlay else ''}[{label}]"
+
+
+def build_video_part_graph(part: VideoPart, fps: Fraction, width: int, height: int,
+                           overlays: dict[int, str] | None = None) -> str:
+    """Filter graph for one batch/seam: per-input normalise+trim (+ an optional
+    per-range overlay), then an xfade chain (dissolves) or a concat (hard
+    cuts). Output label [vout]."""
     n = len(part.inputs)
     lines = []
     for k, span in enumerate(part.inputs):
         label = "vout" if n == 1 else f"v{k}"
-        lines.append(video_input_chain(k, span, fps, width, height, label))
+        overlay = ""
+        if overlays and k < len(part.input_ranges):
+            overlay = overlays.get(part.input_ranges[k], "")
+        lines.append(video_input_chain(k, span, fps, width, height, label, overlay))
     if n > 1 and part.join == "concat":
         lines.append("".join(f"[v{k}]" for k in range(n)) + f"concat=n={n}:v=1:a=0[vout]")
     elif n > 1:
@@ -86,9 +114,10 @@ def build_video_part_graph(part: VideoPart, fps: Fraction, width: int, height: i
 
 
 def build_video_part_cmd(
-    src: Path, part: VideoPart, fps: Fraction, width: int, height: int, graph_path: Path, dest: Path
+    src: Path, part: VideoPart, fps: Fraction, width: int, height: int, graph_path: Path, dest: Path,
+    overlays: dict[int, str] | None = None,
 ) -> list[str]:
-    graph_path.write_text(build_video_part_graph(part, fps, width, height), encoding="utf-8")
+    graph_path.write_text(build_video_part_graph(part, fps, width, height, overlays), encoding="utf-8")
     cmd = [ffmpeg_bin(), *BASE_ARGS]
     for span in part.inputs:
         cmd += video_input_args(src, span, fps)
@@ -98,11 +127,20 @@ def build_video_part_cmd(
 
 
 def render_video_part(
-    src: Path, part: VideoPart, fps: Fraction, width: int, height: int, graph_path: Path, dest: Path
+    src: Path, part: VideoPart, fps: Fraction, width: int, height: int, graph_path: Path, dest: Path,
+    overlays: dict[int, str] | None = None,
 ) -> None:
-    cmd = build_video_part_cmd(src, part, fps, width, height, graph_path, dest)
+    cmd = build_video_part_cmd(src, part, fps, width, height, graph_path, dest, overlays)
     logger.debug("render %s (%d inputs, %d frames): %s", part.kind, len(part.inputs), part.frames, dest.name)
     run_checked(cmd, timeout=ffmpeg_timeout(float(Fraction(part.frames) / fps)))
+
+
+def _concat_quote(path: str) -> str:
+    """Single-quote a path for a concat-demuxer list. Inside quotes the only
+    special character is the quote itself, written as '\\'' (close, escaped
+    quote, reopen); unescaped, an apostrophe anywhere in the storage path
+    ("O'Brien jobs") broke every multi-part render."""
+    return "'" + path.replace("'", "'\\''") + "'"
 
 
 def concat_copy(pieces: list[Path], dest: Path, list_path: Path, durations_s: list[str] | None = None,
@@ -111,7 +149,7 @@ def concat_copy(pieces: list[Path], dest: Path, list_path: Path, durations_s: li
     encoder profile first (profile.assert_concat_compatible)."""
     lines = []
     for i, piece in enumerate(pieces):
-        lines.append(f"file '{piece.resolve().as_posix()}'")
+        lines.append(f"file {_concat_quote(piece.resolve().as_posix())}")
         if durations_s is not None:
             lines.append(f"duration {durations_s[i]}")
     list_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -128,7 +166,10 @@ def extract_audio_flac(src: Path, dest: Path, channels: int, source_duration_s: 
     straight from the mp4 drifted +319 ms over 111 cuts (source pts gaps);
     every deliverable's audio is cut from this file instead."""
     ch = 1 if channels == 1 else 2
-    cmd = [ffmpeg_bin(), *BASE_ARGS, "-i", str(src), "-vn", "-af", "aresample=async=1:first_pts=0",
+    # regular frames: a late-starting track makes aresample emit a short
+    # padding frame first, which the FLAC encoder would take as its block size
+    cmd = [ffmpeg_bin(), *BASE_ARGS, "-i", str(src), "-vn", "-af",
+           f"aresample=async=1:first_pts=0,aresample={AUDIO_RATE},{AUDIO_REFRAME}",
            "-ar", str(AUDIO_RATE), "-ac", str(ch), "-c:a", "flac", str(dest)]
     run_checked(cmd, timeout=ffmpeg_timeout(source_duration_s / 10.0))
 
@@ -151,23 +192,35 @@ def audio_input_args(flac: Path, piece: AudioPiece) -> tuple[list[str], int]:
     return args, pre
 
 
+# Re-chunk the joined audio into regular frames before the FLAC encoder,
+# which takes its block size from the first frame it gets: a cut that left
+# only 12 samples in the first decoded frame made it fail with "invalid block
+# size: 12" (found on the 98-minute regression meeting). p=0: never pad, the
+# sample count must stay exact.
+AUDIO_REFRAME = "asetnsamples=n=4096:p=0"
+
+
 def build_audio_graph(pieces: list[AudioPiece], pres: list[int]) -> str:
     lines = []
     n = len(pieces)
     for k, (piece, pre) in enumerate(zip(pieces, pres)):
         # tail-pad with silence so a piece that runs into the end of the file
-        # still yields exactly `samples` samples.
-        chain = (f"[{k}:a]apad=pad_len={AUDIO_SEEK_MARGIN},"
+        # still yields exactly `samples` samples. Unbounded: the source audio
+        # may end up to 1 s before the video (ingest allows it), and atrim
+        # ends the stream at end_sample anyway.
+        chain = (f"[{k}:a]apad,"
                  f"atrim=start_sample={pre}:end_sample={pre + piece.samples},asetpts=PTS-STARTPTS")
         fade = min(MICRO_FADE_SAMPLES, piece.samples // 4)
         if piece.fade_in and fade:
             chain += f",afade=t=in:ss=0:ns={fade}"
         if piece.fade_out and fade:
             chain += f",afade=t=out:ss={piece.samples - fade}:ns={fade}"
-        label = "aout" if n == 1 else f"a{k}"
-        lines.append(f"{chain}[{label}]")
+        if n == 1:
+            lines.append(f"{chain},{AUDIO_REFRAME}[aout]")
+        else:
+            lines.append(f"{chain}[a{k}]")
     if n > 1:
-        lines.append("".join(f"[a{k}]" for k in range(n)) + f"concat=n={n}:v=0:a=1[aout]")
+        lines.append("".join(f"[a{k}]" for k in range(n)) + f"concat=n={n}:v=0:a=1,{AUDIO_REFRAME}[aout]")
     return ";\n".join(lines)
 
 
@@ -210,3 +263,109 @@ def mux(video: Path, audio: Path, dest: Path, content_s: float = 0.0) -> None:
     cmd = [ffmpeg_bin(), *BASE_ARGS, "-i", str(video), "-i", str(audio), "-map", "0:v:0", "-map", "1:a:0",
            "-c", "copy", "-movflags", "+faststart", str(dest)]
     run_checked(cmd, timeout=ffmpeg_timeout(content_s / 20.0))
+
+
+def render_silence_flac(dest: Path, samples: int, channels: int) -> None:
+    """Exactly `samples` samples of silence (the title card's audio)."""
+    layout = "mono" if channels == 1 else "stereo"
+    cmd = [ffmpeg_bin(), *BASE_ARGS, "-f", "lavfi", "-i", f"anullsrc=r={AUDIO_RATE}:cl={layout}",
+           "-af", f"atrim=end_sample={samples}", "-c:a", "flac", str(dest)]
+    run_checked(cmd, timeout=ffmpeg_timeout(samples / AUDIO_RATE))
+
+
+# ------------------------------------------------------------ text overlays
+
+
+def drawtext(font: Path, textfile: Path, *, size: int, x: str = "(w-tw)/2", y: str = "24", color: str = "white",
+             box: bool = True) -> str:
+    """A drawtext filter reading its text from a UTF-8 file (no escaping of
+    arbitrary text) with an explicit font file (fontconfig lookups crash the
+    Windows build). expansion=none: drawtext still expands %{...} and
+    backslashes in a textfile, so "100% done" failed and "C:\\new" lost its
+    backslashes."""
+    parts = [f"fontfile={filter_path(font)}", f"textfile={filter_path(textfile)}", "expansion=none",
+             f"fontsize={size}", f"fontcolor={color}", "text_align=C", f"x={x}", f"y={y}"]
+    if box:
+        parts += ["box=1", "boxcolor=black@0.6", f"boxborderw={max(4, size // 3)}"]
+    return "drawtext=" + ":".join(parts)
+
+
+def color_params(tags: dict[str, str]) -> str:
+    """setparams for the source's colour tags, so a generated frame (title
+    card) encodes with the same SPS/VUI as pieces cut from the source — else
+    `concat -c copy` would join two different streams (the extradata assert
+    catches that)."""
+    keys = {"color_primaries": "color_primaries", "color_transfer": "color_trc", "color_space": "colorspace",
+            "color_range": "range"}
+    opts = [f"{keys[k]}={v}" for k, v in tags.items() if k in keys and v and v != "unknown"]
+    return ("setparams=" + ":".join(opts) + ",") if opts else ""
+
+
+def build_card_graph(*, fps: Fraction, width: int, height: int, frames: int, font: Path, bold_font: Path,
+                     title_file: Path | None, subtitle_file: Path, title_size: int, subtitle_size: int,
+                     color_tags: dict[str, str]) -> str:
+    """Black card, the meeting topic (optional) above a smaller grey
+    "Full meeting", fading in and out."""
+    duration = Fraction(frames) / fps
+    fade = min(Fraction(3, 10), duration / 4)
+    gap = max(8, height // 40)
+    chain = (f"color=c=black:s={width}x{height}:r={rate_str(fps)},format=yuv420p,setsar=1,"
+             f"{color_params(color_tags)}")
+    if title_file is not None:
+        chain += drawtext(bold_font, title_file, size=title_size, y=f"h/2-th-{gap}", box=False) + ","
+        sub_y = f"h/2+{gap}"
+    else:
+        sub_y = "(h-th)/2"
+    chain += drawtext(font, subtitle_file, size=subtitle_size, y=sub_y, color="0xBBBBBB", box=False) + ","
+    chain += (f"fade=t=in:st=0:d={ts(fade)},fade=t=out:st={ts(duration - fade)}:d={ts(fade)},"
+              f"trim=end_frame={frames}[vout]")
+    return chain
+
+
+def render_card_video(dest: Path, graph: str, graph_path: Path, fps: Fraction, frames: int) -> None:
+    graph_path.write_text(graph, encoding="utf-8")
+    cmd = [ffmpeg_bin(), *BASE_ARGS, "-/filter_complex", str(graph_path), "-map", "[vout]", "-an",
+           *video_args(fps), "-frames:v", str(frames), str(dest)]
+    run_checked(cmd, timeout=ffmpeg_timeout(float(Fraction(frames) / fps)))
+
+
+# --------------------------------------------------------------------- shorts
+
+SHORT_FADE_SAMPLES = 4800  # 100 ms in/out: a short starts and ends mid-conversation
+
+
+def build_short_graph(*, frames: int, fps: Fraction, width: int, height: int, pre: int, samples: int,
+                      subtitles: str = "") -> str:
+    """Vertical short: the frame scaled to fit the width, over a blurred,
+    zoomed copy of itself (blurred at quarter size, then upscaled — same look,
+    a fraction of the cost), optional burned captions, audio from the FLAC."""
+    bw, bh = max(2, width // 4 // 2 * 2), max(2, height // 4 // 2 * 2)
+    fade = min(SHORT_FADE_SAMPLES, samples // 4)
+    lines = [
+        exact_frames_chain(0, frames, fps) + ",split=2[b0][f0]",
+        (f"[b0]scale={bw}:{bh}:force_original_aspect_ratio=increase,crop={bw}:{bh},"
+         f"boxblur=luma_radius=8:luma_power=2:chroma_radius=4:chroma_power=2,scale={width}:{height},setsar=1[bg]"),
+        f"[f0]scale={width}:{height}:force_original_aspect_ratio=decrease:force_divisible_by=2,setsar=1[fg]",
+        f"[bg][fg]overlay=(W-w)/2:(H-h)/2{',' + subtitles if subtitles else ''},format=yuv420p[vout]",
+        f"[1:a]apad,atrim=start_sample={pre}:end_sample={pre + samples},asetpts=PTS-STARTPTS"
+        + (f",afade=t=in:ss=0:ns={fade},afade=t=out:ss={samples - fade}:ns={fade}" if fade else "") + "[aout]",
+    ]
+    return ";\n".join(lines)
+
+
+def subtitles_filter(ass_path: Path, fonts_dir: Path | None) -> str:
+    opts = [f"filename={filter_path(ass_path)}"]
+    if fonts_dir is not None:
+        opts.append(f"fontsdir={filter_path(fonts_dir)}")
+    return "subtitles=" + ":".join(opts)
+
+
+def render_short(src: Path, flac: Path, span: InputSpan, piece: AudioPiece, graph: str, graph_path: Path,
+                 dest: Path, fps: Fraction) -> None:
+    graph_path.write_text(graph, encoding="utf-8")
+    audio_args, _ = audio_input_args(flac, piece)
+    cmd = [ffmpeg_bin(), *BASE_ARGS, *video_input_args(src, span, fps), *audio_args,
+           "-/filter_complex", str(graph_path), "-map", "[vout]", "-map", "[aout]",
+           *video_args(fps), *AUDIO_ARGS, "-frames:v", str(span.frames), "-movflags", "+faststart", str(dest)]
+    # a 1080x1920 blur+overlay encode is ~3-4x the work of a 720p piece
+    run_checked(cmd, timeout=ffmpeg_timeout(4.0 * float(Fraction(span.frames) / fps)))

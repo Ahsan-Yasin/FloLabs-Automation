@@ -13,7 +13,9 @@ from __future__ import annotations
 import hmac
 from urllib.parse import unquote
 
-from fastapi import HTTPException, Request
+from starlette.requests import HTTPConnection
+from starlette.responses import JSONResponse
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from core.config import get_settings
 
@@ -26,13 +28,33 @@ def auth_enabled() -> bool:
     return bool(get_settings().hc_api_token)
 
 
-async def require_api_key(request: Request) -> None:
+def _authorized(scope: Scope) -> bool:
     token = get_settings().hc_api_token
-    if not token or request.url.path in PUBLIC_PATHS:
-        return
-    supplied = request.headers.get(API_KEY_HEADER) or unquote(request.cookies.get(API_KEY_COOKIE) or "")
-    if not hmac.compare_digest(supplied.encode(), token.encode()):
-        raise HTTPException(
+    conn = HTTPConnection(scope)  # headers and cookies only; never touches the body
+    if not token or conn.url.path in PUBLIC_PATHS:
+        return True
+    supplied = conn.headers.get(API_KEY_HEADER) or unquote(conn.cookies.get(API_KEY_COOKIE) or "")
+    return hmac.compare_digest(supplied.encode(), token.encode())
+
+
+class ApiKeyMiddleware:
+    """Pure ASGI middleware, so the key is checked before routing and before
+    anything calls `receive`. As an app-level dependency the check ran only
+    after FastAPI had parsed the request: an anonymous multi-GB upload was
+    spooled to disk just to be answered 401. Being ahead of the router it also
+    covers paths no route matches (no route enumeration without a key)."""
+
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] not in ("http", "websocket") or _authorized(scope):
+            await self.app(scope, receive, send)
+            return
+        response = JSONResponse(
             status_code=401,
-            detail={"error_code": "unauthorized", "message": f"missing or wrong {API_KEY_HEADER}"},
+            content={
+                "detail": {"error_code": "unauthorized", "message": f"missing or wrong {API_KEY_HEADER}"}
+            },
         )
+        await response(scope, receive, send)

@@ -1,3 +1,4 @@
+import re
 import shutil
 import uuid
 from pathlib import Path
@@ -11,6 +12,16 @@ ALLOWED_TRANSCRIPT_SUFFIXES = {".vtt", ".srt"}
 
 def job_dir(job_id: str) -> Path:
     return get_settings().jobs_dir / job_id
+
+
+def title_from_filename(filename: str) -> str:
+    """A readable meeting name from an upload's file name
+    ("weekly_sync-2026.mp4" -> "weekly sync 2026"); empty for generic names."""
+    stem = Path(filename or "").stem
+    # generic names, and our own storage names (YouTube downloads are <uuid hex>.mp4)
+    if stem.lower() in ("", "source", "upload", "video") or re.fullmatch(r"[0-9a-fA-F]{32}", stem):
+        return ""
+    return " ".join(stem.replace("_", " ").replace("-", " ").split())[:120]
 
 
 def store_video(filename: str, fileobj: BinaryIO, job_id: str | None = None) -> tuple[str, Path]:

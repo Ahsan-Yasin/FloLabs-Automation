@@ -1,7 +1,9 @@
 """YouTube chapters (plan D10).
 
-1. `generate_chapters`: the LLM picks topic starts from ~50 s blocks of the
-   CLEANED transcript (block starts are sentence starts, cleaned time).
+1. `generate_chapters`: the LLM picks the sentence that introduces each topic
+   from the CLEANED transcript (numbered lines with their cleaned time).
+   Sentence-level picks put a chapter exactly where the new topic starts; the
+   first version used ~50 s blocks and started 5 of 12 chapters 20-40 s early.
 2. `finalize_chapters`: map them onto the final video — with a highlights reel
    in front, shift by the reel's measured length and prepend "00:00
    Highlights"; without one, the first topic starts at 00:00 — then drop
@@ -16,17 +18,16 @@ description stays under 5000 bytes. Titles must not contain < or >.
 from __future__ import annotations
 
 import itertools
-import json
 import math
 import re
+import statistics
 from dataclasses import dataclass, field
 
-from core.config import get_settings
 from core.logging import get_logger
 from core.models import Chapter, Word
 
-from .gemini_client import DecisionError, GeminiCaller, make_caller
-from .prompts import chapters_prompt, chapters_schema
+from .gemini_client import DecisionError, GeminiCaller, LazyCaller, make_caller
+from .prompts import chapters_prompt
 
 logger = get_logger(__name__)
 
@@ -34,7 +35,10 @@ MIN_CHAPTERS = 3
 MIN_CHAPTER_S = 10.0
 MAX_DESCRIPTION_BYTES = 5000
 TITLE_LIMIT = 60
-BLOCK_TEXT_LIMIT = 1200
+LINE_TEXT_LIMIT = 220  # characters of each sentence sent (topic changes show early)
+MAX_CHAPTER_S = 600.0  # "no chapter longer than about 10 minutes"
+LONG_CHAPTER_FACTOR = 2.5
+MIN_TOPIC_S = 45.0  # shorter "chapters" are usually a mis-numbered line
 
 
 @dataclass
@@ -42,30 +46,6 @@ class ChapterResult:
     chapters: list[Chapter]
     ok: bool
     problems: list[str] = field(default_factory=list)
-
-
-def build_blocks(clean_words: list[Word], block_s: float = 50.0) -> list[dict]:
-    """Consecutive sentences grouped into blocks of about `block_s` seconds;
-    every block starts at a sentence start (cleaned time)."""
-    blocks: list[dict] = []
-    current: list[Word] = []
-
-    def flush():
-        if current:
-            text = " ".join(w.word for w in current)
-            blocks.append({
-                "block": len(blocks),
-                "start": round(current[0].start, 2),
-                "text": text[:BLOCK_TEXT_LIMIT],
-            })
-
-    for w in clean_words:
-        if current and w.start - current[0].start >= block_s:
-            flush()
-            current = []
-        current.append(w)
-    flush()
-    return blocks
 
 
 def chapter_count_range(duration_s: float) -> tuple[int, int]:
@@ -77,62 +57,113 @@ def chapter_count_range(duration_s: float) -> tuple[int, int]:
 
 def clean_title(title: str) -> str:
     text = re.sub(r"[<>\r\n\t]+", " ", str(title or ""))
-    text = re.sub(r"^[\s\-–—:|•\d.]+", "", text)  # no leading timestamp/bullet
+    # strip only a real leading timestamp, list number or bullet — never the
+    # start of a title like "3D viewer demo"
+    text = re.sub(r"^\s*(?:(?:\d{1,2}:)?\d{1,2}:\d{2}\s*[-–—:|•]?\s*|(?:\d+[.)]|[-–—•|])\s+)", "", text)
     text = re.sub(r"\s{2,}", " ", text).strip().strip('"').strip()
     if len(text) > TITLE_LIMIT:
         text = text[: TITLE_LIMIT - 1].rstrip() + "…"
     return text
 
 
+def _clock(seconds: float, hours: bool = False) -> str:
+    total = max(0, math.floor(seconds + 1e-6))
+    h, rem = divmod(total, 3600)
+    m, s = divmod(rem, 60)
+    if h or hours:
+        return f"{h}:{m:02d}:{s:02d}"
+    return f"{m:02d}:{s:02d}"
+
+
+def chapter_lines(clean_words: list[Word]) -> str:
+    return "\n".join(f"[{i} {_clock(w.start)}] {w.word[:LINE_TEXT_LIMIT]}" for i, w in enumerate(clean_words))
+
+
 def generate_chapters(
-    clean_words: list[Word], duration_s: float, *, caller: GeminiCaller | None = None
+    clean_words: list[Word], duration_s: float, *, caller: GeminiCaller | LazyCaller | None = None
 ) -> ChapterResult:
     """Topic chapters on the cleaned timeline. One retry with the problems
     spelled out; never raises for bad output (chapters are optional)."""
-    settings = get_settings()
-    blocks = build_blocks(clean_words, settings.chapter_block_s)
-    if duration_s < MIN_CHAPTERS * MIN_CHAPTER_S + MIN_CHAPTER_S or len(blocks) < MIN_CHAPTERS:
+    if duration_s < (MIN_CHAPTERS + 1) * MIN_CHAPTER_S or len(clean_words) < MIN_CHAPTERS:
         return ChapterResult([], False, ["video too short for chapters"])
     lo, hi = chapter_count_range(duration_s)
+    max_min = max(3, round(max(MAX_CHAPTER_S, 0.15 * duration_s) / 60))
     caller = caller or make_caller()
-    system = chapters_prompt(lo, hi, int(MIN_CHAPTER_S))
-    payload = json.dumps(
-        [{"block": b["block"], "start": _clock(b["start"]), "text": b["text"]} for b in blocks], ensure_ascii=False
-    )
+    system = chapters_prompt(lo, hi, int(MIN_CHAPTER_S), max_min)
+    payload = chapter_lines(clean_words)
     note = ""
     problems: list[str] = []
-    for _attempt in range(2):
+    for attempt in range(2):
         try:
-            response = caller.generate(system, f"{note}\n\n{payload}" if note else payload, chapters_schema())
-            data = json.loads(response.text)
-            items = data.get("chapters") if isinstance(data, dict) else data
-            chapters = _to_chapters(items, blocks)
-        except (json.JSONDecodeError, ValueError, TypeError, AttributeError, KeyError, DecisionError) as exc:
+            response = caller.generate(system, f"{note}\n\n{payload}" if note else payload)
+            chapters = _to_chapters(parse_chapter_lines(response.text), clean_words)
+        except (ValueError, TypeError, AttributeError, KeyError, DecisionError) as exc:
             problems = [f"unusable answer: {exc}"]
-            note = "Your previous answer was not valid JSON matching the schema. Try again."
+            note = 'Your previous answer was not in the form "<line number>|<title>", one per line. Try again.'
             continue
         _, problems = finalize_chapters(chapters, final_duration_s=duration_s, reel_s=0.0)
-        if not problems:
+        long_ones = _too_long(chapters, duration_s)
+        if not problems and not long_ones:
             return ChapterResult(chapters, True)
+        if not problems and attempt == 1:
+            return ChapterResult(chapters, True)  # long chapters are a quality issue, not invalid
+        problems = problems + long_ones
         note = "Your previous chapters were rejected: " + "; ".join(problems) + ". Fix these and answer again."
         logger.warning("chapters rejected (%s), retrying once", "; ".join(problems))
     return ChapterResult([], False, problems)
 
 
-def _to_chapters(items, blocks: list[dict]) -> list[Chapter]:
+def _too_long(chapters: list[Chapter], duration_s: float) -> list[str]:
+    """Quality problems worth one retry: a chapter far longer than the rest
+    (several topics lumped together), or one too short to be a topic (usually
+    a mis-numbered line). Not invalid — the retry's answer is used either way."""
+    if len(chapters) < 2:
+        return []
+    bounds = [c.start for c in chapters] + [duration_s]
+    lengths = [b - a for a, b in itertools.pairwise(bounds)]
+    limit = max(MAX_CHAPTER_S, LONG_CHAPTER_FACTOR * statistics.median(lengths))
+    problems = [
+        f"the chapter '{c.title}' at {_clock(c.start)} runs {length / 60:.0f} minutes — split it where the "
+        "topic, team or item changes"
+        for c, length in zip(chapters, lengths, strict=True) if length > limit
+    ]
+    problems += [
+        f"the chapter '{c.title}' at {_clock(c.start)} lasts only {length:.0f} seconds — start each chapter at "
+        "the line where its topic really begins"
+        for c, length in zip(chapters, lengths, strict=True) if length < MIN_TOPIC_S
+    ]
+    return problems
+
+
+_CHAPTER_LINE = re.compile(r"^\[?(\d+)(?:\s+[\d:]+)?\]?\s*\|\s*(.+)$")
+
+
+def parse_chapter_lines(raw: str) -> list[dict]:
+    """'<line number>|<title>' lines; other lines are ignored."""
+    items = []
+    for line in (raw or "").splitlines():
+        m = _CHAPTER_LINE.match(line.strip())
+        if m:
+            items.append({"i": int(m.group(1)), "t": m.group(2).strip()})
+    if not items:
+        raise ValueError("no chapter lines in the answer")
+    return items
+
+
+def _to_chapters(items, clean_words: list[Word]) -> list[Chapter]:
     if not isinstance(items, list):
         raise TypeError("no chapters list")
     seen: set[int] = set()
     chapters = []
     for item in items:
-        b = int(item["block"])
-        if not 0 <= b < len(blocks) or b in seen:
+        i = int(item["i"])
+        if not 0 <= i < len(clean_words) or i in seen:
             continue
-        title = clean_title(item.get("title", ""))
+        title = clean_title(item.get("t", ""))
         if not title:
             continue
-        seen.add(b)
-        chapters.append(Chapter(start=float(blocks[b]["start"]), title=title))
+        seen.add(i)
+        chapters.append(Chapter(start=float(clean_words[i].start), title=title))
     chapters.sort(key=lambda c: c.start)
     return chapters
 
@@ -146,6 +177,10 @@ def finalize_chapters(
     body = [(c.start + reel_s, clean_title(c.title)) for c in sorted(chapters, key=lambda c: c.start)]
     body = [(t, title) for t, title in body if title]
     if reel_s > 0:
+        # the first topic starts where the meeting starts, else "Highlights"
+        # would also cover the opening of the meeting
+        if body:
+            body[0] = (reel_s, body[0][1])
         entries = [(0.0, "Highlights")] + body
     else:
         entries = body
@@ -182,15 +217,6 @@ def validate_chapter_entries(entries: list[tuple[int, str]], final_duration_s: f
     if entries and len(format_chapters(entries, final_duration_s).encode("utf-8")) > MAX_DESCRIPTION_BYTES:
         problems.append("chapter list is longer than 5000 bytes")
     return problems
-
-
-def _clock(seconds: float, hours: bool = False) -> str:
-    total = max(0, math.floor(seconds + 1e-6))
-    h, rem = divmod(total, 3600)
-    m, s = divmod(rem, 60)
-    if h or hours:
-        return f"{h}:{m:02d}:{s:02d}"
-    return f"{m:02d}:{s:02d}"
 
 
 def format_chapters(entries: list[tuple[int, str]], final_duration_s: float) -> str:

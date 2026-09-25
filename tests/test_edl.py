@@ -196,6 +196,33 @@ def test_fallback_flag_and_no_fallback_mode():
     assert empty.ranges == []
 
 
+def test_source_shorter_than_two_dissolves_builds_and_plans():
+    """Regression: a 10-frame source with d=16 (< 2d) failed validate_edl, even
+    for its own full-video fallback. A lone range has no cut and needs no
+    dissolve; a real single keep must not be dropped into the fallback."""
+    from slice.plan import plan_video
+
+    fallback = build_edl([], [], 10 / 30, fps=30, fade_frames=16, total_frames=10)
+    assert fallback.used_full_video_fallback and _frames(fallback) == [(0, 10)]
+    keep = build_edl([Decision(start=0.0, end=10 / 30, decision="keep")], [], 10 / 30, fps=30, fade_frames=16,
+                     total_frames=10, min_segment_s=0.1)
+    assert not keep.used_full_video_fallback and _frames(keep) == [(0, 10)]
+    for edl in (fallback, keep):
+        assert sum(p.frames for p in plan_video(_frames(edl), 16)) == 10
+
+
+def test_lone_short_keep_is_not_widened_but_multiple_keeps_still_need_two_dissolves():
+    edl = build_edl([Decision(start=2.0, end=2.6, decision="keep")], [], 10.0, fps=30, fade_frames=16)
+    assert _frames(edl) == [(60, 78)]  # 18 frames >= min_segment 0.5 s; no cut, no 2d minimum
+    bad = EditDecisionList(
+        ranges=[EDLRange(start=0, end=0.6, start_frame=0, end_frame=18),
+                EDLRange(start=2, end=4, start_frame=60, end_frame=120)],
+        source_duration=10, fps="30/1", fade_frames=16, total_frames=300,
+    )
+    with pytest.raises(ValueError):
+        validate_edl(bad)
+
+
 def test_complement_tiles_the_source_exactly_with_tiers():
     decisions = [
         Decision(start=2.0, end=5.0, decision="keep"),

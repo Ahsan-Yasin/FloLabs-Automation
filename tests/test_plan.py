@@ -78,5 +78,14 @@ def test_rejects_invalid_ranges():
         plan_video([(0, 100)], 13)  # odd fade
 
 
+def test_lone_range_shorter_than_the_dissolve_plans_fine():
+    """Regression: a 10-frame clip (d=16) could not render at all, not even as
+    the full-video fallback. A lone range has no cut, so no dissolve."""
+    (part,) = plan_video([(0, 10)], 16)
+    assert part.join == "none" and part.frames == 10
+    with pytest.raises(PlanError):
+        plan_video([(0, 10), (40, 100)], 16)  # with a cut, every range still needs d frames
+
+
 def test_output_offsets():
     assert output_offsets([(10, 20), (30, 45), (50, 51)]) == [0, 10, 25]

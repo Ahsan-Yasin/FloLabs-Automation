@@ -1,10 +1,21 @@
 import json
 import os
+import re
 import threading
 from datetime import UTC, datetime
 
 from core.config import get_settings
 from core.models import JobRecord
+
+# Job ids are uuid4 hex (or short test/fixture names). Anything else must never
+# be joined onto jobs_dir: on Windows "<id>." and "<id> " open the same folder
+# as "<id>" (so a lookup would find a running job under a name the queue does
+# not know), and a URL-decoded "\" is a path separator.
+_JOB_ID_RE = re.compile(r"[0-9a-zA-Z_-]{1,64}")
+
+
+def is_valid_job_id(job_id: str) -> bool:
+    return _JOB_ID_RE.fullmatch(job_id) is not None
 
 
 class JobStore:
@@ -45,6 +56,8 @@ class JobStore:
             self._persist(job)
 
     def get(self, job_id: str) -> JobRecord | None:
+        if not is_valid_job_id(job_id):
+            return None
         with self._lock:
             if job_id in self._deleted:
                 return None

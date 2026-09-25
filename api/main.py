@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from functools import lru_cache, partial
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, Form, HTTPException, UploadFile
+from fastapi import FastAPI, Form, HTTPException, UploadFile
 from fastapi.responses import (
     FileResponse,
     HTMLResponse,
@@ -20,11 +20,11 @@ from core.logging import configure_logging, get_logger
 from core.models import TERMINAL_STATUSES, JobOptions, JobRecord, JobStatus
 from core.proc import run_checked
 from core.version import PIPELINE_VERSION
-from ingest.store import store_transcript, store_video
+from ingest.store import store_transcript, store_video, title_from_filename
 from pipeline import run_pipeline, run_youtube_pipeline
 
-from .auth import auth_enabled, require_api_key
-from .jobs import job_store
+from .auth import ApiKeyMiddleware, auth_enabled
+from .jobs import is_valid_job_id, job_store
 from .queue import (
     JobQueue,
     QueueFull,
@@ -48,11 +48,16 @@ async def lifespan(_app: FastAPI):
     yield
 
 
+# No /docs, /redoc or /openapi.json: they map every route for anyone who can
+# reach the host, and nothing uses them (n8n and the web UI call fixed routes).
 app = FastAPI(
     title="Meeting Crosstalk Remover / Highlight Cutter",
     lifespan=lifespan,
-    dependencies=[Depends(require_api_key)],
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None,
 )
+app.add_middleware(ApiKeyMiddleware)
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 _STARTED_AT = time.monotonic()
@@ -139,7 +144,7 @@ async def styles() -> FileResponse:
 
 
 @app.post("/jobs", response_model=JobRecord)
-async def create_job(
+def create_job(
     file: UploadFile,
     transcript: UploadFile | None = None,
     decide_only: bool = Form(False),
@@ -148,8 +153,15 @@ async def create_job(
     shorts_count: int | None = Form(None),
     highlights_criteria: str | None = Form(None),
     shorts_criteria: str | None = Form(None),
+    title: str | None = Form(None),
 ):
-    """Hidden upload path (ops/regression); production jobs come from Zoom."""
+    """Hidden upload path (ops/regression); production jobs come from Zoom.
+    `title` (the meeting name on the title card and in the report) defaults
+    to the uploaded file's name.
+
+    A plain `def` on purpose: FastAPI runs it in the threadpool, so copying a
+    multi-GB upload into the job folder doesn't stall the event loop (and with
+    it /health and every job poll) for the whole copy."""
     try:
         options = JobOptions(
             decide_only=decide_only,
@@ -164,23 +176,26 @@ async def create_job(
     if not _has_capacity():
         return _busy_response()
     job_id = uuid.uuid4().hex
+    native_transcript_path = None
     try:
         _, path = store_video(file.filename or "upload.mp4", file.file, job_id=job_id)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-    native_transcript_path = None
-    if transcript is not None and transcript.filename:
-        try:
+        if transcript is not None and transcript.filename:
             native_transcript_path = str(store_transcript(transcript.filename, transcript.file, job_id=job_id))
-        except ValueError as exc:
-            delete_job_files(job_store, job_id)
+    except Exception as exc:
+        # Any failure here (a bad extension, or an OSError such as a full disk
+        # halfway through a multi-GB copy) happens after the job folder was
+        # created and before a job.json exists, so nothing else would ever
+        # find or delete that half-written folder.
+        delete_job_files(job_store, job_id)
+        if isinstance(exc, ValueError):
             raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise
 
     job = JobRecord(
         job_id=job_id,
         status=JobStatus.QUEUED,
         options=options,
+        title=" ".join((title or "").split())[:120] or title_from_filename(file.filename or ""),
         source_path=str(path),
         native_transcript_path=native_transcript_path,
     )
@@ -201,25 +216,36 @@ async def create_youtube_job(body: YoutubeJobRequest):
 
 @app.post("/jobs/{job_id}/render", response_model=JobRecord)
 async def render_decided_job(job_id: str):
-    """Render a decide_only job with its saved decisions and selection (no new
-    AI calls unless the saved ones no longer match)."""
-    job = job_store.get(job_id)
-    if job is None:
-        raise HTTPException(status_code=404, detail="job not found")
-    if job.status != JobStatus.DECIDED:
-        raise HTTPException(status_code=409, detail=f"only a decided job can be rendered (status={job.status.value})")
+    """Render a decide_only job, or re-render one whose render failed or was
+    interrupted, with its saved decisions and selection (no new AI calls
+    unless the saved ones no longer match).
+
+    Stays `async` with no await between the status check and the submit, so
+    two clicks (or a DELETE) can't interleave and queue the job twice."""
+    job = _get_job_or_404(job_id)
+    if not _can_render(job):
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "only a decided job, or a retryable failed job with saved picks, can be rendered "
+                f"(status={job.status.value})"
+            ),
+        )
     if not _has_capacity():
         return _busy_response()
+    previous = job.model_copy(deep=True)
     job.options = job.options.model_copy(update={"decide_only": False})
     job.status = JobStatus.QUEUED
+    # A re-rendered failed job must not look failed while it waits in the queue.
+    job.error = job.error_code = job.retry_after_s = None
+    job.retryable = False
     runner = run_youtube_pipeline if job.source_url else run_pipeline
     args = (job.source_url,) if job.source_url else ()
     job_store.update(job)
     try:
         job_queue.submit(job.job_id, partial(runner, job, job_queue.make_updater(job.job_id), *args))
     except QueueFull:
-        job.status = JobStatus.DECIDED
-        job_store.update(job)
+        job_store.update(previous)
         return _busy_response()
     return job
 
@@ -256,9 +282,7 @@ async def list_jobs(limit: int = 50) -> list[dict]:
 
 @app.get("/jobs/{job_id}", response_model=JobRecord)
 async def get_job(job_id: str) -> JobRecord:
-    job = job_store.get(job_id)
-    if job is None:
-        raise HTTPException(status_code=404, detail="job not found")
+    job = _get_job_or_404(job_id)
     return job.model_copy(update={"stale": _is_stale(job)})
 
 
@@ -267,9 +291,7 @@ async def delete_job(job_id: str, force: bool = False):
     """Queued -> removed and wiped. Running -> 409 unless ?force=true, which
     cancels it at the next checkpoint and wipes it afterwards. Finished ->
     wiped. A job folder containing `.keep` is protected."""
-    job = job_store.get(job_id)
-    if job is None:
-        raise HTTPException(status_code=404, detail="job not found")
+    job = _get_job_or_404(job_id)
     if is_protected(job_id):
         raise HTTPException(status_code=409, detail={"error_code": "protected", "message": "job has a .keep marker"})
 
@@ -289,18 +311,45 @@ async def delete_job(job_id: str, force: bool = False):
 
 @app.get("/jobs/{job_id}/log", response_class=PlainTextResponse)
 async def get_job_log(job_id: str) -> str:
-    if job_store.get(job_id) is None:
-        raise HTTPException(status_code=404, detail="job not found")
+    _get_job_or_404(job_id)
     path = get_settings().jobs_dir / job_id / "job.log"
     return path.read_text(encoding="utf-8", errors="replace") if path.exists() else ""
 
 
 @app.get("/jobs/{job_id}/video")
 async def get_job_video(job_id: str) -> FileResponse:
+    """final.mp4 (highlights reel, title card, cleaned meeting)."""
     job = _require_done(job_id)
     if not job.output_video_path:
         raise HTTPException(status_code=404, detail="output video not available")
-    return FileResponse(job.output_video_path, media_type="video/mp4")
+    return _file_or_gone(Path(job.output_video_path), "video/mp4")
+
+
+@app.get("/jobs/{job_id}/bundle")
+async def get_job_bundle(job_id: str) -> FileResponse:
+    """bundle.zip with every deliverable and manifest.json (Range requests
+    are supported, so a dropped download can resume)."""
+    job = _require_done(job_id)
+    if not job.bundle_path:
+        raise HTTPException(status_code=404, detail="bundle not available")
+    return _file_or_gone(Path(job.bundle_path), "application/zip", filename=f"{_slug(job)}.zip")
+
+
+@app.get("/jobs/{job_id}/artifacts/{name:path}")
+async def get_job_artifact(job_id: str, name: str, download: bool = False) -> FileResponse:
+    """One deliverable by its name in job.artifacts ("final.mp4",
+    "shorts/short_01.mp4", "report.pdf", ...). Only names the job itself
+    lists are served, so no other path under the job folder is reachable."""
+    job = _require_done(job_id)
+    info = job.artifacts.get(name)
+    if info is None or info.status != "ok":
+        raise HTTPException(status_code=404, detail=f"no artifact {name!r}")
+    if not info.on_disk:
+        raise HTTPException(status_code=410, detail=f"{name} is only in bundle.zip (individual files were removed)")
+    path = get_settings().jobs_dir / job_id / info.path
+    filename = f"{_slug(job)}_{Path(info.path).name}" if download else None
+    return _file_or_gone(path, _MEDIA_TYPES.get(Path(info.path).suffix.lower(), "application/octet-stream"),
+                         filename=filename)
 
 
 @app.get("/jobs/{job_id}/edl")
@@ -322,8 +371,11 @@ async def get_job_removed(job_id: str) -> FileResponse:
 @app.get("/jobs/{job_id}/selection")
 async def get_job_selection(job_id: str) -> FileResponse:
     """Candidate moments (scores, titles, hooks, source times) and which went
-    into the highlights reel and the shorts."""
-    job = _require_done(job_id, allow_decided=True)
+    into the highlights reel and the shorts. Also served for a failed job that
+    can be re-rendered, so the UI can show its picks with "Render now" again."""
+    job = _get_job_or_404(job_id)
+    if job.status != JobStatus.DONE and not _can_render(job):
+        raise HTTPException(status_code=409, detail=f"job is not done yet (status={job.status.value})")
     if not job.selection_path:
         raise HTTPException(status_code=404, detail="selection not available")
     return FileResponse(job.selection_path, media_type="application/json")
@@ -347,6 +399,30 @@ async def get_job_transcript(job_id: str, clean: bool = True) -> FileResponse:
     return FileResponse(path, media_type="application/json")
 
 
+_MEDIA_TYPES = {
+    ".mp4": "video/mp4",
+    ".pdf": "application/pdf",
+    ".txt": "text/plain; charset=utf-8",
+    ".srt": "text/plain; charset=utf-8",
+    ".json": "application/json",
+    ".zip": "application/zip",
+}
+
+
+def _file_or_gone(path: Path, media_type: str, filename: str | None = None) -> FileResponse:
+    """A missing file (deleted after bundling on EC2, or by hand) is a clear
+    410, not a 500 from inside the response."""
+    if not path.is_file():
+        raise HTTPException(status_code=410, detail=f"{path.name} is no longer on disk")
+    return FileResponse(path, media_type=media_type, filename=filename)
+
+
+def _slug(job: JobRecord) -> str:
+    name = "".join(c if c.isalnum() else "_" for c in (job.title or "meeting").lower()).strip("_")
+    name = "_".join(filter(None, name.split("_")))[:60] or "meeting"
+    return f"{name}_{job.job_id[:8]}"
+
+
 def _aware(stamp: datetime | None) -> datetime | None:
     if stamp is not None and stamp.tzinfo is None:
         return stamp.replace(tzinfo=UTC)
@@ -362,10 +438,28 @@ def _is_stale(job: JobRecord) -> bool:
     return (datetime.now(UTC) - stamp).total_seconds() > get_settings().stale_after_s
 
 
-def _require_done(job_id: str, allow_decided: bool = False) -> JobRecord:
-    job = job_store.get(job_id)
+def _get_job_or_404(job_id: str) -> JobRecord:
+    """Every /jobs/{job_id} route starts here, so only a plain job id ever
+    reaches the filesystem (see api.jobs.is_valid_job_id): "<id>." used to
+    let DELETE find a running job under a name the queue didn't know, skip the
+    running-job guard and wipe its folder."""
+    job = job_store.get(job_id) if is_valid_job_id(job_id) else None
     if job is None:
         raise HTTPException(status_code=404, detail="job not found")
+    return job
+
+
+def _can_render(job: JobRecord) -> bool:
+    """A decided job, or one whose render failed or was interrupted after its
+    picks were saved: decisions and selection are on disk, so rendering again
+    needs no new AI calls. A non-retryable failure would only fail again."""
+    if job.status == JobStatus.DECIDED:
+        return True
+    return job.status == JobStatus.FAILED and job.retryable and bool(job.selection_path and job.decisions_path)
+
+
+def _require_done(job_id: str, allow_decided: bool = False) -> JobRecord:
+    job = _get_job_or_404(job_id)
     if job.status != JobStatus.DONE and not (allow_decided and job.status == JobStatus.DECIDED):
         raise HTTPException(status_code=409, detail=f"job is not done yet (status={job.status.value})")
     return job

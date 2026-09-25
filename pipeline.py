@@ -8,20 +8,34 @@ from pathlib import Path
 from core.config import get_settings
 from core.errors import InsufficientDisk, classify
 from core.logging import get_logger
-from core.models import Decision, JobRecord, JobStatus, Moment, Segment, Word
+from core.models import (
+    Decision,
+    JobRecord,
+    JobStatus,
+    Moment,
+    RemovedRange,
+    Segment,
+    Word,
+)
 from core.timeline import fade_frames_for
 from decide import build_segments
-from decide.chapters import finalize_chapters, format_chapters, generate_chapters
+from decide.chapters import generate_chapters
 from decide.gemini_client import LazyCaller, judge_segments, rerank_moments
-from decide.prompts import rerank_prompt
+from decide.prompts import REMOVAL_LABELS, rerank_prompt
+from decide.repair import repair_fragments
+from deliver import DeliverInputs, deliver
 from edl import build_edl, complement
-from edl.highlights import candidate_moments, select_highlights, select_shorts
+from edl.highlights import (
+    calibrate_by_rank,
+    candidate_moments,
+    select_highlights,
+    select_shorts,
+)
+from ingest.store import title_from_filename
 from ingest.validate import AVSyncError, validate_video
 from ingest.youtube import download_youtube
-from slice.ffmpeg_wrapper import extract_audio_flac
-from slice.pipeline import render_cleaned
+from outputs import RenderInputs
 from slice.profile import probe_media
-from slice.transcript import remap_transcript
 from transcribe import (
     fetch_youtube_transcript,
     flag_overlaps,
@@ -50,8 +64,9 @@ def check_disk(min_free: int | None = None) -> None:
 def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
     """End-to-end pipeline: transcribe -> one AI pass (keep/remove + highlight
     score per sentence) -> re-rank the best moments -> EDL on the source frame
-    grid + highlights/shorts selection -> [stop here if decide_only] -> render
-    with dissolves -> clean transcript -> chapters.
+    grid + highlights/shorts selection -> [stop here if decide_only] ->
+    deliver: final.mp4 (reel + card + cleaned meeting), removed.mp4, shorts,
+    transcripts, chapters, report.pdf, manifest.json, bundle.zip.
 
     Mutates `job` and calls `update` after each stage so callers can
     persist/observe progress (and, under the job queue, cancel). Decisions,
@@ -67,6 +82,12 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
     job.error = job.error_code = None
     job.retryable = False
     job.retry_after_s = None
+    # a re-render must not serve the previous run's outputs if this one fails
+    job.artifacts = {}
+    job.bundle_path = job.bundle_sha256 = None
+    job.bundle_bytes = None
+    job.chapters_path = job.output_video_path = None
+    job.final_offset_s = 0.0
 
     try:
         check_disk()
@@ -103,6 +124,7 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
             job.progress_current = 0
             job.progress_total = 0
             update(job)
+            caller.start_stage("decide", settings.decide_max_wall_s)
             judgments = judge_segments(
                 segments,
                 caller=caller,
@@ -110,8 +132,12 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
                 on_progress=_progress_updater(job, update),
                 persist_path=job_dir / "decisions.json",
             )
+            judgments, repaired = repair_fragments(judgments)
+            if repaired:
+                logger.info("job %s: kept %d sentence fragment(s) that finish kept sentences", job.job_id, repaired)
             job.decisions_path = str(job_dir / "decisions.json")
             moments, rerank_note = _rerank(job_dir, judgments, caller, opts, settings)
+            moments = calibrate_by_rank(moments, settings.highlights_min_raw_score)
             job.llm_usage = _add_usage(prior_usage, caller.usage.as_dict())
             if rerank_note:
                 job.warnings.append(rerank_note)
@@ -135,54 +161,43 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
             _write_json(job_dir / "edl.json", edl.model_dump())
             job.edl_path = str(job_dir / "edl.json")
             removed = complement(edl)
-            reasons = _removal_reasons(judgments)
-            for r in removed:
-                r.reason = _reason_for(r.start, r.end, reasons)
+            label_removed(removed, judgments, words)
             _write_json(job_dir / "edl_removed.json", [r.model_dump() for r in removed])
             job.removed_edl_path = str(job_dir / "edl_removed.json")
             if edl.used_full_video_fallback:
                 job.warnings.append("nothing was kept after filtering; the output is the full video")
-            _select(job, job_dir, judgments, moments, words, media, fade, duration, opts, settings)
+            reel, reel_edl, shorts = _select(job, job_dir, judgments, moments, words, media, fade, duration, opts,
+                                             settings)
 
         if opts.decide_only:
             job.status = JobStatus.DECIDED
             update(job)
             return
 
-        with _stage(job, "slicing"):
-            job.status = JobStatus.SLICING
-            job.progress_current = 0
-            job.progress_total = 0
-            update(job)
-            audio_flac = job_dir / "audio.flac"
-            extract_audio_flac(source_path, audio_flac, media.audio_channels, media.duration)
-            out_path = job_dir / "cleaned.mp4"
+        def chapter_fn(clean_words: list[Word], cleaned_s: float):
+            # chapters get their own time budget: the decide one is long gone
+            # after rendering
+            caller.start_stage("chapters", settings.chapters_max_wall_s)
             try:
-                manifest = render_cleaned(
-                    source_path, audio_flac, edl, media, out_path, job_dir / "tmp",
-                    on_progress=_progress_updater(job, update),
-                )
+                return generate_chapters(clean_words, cleaned_s, caller=caller)
             finally:
-                audio_flac.unlink(missing_ok=True)
-            _write_json(job_dir / "render_manifest.json", manifest.model_dump())
-            job.render_manifest_path = str(job_dir / "render_manifest.json")
-            job.output_video_path = str(out_path)
-            job.progress_current = 0
-            job.progress_total = 0
-
-        clean_words = remap_transcript(words, manifest=manifest)
-        _write_json(job_dir / "clean_transcript.json", [w.model_dump() for w in clean_words])
-        job.clean_transcript_path = str(job_dir / "clean_transcript.json")
-
-        if settings.chapters_enabled:
-            with _stage(job, "reporting"):
-                job.status = JobStatus.REPORTING
-                update(job)
-                _chapters(job, job_dir, clean_words, manifest.measured_duration_s or 0.0, caller)
                 job.llm_usage = _add_usage(prior_usage, caller.usage.as_dict())
 
-        job.status = JobStatus.DONE
-        update(job)
+        deliver(job, update, DeliverInputs(
+            render=RenderInputs(
+                job_dir=job_dir,
+                source=source_path,
+                media=media,
+                edl=edl,
+                removed=removed,
+                reel_edl=reel_edl,
+                shorts=shorts,
+                words=words,
+                title=job.title or title_from_filename(source_path.name),
+            ),
+            reel=reel,
+            chapter_fn=chapter_fn if settings.chapters_enabled else None,
+        ))
     except Exception as exc:
         logger.exception("job %s failed", job.job_id)
         job.llm_usage = _add_usage(prior_usage, caller.usage.as_dict())
@@ -244,7 +259,11 @@ def _load_saved_transcript(job: JobRecord, job_dir: Path):
 
 def _rerank(job_dir: Path, judgments, caller, opts, settings) -> tuple[list[Moment], str]:
     candidates = candidate_moments(
-        judgments, join_gap_s=settings.highlights_join_gap_s, max_candidates=settings.rerank_max_candidates
+        judgments,
+        floor=settings.highlights_candidate_floor,
+        funny_floor=settings.highlights_funny_floor,
+        join_gap_s=settings.highlights_join_gap_s,
+        max_candidates=settings.rerank_max_candidates,
     )
     if not candidates:
         return [], ""
@@ -262,7 +281,8 @@ def _rerank(job_dir: Path, judgments, caller, opts, settings) -> tuple[list[Mome
     if saved.exists():
         try:
             data = json.loads(saved.read_text(encoding="utf-8"))
-            if data.get("fingerprint") == fingerprint:
+            # only a successful re-rank is reused; a failed one is retried
+            if data.get("fingerprint") == fingerprint and data.get("ok"):
                 return [Moment.model_validate(m) for m in data["moments"]], data.get("note", "")
         except (OSError, ValueError, KeyError):
             pass
@@ -273,9 +293,9 @@ def _rerank(job_dir: Path, judgments, caller, opts, settings) -> tuple[list[Mome
     return result.moments, result.note
 
 
-def _select(job, job_dir, judgments, moments, words, media, fade, duration, opts, settings) -> None:
+def _select(job, job_dir, judgments, moments, words, media, fade, duration, opts, settings):
     """Choose the highlights reel and the shorts; write selection.json and
-    edl_highlights.json (rendered in M4)."""
+    edl_highlights.json. Returns (reel moments, reel EDL or None, shorts)."""
     target = settings.highlights_target_s if opts.highlights_target_s is None else opts.highlights_target_s
     reel = select_highlights(
         moments,
@@ -284,8 +304,9 @@ def _select(job, job_dir, judgments, moments, words, media, fade, duration, opts
         max_fraction=settings.highlights_max_fraction,
         min_total_s=settings.highlights_min_s,
         min_moment_s=settings.highlights_min_moment_s,
-        thresholds=settings.highlights_thresholds,
-        fill_s=settings.highlights_fill_s,
+        min_score=settings.highlights_min_score,
+        max_share_per_window=settings.highlights_max_share_per_window,
+        window_s=settings.highlights_diversity_window_s,
         judgments=judgments,
     )
     reel_edl = None
@@ -335,48 +356,37 @@ def _select(job, job_dir, judgments, moments, words, media, fade, duration, opts
     }
     _write_json(job_dir / "selection.json", selection)
     job.selection_path = str(job_dir / "selection.json")
+    return reel, reel_edl, shorts
 
 
-def _chapters(job: JobRecord, job_dir: Path, clean_words: list[Word], duration: float, caller) -> None:
-    """Chapters for the cleaned video (no reel in front yet — the final video
-    in M4 re-places them with finalize_chapters(reel_s=...)). Optional: a
-    failure is a warning, never a failed job."""
-    try:
-        result = generate_chapters(clean_words, duration, caller=caller)
-    except Exception as exc:  # noqa: BLE001 — chapters are optional; quota/timeouts included
-        result = None
-        job.warnings.append(f"chapters skipped: {exc}")
-    if result is None:
-        return
-    if not result.ok:
-        job.warnings.append("chapters skipped: " + "; ".join(result.problems))
-        return
-    entries, problems = finalize_chapters(result.chapters, final_duration_s=duration, reel_s=0.0)
-    if problems:
-        job.warnings.append("chapters skipped: " + "; ".join(problems))
-        return
-    _write_json(job_dir / "chapters.json", {
-        "timeline": "cleaned",
-        "chapters": [c.model_dump() for c in result.chapters],
-        "entries": [{"t": t, "title": title} for t, title in entries],
-    })
-    (job_dir / "chapters.txt").write_text(format_chapters(entries, duration), encoding="utf-8")
-    job.chapters_path = str(job_dir / "chapters.txt")
+def label_removed(removed: list[RemovedRange], judgments, words: list[Word]) -> None:
+    """Give every removed range a readable reason: the removal category that
+    covers most of it, or — for a gap no removed sentence explains, i.e. a
+    silence between two kept sentences — "pause (no speech)"."""
+    reasons = _removal_reasons(judgments)
+    for r in removed:
+        r.reason = _reason_for(r.start, r.end, reasons)
+        if not r.reason:
+            spoken = any(r.start <= (w.start + w.end) / 2 < r.end for w in words)
+            r.reason = "trimmed at a cut" if spoken else "pause (no speech)"
 
 
 def _removal_reasons(judgments) -> list[tuple[float, float, str]]:
-    return [(j.start, j.end, f"{j.removal_category}: {j.reason}".strip(": ")) for j in judgments
-            if j.decision == "remove"]
+    return [(j.start, j.end, j.removal_category) for j in judgments if j.decision == "remove"]
 
 
 def _reason_for(start: float, end: float, reasons: list[tuple[float, float, str]]) -> str:
-    """The most common removal reason among the segments inside a removed range."""
-    overlapping = [r for s, e, r in reasons if s < end and start < e]
-    if not overlapping:
+    """Readable label for a removed range: the category that covers most of
+    its time (e.g. "greetings / small talk")."""
+    weight: dict[str, float] = {}
+    for s, e, category in reasons:
+        overlap = min(e, end) - max(s, start)
+        if overlap > 0:
+            weight[category] = weight.get(category, 0.0) + overlap
+    if not weight:
         return ""
-    categories = [r.split(":")[0] for r in overlapping]
-    top = max(set(categories), key=categories.count)
-    return next(r for r in overlapping if r.startswith(top))
+    top = max(weight, key=weight.get)
+    return REMOVAL_LABELS.get(top, top.replace("_", " "))
 
 
 # ------------------------------------------------------------------ helpers

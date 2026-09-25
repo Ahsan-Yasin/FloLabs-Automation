@@ -62,6 +62,9 @@ class MediaInfo:
     audio_channels: int
     audio_sample_rate: int
     audio_duration: float
+    # (tag, value) pairs: color_primaries / color_transfer / color_space /
+    # color_range. Generated frames (title card) copy them so they concat.
+    color_tags: tuple[tuple[str, str], ...] = ()
 
     @property
     def even_width(self) -> int:
@@ -141,6 +144,10 @@ def probe_media(path: Path) -> MediaInfo:
         audio_channels=int(audio.get("channels") or 2) if audio else 0,
         audio_sample_rate=int(audio.get("sample_rate") or 0) if audio else 0,
         audio_duration=_stream_duration(audio, fmt_duration) if audio else 0.0,
+        color_tags=tuple(
+            (key, str(video[key])) for key in ("color_primaries", "color_transfer", "color_space", "color_range")
+            if video.get(key) and video.get(key) != "unknown"
+        ),
     )
 
 

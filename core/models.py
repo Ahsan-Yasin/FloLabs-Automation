@@ -74,6 +74,10 @@ class Moment(BaseModel):
     last_index: int
     score: float
     category: HighlightCategory = "none"
+    # the best-scoring sentence (a long moment is trimmed around it)
+    peak_index: int | None = None
+    # the re-rank's own 0-10 score; `score` is the rank-calibrated one
+    raw_score: float | None = None
     title: str = ""
     hook: str = ""
     short_worthy: bool = False
@@ -194,13 +198,40 @@ class RenderManifest(BaseModel):
     timings_s: dict[str, float] = Field(default_factory=dict)
 
 
+ArtifactStatus = Literal["ok", "failed", "skipped"]
+
+
+class ArtifactInfo(BaseModel):
+    """One deliverable of a job (plan D12, D18). `path` is relative to the job
+    folder and is also the file's path inside bundle.zip. Mandatory artifacts
+    failing fails the job; optional ones fail soft (status + reason)."""
+
+    path: str
+    kind: Literal["video", "text", "json", "pdf"] = "video"
+    mandatory: bool = False
+    status: ArtifactStatus = "ok"
+    reason: str = ""
+    bytes: int | None = None
+    sha256: str | None = None
+    duration_s: float | None = None
+    # False once the file has been deleted after bundling (it is still in the zip)
+    on_disk: bool = True
+
+
 class JobStatus(str, Enum):
     QUEUED = "queued"
     DOWNLOADING = "downloading"
     TRANSCRIBING = "transcribing"
     DECIDING = "deciding"
     BUILDING_EDL = "building_edl"
+    # rendering the cleaned meeting
     SLICING = "slicing"
+    RENDERING_HIGHLIGHTS = "rendering_highlights"
+    RENDERING_REMOVED = "rendering_removed"
+    RENDERING_SHORTS = "rendering_shorts"
+    # highlights + title card + cleaned meeting -> final.mp4
+    ASSEMBLING = "assembling"
+    BUNDLING = "bundling"
     DONE = "done"
     FAILED = "failed"
     REPORTING = "reporting"
@@ -240,6 +271,9 @@ class JobRecord(BaseModel):
     job_id: str
     status: JobStatus = JobStatus.QUEUED
     options: JobOptions = Field(default_factory=JobOptions)
+    # Meeting topic (Zoom's topic; for uploads, the file name). Shown on the
+    # title card and in the report.
+    title: str = ""
     source_path: str = ""
     source_url: str | None = None
     native_transcript_path: str | None = None
@@ -265,6 +299,13 @@ class JobRecord(BaseModel):
     decisions_path: str | None = None
     selection_path: str | None = None
     chapters_path: str | None = None
+    # Deliverables by name ("final.mp4", "shorts/short_01.mp4", ...) and the zip.
+    artifacts: dict[str, ArtifactInfo] = Field(default_factory=dict)
+    bundle_path: str | None = None
+    bundle_bytes: int | None = None
+    bundle_sha256: str | None = None
+    # Where the cleaned meeting starts in final.mp4 (highlights reel + title card).
+    final_offset_s: float = 0.0
     stage_timings: dict[str, float] = Field(default_factory=dict)
     # Gemini calls/tokens/rate-limit waits for this job.
     llm_usage: dict[str, float] = Field(default_factory=dict)

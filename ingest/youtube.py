@@ -11,13 +11,28 @@ class YoutubeDownloadError(RuntimeError):
     """Raised when a YouTube URL can't be fetched as a local video file."""
 
 
-def download_youtube(url: str) -> tuple[str, Path]:
-    """Download a YouTube video to the videos dir. Returns (video_id, path)."""
+# Leftovers yt-dlp or the job may put next to the download; never the video.
+_NOT_THE_VIDEO = {".part", ".ytdl", ".json", ".vtt", ".srt"}
+
+
+def download_youtube(url: str, dest_dir: Path | None = None) -> tuple[str, Path]:
+    """Download a YouTube video. Returns (video_id, path).
+
+    With `dest_dir` (the job folder) the file is saved as
+    `dest_dir/source.<ext>`, like an upload, so deleting the job deletes it.
+    Without it (the pipeline's current call) it goes to
+    videos/<video_id>.<ext>, and api.queue.delete_job_files removes it when its
+    job is deleted or swept."""
     import yt_dlp
 
     settings = get_settings()
     video_id = uuid.uuid4().hex
-    outtmpl = str(settings.videos_dir / f"{video_id}.%(ext)s")
+    if dest_dir is not None:
+        out_dir, stem = Path(dest_dir), "source"
+        out_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        out_dir, stem = settings.videos_dir, video_id
+    outtmpl = str(out_dir / f"{stem}.%(ext)s")
 
     ydl_opts = {
         "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best",
@@ -41,7 +56,7 @@ def download_youtube(url: str) -> tuple[str, Path]:
     except Exception as exc:  # yt_dlp raises its own DownloadError, but be defensive
         raise YoutubeDownloadError(f"failed to download {url}: {exc}") from exc
 
-    matches = sorted(settings.videos_dir.glob(f"{video_id}.*"))
+    matches = sorted(p for p in out_dir.glob(f"{stem}.*") if p.suffix.lower() not in _NOT_THE_VIDEO)
     if not matches:
         raise YoutubeDownloadError(f"download reported success but no output file found for {url}")
     return video_id, matches[0]

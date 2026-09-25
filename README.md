@@ -151,6 +151,31 @@ n8n (or any orchestrator) calls this API over HTTP per section 6 of the spec
   than shipping a silently broken file. `tools/regress_7b93.py` re-renders
   the 98-minute regression meeting and checks it frame by frame.
 
+### What a finished job delivers (M4)
+
+One `bundle.zip` per meeting (`GET /jobs/{id}/bundle`, resumable), with:
+
+| File | What it is |
+|---|---|
+| `final.mp4` | the highlights reel, a 2 s "topic / Full meeting" card, then the cleaned meeting |
+| `highlights.mp4` | the reel on its own (only when the meeting has ≥ 60 s of highlight material) |
+| `shorts/short_NN.mp4` + `.srt`, `shorts/shorts.json` | 1080×1920 shorts with burned-in captions and the moment's title |
+| `removed.mp4` | every cut of 1 s or more, each labelled "Removed 01:10–02:30 · reason" (original-recording time) |
+| `report.pdf` | what was removed, when and why (minutes by reason, every cut with its text), highlights, shorts, chapters |
+| `transcript_removed.txt/.json` | the removed text with original-recording timestamps and reasons |
+| `transcript_clean.txt/.json` | what `final.mp4` says, with `final.mp4` timestamps |
+| `chapters.txt` | YouTube chapters for `final.mp4` (`00:00 Highlights` first when there is a reel) |
+| `manifest.json` | size, sha256, duration and status of every file, warnings, timings, AI usage |
+
+Only `final.mp4`, the two transcripts and the manifest are mandatory. Any
+other file that fails is listed in the manifest as `failed` (with the reason)
+and in the job's `warnings`, and the job still finishes. Individual files are
+also served at `GET /jobs/{id}/artifacts/{name}` (e.g. `shorts/short_01.mp4`,
+`report.pdf`; `?download=true` for an attachment). On a server set
+`SERVE_INDIVIDUAL_ARTIFACTS=false` (only the zip + manifest stay on disk) and
+`DELETE_SOURCE_WHEN_DONE=true`. `tools/deliver_7b93.py` builds the whole zip
+for the regression meeting from saved AI decisions, with no AI calls.
+
 ## Tests
 
 ```bash

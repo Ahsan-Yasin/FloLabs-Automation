@@ -24,8 +24,14 @@ from core.models import Decision, Word
 from core.timeline import fade_frames_for, fmt_clock
 from decide.chapters import finalize_chapters, format_chapters, generate_chapters
 from decide.gemini_client import LazyCaller, judge_segments, rerank_moments
+from decide.repair import repair_fragments
 from edl.builder import build_edl, complement
-from edl.highlights import candidate_moments, select_highlights, select_shorts
+from edl.highlights import (
+    calibrate_by_rank,
+    candidate_moments,
+    select_highlights,
+    select_shorts,
+)
 from slice.transcript import remap_transcript
 from transcribe.native import _group_into_sentences, segments_to_words
 from transcribe.overlap import flag_overlaps
@@ -56,13 +62,17 @@ def main() -> int:
         on_progress=lambda c, t: print(f"  judged {c}/{t} ({time.monotonic() - t0:.0f}s)", flush=True),
     )
     t_judge = time.monotonic() - t0
+    judgments, repaired = repair_fragments(judgments)
+    usage_decide = dict(caller.usage.as_dict())
 
-    candidates = candidate_moments(judgments, join_gap_s=settings.highlights_join_gap_s,
+    candidates = candidate_moments(judgments, floor=settings.highlights_candidate_floor,
+                                   funny_floor=settings.highlights_funny_floor,
+                                   join_gap_s=settings.highlights_join_gap_s,
                                    max_candidates=settings.rerank_max_candidates)
     t1 = time.monotonic()
     rerank = rerank_moments(candidates, judgments, caller=caller)
     t_rerank = time.monotonic() - t1
-    moments = rerank.moments
+    moments = calibrate_by_rank(rerank.moments, settings.highlights_min_raw_score)
 
     d = fade_frames_for(FPS, 0.5)
     edl = build_edl([j.to_decision() for j in judgments], words, DURATION, fps=FPS, fade_frames=d,
@@ -70,8 +80,9 @@ def main() -> int:
     removed = complement(edl)
     reel = select_highlights(moments, duration_s=DURATION, target_s=settings.highlights_target_s,
                              max_fraction=settings.highlights_max_fraction, min_total_s=settings.highlights_min_s,
-                             min_moment_s=settings.highlights_min_moment_s, thresholds=settings.highlights_thresholds,
-                             fill_s=settings.highlights_fill_s, judgments=judgments)
+                             min_moment_s=settings.highlights_min_moment_s, min_score=settings.highlights_min_score,
+                             max_share_per_window=settings.highlights_max_share_per_window,
+                             window_s=settings.highlights_diversity_window_s, judgments=judgments)
     reel_edl = build_edl([Decision(start=m.start, end=m.end, decision="keep") for m in reel], words, DURATION,
                          fps=FPS, fade_frames=d, min_segment_s=settings.highlights_min_moment_s,
                          full_video_fallback=False, total_frames=TOTAL_FRAMES, min_gap_s=2.0) if reel else None
@@ -81,6 +92,7 @@ def main() -> int:
     kept_s = sum(r.end - r.start for r in edl.ranges)
     clean = remap_transcript(words, edl=edl)
     t2 = time.monotonic()
+    caller.start_stage("chapters", settings.chapters_max_wall_s)
     chapters = generate_chapters(clean, kept_s, caller=caller)
     t_chapters = time.monotonic() - t2
     entries, problems = (finalize_chapters(chapters.chapters, final_duration_s=kept_s) if chapters.ok
@@ -100,14 +112,14 @@ def main() -> int:
 
     lines = [
         f"sentences: {len(segments)}; judge {t_judge:.0f}s, re-rank {t_rerank:.0f}s, chapters {t_chapters:.0f}s",
-        f"LLM usage: {caller.usage.as_dict()}",
-        f"source {DURATION / 60:.1f} min; v1 kept {old_kept / 60:.1f} min; v2 keeps {kept_s / 60:.1f} min "
-        f"({len(edl.ranges)} ranges, removed {(DURATION - kept_s) / 60:.1f} min in {len(removed)} ranges, "
-        f"{edl.merged_gap_count} short gaps put back)",
+        f"LLM usage total: {caller.usage.as_dict()}; judging only: {usage_decide}; fragments repaired: {repaired}",
+        (f"source {DURATION / 60:.1f} min; v1 kept {old_kept / 60:.1f} min; v2 keeps {kept_s / 60:.1f} min "
+         f"({len(edl.ranges)} ranges, removed {(DURATION - kept_s) / 60:.1f} min in {len(removed)} ranges, "
+         f"{edl.merged_gap_count} short gaps put back)"),
         "removed by category (min): " + ", ".join(f"{k} {v / 60:.1f}" for k, v in sorted(cats.items(),
                                                                                      key=lambda kv: -kv[1])),
-        f"opening 5 min: {sum(1 for j in opening if j.decision == 'remove')}/{len(opening)} sentences removed; "
-        f"first kept sentence after 1:00 at {fmt_clock(first_substance.start) if first_substance else '-'}",
+        (f"opening 5 min: {sum(1 for j in opening if j.decision == 'remove')}/{len(opening)} sentences removed; "
+         f"first kept sentence after 1:00 at {fmt_clock(first_substance.start) if first_substance else '-'}"),
         "highlight score histogram: " + ", ".join(f"{k}:{v}" for k, v in sorted(score_hist.items())),
         f"re-rank ok={rerank.ok} {rerank.note}; {len(candidates)} candidates",
         f"reel: {len(reel)} moments, {sum(r.end - r.start for r in reel_edl.ranges) if reel_edl else 0:.0f}s",
