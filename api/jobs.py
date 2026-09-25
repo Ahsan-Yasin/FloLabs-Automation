@@ -1,6 +1,7 @@
 import json
 import os
 import threading
+from datetime import UTC, datetime
 
 from core.config import get_settings
 from core.models import JobRecord
@@ -16,22 +17,37 @@ class JobStore:
     def __init__(self) -> None:
         self._lock = threading.Lock()
         self._cache: dict[str, JobRecord] = {}
+        # Jobs whose folder was deleted: late updates from a finishing worker
+        # must not recreate the folder.
+        self._deleted: set[str] = set()
 
     def _path(self, job_id: str):
         return get_settings().jobs_dir / job_id / "job.json"
 
     def create(self, job: JobRecord) -> None:
         with self._lock:
+            now = datetime.now(UTC)
+            if job.created_at is None:
+                job.created_at = now
+            job.updated_at = now
+            self._deleted.discard(job.job_id)
             self._cache[job.job_id] = job
             self._persist(job)
 
     def update(self, job: JobRecord) -> None:
         with self._lock:
+            if job.job_id in self._deleted:
+                return
+            job.updated_at = datetime.now(UTC)
+            if job.created_at is None:
+                job.created_at = job.updated_at
             self._cache[job.job_id] = job
             self._persist(job)
 
     def get(self, job_id: str) -> JobRecord | None:
         with self._lock:
+            if job_id in self._deleted:
+                return None
             if job_id in self._cache:
                 return self._cache[job_id]
         path = self._path(job_id)
@@ -41,6 +57,21 @@ class JobStore:
         with self._lock:
             self._cache[job_id] = job
         return job
+
+    def forget(self, job_id: str) -> None:
+        """Drop a job from the cache and ignore any later updates to it (its
+        folder is being deleted)."""
+        with self._lock:
+            self._cache.pop(job_id, None)
+            self._deleted.add(job_id)
+
+    def list_ids(self) -> list[str]:
+        jobs_dir = get_settings().jobs_dir
+        if not jobs_dir.exists():
+            return []
+        with self._lock:
+            deleted = set(self._deleted)
+        return [p.parent.name for p in jobs_dir.glob("*/job.json") if p.parent.name not in deleted]
 
     def _persist(self, job: JobRecord) -> None:
         path = self._path(job.job_id)

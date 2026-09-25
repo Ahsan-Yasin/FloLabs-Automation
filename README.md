@@ -116,6 +116,41 @@ the result). Or drive it directly:
 n8n (or any orchestrator) calls this API over HTTP per section 6 of the spec
 — it should not run ffmpeg itself.
 
+### v2 service behaviour (M0/M1)
+
+- **One job at a time.** Jobs run on a single worker thread. While one is
+  queued or running, new `POST /jobs*` calls get `503` with
+  `{"error_code": "busy", "retryable": true, "retry_after_s": 60}` and a
+  `Retry-After` header (`MAX_QUEUE_DEPTH`, default 1).
+- **API key.** Set `HC_API_TOKEN` in `.env` and every route except `/health`
+  and the UI pages requires `X-API-Key: <token>` (the web UI prompts once and
+  keeps it in the browser). Empty = open, for local development only.
+- `GET /health` — no auth: version, ffmpeg version, free disk, busy flag,
+  running job id, queue depth.
+- `GET /jobs` — job history, newest first. `GET /jobs/{id}/log` — that job's
+  own log. `GET /jobs/{id}/removed` — the removed ranges (the EDL's exact
+  complement, each tagged `video` or `transcript_only`).
+- `DELETE /jobs/{id}` — queued or finished: wiped. Running: `409` unless
+  `?force=true`, which cancels it at the next checkpoint and wipes it. A job
+  folder containing a `.keep` file cannot be deleted.
+- Failed jobs carry `error_code` (e.g. `source_unsupported`, `llm_error`,
+  `render_assert_failed`, `timeout`, `interrupted`, `cancelled`,
+  `insufficient_disk`) plus `retryable`, and `error` includes the tail of
+  ffmpeg's stderr and the command. Jobs left unfinished by a restart are
+  marked `failed/interrupted` at startup. A running job whose heartbeat stops
+  for `STALE_AFTER_S` shows `stale: true`.
+- **Rendering.** Every kept range is re-encoded once with one pinned profile
+  (libx264 veryfast crf 24, AAC 128k 48 kHz) and joined with ~0.5 s
+  dissolves centred on each cut. All cut points are whole source frames, so
+  the output has exactly the frames the EDL keeps and the clean transcript
+  maps with `out = t - range_start + range_offset`. Audio is cut
+  sample-exactly from a normalised FLAC with a hard cut (20 ms micro-fades)
+  at the middle of each dissolve. `TRANSITIONS_ENABLED=false` gives hard cuts.
+  Every piece is checked (frame count, identical encoder parameters) before
+  it is joined; a mismatch fails the job with `render_assert_failed` rather
+  than shipping a silently broken file. `tools/regress_7b93.py` re-renders
+  the 98-minute regression meeting and checks it frame by frame.
+
 ## Tests
 
 ```bash

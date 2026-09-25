@@ -2,11 +2,25 @@ import json
 import logging
 
 import pytest
+from google.genai import errors as genai_errors
 
 from core.config import get_settings
-from core.models import Segment
+from core.errors import PipelineError
+from core.models import Moment, Segment
 from decide import gemini_client
-from decide.gemini_client import DecisionError, get_decisions
+from decide.gemini_client import (
+    DecisionError,
+    GeminiCaller,
+    RateLimiter,
+    get_decisions,
+    judge_segments,
+    rerank_moments,
+)
+
+
+class _Meta:
+    prompt_token_count = 100
+    candidates_token_count = 50
 
 
 class _FakeCandidate:
@@ -18,252 +32,368 @@ class _FakeResponse:
     def __init__(self, text, finish_reason=None):
         self.text = text
         self.candidates = [_FakeCandidate(finish_reason)] if finish_reason else []
+        self.usage_metadata = _Meta()
 
 
 @pytest.fixture(autouse=True)
 def _fake_api_key(monkeypatch):
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
     get_settings.cache_clear()
-    yield
+    sleeps = []
+    monkeypatch.setattr(gemini_client.time, "sleep", lambda s: sleeps.append(s))
+    yield sleeps
     get_settings.cache_clear()
+
+
+def _caller(rpm=1000, max_wall_s=None):
+    return GeminiCaller(client=None, model="test-model", rpm=rpm, max_wall_s=max_wall_s)
 
 
 def _segments(n=2):
-    base = [
-        Segment(speaker="A", start=0.0, end=2.0, text="the main point is x"),
-        Segment(speaker="B", start=2.0, end=2.5, text="yeah yeah", overlap_candidate=True),
-    ]
-    out = []
-    for i in range(n):
-        s = base[i % 2]
-        out.append(Segment(speaker=s.speaker, start=float(i), end=float(i) + 1, text=s.text))
-    return out
+    texts = ["the main point is x", "yeah yeah"]
+    return [Segment(speaker="AB"[i % 2], start=float(i), end=float(i) + 1, text=f"{texts[i % 2]} {i}") for i in range(n)]
 
 
-def _decisions_json(segments, decision="keep"):
-    return json.dumps(
-        [{"start": s.start, "end": s.end, "decision": decision, "reason": "r"} for s in segments]
-    )
+def _payload(contents: str) -> list[dict]:
+    return json.loads(contents[contents.index("["):])
 
 
-def test_returns_decisions_on_valid_first_response(monkeypatch):
-    segments = _segments()
-    valid = _decisions_json(segments)
-    monkeypatch.setattr(gemini_client, "_call_gemini", lambda *a, **k: _FakeResponse(valid))
+def _answer(contents, decision="keep", **overrides):
+    items = []
+    for seg in _payload(contents):
+        item = {"index": seg["index"], "decision": decision, "reason": "r", "removal_category": "none",
+                "highlight_score": 2, "highlight_category": "none"}
+        item.update(overrides)
+        items.append(item)
+    return json.dumps({"judgments": items})
 
-    decisions = get_decisions(segments)
-    assert len(decisions) == 2
+
+def _fake(monkeypatch, fn):
+    monkeypatch.setattr(gemini_client, "_call_gemini", fn)
+
+
+# ---------------------------------------------------------------- judging
+
+
+def test_valid_first_response_fills_segment_fields(monkeypatch):
+    _fake(monkeypatch, lambda c, m, sp, contents, schema: _FakeResponse(_answer(contents, decision="remove",
+                                                                                  removal_category="filler")))
+    judgments = judge_segments(_segments(3), caller=_caller())
+    assert [j.index for j in judgments] == [0, 1, 2]
+    assert judgments[1].text == "yeah yeah 1" and judgments[1].start == 1.0 and judgments[1].speaker == "B"
+    assert all(j.decision == "remove" and j.removal_category == "filler" for j in judgments)
+
+
+def test_keep_forces_removal_category_none(monkeypatch):
+    _fake(monkeypatch, lambda c, m, sp, contents, schema: _FakeResponse(_answer(contents, removal_category="filler")))
+    assert all(j.removal_category == "none" for j in judge_segments(_segments(), caller=_caller()))
+
+
+def test_schema_and_criteria_are_sent(monkeypatch):
+    seen = {}
+
+    def fake(client, model, system_prompt, contents, schema):
+        seen.update(system=system_prompt, schema=schema, model=model)
+        return _FakeResponse(_answer(contents))
+
+    _fake(monkeypatch, fake)
+    judge_segments(_segments(), caller=_caller(), highlights_criteria="dragons and spaceships")
+    assert "dragons and spaceships" in seen["system"]
+    assert seen["schema"]["properties"]["judgments"]["items"]["required"][0] == "index"
+    assert seen["model"] == "test-model"
 
 
 def test_retries_once_on_malformed_json_then_succeeds(monkeypatch):
-    segments = _segments()
-    calls = {"n": 0}
-    valid = _decisions_json(segments)
+    calls = []
 
-    def fake_call(client, model, segs, system_prompt, retry_note=""):
-        calls["n"] += 1
-        if calls["n"] == 1:
-            return _FakeResponse("not json")
-        return _FakeResponse(valid)
+    def fake(client, model, system_prompt, contents, schema):
+        calls.append(contents)
+        return _FakeResponse("not json" if len(calls) == 1 else _answer(contents))
 
-    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
-    decisions = get_decisions(segments)
-    assert calls["n"] == 2
-    assert len(decisions) == 2
+    _fake(monkeypatch, fake)
+    assert len(judge_segments(_segments(), caller=_caller())) == 2
+    assert len(calls) == 2 and calls[1].startswith("Your previous response was not valid")
 
 
-def test_fails_loudly_after_second_malformed_response(monkeypatch):
-    monkeypatch.setattr(gemini_client, "_call_gemini", lambda *a, **k: _FakeResponse("still not json"))
+def test_fails_loudly_when_a_single_segment_never_parses(monkeypatch):
+    _fake(monkeypatch, lambda *a: _FakeResponse("still not json"))
     with pytest.raises(DecisionError):
-        get_decisions(_segments())
+        judge_segments(_segments(1), caller=_caller())
 
 
-def test_truncated_response_logs_max_tokens_diagnostic(monkeypatch, caplog):
-    """A response cut off mid-JSON (the real-world bug: long meetings producing
-    enough segments that a single response exceeds the model's max output
-    tokens) should be distinguishable in the logs from a generically malformed
-    response, via the API's finish_reason."""
-    monkeypatch.setattr(
-        gemini_client,
-        "_call_gemini",
-        lambda *a, **k: _FakeResponse('[{"start": 0.0, "end": 2.0, "decision": "keep", "reason": "unterminat',
-        finish_reason="MAX_TOKENS"),
-    )
-    with caplog.at_level(logging.WARNING), pytest.raises(DecisionError):
-        get_decisions(_segments())
-    assert any("MAX_TOKENS" in record.message for record in caplog.records)
+def test_truncation_splits_instead_of_blind_retry(monkeypatch, caplog):
+    sizes = []
+
+    def fake(client, model, system_prompt, contents, schema):
+        n = len(_payload(contents))
+        sizes.append(n)
+        if n > 2:
+            return _FakeResponse('{"judgments": [{"index": 0,', finish_reason="MAX_TOKENS")
+        return _FakeResponse(_answer(contents))
+
+    _fake(monkeypatch, fake)
+    with caplog.at_level(logging.WARNING):
+        judgments = judge_segments(_segments(8), caller=_caller())
+    assert [j.index for j in judgments] == list(range(8))
+    assert sizes.count(8) == 1 and sizes.count(2) >= 1
+    assert any("MAX_TOKENS" in r.message for r in caplog.records)
 
 
-def test_empty_segments_short_circuits(monkeypatch):
-    monkeypatch.setattr(
-        gemini_client, "_call_gemini", lambda *a, **k: (_ for _ in ()).throw(AssertionError("should not be called"))
-    )
-    assert get_decisions([]) == []
+def test_missing_field_gets_same_size_retry_then_split(monkeypatch):
+    attempts_at_8 = []
+
+    def fake(client, model, system_prompt, contents, schema):
+        if len(_payload(contents)) == 8:
+            attempts_at_8.append(1)
+            data = json.loads(_answer(contents))
+            del data["judgments"][1]["decision"]
+            return _FakeResponse(json.dumps(data), finish_reason="STOP")
+        return _FakeResponse(_answer(contents))
+
+    _fake(monkeypatch, fake)
+    assert len(judge_segments(_segments(8), caller=_caller())) == 8
+    assert len(attempts_at_8) == 2
 
 
-def test_highlights_mode_uses_highlights_prompt(monkeypatch):
-    segments = _segments()
-    captured = {}
-    valid = _decisions_json(segments)
+@pytest.mark.parametrize("mutate", ["wrong_index", "duplicate", "missing"])
+def test_index_set_must_match_exactly(monkeypatch, mutate):
+    """A response that judges the wrong segments must never be accepted —
+    that is what could silently mis-assign keep/remove after a split."""
+    bad_first = {"n": 0}
 
-    def fake_call(client, model, segs, system_prompt, retry_note=""):
-        captured["system_prompt"] = system_prompt
-        return _FakeResponse(valid)
+    def fake(client, model, system_prompt, contents, schema):
+        data = json.loads(_answer(contents))
+        if bad_first["n"] < 2 and len(data["judgments"]) > 1:
+            bad_first["n"] += 1
+            if mutate == "wrong_index":
+                data["judgments"][0]["index"] = 999
+            elif mutate == "duplicate":
+                data["judgments"][1]["index"] = data["judgments"][0]["index"]
+            else:
+                data["judgments"].pop()
+        return _FakeResponse(json.dumps(data))
 
-    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
-    get_decisions(segments, mode="highlights")
-    assert captured["system_prompt"] == gemini_client.HIGHLIGHTS_SYSTEM_PROMPT
+    _fake(monkeypatch, fake)
+    judgments = judge_segments(_segments(4), caller=_caller())
+    assert [j.index for j in judgments] == [0, 1, 2, 3]
 
 
-def test_unknown_mode_raises():
-    with pytest.raises(ValueError):
-        get_decisions(_segments(), mode="bogus")
+def test_default_chunk_is_30_and_configurable(monkeypatch):
+    sizes = []
 
+    def fake(client, model, system_prompt, contents, schema):
+        sizes.append(len(_payload(contents)))
+        return _FakeResponse(_answer(contents))
 
-def test_large_segment_list_is_split_into_multiple_calls(monkeypatch):
-    """The bug this guards against: a long meeting produces enough segments
-    that describing all of them (plus their decisions) in one response
-    overflows the model's max output tokens, truncating the JSON mid-string.
-    Segments must be batched so no single call ever has to return more than
-    `gemini_max_segments_per_call` decisions."""
+    _fake(monkeypatch, fake)
+    judge_segments(_segments(65), caller=_caller())
+    assert sizes == [30, 30, 5]
+    sizes.clear()
     monkeypatch.setenv("GEMINI_MAX_SEGMENTS_PER_CALL", "10")
     get_settings.cache_clear()
-
-    segments = _segments(25)
-    call_sizes = []
-
-    def fake_call(client, model, segs, system_prompt, retry_note=""):
-        call_sizes.append(len(segs))
-        return _FakeResponse(_decisions_json(segs))
-
-    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
-    decisions = get_decisions(segments)
-
-    assert call_sizes == [10, 10, 5]
-    assert len(decisions) == 25
-    assert [d.start for d in decisions] == [s.start for s in segments]
-    get_settings.cache_clear()
+    judge_segments(_segments(25), caller=_caller())
+    assert sizes == [10, 10, 5]
 
 
-def test_default_chunk_size_keeps_typical_meeting_in_one_call(monkeypatch):
-    segments = _segments(30)
-    call_sizes = []
-
-    def fake_call(client, model, segs, system_prompt, retry_note=""):
-        call_sizes.append(len(segs))
-        return _FakeResponse(_decisions_json(segs))
-
-    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
-    get_decisions(segments)
-    assert call_sizes == [30]
+def test_progress_reports_segments_done(monkeypatch):
+    _fake(monkeypatch, lambda c, m, sp, contents, schema: _FakeResponse(_answer(contents)))
+    progress = []
+    judge_segments(_segments(65), caller=_caller(), on_progress=lambda c, t: progress.append((c, t)))
+    assert progress == [(30, 65), (60, 65), (65, 65)]
 
 
-def test_max_tokens_truncation_splits_chunk_instead_of_blind_retry(monkeypatch):
-    """Regression test for the real-world failure: `gemini_max_segments_per_call`
-    only bounds segment *count*, so a chunk whose segments happen to carry a lot
-    of text can still truncate (MAX_TOKENS) even at the configured chunk size.
-    Blindly retrying the identical chunk just truncates again and raises
-    DecisionError ("...Unterminated string..."). The fix must instead split the
-    truncated chunk and retry the halves, so a chunk that would have failed at
-    size N still succeeds once it's small enough.
-    """
-    segments = _segments(8)
-    call_sizes = []
+def test_saved_decisions_are_reused_and_resume_mid_way(monkeypatch, tmp_path):
+    path = tmp_path / "decisions.json"
+    calls = []
 
-    def fake_call(client, model, segs, system_prompt, retry_note=""):
-        call_sizes.append(len(segs))
-        if len(segs) > 2:
-            # Oversized requests truncate mid-JSON regardless of retry_note.
-            return _FakeResponse('[{"start": 0.0, "end": 1.0,', finish_reason="MAX_TOKENS")
-        return _FakeResponse(_decisions_json(segs))
+    def fake(client, model, system_prompt, contents, schema):
+        calls.append(len(_payload(contents)))
+        if len(calls) == 2:
+            raise genai_errors.ClientError(400, {"error": {"message": "boom"}})
+        return _FakeResponse(_answer(contents))
 
-    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
-    decisions = gemini_client.get_decisions(segments)
+    _fake(monkeypatch, fake)
+    with pytest.raises(DecisionError):
+        judge_segments(_segments(65), caller=_caller(), persist_path=path)
+    assert len(json.loads(path.read_text())["judgments"]) == 30  # first chunk saved
 
-    assert len(decisions) == 8
-    assert [d.start for d in decisions] == [s.start for s in segments]
-    # The oversized chunk (size 8) is only ever requested once — a blind retry
-    # would have called it again at the same size and failed again. Instead it
-    # gets split down until calls succeed at size <=2.
-    assert call_sizes.count(8) == 1
-    assert call_sizes.count(2) >= 1
+    calls.clear()
+    _fake(monkeypatch, lambda c, m, sp, contents, schema: (calls.append(len(_payload(contents))),
+                                                              _FakeResponse(_answer(contents)))[1])
+    judgments = judge_segments(_segments(65), caller=_caller(), persist_path=path)
+    assert calls == [30, 5]  # the saved chunk is not judged again
+    assert len(judgments) == 65
 
+    calls.clear()
+    judge_segments(_segments(65), caller=_caller(), persist_path=path)
+    assert calls == []  # everything saved now
 
-def test_missing_field_on_complete_response_splits_after_retry_fails(monkeypatch):
-    """Regression test for the real-world failure report: a COMPLETE, non-
-    truncated JSON array (finish_reason=STOP, not MAX_TOKENS) where a handful
-    of entries are missing the required `decision` field — pydantic raises
-    ValidationError, e.g. "12 validation errors for list[Decision] ... Field
-    required". Unlike MAX_TOKENS this isn't a hard ceiling, so it still gets
-    the normal same-size retry first; only once that ALSO fails should the
-    chunk split and retry the halves, rather than giving up on the whole batch.
-    """
-    segments = _segments(8)
-    call_sizes = []
-    attempts_at_size_8 = {"n": 0}
-
-    def fake_call(client, model, segs, system_prompt, retry_note=""):
-        call_sizes.append(len(segs))
-        if len(segs) == 8:
-            attempts_at_size_8["n"] += 1
-            # A complete response (not truncated) with one entry missing "decision".
-            bad = [{"start": s.start, "end": s.end, "decision": "keep", "reason": "r"} for s in segs]
-            del bad[1]["decision"]
-            return _FakeResponse(json.dumps(bad), finish_reason="STOP")
-        return _FakeResponse(_decisions_json(segs))
-
-    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
-    decisions = gemini_client.get_decisions(segments)
-
-    assert len(decisions) == 8
-    assert [d.start for d in decisions] == [s.start for s in segments]
-    # Both attempts at the original size were used (unlike MAX_TOKENS, a
-    # same-size retry is worth trying here) before falling back to splitting.
-    assert attempts_at_size_8["n"] == 2
-    assert call_sizes.count(4) >= 1
+    judge_segments(_segments(65), caller=_caller(), persist_path=path, highlights_criteria="other")
+    assert calls == [30, 30, 5]  # different criteria -> different prompt -> judged afresh
 
 
-def test_rate_limit_429_backs_off_before_retry(monkeypatch):
-    """A 429 (free-tier RPM/TPM quota exceeded) must not be retried immediately —
-    resending into the same rate-limit window just fails again. This asserts the
-    retry actually pauses (time.sleep) rather than firing back-to-back."""
-    from google.genai import errors as genai_errors
+def test_get_decisions_wrapper(monkeypatch):
+    _fake(monkeypatch, lambda c, m, sp, contents, schema: _FakeResponse(_answer(contents, decision="remove")))
+    decisions = get_decisions(_segments(), caller=_caller())
+    assert [(d.start, d.decision) for d in decisions] == [(0.0, "remove"), (1.0, "remove")]
 
-    sleeps = []
-    monkeypatch.setattr(gemini_client.time, "sleep", lambda s: sleeps.append(s))
 
-    segments = _segments()
+def test_empty_segments_short_circuit(monkeypatch):
+    _fake(monkeypatch, lambda *a: (_ for _ in ()).throw(AssertionError("should not be called")))
+    assert judge_segments([], caller=_caller()) == []
+
+
+# ---------------------------------------------------------------- caller
+
+
+def test_429_waits_for_the_servers_retry_delay(monkeypatch, _fake_api_key):
+    sleeps = _fake_api_key
     calls = {"n": 0}
-    valid = _decisions_json(segments)
 
-    def fake_call(client, model, segs, system_prompt, retry_note=""):
+    def fake(client, model, system_prompt, contents, schema):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise genai_errors.ClientError(429, {"error": {"status": "RESOURCE_EXHAUSTED", "details": [
+                {"@type": "type.googleapis.com/google.rpc.RetryInfo", "retryDelay": "7s"}]}})
+        return _FakeResponse(_answer(contents))
+
+    _fake(monkeypatch, fake)
+    caller = _caller()
+    judge_segments(_segments(), caller=caller)
+    assert sleeps == [7.0]
+    assert caller.usage.retries == 1 and caller.usage.rate_limit_wait_s == 7.0
+
+
+def test_429_without_details_uses_default_wait(monkeypatch, _fake_api_key):
+    sleeps = _fake_api_key
+    calls = {"n": 0}
+
+    def fake(client, model, system_prompt, contents, schema):
         calls["n"] += 1
         if calls["n"] == 1:
             raise genai_errors.ClientError(429, {"error": {"message": "quota exceeded", "status": "RESOURCE_EXHAUSTED"}})
-        return _FakeResponse(valid)
+        return _FakeResponse(_answer(contents))
 
-    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
-    decisions = get_decisions(segments)
-
-    assert len(decisions) == 2
-    assert sleeps and sleeps[0] > 0
+    _fake(monkeypatch, fake)
+    judge_segments(_segments(), caller=_caller())
+    assert sleeps and sleeps[0] == gemini_client.DEFAULT_429_WAIT_S
 
 
-def test_one_chunk_failing_does_not_affect_others(monkeypatch):
-    """Each chunk retries/fails independently — one bad chunk shouldn't have
-    to spoil decisions for the rest of a long meeting, and a failure should
-    still surface loudly rather than silently dropping segments."""
-    monkeypatch.setenv("GEMINI_MAX_SEGMENTS_PER_CALL", "5")
-    get_settings.cache_clear()
+def test_daily_quota_fails_fast_and_retryable(monkeypatch):
+    def fake(*a):
+        raise genai_errors.ClientError(429, {"error": {"details": [
+            {"@type": "type.googleapis.com/google.rpc.QuotaFailure",
+             "violations": [{"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]},
+            {"@type": "type.googleapis.com/google.rpc.RetryInfo", "retryDelay": "5000s"}]}})
 
-    segments = _segments(10)
+    _fake(monkeypatch, fake)
+    with pytest.raises(PipelineError) as info:
+        judge_segments(_segments(), caller=_caller())
+    assert info.value.code == "llm_quota_exhausted"
+    assert info.value.retryable and info.value.retry_after_s == 5000
 
-    def fake_call(client, model, segs, system_prompt, retry_note=""):
-        if segs[0].start == 0.0:
-            return _FakeResponse("not json", finish_reason="MAX_TOKENS")
-        return _FakeResponse(_decisions_json(segs))
 
-    monkeypatch.setattr(gemini_client, "_call_gemini", fake_call)
+def test_server_error_is_retried_client_error_is_not(monkeypatch, _fake_api_key):
+    calls = {"n": 0}
+
+    def flaky(client, model, system_prompt, contents, schema):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise genai_errors.ServerError(503, {"error": {"message": "overloaded"}})
+        return _FakeResponse(_answer(contents))
+
+    _fake(monkeypatch, flaky)
+    judge_segments(_segments(), caller=_caller())
+    assert calls["n"] == 2
+
+    calls["n"] = 0
+
+    def bad_request(*a):
+        calls["n"] += 1
+        raise genai_errors.ClientError(400, {"error": {"message": "API key not valid"}})
+
+    _fake(monkeypatch, bad_request)
     with pytest.raises(DecisionError):
-        get_decisions(segments)
-    get_settings.cache_clear()
+        judge_segments(_segments(), caller=_caller())
+    assert calls["n"] == 1
+
+
+def test_rate_limiter_spaces_requests(monkeypatch, _fake_api_key):
+    sleeps = _fake_api_key
+    limiter = RateLimiter(rpm=2)
+    assert limiter.acquire() == 0.0
+    assert limiter.acquire() == 0.0
+    waited = limiter.acquire()
+    assert 59.0 < waited <= 60.0 and sleeps == [waited]
+
+
+def test_wall_clock_limit(monkeypatch):
+    _fake(monkeypatch, lambda c, m, sp, contents, schema: _FakeResponse(_answer(contents)))
+    caller = _caller(max_wall_s=1)
+    caller.deadline = 0.0  # already past
+    with pytest.raises(PipelineError) as info:
+        judge_segments(_segments(), caller=caller)
+    assert info.value.code == "timeout" and info.value.retryable
+
+
+def test_usage_is_counted(monkeypatch):
+    _fake(monkeypatch, lambda c, m, sp, contents, schema: _FakeResponse(_answer(contents)))
+    caller = _caller()
+    judge_segments(_segments(65), caller=caller)
+    assert caller.usage.as_dict()["calls"] == 3
+    assert caller.usage.prompt_tokens == 300 and caller.usage.output_tokens == 150
+
+
+# ---------------------------------------------------------------- re-rank
+
+
+def _judgments(n=12):
+    from core.models import SegmentJudgment
+
+    return [SegmentJudgment(index=i, start=i * 5.0, end=i * 5.0 + 4.5, speaker="A", text=f"sentence {i}",
+                            decision="keep", highlight_score=8 if i in (4, 5) else 1,
+                            highlight_category="funny" if i in (4, 5) else "none") for i in range(n)]
+
+
+def test_rerank_updates_scores_titles_and_windows(monkeypatch):
+    judgments = _judgments()
+    cand = Moment(id=0, start=20.0, end=29.5, first_index=4, last_index=5, score=8, category="funny")
+    answer = {"moments": [{"id": 0, "score": 9, "category": "funny", "title": 'The <b>"coffee"</b> incident\n',
+                           "hook": "x" * 300, "first_index": 3, "last_index": 99, "short_worthy": True}]}
+    _fake(monkeypatch, lambda *a: _FakeResponse(json.dumps(answer)))
+    result = rerank_moments([cand], judgments, caller=_caller(), context_segments=2)
+    (m,) = result.moments
+    assert result.ok and m.reranked and m.short_worthy
+    assert m.score == 9.0
+    assert (m.first_index, m.last_index) == (3, 7)  # 99 clamped to last_index + context
+    assert (m.start, m.end) == (15.0, 39.5)
+    assert "<" not in m.title and '"' not in m.title and len(m.hook) <= 140
+
+
+def test_rerank_window_must_overlap_the_scored_core(monkeypatch):
+    judgments = _judgments()
+    cand = Moment(id=0, start=20.0, end=29.5, first_index=4, last_index=5, score=8, category="funny")
+    answer = {"moments": [{"id": 0, "score": 6, "category": "funny", "title": "t", "hook": "h",
+                           "first_index": 2, "last_index": 3, "short_worthy": False}]}
+    _fake(monkeypatch, lambda *a: _FakeResponse(json.dumps(answer)))
+    (m,) = rerank_moments([cand], judgments, caller=_caller()).moments
+    assert (m.first_index, m.last_index) == (4, 5)
+
+
+def test_rerank_failure_falls_back_to_segment_scores(monkeypatch):
+    judgments = _judgments()
+    cand = Moment(id=0, start=20.0, end=29.5, first_index=4, last_index=5, score=8, category="funny")
+    _fake(monkeypatch, lambda *a: _FakeResponse("nope"))
+    result = rerank_moments([cand], judgments, caller=_caller())
+    assert not result.ok and result.moments == [cand] and "failed" in result.note
+
+
+def test_rerank_notes_missing_candidates(monkeypatch):
+    judgments = _judgments()
+    cands = [Moment(id=k, start=20.0 + k, end=29.5, first_index=4, last_index=5, score=8) for k in range(2)]
+    answer = {"moments": [{"id": 1, "score": 5, "category": "concept", "title": "t", "hook": "h",
+                           "first_index": 4, "last_index": 5, "short_worthy": False}]}
+    _fake(monkeypatch, lambda *a: _FakeResponse(json.dumps(answer)))
+    result = rerank_moments(cands, judgments, caller=_caller())
+    assert result.moments[0] == cands[0] and result.moments[1].reranked
+    assert "1 candidate" in result.note

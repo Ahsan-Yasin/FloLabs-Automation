@@ -119,38 +119,6 @@
   .cut-slot-small { min-height: 38px; font-size: 12.5px; margin-top: 10px; }
   .hint { color: var(--ink-muted); font-size: 12px; margin: 8px 0 0; line-height: 1.5; }
 
-  .stamps {
-    display: flex;
-    gap: 14px;
-    margin: 20px 0 4px;
-  }
-  .stamp {
-    flex: 1;
-    text-align: left;
-    padding: 11px 13px;
-    background: transparent;
-    border: 1.5px solid var(--ink-muted);
-    color: var(--ink-muted);
-    cursor: pointer;
-    font-family: 'IBM Plex Sans';
-  }
-  .stamp strong { display: block; font-size: 13.5px; color: var(--ink); margin-bottom: 2px; font-weight: 600; }
-  .stamp span { font-size: 12px; }
-  .stamp.stamp-red.active {
-    border-color: var(--red);
-    color: var(--red);
-    background: var(--red-wash);
-    transform: rotate(-0.6deg);
-  }
-  .stamp.stamp-red.active strong { color: var(--red); }
-  .stamp.stamp-blue.active {
-    border-color: var(--blue);
-    color: var(--blue);
-    background: var(--blue-wash);
-    transform: rotate(0.6deg);
-  }
-  .stamp.stamp-blue.active strong { color: var(--blue); }
-
   button.submit {
     width: 100%;
     margin-top: 22px;
@@ -244,6 +212,50 @@
   }
   .result-actions a:hover { color: var(--red); border-color: var(--red); }
 
+  .opt {
+    display: flex; align-items: center; gap: 8px; margin-top: 10px;
+    font-family: 'IBM Plex Sans'; font-size: 13px; color: var(--ink); cursor: pointer;
+  }
+  .opt input { accent-color: var(--red); width: 15px; height: 15px; }
+  .opt small { color: var(--ink-muted); font-size: 12px; }
+
+  .picks { display: none; margin-top: 26px; }
+  .picks.visible { display: block; }
+  .picks-title { font-family: 'Source Serif 4', serif; font-size: 15px; margin: 0 0 4px; }
+  .picks-summary { font-size: 12px; color: var(--ink-muted); margin: 0 0 12px; font-family: 'IBM Plex Sans'; }
+  .picks-table-wrap { max-height: 360px; overflow: auto; border: 1px solid var(--line); }
+  .picks table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-family: 'IBM Plex Sans'; }
+  .picks th, .picks td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .picks th { position: sticky; top: 0; background: var(--bond); font-weight: 600; font-size: 11.5px; }
+  .picks td.time { font-family: 'Courier Prime', monospace; white-space: nowrap; }
+  .picks td.score { text-align: right; }
+  .picks .hook { color: var(--ink-muted); font-size: 11.5px; }
+  .picks .tag { display: inline-block; font-size: 10.5px; padding: 1px 5px; margin: 0 3px 2px 0; border: 1px solid; }
+  .picks .tag.reel { color: var(--red); }
+  .picks .tag.short { color: var(--blue); }
+  .picks button.submit { margin-top: 14px; }
+  @media (max-width: 620px) {
+    .picks table, .picks tbody, .picks tr, .picks td { display: block; width: auto; }
+    .picks thead { display: none; }
+    .picks tr { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+    .picks td { border: none; padding: 1px 0; text-align: left; }
+    .picks td.time, .picks td.score { display: inline-block; font-size: 11.5px; color: var(--ink-muted); }
+    .picks td.score { text-align: left; margin-left: 8px; }
+    .picks td.score::before { content: "score "; }
+  }
+
+  .chapters-wrap { display: none; margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .chapters-wrap.visible { display: block; }
+  .chapters-wrap textarea {
+    width: 100%; min-height: 120px; resize: vertical; box-sizing: border-box;
+    font-family: 'Courier Prime', monospace; font-size: 13px; padding: 8px;
+    border: 1px solid var(--line); background: var(--bond);
+  }
+  .chapters-wrap .copy-btn {
+    margin-top: 6px; font-family: 'IBM Plex Sans'; font-size: 12.5px; font-weight: 600;
+    background: none; border: 1.5px solid var(--ink); padding: 4px 10px; cursor: pointer;
+  }
+
   .marked-transcript-wrap { display: none; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); }
   .marked-transcript-wrap.visible { display: block; }
   .marked-transcript-label {
@@ -317,27 +329,39 @@
           <input type="file" id="transcriptFile" accept=".vtt,.srt" hidden />
         </div>
 
-        <p class="prompt" style="margin-top:22px;">Mark it up.</p>
-        <div class="stamps" role="radiogroup" aria-label="Mode">
-          <button type="button" class="stamp stamp-red active" data-mode="highlights" role="radio" aria-checked="true">
-            <strong>Highlights</strong>
-            <span>Only the best moments</span>
-          </button>
-          <button type="button" class="stamp stamp-blue" data-mode="crosstalk" role="radio" aria-checked="false">
-            <strong>Light cleanup</strong>
-            <span>Keep everything, drop the crosstalk</span>
-          </button>
-        </div>
+        <p class="prompt" style="margin-top:22px;">Before it renders.</p>
+        <label class="opt" for="decideOnly">
+          <input type="checkbox" id="decideOnly" />
+          <span>Show me the AI's picks first <small>(no rendering until you press "Render now")</small></span>
+        </label>
 
         <button class="submit" id="submitBtn">Start cutting</button>
 
         <div class="error-note" id="errorBox"></div>
+
+        <div class="picks" id="picks">
+          <p class="picks-title">What the AI picked</p>
+          <p class="picks-summary" id="picksSummary"></p>
+          <div class="picks-table-wrap">
+            <table>
+              <thead><tr><th>Source time</th><th>Score</th><th>Moment</th><th>Used in</th></tr></thead>
+              <tbody id="picksBody"></tbody>
+            </table>
+          </div>
+          <button class="submit" id="renderBtn" type="button">Render now</button>
+        </div>
 
         <div class="result" id="result">
           <video id="video" controls></video>
           <div class="result-actions">
             <a href="#" id="downloadLink" download>Download the cut</a>
             <a href="#" id="transcriptLink" target="_blank">Raw transcript (JSON)</a>
+          </div>
+          <div class="chapters-wrap" id="chaptersWrap">
+            <p class="marked-transcript-label">YouTube chapters</p>
+            <p class="marked-transcript-legend">Paste these lines into the video description.</p>
+            <textarea id="chaptersText" readonly></textarea>
+            <button type="button" class="copy-btn" id="copyChapters">Copy</button>
           </div>
           <div class="marked-transcript-wrap" id="markedTranscriptWrap">
             <p class="marked-transcript-label">What made the cut</p>
@@ -365,6 +389,37 @@
   </div>
 
 <script>
+// API key: only needed when the server sets HC_API_TOKEN. Kept in this
+// browser's localStorage and mirrored into a cookie so <video>/<a download>
+// links (which can't send headers) authenticate too.
+const API_KEY_STORE = "hc_api_key";
+function readApiKey() {
+  try { return localStorage.getItem(API_KEY_STORE) || ""; } catch (e) { return ""; }
+}
+function saveApiKey(key) {
+  try { localStorage.setItem(API_KEY_STORE, key); } catch (e) { /* storage blocked: cookie still works */ }
+  document.cookie = `hc_api_key=${encodeURIComponent(key)}; path=/; SameSite=Strict`;
+}
+if (readApiKey()) saveApiKey(readApiKey());
+const rawFetch = window.fetch.bind(window);
+window.fetch = async (url, opts = {}) => {
+  const withKey = () => {
+    const headers = new Headers(opts.headers || {});
+    const key = readApiKey();
+    if (key) headers.set("X-API-Key", key);
+    return { ...opts, headers };
+  };
+  let res = await rawFetch(url, withKey());
+  if (res.status === 401) {
+    const key = window.prompt("This server needs an API key:", "");
+    if (key && key.trim()) {
+      saveApiKey(key.trim());
+      res = await rawFetch(url, withKey());
+    }
+  }
+  return res;
+};
+
 const STEP_LABELS = {
   queued: "Queued",
   downloading: "Downloading video",
@@ -372,11 +427,14 @@ const STEP_LABELS = {
   deciding: "AI selecting the good parts",
   building_edl: "Building the edit list",
   slicing: "Cutting & rendering the final video",
+  reporting: "Writing YouTube chapters",
   done: "Done",
 };
-const STEPS_WITH_DOWNLOAD = ["queued", "downloading", "transcribing", "deciding", "building_edl", "slicing", "done"];
+const STEPS_WITH_DOWNLOAD = [
+  "queued", "downloading", "transcribing", "deciding", "building_edl", "slicing", "reporting", "done",
+];
 const STEPS_NO_DOWNLOAD = STEPS_WITH_DOWNLOAD.filter((s) => s !== "downloading");
-const PAST_TRANSCRIBING = ["deciding", "building_edl", "slicing", "done"];
+const PAST_TRANSCRIBING = ["deciding", "building_edl", "slicing", "reporting", "decided", "done"];
 const TRANSCRIPT_SOURCE_LABELS = {
   asr: "Transcribed from scratch with WhisperX.",
   youtube_captions: "Reused YouTube's own captions — skipped transcription.",
@@ -384,7 +442,6 @@ const TRANSCRIPT_SOURCE_LABELS = {
 };
 let activeSteps = STEPS_WITH_DOWNLOAD;
 
-let selectedMode = "highlights";
 let selectedSource = "youtube";
 let selectedFile = null;
 let selectedTranscript = null;
@@ -418,6 +475,18 @@ const transcriptLink = document.getElementById("transcriptLink");
 const slugEl = document.getElementById("slug");
 const markedTranscriptWrap = document.getElementById("markedTranscriptWrap");
 const markedTranscriptEl = document.getElementById("markedTranscript");
+const decideOnlyEl = document.getElementById("decideOnly");
+const picksEl = document.getElementById("picks");
+const picksSummaryEl = document.getElementById("picksSummary");
+const picksBodyEl = document.getElementById("picksBody");
+const renderBtn = document.getElementById("renderBtn");
+const chaptersWrap = document.getElementById("chaptersWrap");
+const chaptersText = document.getElementById("chaptersText");
+let currentJobId = null;
+const CATEGORY_LABELS = {
+  funny: "Funny", new_architecture: "Architecture", new_feature: "New feature", concept: "Concept",
+  decision: "Decision", insight: "Insight", none: "",
+};
 const TRANSCRIPT_PLACEHOLDER = "Already have a transcript? Attach it to skip transcribing (.vtt, .srt)";
 
 function updateSlug() {
@@ -429,18 +498,6 @@ function updateSlug() {
     slugEl.textContent = "";
   }
 }
-
-document.querySelectorAll(".stamp").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".stamp").forEach((b) => {
-      b.classList.remove("active");
-      b.setAttribute("aria-checked", "false");
-    });
-    btn.classList.add("active");
-    btn.setAttribute("aria-checked", "true");
-    selectedMode = btn.dataset.mode;
-  });
-});
 
 document.querySelectorAll(".source-tab").forEach((tab) => {
   tab.addEventListener("click", () => {
@@ -547,11 +604,12 @@ function clearError() {
 
 function renderSteps(status) {
   stepsEl.innerHTML = "";
-  const currentIndex = activeSteps.indexOf(status);
+  // a previewed ("decided") job has finished everything before rendering
+  const currentIndex = status === "decided" ? activeSteps.indexOf("slicing") : activeSteps.indexOf(status);
   activeSteps.forEach((step, i) => {
     const li = document.createElement("li");
     if (currentIndex > i || status === "done") li.className = "done";
-    else if (i === currentIndex) li.className = "active";
+    else if (i === currentIndex && status !== "decided") li.className = "active";
     li.innerHTML = `<span class="dot"></span>${STEP_LABELS[step]}`;
     stepsEl.appendChild(li);
   });
@@ -624,7 +682,7 @@ async function submit() {
       fetch("/jobs/youtube", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, mode: selectedMode }),
+        body: JSON.stringify({ url, options: { decide_only: decideOnlyEl.checked } }),
       });
   } else {
     if (!selectedFile) {
@@ -634,7 +692,7 @@ async function submit() {
     activeSteps = STEPS_NO_DOWNLOAD;
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("mode", selectedMode);
+    formData.append("decide_only", decideOnlyEl.checked ? "true" : "false");
     if (selectedTranscript) formData.append("transcript", selectedTranscript);
     request = () => fetch("/jobs", { method: "POST", body: formData });
   }
@@ -642,6 +700,8 @@ async function submit() {
   clearError();
   resultEl.classList.remove("visible");
   markedTranscriptWrap.classList.remove("visible");
+  picksEl.classList.remove("visible");
+  chaptersWrap.classList.remove("visible");
   statusPanel.classList.add("visible");
   transcriptNote.style.display = "none";
   stageProgress.classList.remove("visible");
@@ -661,7 +721,11 @@ async function submit() {
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }));
-    showError(body.detail || "Couldn't start the job.");
+    if (body.error_code === "busy") {
+      showError("Another job is still running. Try again when it has finished.");
+    } else {
+      showError((typeof body.detail === "string" && body.detail) || (body.detail && body.detail.message) || "Couldn't start the job.");
+    }
     setBusy(false);
     return;
   }
@@ -688,9 +752,9 @@ async function poll(jobId) {
 
   const job = await res.json();
 
-  if (job.status === "failed") {
+  if (job.status === "failed" || job.status === "cancelled") {
     renderSteps("failed");
-    showError(job.error || "The job failed.");
+    showError(job.error || (job.status === "cancelled" ? "The job was cancelled." : "The job failed."));
     setBusy(false);
     return;
   }
@@ -704,6 +768,13 @@ async function poll(jobId) {
   renderSteps(job.status);
   renderTranscriptSource(job);
   renderStageProgress(job);
+  currentJobId = jobId;
+
+  if (job.status === "decided") {
+    setBusy(false);
+    renderPicks(jobId, true);
+    return;
+  }
 
   if (job.status === "done") {
     setBusy(false);
@@ -712,11 +783,101 @@ async function poll(jobId) {
     transcriptLink.href = `/jobs/${jobId}/transcript`;
     resultEl.classList.add("visible");
     renderMarkedTranscript(jobId);
+    renderPicks(jobId, false);
+    renderChapters(jobId);
     return;
   }
 
   pollTimer = setTimeout(() => poll(jobId), 3000);
 }
+
+function clock(seconds) {
+  const total = Math.max(0, Math.floor(seconds));
+  const h = Math.floor(total / 3600), m = Math.floor((total % 3600) / 60), s = total % 60;
+  const mm = String(m).padStart(2, "0"), ss = String(s).padStart(2, "0");
+  return h ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+}
+
+function cell(row, text, className) {
+  const td = document.createElement("td");
+  if (className) td.className = className;
+  td.textContent = text;
+  row.appendChild(td);
+  return td;
+}
+
+async function renderPicks(jobId, canRender) {
+  let sel;
+  try {
+    const res = await fetch(`/jobs/${jobId}/selection`);
+    if (!res.ok) return;
+    sel = await res.json();
+  } catch (e) {
+    return;
+  }
+  const moments = (sel.moments || []).slice().sort((a, b) => b.score - a.score || a.start - b.start);
+  const reelS = (sel.highlights && sel.highlights.total_s) || 0;
+  const reelCount = moments.filter((m) => m.in_highlights).length;
+  picksSummaryEl.textContent =
+    (reelS ? `Highlights reel: ${clock(reelS)} from ${reelCount} moments.` : "No highlights reel (not enough standout moments).") +
+    ` Shorts: ${(sel.shorts || []).length}. ${moments.length} candidate moments, best first.`;
+  picksBodyEl.innerHTML = "";
+  moments.forEach((m) => {
+    const tr = document.createElement("tr");
+    cell(tr, `${clock(m.start)}–${clock(m.end)}`, "time");
+    cell(tr, String(Math.round(m.score)), "score");
+    const what = cell(tr, "");
+    const title = document.createElement("div");
+    title.textContent = (m.title || "(untitled)") + (CATEGORY_LABELS[m.category] ? ` · ${CATEGORY_LABELS[m.category]}` : "");
+    what.appendChild(title);
+    if (m.hook) {
+      const hook = document.createElement("div");
+      hook.className = "hook";
+      hook.textContent = m.hook;
+      what.appendChild(hook);
+    }
+    const used = cell(tr, "");
+    if (m.in_highlights) used.insertAdjacentHTML("beforeend", '<span class="tag reel">reel</span>');
+    if (m.in_shorts) used.insertAdjacentHTML("beforeend", '<span class="tag short">short</span>');
+    picksBodyEl.appendChild(tr);
+  });
+  renderBtn.style.display = canRender ? "block" : "none";
+  picksEl.classList.add("visible");
+}
+
+async function renderChapters(jobId) {
+  try {
+    const res = await fetch(`/jobs/${jobId}/chapters`);
+    if (!res.ok) return;
+    chaptersText.value = await res.text();
+    chaptersWrap.classList.add("visible");
+  } catch (e) {
+    /* chapters are optional */
+  }
+}
+
+renderBtn.addEventListener("click", async () => {
+  if (!currentJobId) return;
+  clearError();
+  const res = await fetch(`/jobs/${currentJobId}/render`, { method: "POST" });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    showError(body.error_code === "busy" ? "Another job is still running. Try again when it has finished."
+      : (typeof body.detail === "string" ? body.detail : "Couldn't start rendering."));
+    return;
+  }
+  picksEl.classList.remove("visible");
+  setBusy(true);
+  poll(currentJobId);
+});
+
+document.getElementById("copyChapters").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(chaptersText.value);
+  } catch (e) {
+    chaptersText.select();
+  }
+});
 
 submitBtn.addEventListener("click", submit);
 urlInput.addEventListener("keydown", (e) => {

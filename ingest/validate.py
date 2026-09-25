@@ -1,10 +1,10 @@
 import json
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
 from core.config import get_settings
 from core.logging import get_logger
+from core.proc import run_checked
 
 logger = get_logger(__name__)
 
@@ -41,7 +41,7 @@ class VideoInfo:
 
 def _ffprobe(path: Path) -> dict:
     settings = get_settings()
-    result = subprocess.run(
+    result = run_checked(
         [
             settings.ffprobe_bin,
             "-v", "error",
@@ -50,9 +50,6 @@ def _ffprobe(path: Path) -> dict:
             "-show_streams",
             str(path),
         ],
-        capture_output=True,
-        text=True,
-        check=True,
         timeout=settings.ffprobe_timeout_seconds,
     )
     return json.loads(result.stdout)

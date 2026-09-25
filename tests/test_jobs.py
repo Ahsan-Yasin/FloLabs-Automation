@@ -93,3 +93,20 @@ def test_concurrent_updates_do_not_corrupt_or_lose_the_record():
     final = JobStore().get(job.job_id)
     assert final is not None
     assert final.status in statuses
+
+
+def test_created_at_is_set_once_and_updated_at_moves():
+    store = JobStore()
+    job = _job()
+    store.create(job)
+    created = job.created_at
+    first_update = job.updated_at
+    assert created is not None and first_update is not None
+
+    job.status = JobStatus.DONE
+    store.update(job)
+    assert job.created_at == created
+    assert job.updated_at >= first_update
+
+    reread = JobStore().get(job.job_id)
+    assert reread.created_at == created

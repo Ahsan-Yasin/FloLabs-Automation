@@ -1,3 +1,3 @@
-from .pipeline import render_output
+from .pipeline import render_cleaned
 
-__all__ = ["render_output"]
+__all__ = ["render_cleaned"]
