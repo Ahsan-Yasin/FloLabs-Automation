@@ -1,5 +1,6 @@
-"""M3 regression: run the v2 decide stage (real Gemini calls) on the 98-minute
-regression meeting's cached transcript and write everything a reviewer needs.
+"""M3 regression: run the v2 decide stage (real LLM calls, with the provider
+and model configured in .env) on the 98-minute regression meeting's cached
+transcript and write everything a reviewer needs.
 
 No rendering; nothing in the fixture folder is modified. Decisions are saved
 incrementally in --out, so a re-run with the same prompts makes no new calls.
@@ -45,6 +46,9 @@ DURATION = TOTAL_FRAMES / 30
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True, type=Path)
+    ap.add_argument("--chapters-from", type=Path, default=None,
+                    help="reuse the chapters of an earlier run's selection.json instead of a chapters call "
+                         "(saves ~40k tokens while tuning the re-rank)")
     args = ap.parse_args()
     out: Path = args.out
     out.mkdir(parents=True, exist_ok=True)
@@ -82,7 +86,8 @@ def main() -> int:
                              max_fraction=settings.highlights_max_fraction, min_total_s=settings.highlights_min_s,
                              min_moment_s=settings.highlights_min_moment_s, min_score=settings.highlights_min_score,
                              max_share_per_window=settings.highlights_max_share_per_window,
-                             window_s=settings.highlights_diversity_window_s, judgments=judgments)
+                             window_s=settings.highlights_diversity_window_s,
+                             max_funny_share=settings.highlights_max_funny_share, judgments=judgments)
     reel_edl = build_edl([Decision(start=m.start, end=m.end, decision="keep") for m in reel], words, DURATION,
                          fps=FPS, fade_frames=d, min_segment_s=settings.highlights_min_moment_s,
                          full_video_fallback=False, total_frames=TOTAL_FRAMES, min_gap_s=2.0) if reel else None
@@ -92,11 +97,15 @@ def main() -> int:
     kept_s = sum(r.end - r.start for r in edl.ranges)
     clean = remap_transcript(words, edl=edl)
     t2 = time.monotonic()
-    caller.start_stage("chapters", settings.chapters_max_wall_s)
-    chapters = generate_chapters(clean, kept_s, caller=caller)
+    if args.chapters_from:
+        saved = json.loads(args.chapters_from.read_text(encoding="utf-8")).get("chapters", [])
+        entries, problems = [(c["t"], c["title"]) for c in saved], ["none saved"]
+    else:
+        caller.start_stage("chapters", settings.chapters_max_wall_s)
+        chapters = generate_chapters(clean, kept_s, caller=caller)
+        entries, problems = (finalize_chapters(chapters.chapters, final_duration_s=kept_s) if chapters.ok
+                             else ([], chapters.problems))
     t_chapters = time.monotonic() - t2
-    entries, problems = (finalize_chapters(chapters.chapters, final_duration_s=kept_s) if chapters.ok
-                         else ([], chapters.problems))
 
     old = json.loads((JOB / "edl.json").read_text(encoding="utf-8"))
     old_kept = sum(r["end"] - r["start"] for r in old["ranges"])

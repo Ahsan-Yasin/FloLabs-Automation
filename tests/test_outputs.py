@@ -44,6 +44,16 @@ def test_captions_only_keep_words_inside_the_clip():
     assert abs(cues[0].start - 0.043) < 0.002 and cues[0].end <= 2.0
 
 
+def test_overlapping_transcript_lines_never_show_two_captions_at_once():
+    """Regression (real footage): rolling caption cues overlap in time; their
+    words interleaved and libass stacked two captions on screen."""
+    words = [Word(word="So, with OTAA the ESP32.", start=10.0, end=13.0, speaker="A"),
+             Word(word="OTAA stands for over the air update.", start=11.5, end=15.0, speaker="A")]
+    cues = caption_cues(words, 10.0, 20.0)
+    assert all(a.end <= b.start for a, b in itertools.pairwise(cues))
+    assert " ".join(c.text for c in cues) == words[0].word + " " + words[1].word  # never interleaved
+
+
 def test_srt_and_ass_formats():
     cues = [Cue(0.0, 1.5, "hello {there}"), Cue(61.25, 62.0, "back\\slash")]
     srt = srt_text(cues)
@@ -229,3 +239,33 @@ def test_bundle_stores_video_deflates_text_and_marks_missing_files(tmp_path):
         assert zf.getinfo("final.mp4").compress_type == zipfile.ZIP_STORED
         assert zf.getinfo("transcript_clean.txt").compress_type == zipfile.ZIP_DEFLATED
     assert not (tmp_path / "bundle.zip.tmp").exists()
+
+
+def test_silences_are_listed_but_not_claimed_for_removed_mp4(tmp_path):
+    removed = _removed() + [RemovedRange(start=70.0, end=73.5, start_frame=1750, end_frame=1838,
+                                         tier="transcript_only", reason="silence (no one speaking)", silence=True)]
+    manifest = RenderManifest(kind="removed", fps="25/1", width=64, height=64,
+                              pieces=[RenderPiece(src_start_frame=225, src_end_frame=775, out_start_frame=0)])
+    entries = removed_entries(removed, _words(), manifest)
+    write_removed_transcript(tmp_path / "r.txt", tmp_path / "r.json", entries, meeting="Sync", source_duration_s=100)
+    text = (tmp_path / "r.txt").read_text(encoding="utf-8")
+    assert "[01:10–01:13] (3.5s) silence (no one speaking)\n    (no one speaking)" in text
+    assert "1 of the cuts (4s) are pauses where no one was speaking" in text
+    data = json.loads((tmp_path / "r.json").read_text(encoding="utf-8"))
+    assert data["silence_cuts"] == 1 and data["silence_s"] == 3.5
+    assert data["cuts"][2]["silence"] is True and data["cuts"][2]["in_removed_video"] is False
+
+
+def test_reel_pieces_split_by_cut_pauses_are_one_highlight_row():
+    from core.models import Moment
+    from deliver import _reel_rows
+
+    reel = [Moment(id=0, start=10.0, end=40.0, first_index=0, last_index=3, score=9, category="concept",
+                   title="How the cache works"),
+            Moment(id=1, start=100.0, end=130.0, first_index=9, last_index=12, score=8, category="insight")]
+    manifest = RenderManifest(kind="highlights", fps="25/1", width=64, height=64, pieces=[
+        RenderPiece(src_start_frame=250, src_end_frame=500, out_start_frame=0),  # 10-20 s
+        RenderPiece(src_start_frame=550, src_end_frame=1000, out_start_frame=250),  # 22-40 s: a pause was cut
+        RenderPiece(src_start_frame=2500, src_end_frame=3250, out_start_frame=700),  # 100-130 s
+    ])
+    assert _reel_rows(manifest, reel) == [(0.0, 10.0, 40.0, "How the cache works"), (28.0, 100.0, 130.0, "insight")]

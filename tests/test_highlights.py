@@ -38,11 +38,21 @@ def test_candidates_do_not_join_long_pauses_or_many_lines():
     assert len(candidate_moments(js)) == 2  # 3 lines (16 s) in between: separate
 
 
-def test_floors_score_three_and_jokes_from_two():
+def test_floor_is_score_three_for_everything_including_jokes():
     js = [_j(0, 3, "concept"), _j(5, 2, "funny", start=100.0), _j(10, 2, "concept", start=200.0),
           _j(15, 9, "none", start=300.0), _j(20, 2, "none", start=400.0)]
-    # a high score counts even without a category (the re-rank assigns one)
-    assert [m.first_index for m in candidate_moments(js)] == [0, 5, 15]
+    # a high score counts even without a category (the re-rank assigns one);
+    # a mild joke (2) no longer gets a head start
+    assert [m.first_index for m in candidate_moments(js)] == [0, 15]
+
+
+def test_funny_moments_fill_at_most_a_third_of_the_reel():
+    jokes = [_m(i, 700 * i, 700 * i + 40, 9, "funny") for i in range(5)]  # the best-scored moments
+    learning = [_m(10 + k, 350 + 700 * k, 390 + 700 * k, 6, "concept") for k in range(5)]
+    chosen = select_highlights(jokes + learning, duration_s=3600, target_s=300, max_funny_share=0.34)
+    funny_s = sum(m.duration for m in chosen if m.category == "funny")
+    assert 0 < funny_s <= 0.34 * 300
+    assert sum(m.duration for m in chosen if m.category == "concept") >= 160
 
 
 def test_candidates_capped_to_the_best_and_returned_in_time_order():
@@ -114,19 +124,21 @@ def test_overlapping_moments_are_not_both_chosen():
 # ---------------------------------------------------------------- shorts
 
 
-def test_shorts_prefer_funny_then_fill_and_never_overlap():
+def test_shorts_prefer_learning_moments_then_fill_and_never_overlap():
+    """Owner: shorts are mainly for learning; a funny one only fills a slot."""
     js = [_j(i, length=9.0) for i in range(60)]  # 9 s sentences, 1 s gaps
     moments = [
-        _m(0, js[2].start, js[3].end, 9, "funny", True, 2, 3),
-        _m(1, js[10].start, js[11].end, 10, "concept", True, 10, 11),
-        _m(2, js[20].start, js[21].end, 7, "funny", True, 20, 21),
-        _m(3, js[3].start, js[4].end, 8, "funny", True, 3, 4),  # overlaps short 0
-        _m(4, js[40].start, js[41].end, 9, "funny", False, 40, 41),  # not short-worthy
+        _m(0, js[2].start, js[3].end, 7, "concept", True, 2, 3),
+        _m(1, js[10].start, js[11].end, 10, "funny", True, 10, 11),
+        _m(2, js[20].start, js[21].end, 6, "new_architecture", True, 20, 21),
+        _m(3, js[3].start, js[4].end, 8, "insight", True, 3, 4),  # overlaps short 0... picked first (8 > 7)
+        _m(4, js[40].start, js[41].end, 9, "concept", False, 40, 41),  # not short-worthy
     ]
     shorts = select_shorts(moments, js, count=3, min_s=20, max_s=60)
-    assert [s.moment_id for s in shorts] == [1, 0, 2]
+    assert [s.moment_id for s in shorts] == [3, 2, 1]  # learning ones first (best first), then funny
     assert [s.index for s in shorts] == [1, 2, 3]
     assert all(20 <= s.end - s.start <= 60 for s in shorts)
+    assert [s.moment_id for s in select_shorts(moments, js, count=2, min_s=20, max_s=60)] == [3, 2]
 
 
 def test_short_windows_keep_the_core_and_snap_to_sentences():
@@ -151,8 +163,10 @@ def test_trailing_filler_is_dropped_from_shorts():
 
 def test_shorts_fall_back_to_categories_when_the_rerank_failed():
     js = [_j(i, length=9.0) for i in range(10)]
-    moment = _m(0, js[2].start, js[3].end, 7, "funny", short=False, first=2, last=3, reranked=False)
+    moment = _m(0, js[2].start, js[3].end, 7, "concept", short=False, first=2, last=3, reranked=False)
     assert len(select_shorts([moment], js, count=2, min_s=20, max_s=60)) == 1
+    joke = moment.model_copy(update={"category": "funny"})
+    assert select_shorts([joke], js, count=2, min_s=20, max_s=60) == []  # not a learning moment
 
 
 def test_no_shorts_requested_or_available():
@@ -186,3 +200,23 @@ def test_unreranked_moments_rank_below_reranked_ones_with_the_same_number():
     moments = [_m(0, 0, 30, 6, reranked=False), _m(1, 100, 130, 6)]
     cal = {m.id: m.score for m in calibrate_by_rank(moments)}
     assert cal[1] > cal[0]
+
+
+def test_removed_filler_at_either_end_of_a_short_is_dropped():
+    js = [_j(i, length=9.0) for i in range(10)]
+    js[2] = _j(2, length=9.0, decision="remove", removal="housekeeping", text="sorry, one second")
+    short = _m(0, js[2].start, js[5].end, 9, "concept", True, 2, 5, peak=4)
+    (s,) = select_shorts([short], js, count=1, min_s=20, max_s=60)
+    assert (s.start, s.end) == (js[3].start, js[5].end)
+
+
+def test_a_reel_clip_never_starts_or_ends_on_removed_housekeeping():
+    """Live case: a moment bridged a removed "sorry, I have an emergency
+    outside" line full of dead air, and final.mp4 opened on it."""
+    js = [_j(i, length=9.0) for i in range(30)]
+    js[10] = _j(10, length=9.0, decision="remove", removal="housekeeping", text="sorry, one second")
+    js[16] = _j(16, length=9.0, decision="remove", removal="filler", text="okay okay")
+    moment = _m(0, js[10].start, js[16].end, 9, first=10, last=16, peak=13)
+    (clip,) = select_highlights([moment], duration_s=3600, min_total_s=10, judgments=js)
+    assert (clip.first_index, clip.last_index) == (11, 15)
+    assert (clip.start, clip.end) == (js[11].start, js[15].end)

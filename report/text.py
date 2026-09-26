@@ -17,6 +17,7 @@ from pathlib import Path
 
 from core.models import RemovedRange, RenderManifest, Word
 from core.timeline import fmt_clock, parse_rate
+from slice.transcript import MIN_OVERLAP_S, merge_spans
 
 
 @dataclass
@@ -28,6 +29,7 @@ class RemovedEntry:
     tier: str
     removed_video_at: float | None  # position in removed.mp4, if shown there
     lines: list[dict] = field(default_factory=list)  # {start, end, speaker, text} (source time)
+    silence: bool = False  # nobody was speaking: listed, but not in removed.mp4
 
     @property
     def duration(self) -> float:
@@ -38,16 +40,27 @@ class RemovedEntry:
         return " ".join(line["text"] for line in self.lines)
 
 
-def removed_entries(removed: list[RemovedRange], words: list[Word],
-                    removed_manifest: RenderManifest | None = None) -> list[RemovedEntry]:
+def removed_entries(removed: list[RemovedRange], words: list[Word], removed_manifest: RenderManifest | None = None,
+                    silence: list[tuple[float, float]] | None = None) -> list[RemovedEntry]:
     """Attach the cut words to each removed range (a word belongs to the range
-    holding its midpoint, like the clean transcript's remap)."""
+    holding its midpoint, like the clean transcript's remap). A word whose
+    midpoint is in a cut pause — a pure-silence range, or one of the
+    `silence` cuts (EditDecisionList.silence_cuts; a pause cut can share a
+    removed range with a removed sentence) — but which is partly kept was
+    still said in the output (slice/transcript.remap_transcript is given the
+    same cuts), so it is not listed."""
     starts = [r.start for r in removed]
+    silence = merge_spans(silence or [])
+    silence_starts = [s for s, _ in silence]
     by_range: dict[int, list[Word]] = {}
     for w in words:
         mid = (w.start + w.end) / 2
         i = bisect.bisect_right(starts, mid) - 1
         if 0 <= i < len(removed) and removed[i].start <= mid < removed[i].end:
+            k = bisect.bisect_right(silence_starts, mid) - 1
+            in_pause = removed[i].silence or (k >= 0 and mid < silence[k][1])
+            if in_pause and _kept_s(w, removed, starts) > MIN_OVERLAP_S:
+                continue
             by_range.setdefault(i, []).append(w)
 
     positions: dict[int, float] = {}
@@ -61,8 +74,19 @@ def removed_entries(removed: list[RemovedRange], words: list[Word],
         at = positions.get(r.start_frame) if r.tier == "video" and r.start_frame is not None else None
         lines = [{"start": round(w.start, 3), "end": round(w.end, 3), "speaker": w.speaker, "text": w.word.strip()}
                  for w in by_range.get(i, []) if w.word.strip()]
-        entries.append(RemovedEntry(i + 1, r.start, r.end, r.reason, r.tier, at, lines))
+        entries.append(RemovedEntry(i + 1, r.start, r.end, r.reason, r.tier, at, lines, r.silence))
     return entries
+
+
+def _kept_s(w: Word, removed: list[RemovedRange], starts: list[float]) -> float:
+    """Seconds of the word that are NOT removed (the removed ranges are the
+    exact complement of the kept ones)."""
+    cut = 0.0
+    i = max(0, bisect.bisect_right(starts, w.start) - 1)
+    while i < len(removed) and removed[i].start < w.end:
+        cut += max(0.0, min(w.end, removed[i].end) - max(w.start, removed[i].start))
+        i += 1
+    return (w.end - w.start) - cut
 
 
 def _who(speaker: str) -> str:
@@ -88,21 +112,23 @@ def write_removed_transcript(txt_path: Path, json_path: Path, entries: list[Remo
     shown = sum(1 for e in entries if e.removed_video_at is not None)
     where = (f"{shown} cuts of 1 s or more are also in removed.mp4; shorter ones are listed here only."
              if shown else "There is no removed.mp4 for this meeting; every cut is listed here.")
-    header = _header(
-        f"Removed from: {meeting}" if meeting else "Removed parts",
-        [
-            (f"{len(entries)} cuts, {total / 60:.1f} min of {source_duration_s / 60:.1f} min "
-             f"({(100 * total / source_duration_s) if source_duration_s else 0:.0f}%)."),
-            "Times are positions in the ORIGINAL recording (the labels in removed.mp4 show the same times).",
-            where,
-        ],
-    )
+    notes = [
+        (f"{len(entries)} cuts, {total / 60:.1f} min of {source_duration_s / 60:.1f} min "
+         f"({(100 * total / source_duration_s) if source_duration_s else 0:.0f}%)."),
+        "Times are positions in the ORIGINAL recording (the labels in removed.mp4 show the same times).",
+        where,
+    ]
+    silences = [e for e in entries if e.silence]
+    if silences:
+        notes.append(f"{len(silences)} of the cuts ({sum(e.duration for e in silences):.0f}s) are pauses where no "
+                     "one was speaking; there is nothing to see or hear in them, so removed.mp4 leaves them out.")
+    header = _header(f"Removed from: {meeting}" if meeting else "Removed parts", notes)
     body: list[str] = []
     for e in entries:
         where = f"  [in removed.mp4 at {fmt_clock(e.removed_video_at)}]" if e.removed_video_at is not None else ""
         body.append(f"[{_span(e.start, e.end)}] ({e.duration:.1f}s) {e.reason or 'removed'}{where}")
         if not e.lines:
-            body.append("    (no speech)")
+            body.append("    (no one speaking)" if e.silence else "    (no speech)")
         speaker = None
         for line in e.lines:
             who = _who(line["speaker"]) if line["speaker"] != speaker else ""
@@ -115,9 +141,11 @@ def write_removed_transcript(txt_path: Path, json_path: Path, entries: list[Remo
         "meeting": meeting,
         "source_duration_s": round(source_duration_s, 3),
         "removed_s": round(total, 3),
+        "silence_cuts": len(silences),
+        "silence_s": round(sum(e.duration for e in silences), 3),
         "cuts": [
             {"index": e.index, "start": round(e.start, 3), "end": round(e.end, 3), "duration": round(e.duration, 3),
-             "reason": e.reason, "in_removed_video": e.removed_video_at is not None,
+             "reason": e.reason, "silence": e.silence, "in_removed_video": e.removed_video_at is not None,
              "removed_video_at": None if e.removed_video_at is None else round(e.removed_video_at, 3),
              "lines": e.lines}
             for e in entries

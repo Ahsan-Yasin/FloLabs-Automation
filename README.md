@@ -1,21 +1,22 @@
 # Highlight Cutter
 
-Given a YouTube link or an uploaded recording, produces a trimmed video —
-either an aggressive highlight reel or a light crosstalk-only cleanup.
-Transcript timestamps (WhisperX ASR + diarization) decide candidate cuts, a
-Gemini LLM pass judges what's actually worth keeping, and ffmpeg does the
-cutting. Includes a small web UI. See the original spec for the full
-pipeline design this was built from.
+Given a Zoom cloud recording, a YouTube link or an uploaded recording,
+produces one zip per meeting: the highlights reel followed by the cleaned
+meeting, vertical shorts, a video of everything removed, a PDF report,
+transcripts and YouTube chapters (see "What a finished job delivers").
+The platform's own transcript (Zoom's VTT, YouTube's captions) is reused when
+there is one, else WhisperX transcribes; an LLM pass (OpenAI `gpt-6-luna` by
+default) judges every sentence; ffmpeg does the cutting. Includes a small web
+UI.
 
 ## Pipeline
 
 ```
-YouTube URL / uploaded file -> [ingest] -> [transcribe: WhisperX ASR + diarization]
-      -> [transcribe.overlap: cheap heuristic overlap flags]
-      -> [decide: Gemini keep/remove pass — "highlights" or "crosstalk" mode]
-      -> [edl: sort/de-overlap/snap-to-word/merge -> EDL]
-      -> [slice: ffmpeg extract + concat]
-      -> clean output video + remapped transcript
+Zoom recording / YouTube URL / uploaded file -> [ingest]
+      -> [transcribe: reuse Zoom VTT / YouTube captions / uploaded .vtt, else WhisperX]
+      -> [decide: LLM keep/remove + highlight score per sentence, re-rank, chapters]
+      -> [edl: snap to sentences and the source frame grid -> EDL + removed ranges]
+      -> [deliver: final.mp4, removed.mp4, shorts, report, transcripts, bundle.zip]
 ```
 
 Module layout matches the spec's suggested repo structure: `ingest/`,
@@ -28,12 +29,14 @@ Running WhisperX is the slowest, most compute-heavy stage in the pipeline. If
 a platform-provided transcript is already available, the pipeline uses it
 instead and skips WhisperX (ASR + alignment + diarization) entirely:
 
-- **YouTube** — automatic, no setup needed. Before downloading, the pipeline
-  checks the video for its own captions (creator-uploaded captions are
-  preferred over auto-generated ones) via `transcribe/native.py`, fetched
-  through `yt-dlp`. If a usable English track exists, it's parsed and used
-  directly; otherwise the pipeline transcribes the video itself as before.
-- **Direct uploads (e.g. Zoom)** — attach a transcript when creating the job:
+- **Zoom** — automatic: a Zoom job downloads the recording's own audio
+  transcript (`Name: text` cues) next to the MP4 through the Zoom API.
+- **YouTube** — automatic, no setup needed. The pipeline checks the video for
+  its own captions (creator-uploaded preferred over auto-generated, original
+  English only — never a machine translation) via `transcribe/native.py`,
+  fetched through `yt-dlp`. If a usable English track exists, it's parsed and
+  used directly; otherwise the pipeline transcribes the video itself.
+- **Direct uploads** — attach a transcript when creating the job:
   `POST /jobs` accepts an optional `transcript` file field (`.vtt` or `.srt`
   — this is exactly what Zoom's cloud recordings export as
   `audio_transcript.vtt`). If provided and it parses, it's used instead of
@@ -42,8 +45,10 @@ instead and skips WhisperX (ASR + alignment + diarization) entirely:
 Either way, if no transcript is available — or it fails to parse — the
 pipeline transparently falls back to self-hosted WhisperX transcription. A
 job's `transcript_source` field (`asr` | `youtube_captions` |
-`uploaded_transcript`) reports which path was actually used; the web UI shows
-this once a job passes the transcribing stage.
+`uploaded_transcript` | `zoom_transcript`) reports which path was actually
+used; the web UI shows this once a job passes the transcribing stage.
+`REQUIRE_NATIVE_TRANSCRIPT=true` (the EC2 setting) never runs WhisperX: a job
+without a platform transcript fails `transcript_not_ready` instead.
 
 **Caveat for crosstalk/"Light cleanup" mode:** platform transcripts are a
 single serialized caption stream — by the time captions exist, simultaneous
@@ -80,11 +85,24 @@ Fill in `.env`:
 
   WhisperX itself runs self-hosted and free; this token is only for
   downloading the gated model weights.
-- `GEMINI_API_KEY` — used for the keep/remove edit-decision pass.
-- `GEMINI_MODEL` — defaults to `gemini-3.5-flash-lite`. Google's newest
-  flagship "flash" models are prone to `503 UNAVAILABLE` (high demand) right
-  after release; the `-lite` tier tends to be far more available. `decide`
-  already retries once on a transient API error before failing the job.
+- `OPENAI_API_KEY` — the AI pass (keep/remove, highlight scores, re-rank,
+  chapters). `OPENAI_MODEL` defaults to `gpt-6-luna`, OpenAI's budget model
+  ($0.10 / 1M input, $0.50 / 1M output tokens: a 98-minute meeting is about
+  100k in + 15k out ≈ $0.02), with `OPENAI_REASONING_EFFORT=none`. The account
+  needs billing credit — a key without it fails the job with
+  `llm_quota_exhausted`. Set `LLM_PROVIDER=gemini` (plus `GEMINI_API_KEY`,
+  `GEMINI_MODEL`) to use Gemini instead.
+- `ZOOM_ACCOUNT_ID`, `ZOOM_CLIENT_ID`, `ZOOM_CLIENT_SECRET` — a Zoom
+  Server-to-Server OAuth app (Zoom Marketplace → Develop → Build app). It
+  must be **activated** and have the scopes
+  `cloud_recording:read:list_user_recordings:admin`,
+  `cloud_recording:read:list_recording_files:admin` and
+  `cloud_recording:read:recording:admin`. `ZOOM_HOST_EMAIL` is whose cloud
+  recordings the UI lists by default. Restart the server after editing
+  `.env` (settings are read once per process).
+- YouTube downloads use `yt-dlp` with its `default` and `curl-cffi` extras and
+  a JavaScript runtime on `PATH` (`node` or `deno`) — without one YouTube
+  formats can go missing.
 - ffmpeg/ffprobe must be on `PATH` (or set `FFMPEG_BIN`/`FFPROBE_BIN` to
   absolute paths — useful if you just installed ffmpeg and the running
   process's PATH hasn't picked it up yet; `core.config` also injects that
@@ -97,16 +115,28 @@ Fill in `.env`:
 uvicorn api.main:app --reload
 ```
 
-Open `http://localhost:8000` for the web UI (paste a YouTube URL or drop a
-file, pick Highlights vs. Light cleanup, watch it process, preview/download
-the result). Or drive it directly:
+Open `http://localhost:8000/app` for the web UI (paste a YouTube URL, pick a
+Zoom recording, or drop a file; watch it process; play/download the results).
+Or drive it directly:
 
-- `POST /jobs` — multipart upload (`file`, optional `mode` form field:
-  `highlights` | `crosstalk`, optional `transcript` file field — `.vtt`/`.srt`,
-  e.g. Zoom's exported transcript — to skip WhisperX), starts the pipeline in
-  the background, returns a `job_id`.
-- `POST /jobs/youtube` — JSON body `{"url": "...", "mode": "highlights"}`,
-  downloads via yt-dlp then runs the same pipeline.
+- `GET /zoom/status` — whether Zoom credentials are set and the default host
+  email (never the credentials).
+- `GET /zoom/recordings?host=&from=&to=` — a host's cloud recordings
+  (default `ZOOM_HOST_EMAIL`, the last 30 days) with topic, duration, parts
+  and whether the transcript is ready.
+- `POST /jobs/zoom` — JSON `{"meeting_uuid": "...", "options": {...}}`.
+  Answers `425` (`recording_not_ready` / `transcript_not_ready`, with
+  `retry_after_s`) while Zoom is still processing; the same meeting with the
+  same options returns the existing job with `"deduplicated": true`; Zoom
+  errors come back as `zoom_auth` (credentials / app not activated),
+  `zoom_not_found` or `zoom_unavailable`. The job downloads the MP4 and
+  Zoom's transcript (multi-part recordings are joined) and runs the pipeline.
+- `POST /jobs/youtube` — JSON body `{"url": "...", "options": {...}}`,
+  downloads via yt-dlp (H.264 up to 720p when available) then runs the same
+  pipeline; the video's title goes on the title card and report.
+- `POST /jobs` — hidden multipart upload for ops/regression (`file`, optional
+  `transcript` `.vtt`/`.srt` to skip WhisperX, `title`, and the same options
+  as form fields).
 - `GET /jobs/{job_id}` — status/progress/paths.
 - `GET /jobs/{job_id}/video` — the trimmed output (once `status == done`).
 - `GET /jobs/{job_id}/edl` — the Edit Decision List used to produce it.
@@ -150,6 +180,24 @@ n8n (or any orchestrator) calls this API over HTTP per section 6 of the spec
   it is joined; a mismatch fails the job with `render_assert_failed` rather
   than shipping a silently broken file. `tools/regress_7b93.py` re-renders
   the 98-minute regression meeting and checks it frame by frame.
+- **Silences.** Caption timings can't show pauses (a YouTube or Zoom caption
+  stays on screen into the next line, so a kept sentence used to keep its
+  dead air), so the source audio itself is measured: 50 ms windows of 16 kHz
+  mono, streamed (a few seconds per hour of audio), cached per job in
+  `silences.json`. What counts as silence adapts to each recording — room
+  tone vs speech level over the part the transcript covers, never within
+  18 dB of loud speech or 10 dB of typical speech, so a quiet talker is not
+  cut (a room too noisy to tell them apart gets no silence cuts and a job
+  warning). Every stretch quieter than that for ≥ `SILENCE_MIN_S` (1 s) is
+  taken out of the cleaned meeting and the highlights reel, leaving 0.30 s
+  after speech and 0.25 s before it (a natural ~0.55 s beat) where that
+  speech stays in; a short only loses the silence at its start and end.
+  These cuts are listed in `transcript_removed` and `report.pdf` as "silence
+  (no one speaking)" but not put in `removed.mp4` (nothing to see or hear); a
+  pause cut next to a removed sentence is part of that sentence's cut and
+  label. Off for every job:
+  `SILENCE_CUT_ENABLED=false`; per job: the "Cut silences" box
+  (`options.cut_silence`, or the `cut_silence` form field for uploads).
 
 ### What a finished job delivers (M4)
 
@@ -157,10 +205,10 @@ One `bundle.zip` per meeting (`GET /jobs/{id}/bundle`, resumable), with:
 
 | File | What it is |
 |---|---|
-| `final.mp4` | the highlights reel, a 2 s "topic / Full meeting" card, then the cleaned meeting |
+| `final.mp4` | the highlights reel (mostly things worth learning — at most a third funny), a 2 s "topic / Full meeting" card, then the cleaned meeting |
 | `highlights.mp4` | the reel on its own (only when the meeting has ≥ 60 s of highlight material) |
-| `shorts/short_NN.mp4` + `.srt`, `shorts/shorts.json` | 1080×1920 shorts with burned-in captions and the moment's title |
-| `removed.mp4` | every cut of 1 s or more, each labelled "Removed 01:10–02:30 · reason" (original-recording time) |
+| `shorts/short_NN.mp4` + `.srt`, `shorts/shorts.json` | 1080×1920 shorts with burned-in captions and the moment's title — self-contained moments people can learn from first (concepts, how things work, new architectures/features, insights), a genuinely funny one only to fill a slot |
+| `removed.mp4` | every cut of 1 s or more (except pure silences), each labelled "Removed 01:10–02:30 · reason" (original-recording time) |
 | `report.pdf` | what was removed, when and why (minutes by reason, every cut with its text), highlights, shorts, chapters |
 | `transcript_removed.txt/.json` | the removed text with original-recording timestamps and reasons |
 | `transcript_clean.txt/.json` | what `final.mp4` says, with `final.mp4` timestamps |
@@ -185,7 +233,7 @@ pytest
 The test suite covers the deterministic logic (overlap detection, EDL
 sorting/de-overlap/snapping/merging, transcript remapping, native-transcript
 parsing (VTT/SRT/json3), the transcript-source pipeline branching, API
-wiring) with WhisperX, yt-dlp, and Gemini calls mocked out — it does not
+wiring) with WhisperX, yt-dlp, Zoom and LLM calls mocked out — it does not
 require ffmpeg,
 torch, or network access. The full pipeline has also been verified end to
 end against a real YouTube video with real WhisperX transcription/diarization

@@ -8,8 +8,10 @@ so a failure carries the command and the tail of stderr.
 """
 
 import subprocess
+import tempfile
 import threading
-from collections.abc import Callable
+import time
+from collections.abc import Callable, Iterator
 
 STDERR_TAIL_BYTES = 2048
 
@@ -100,13 +102,66 @@ def _name(cmd: list[str]) -> str:
     return exe.removesuffix(".exe")
 
 
+def stream_checked(
+    cmd: list[str], chunk_bytes: int, timeout: float | None = None, *, poll_interval: float | None = None
+) -> Iterator[bytes]:
+    """Run a media command and yield its stdout in `chunk_bytes` pieces (the
+    last one may be shorter), for decoding a long recording without holding
+    it in memory. Same contract as run_checked: MediaCommandError with the
+    command and the stderr tail on a non-zero exit or after `timeout`, and
+    the poll hook (heartbeat / cancel) runs about every `poll_interval`."""
+    cmd = [str(c) for c in cmd]
+    hook = _poll_hook()
+    if poll_interval is None:
+        poll_interval = getattr(_hooks, "interval", 30.0)
+    # stderr goes to a file, not a pipe: nobody reads it while stdout streams,
+    # and a full stderr pipe would stall the process
+    with tempfile.TemporaryFile() as err:
+        proc = subprocess.Popen(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=err)
+        expired = threading.Event()
+
+        def expire() -> None:
+            expired.set()
+            proc.kill()  # the blocked read below then sees EOF
+
+        timer = threading.Timer(timeout, expire) if timeout is not None else None
+        if timer is not None:
+            timer.daemon = True
+            timer.start()
+        last_poll = time.monotonic()
+        try:
+            while chunk := proc.stdout.read(chunk_bytes):
+                yield chunk
+                if hook is not None and time.monotonic() - last_poll >= poll_interval:
+                    last_poll = time.monotonic()
+                    hook()  # may raise (e.g. cancellation) -> finally kills the process
+            proc.wait()
+        finally:
+            if timer is not None:
+                timer.cancel()
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait()
+            proc.stdout.close()
+        if proc.returncode != 0:
+            err.seek(0)
+            tail = _tail(err.read())
+            if expired.is_set():
+                raise MediaCommandError(
+                    f"{_name(cmd)} timed out after {timeout:.0f}s: {format_cmd(cmd)}\n--- stderr (tail) ---\n{tail}",
+                    cmd, tail, None,
+                )
+            raise MediaCommandError(
+                f"{_name(cmd)} failed (exit {proc.returncode}): {format_cmd(cmd)}\n--- stderr (tail) ---\n{tail}",
+                cmd, tail, proc.returncode,
+            )
+
+
 def _run_with_hook(
     cmd: list[str], timeout: float | None, cwd: str | None, poll_interval: float, hook: Callable[[], None]
 ) -> subprocess.CompletedProcess:
     """Popen + communicate in slices so the hook runs periodically (heartbeat /
     cancellation) without an extra thread per command."""
-    import time
-
     proc = subprocess.Popen(
         cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=cwd,
         encoding="utf-8", errors="replace",

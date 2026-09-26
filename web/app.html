@@ -119,6 +119,35 @@
   .cut-slot-small { min-height: 38px; font-size: 12.5px; margin-top: 10px; }
   .hint { color: var(--ink-muted); font-size: 12px; margin: 8px 0 0; line-height: 1.5; }
 
+  .zoom-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; }
+  .zoom-form .host, .zoom-form .small-btn { grid-column: 1 / -1; }
+  @media (min-width: 560px) {
+    .zoom-form { grid-template-columns: 1fr 1fr auto; }
+    .zoom-form .small-btn { grid-column: auto; }
+  }
+  .zoom-form label {
+    display: flex; flex-direction: column; gap: 4px; min-width: 0;
+    font-family: 'IBM Plex Sans'; font-size: 11.5px; color: var(--ink-muted);
+  }
+  .zoom-form input {
+    width: 100%; min-width: 0; background: var(--bond-dim); border: 1.5px dashed var(--ink-muted);
+    padding: 8px 10px; color: var(--ink); font-family: 'IBM Plex Sans'; font-size: 13px;
+  }
+  .zoom-form input:focus { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .small-btn {
+    font-family: 'IBM Plex Sans'; font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap;
+    background: none; border: 1.5px solid var(--ink); padding: 8px 12px; cursor: pointer;
+  }
+  .small-btn:hover:not(:disabled) { color: var(--red); border-color: var(--red); }
+  .small-btn:disabled { color: var(--ink-muted); border-color: var(--ink-muted); cursor: not-allowed; }
+  .zoom-list { display: none; margin-top: 12px; }
+  .zoom-list.visible { display: block; }
+  .zoom-list td.act { text-align: right; }
+  .zoom-list .small-btn { padding: 4px 10px; }
+  .zoom-list .tag.ok { color: var(--blue); }
+  .zoom-list .tag.wait { color: var(--ink-muted); }
+  .zoom-list .tag.none { color: var(--red); }
+
   button.submit {
     width: 100%;
     margin-top: 22px;
@@ -240,22 +269,24 @@
   .picks-title { font-family: 'Source Serif 4', serif; font-size: 15px; margin: 0 0 4px; }
   .picks-summary { font-size: 12px; color: var(--ink-muted); margin: 0 0 12px; font-family: 'IBM Plex Sans'; }
   .picks-table-wrap { max-height: 360px; overflow: auto; border: 1px solid var(--line); }
-  .picks table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-family: 'IBM Plex Sans'; }
-  .picks th, .picks td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  .picks th { position: sticky; top: 0; background: var(--bond); font-weight: 600; font-size: 11.5px; }
-  .picks td.time { font-family: 'Courier Prime', monospace; white-space: nowrap; }
+  .picks table, .zoom-list table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-family: 'IBM Plex Sans'; }
+  .picks th, .picks td, .zoom-list th, .zoom-list td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .picks th, .zoom-list th { position: sticky; top: 0; background: var(--bond); font-weight: 600; font-size: 11.5px; }
+  .picks td.time, .zoom-list td.time { font-family: 'Courier Prime', monospace; white-space: nowrap; }
   .picks td.score { text-align: right; }
-  .picks .hook { color: var(--ink-muted); font-size: 11.5px; }
-  .picks .tag { display: inline-block; font-size: 10.5px; padding: 1px 5px; margin: 0 3px 2px 0; border: 1px solid; }
+  .picks .hook, .zoom-list .hook { color: var(--ink-muted); font-size: 11.5px; }
+  .picks .tag, .zoom-list .tag { display: inline-block; font-size: 10.5px; padding: 1px 5px; margin: 0 3px 2px 0; border: 1px solid; }
   .picks .tag.reel { color: var(--red); }
   .picks .tag.short { color: var(--blue); }
   .picks button.submit { margin-top: 14px; }
   @media (max-width: 620px) {
-    .picks table, .picks tbody, .picks tr, .picks td { display: block; width: auto; }
-    .picks thead { display: none; }
-    .picks tr { padding: 8px 10px; border-bottom: 1px solid var(--line); }
-    .picks td { border: none; padding: 1px 0; text-align: left; }
-    .picks td.time, .picks td.score { display: inline-block; font-size: 11.5px; color: var(--ink-muted); }
+    .picks table, .picks tbody, .picks tr, .picks td,
+    .zoom-list table, .zoom-list tbody, .zoom-list tr, .zoom-list td { display: block; width: auto; }
+    .picks thead, .zoom-list thead { display: none; }
+    .picks tr, .zoom-list tr { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+    .picks td, .zoom-list td { border: none; padding: 1px 0; text-align: left; }
+    .zoom-list td.act { text-align: left; padding-top: 4px; }
+    .picks td.time, .picks td.score, .zoom-list td.time { display: inline-block; font-size: 11.5px; color: var(--ink-muted); }
     .picks td.score { text-align: left; margin-left: 8px; }
     .picks td.score::before { content: "score "; }
   }
@@ -326,10 +357,11 @@
         </div>
         <div class="rule"></div>
 
-        <p class="prompt">Paste a link, or drop a file.</p>
+        <p class="prompt">Paste a link, pick a Zoom recording, or drop a file.</p>
 
         <div class="source-tabs" role="tablist">
           <button type="button" class="source-tab active" data-source="youtube" role="tab" aria-selected="true">Paste a link</button>
+          <button type="button" class="source-tab" data-source="zoom" role="tab" aria-selected="false">Zoom</button>
           <button type="button" class="source-tab" data-source="upload" role="tab" aria-selected="false">Drop a file</button>
         </div>
 
@@ -338,6 +370,24 @@
             <input type="text" id="url" placeholder="youtube.com/watch?v=…" />
           </div>
           <p class="hint">If the video already has captions, we reuse them instead of transcribing from scratch.</p>
+        </div>
+
+        <div class="source-panel" id="zoomPanel" role="tabpanel">
+          <div class="zoom-form">
+            <label class="host">Host email<input type="email" id="zoomHost" placeholder="host@company.com" autocomplete="off" /></label>
+            <label>From<input type="date" id="zoomFrom" /></label>
+            <label>To<input type="date" id="zoomTo" /></label>
+            <button type="button" class="small-btn" id="zoomFind">Find recordings</button>
+          </div>
+          <p class="hint" id="zoomHint">Lists the host's cloud recordings; press Process on one to cut it. Zoom's own transcript is reused, so nothing is transcribed.</p>
+          <div class="zoom-list" id="zoomList">
+            <div class="picks-table-wrap">
+              <table>
+                <thead><tr><th>Date</th><th>Meeting</th><th>Transcript</th><th></th></tr></thead>
+                <tbody id="zoomBody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div class="source-panel" id="uploadPanel" role="tabpanel">
@@ -356,6 +406,10 @@
         <label class="opt" for="decideOnly">
           <input type="checkbox" id="decideOnly" />
           <span>Show me the AI's picks first <small>(no rendering until you press "Render now")</small></span>
+        </label>
+        <label class="opt" for="cutSilence">
+          <input type="checkbox" id="cutSilence" checked />
+          <span>Cut silences <small>(pauses where no one is speaking are shortened to a short beat)</small></span>
         </label>
 
         <button class="submit" id="submitBtn">Start cutting</button>
@@ -455,6 +509,7 @@ window.fetch = async (url, opts = {}) => {
 
 const STEP_LABELS = {
   queued: "Queued",
+  waiting_transcript: "Waiting for Zoom's transcript",
   downloading: "Downloading video",
   transcribing: "Transcribing & identifying speakers",
   deciding: "AI selecting the good parts",
@@ -478,6 +533,7 @@ const TRANSCRIPT_SOURCE_LABELS = {
   asr: "Transcribed from scratch with WhisperX.",
   youtube_captions: "Reused YouTube's own captions — skipped transcription.",
   uploaded_transcript: "Reused your uploaded transcript — skipped transcription.",
+  zoom_transcript: "Used Zoom's own transcript — skipped transcription.",
 };
 let activeSteps = STEPS_WITH_DOWNLOAD;
 
@@ -485,6 +541,7 @@ let selectedSource = "youtube";
 let selectedFile = null;
 let selectedTranscript = null;
 let pollTimer = null;
+let isBusy = false;
 
 const urlInput = document.getElementById("url");
 const fileInput = document.getElementById("file");
@@ -494,7 +551,15 @@ const transcriptInput = document.getElementById("transcriptFile");
 const transcriptDrop = document.getElementById("transcriptDrop");
 const transcriptLabelEl = document.getElementById("transcriptLabel");
 const youtubePanel = document.getElementById("youtubePanel");
+const zoomPanel = document.getElementById("zoomPanel");
 const uploadPanel = document.getElementById("uploadPanel");
+const zoomHost = document.getElementById("zoomHost");
+const zoomFrom = document.getElementById("zoomFrom");
+const zoomTo = document.getElementById("zoomTo");
+const zoomFind = document.getElementById("zoomFind");
+const zoomHint = document.getElementById("zoomHint");
+const zoomList = document.getElementById("zoomList");
+const zoomBody = document.getElementById("zoomBody");
 const submitBtn = document.getElementById("submitBtn");
 const errorBox = document.getElementById("errorBox");
 const statusPanel = document.getElementById("statusPanel");
@@ -504,6 +569,7 @@ const stageProgress = document.getElementById("stageProgress");
 const stageProgressLabel = document.getElementById("stageProgressLabel");
 const stageProgressFill = document.getElementById("stageProgressFill");
 const PROGRESS_UNIT_LABELS = {
+  downloading: "MB downloaded",
   deciding: "segments judged",
   slicing: "render steps",
   rendering_highlights: "render steps",
@@ -523,6 +589,7 @@ const slugEl = document.getElementById("slug");
 const markedTranscriptWrap = document.getElementById("markedTranscriptWrap");
 const markedTranscriptEl = document.getElementById("markedTranscript");
 const decideOnlyEl = document.getElementById("decideOnly");
+const cutSilenceEl = document.getElementById("cutSilence");
 const picksEl = document.getElementById("picks");
 const picksSummaryEl = document.getElementById("picksSummary");
 const picksBodyEl = document.getElementById("picksBody");
@@ -559,7 +626,11 @@ document.querySelectorAll(".source-tab").forEach((tab) => {
     tab.setAttribute("aria-selected", "true");
     selectedSource = tab.dataset.source;
     youtubePanel.classList.toggle("active", selectedSource === "youtube");
+    zoomPanel.classList.toggle("active", selectedSource === "zoom");
     uploadPanel.classList.toggle("active", selectedSource === "upload");
+    // a Zoom job starts from its row's Process button
+    submitBtn.style.display = selectedSource === "zoom" ? "none" : "";
+    if (selectedSource === "zoom") loadZoomStatus();
     clearError();
     updateSlug();
   });
@@ -670,11 +741,18 @@ function canRerender(job) {
   return job.status === "failed" && job.retryable === true && !!job.selection_path && !!job.decisions_path;
 }
 
+// The wait for Zoom's transcript is listed only while it is happening.
+function withTranscriptWait(steps) {
+  const i = steps.indexOf("downloading");
+  return i < 0 ? steps : [...steps.slice(0, i), "waiting_transcript", ...steps.slice(i)];
+}
+
 function renderSteps(status) {
   stepsEl.innerHTML = "";
+  const steps = status === "waiting_transcript" ? withTranscriptWait(activeSteps) : activeSteps;
   // a previewed ("decided") job has finished everything before rendering
-  const currentIndex = status === "decided" ? activeSteps.indexOf("slicing") : activeSteps.indexOf(status);
-  activeSteps.forEach((step, i) => {
+  const currentIndex = status === "decided" ? steps.indexOf("slicing") : steps.indexOf(status);
+  steps.forEach((step, i) => {
     const li = document.createElement("li");
     if (currentIndex > i || status === "done") li.className = "done";
     else if (i === currentIndex && status !== "decided") li.className = "active";
@@ -684,8 +762,12 @@ function renderSteps(status) {
 }
 
 function setBusy(busy) {
+  isBusy = busy;
   submitBtn.disabled = busy;
   submitBtn.textContent = busy ? "Cutting…" : "Start cutting";
+  document.querySelectorAll(".zoom-process").forEach((b) => {
+    b.disabled = busy || b.dataset.blocked === "1";
+  });
 }
 
 function renderStageProgress(job) {
@@ -750,7 +832,7 @@ async function submit() {
       fetch("/jobs/youtube", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, options: { decide_only: decideOnlyEl.checked } }),
+        body: JSON.stringify({ url, options: jobOptions() }),
       });
   } else {
     if (!selectedFile) {
@@ -761,10 +843,21 @@ async function submit() {
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("decide_only", decideOnlyEl.checked ? "true" : "false");
+    formData.append("cut_silence", cutSilenceEl.checked ? "true" : "false");
     if (selectedTranscript) formData.append("transcript", selectedTranscript);
     request = () => fetch("/jobs", { method: "POST", body: formData });
   }
+  launch(request);
+}
 
+// The per-job options the YouTube and Zoom tabs send as JSON (the upload
+// form sends the same two as form fields).
+function jobOptions() {
+  return { decide_only: decideOnlyEl.checked, cut_silence: cutSilenceEl.checked };
+}
+
+// Shared by every source: reset the page, send the request, then poll.
+async function launch(request) {
   clearError();
   resultEl.classList.remove("visible");
   removedWrap.classList.remove("visible");
@@ -792,19 +885,175 @@ async function submit() {
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }));
-    if (body.error_code === "busy") {
-      showError("Another job is still running. Try again when it has finished.");
-    } else {
-      showError((typeof body.detail === "string" && body.detail) || (body.detail && body.detail.message) || "Couldn't start the job.");
-    }
+    showError(startErrorMessage(res.status, body));
     setBusy(false);
     return;
   }
 
   const job = await res.json();
+  if (job.deduplicated) {
+    zoomHint.textContent = "Already processed with these settings — showing that job instead of starting another.";
+  }
   rememberJob(job.job_id);
   poll(job.job_id);
 }
+
+const ZOOM_NOT_SET_UP =
+  "Zoom isn't set up on this server yet: fill ZOOM_ACCOUNT_ID, ZOOM_CLIENT_ID, ZOOM_CLIENT_SECRET and " +
+  "ZOOM_HOST_EMAIL in .env, then restart the server.";
+
+function detailText(body) {
+  return (typeof body.detail === "string" && body.detail) || (body.detail && body.detail.message) || "";
+}
+
+function startErrorMessage(status, body) {
+  const minutes = Math.max(1, Math.round((body.retry_after_s || 300) / 60));
+  switch (body.error_code) {
+    case "busy":
+      return "Another job is still running. Try again when it has finished.";
+    case "recording_not_ready":
+      return `Zoom is still processing this recording. Try again in about ${minutes} minutes.`;
+    case "transcript_not_ready":
+      return status === 425
+        ? `Zoom hasn't finished this meeting's transcript yet. Try again in about ${minutes} minutes.`
+        : detailText(body) || "This recording has no Zoom transcript.";
+    case "zoom_auth":
+      return status === 400 ? ZOOM_NOT_SET_UP : detailText(body) || "Zoom refused the request.";
+    case "zoom_not_found":
+      return "Zoom can't find this recording any more (deleted, or in the trash?).";
+    case "zoom_unavailable":
+      return `Zoom isn't answering properly right now. Try again in about ${minutes} minute${minutes === 1 ? "" : "s"}.`;
+    default:
+      return detailText(body) || "Couldn't start the job.";
+  }
+}
+
+// ---------------------------------------------------------------- Zoom picker
+
+const ZOOM_BADGES = {
+  ready: ["ok", "Zoom transcript"],
+  transcript_not_ready: ["wait", "transcript pending"],
+  recording_not_ready: ["wait", "still processing"],
+  no_transcript: ["none", "no transcript"],
+  source_unsupported: ["none", "no video"],
+};
+let zoomStatusLoaded = false;
+let zoomRequireNative = false;
+
+function localDay(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+(function initZoomDates() {
+  const today = new Date();
+  zoomTo.value = localDay(today);
+  zoomFrom.value = localDay(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 29));
+})();
+
+async function loadZoomStatus() {
+  if (zoomStatusLoaded) return;
+  let status;
+  try {
+    const res = await fetch("/zoom/status");
+    if (!res.ok) return;
+    status = await res.json();
+  } catch (e) {
+    return; // try again next time the tab opens
+  }
+  zoomStatusLoaded = true;
+  zoomRequireNative = !!status.require_native_transcript;
+  if (!status.configured) {
+    zoomHint.textContent = ZOOM_NOT_SET_UP;
+    zoomFind.disabled = true;
+    return;
+  }
+  if (status.host_email && !zoomHost.value) zoomHost.value = status.host_email;
+}
+
+function zoomDate(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso || "";
+  return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
+async function findZoomRecordings() {
+  clearError();
+  const params = new URLSearchParams();
+  if (zoomHost.value.trim()) params.set("host", zoomHost.value.trim());
+  if (zoomFrom.value) params.set("from", zoomFrom.value);
+  if (zoomTo.value) params.set("to", zoomTo.value);
+  zoomFind.disabled = true;
+  zoomFind.textContent = "Finding…";
+  let res, body;
+  try {
+    res = await fetch(`/zoom/recordings?${params}`);
+    body = await res.json().catch(() => ({}));
+  } catch (e) {
+    showError("Can't reach the server: " + e.message);
+    return;
+  } finally {
+    zoomFind.disabled = false;
+    zoomFind.textContent = "Find recordings";
+  }
+  if (!res.ok) {
+    showError(body.error_code === "zoom_auth" && res.status === 400 ? ZOOM_NOT_SET_UP
+      : detailText(body) || "Couldn't list the Zoom recordings.");
+    return;
+  }
+  renderZoomRecordings(body.meetings || []);
+}
+
+function renderZoomRecordings(meetings) {
+  zoomBody.textContent = "";
+  zoomList.classList.toggle("visible", meetings.length > 0);
+  zoomHint.textContent = meetings.length
+    ? `${meetings.length} recording${meetings.length === 1 ? "" : "s"}, newest first.`
+    : "No cloud recordings for this host between these dates.";
+  meetings.forEach((m) => {
+    const tr = document.createElement("tr");
+    cell(tr, zoomDate(m.start_time), "time");
+    const what = cell(tr, "");
+    const topic = document.createElement("div");
+    topic.textContent = m.topic || "(no topic)";
+    what.appendChild(topic);
+    const meta = [m.duration_min ? `${m.duration_min} min` : "", m.parts > 1 ? `${m.parts} parts` : ""].filter(Boolean);
+    if (meta.length) {
+      const line = document.createElement("div");
+      line.className = "hook";
+      line.textContent = meta.join(" · ");
+      what.appendChild(line);
+    }
+    // without a Zoom transcript the server transcribes it itself, unless it can't
+    const blocked = m.status === "source_unsupported" || (m.status === "no_transcript" && zoomRequireNative);
+    const [tone, label] = ZOOM_BADGES[m.status] || ["wait", m.status];
+    const tag = document.createElement("span");
+    tag.className = `tag ${tone}`;
+    tag.textContent = m.status === "no_transcript" && !zoomRequireNative ? "no transcript · will transcribe" : label;
+    cell(tr, "").appendChild(tag);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "small-btn zoom-process";
+    btn.textContent = "Process";
+    btn.dataset.blocked = blocked ? "1" : "0";
+    btn.disabled = isBusy || blocked;
+    btn.addEventListener("click", () => processZoom(m));
+    cell(tr, "", "act").appendChild(btn);
+    zoomBody.appendChild(tr);
+  });
+}
+
+function processZoom(meeting) {
+  slugEl.textContent = meeting.topic || "Zoom recording";
+  activeSteps = STEPS_WITH_DOWNLOAD;
+  launch(() =>
+    fetch("/jobs/zoom", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ meeting_uuid: meeting.uuid, options: jobOptions() }),
+    })
+  );
+}
+
+zoomFind.addEventListener("click", findZoomRecordings);
 
 // /app?job=<id> reopens a job (after a refresh, or from a link n8n sends).
 function rememberJob(jobId) {
@@ -838,6 +1087,9 @@ async function poll(jobId) {
   }
 
   const job = await res.json();
+  // also right for a job reopened from ?job=<id>, whatever its source
+  activeSteps = job.source_url || job.zoom_meeting_uuid ? STEPS_WITH_DOWNLOAD : STEPS_NO_DOWNLOAD;
+  if (job.title && !slugEl.textContent) slugEl.textContent = job.title;
   renderWarnings(WARNING_STATUSES.includes(job.status) ? job.warnings : []);
 
   if (job.status === "failed" || job.status === "cancelled") {

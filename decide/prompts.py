@@ -107,18 +107,21 @@ OUTPUT: plain text, exactly one line per JUDGE line, in order, nothing else:
 for example "312 r 0 fill -" or "313 k 6 - arch".
 - k keep, r remove. The removal code (only when removing) says why: {removal_codes}.
 - score 0-10: how much this moment deserves a place in a 3-5 minute highlights reel of the \
-whole meeting. Highlight-worthy means: {highlights_criteria}. Judge the whole thought, not \
-the single line: every line of a strong explanation, demo, decision or joke gets the score \
-of that moment. Anchors: 0-2 logistics, filler, routine status ("I worked on X, still on \
-it"); 3-5 useful substance (a concrete update, a real question answered); 6-7 a clear \
-decision, an architecture or feature explained or demoed, a surprising fact or number, a \
-genuine laugh; 8-10 headline material you would put in a trailer of this meeting. Score \
-independently of keep/remove (a removed joke during small talk can still score high).
-- highlight code when the score is 3 or more (a joke from 2), the best fit: {highlight_codes}"""
+whole meeting. Highlight-worthy means: {highlights_criteria}. The reel is for people who \
+want to LEARN something new, so explanations and new things come first. Judge the whole \
+thought, not the single line: every line of a strong explanation, demo or decision gets the \
+score of that moment. Anchors: 0-2 logistics, filler, routine status ("I worked on X, still \
+on it"); 3-5 useful substance (a concrete update, a real question answered), a mildly funny \
+remark; 6-7 something a viewer can learn from — a concept or how something works explained \
+clearly, a new architecture or feature explained or demoed, a surprising fact or number, a \
+decision with its reason — or a genuinely funny moment; 8-10 the best of the meeting: new \
+ideas or explanations people would want to watch even if they missed the meeting. Score \
+independently of keep/remove.
+- highlight code when the score is 3 or more, the best fit: {highlight_codes}"""
 
 RESCORE_NOTE = (
     "Your previous answer scored every kept line 0. Re-read the scoring anchors: routine status is 0-2, but "
-    "useful substance is 3-5 and explanations, demos, decisions and laughs are 6-7. Score again."
+    "useful substance is 3-5 and explanations, demos and decisions are 6-7. Score again."
 )
 
 RERANK_TEMPLATE = """You are choosing highlight moments from a whole meeting. Below are \
@@ -129,13 +132,19 @@ the core. Highlight-worthy means: {highlights_criteria}.
 Compare the candidates WITH EACH OTHER. Answer in plain text with exactly one line for EVERY \
 candidate id (even weak ones), nothing else:
 <id>|<score>|<code>|<a>|<b>|<y or n>|<title>|<why>
-- score 0-10, spread across the candidates: the best ~15% get 8-10, the weakest 1-3
+- score 0-10, spread across the candidates: the best ~15% get 8-10, the weakest 1-3. Rank \
+highest what a viewer can learn from or would find new: clear explanations, new \
+architectures or features, insights, decisions with their reasons. A funny moment ranks high \
+only when it is genuinely funny; a routine update ranks low.
 - code: the category, one of {highlight_codes}
 - a, b: first and last line number of a clip that works on its own: start where the thought \
 starts (include the setup; never start on "which", "and", "so", "the first one"…), end after \
 the payoff; usually 15-45 seconds; you may use the "~" lines
-- y only if, as a 20-60 second vertical clip on its own, it genuinely is: {shorts_criteria}. A \
-useful or well-explained moment is NOT enough on its own. Otherwise n
+- y if, as a 20-60 second vertical clip, it is: {shorts_criteria}. That means the clip itself \
+explains or shows something — what a concept is, how something works, what a new feature or \
+design does and why, a lesson learned — so a viewer comes away knowing something new; a line \
+of setup inside the clip is fine. n for plain status ("I finished X, next I will do Y"), lists \
+of tasks, logistics, or a moment that only makes sense with the rest of the meeting
 - title: at most 60 characters, specific ("Moving the session store to Redis"), no "|"
 - why: one sentence (at most 140 characters) on why it is worth watching, no "|"
 Example: 12|8|arch|402|409|n|Moving the session store to Redis|Cuts API latency from 800 to 120 ms."""

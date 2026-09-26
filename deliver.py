@@ -5,7 +5,7 @@ The zip the owner gets for each meeting:
     final.mp4            highlights reel, title card, then the cleaned meeting
     highlights.mp4       the reel on its own
     shorts/short_NN.mp4  vertical shorts (+ .srt captions, shorts.json)
-    removed.mp4          every cut of 1 s or more, labelled with time + reason
+    removed.mp4          every cut of 1 s or more (not pure silences), labelled with time + reason
     report.pdf           what was removed, when and why; highlights; shorts; chapters
     transcript_removed.txt/.json   the removed text with original timestamps
     transcript_clean.txt/.json     what final.mp4 says, with final.mp4 times
@@ -89,9 +89,17 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
     job.progress_current = job.progress_total = 0
 
     words = inp.render.words
-    clean_words = remap_transcript(words, manifest=out.cleaned)
+    # A sentence whose caption span straddles a cut pause was still said.
+    # Every pause cut counts, not only the removed ranges that are pure
+    # silence: a pause at the end of a kept sentence merges with the removed
+    # sentence after it into one removed range.
+    silence = inp.render.edl.silence_cuts + [(r.start, r.end) for r in inp.render.removed if r.silence]
+    clean_words = remap_transcript(words, manifest=out.cleaned, silence=silence)
     # what is said in the reel at the start of final.mp4 (its own timeline = final's)
-    reel_words = remap_transcript(words, manifest=out.highlights) if out.highlights is not None else []
+    reel_words = []
+    if out.highlights is not None:
+        reel_silence = inp.render.reel_edl.silence_cuts if inp.render.reel_edl is not None else []
+        reel_words = remap_transcript(words, manifest=out.highlights, silence=reel_silence)
     _write_json(job_dir / "clean_transcript.json", [w.model_dump() for w in clean_words])
     job.clean_transcript_path = str(job_dir / "clean_transcript.json")
 
@@ -99,7 +107,7 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
         set_status(JobStatus.REPORTING)
         meeting = inp.render.title  # the same name as on the title card ("" = none known)
         source_s = inp.render.media.video_duration
-        entries = removed_entries(inp.render.removed, words, out.removed)
+        entries = removed_entries(inp.render.removed, words, out.removed, silence=silence)
         write_removed_transcript(job_dir / "transcript_removed.txt", job_dir / "transcript_removed.json", entries,
                                  meeting=meeting, source_duration_s=source_s)
         write_clean_transcript(job_dir / "transcript_clean.txt", job_dir / "transcript_clean.json",
@@ -231,18 +239,24 @@ def _chapters(job: JobRecord, job_dir: Path, chapter_fn: ChapterFn | None, clean
 
 def _reel_rows(manifest: RenderManifest | None, reel: list[Moment]) -> list[tuple[float, float, float, str]]:
     """(time in final.mp4, source start, source end, title) per reel clip. The
-    reel is the first thing in final.mp4, so its own timeline is final's."""
+    reel is the first thing in final.mp4, so its own timeline is final's.
+    Pieces of one moment split by cut pauses are one clip."""
     if manifest is None:
         return []
     fps = parse_rate(manifest.fps)
-    rows = []
+    rows: list[tuple[float, float, float, str]] = []
+    last_id = None
     for p in manifest.pieces:
         s, e = float(Fraction(p.src_start_frame) / fps), float(Fraction(p.src_end_frame) / fps)
         best = max(reel, key=lambda m: min(e, m.end) - max(s, m.start), default=None)
-        title = ""
-        if best is not None and min(e, best.end) > max(s, best.start):
-            title = best.title or best.category.replace("_", " ")
+        if best is None or min(e, best.end) <= max(s, best.start):
+            best = None
+        if best is not None and rows and best.id == last_id:
+            rows[-1] = (*rows[-1][:2], e, rows[-1][3])
+            continue
+        title = (best.title or best.category.replace("_", " ")) if best is not None else ""
         rows.append((float(Fraction(p.out_start_frame) / fps), s, e, title))
+        last_id = best.id if best is not None else None
     return rows
 
 
@@ -291,6 +305,8 @@ def _manifest(job: JobRecord, inp: DeliverInputs, out: RenderOutputs, highlights
             "seconds": round(sum(r.end - r.start for r in removed), 3),
             "in_removed_video": sum(1 for e in entries if e.removed_video_at is not None),
             "transcript_only": sum(1 for e in entries if e.removed_video_at is None),
+            "silence_cuts": sum(1 for r in removed if r.silence),
+            "silence_s": round(sum(r.end - r.start for r in removed if r.silence), 3),
             "merged_back_count": inp.render.edl.merged_gap_count,
             "merged_back_s": round(inp.render.edl.merged_gap_seconds, 3),
         },

@@ -43,21 +43,26 @@ def caption_cues(
     clip timeline (0 = clip start). A word belongs to the clip if its
     estimated midpoint is inside it."""
     tokens: list[tuple[float, float, str]] = []
-    for item in items:
+    cursor = float("-inf")
+    for item in sorted(items, key=lambda w: w.start):
         if item.end <= clip_start or item.start >= clip_end:
             continue
         words = item.word.split()
         if not words:
             continue
+        # a line never starts before the previous one ends: rolling/overlapping
+        # transcript cues otherwise interleave their words and put two
+        # captions on screen at once
+        begin = max(item.start, cursor)
+        end = max(item.end, begin + 0.25 * len(words))
+        cursor = end
         weight = sum(len(w) + 1 for w in words)
-        span = max(item.end - item.start, 0.01)
-        t = item.start
+        t = begin
         for w in words:
-            d = span * (len(w) + 1) / weight
+            d = (end - begin) * (len(w) + 1) / weight
             if clip_start <= t + d / 2 < clip_end:
                 tokens.append((max(t, clip_start), min(t + d, clip_end), w))
             t += d
-    tokens.sort(key=lambda x: x[0])
 
     groups: list[list[tuple[float, float, str]]] = []
     current: list[tuple[float, float, str]] = []

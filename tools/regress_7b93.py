@@ -14,7 +14,12 @@ keep ranges and transcript, renders it, and checks:
 
 Nothing in the fixture folder is modified; all output goes to --out.
 
-    .venv/Scripts/python.exe tools/regress_7b93.py --out <scratch dir>
+    .venv/Scripts/python.exe tools/regress_7b93.py --out <scratch dir> [--cut-silence]
+
+By default the EDL has no silence cuts (the gate's historical baseline).
+--cut-silence also takes out the pauses nobody speaks in, measured in the
+source audio exactly as a job does (slice/silence.py), so the same checks
+run on an EDL with many more, shorter cuts.
 """
 
 from __future__ import annotations
@@ -30,12 +35,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from core.config import get_settings
 from core.models import Decision, Word
 from core.timeline import fade_frames_for
 from edl.builder import build_edl, complement
 from slice.ffmpeg_wrapper import extract_audio_flac
 from slice.pipeline import render_cleaned
 from slice.profile import probe_header, probe_media
+from slice.silence import SilenceParams, find_silences, reach_end
 from slice.transcript import remap_transcript
 
 JOB = ROOT / "storage" / "jobs" / "7b93aa4cd7ef436895213e6fff9365a3"
@@ -62,6 +69,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--samples", type=int, default=24)
+    ap.add_argument("--cut-silence", action="store_true", help="also cut the pauses nobody speaks in, as jobs do")
     args = ap.parse_args()
     out_dir: Path = args.out
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -72,7 +80,19 @@ def main() -> int:
     old_edl = json.loads((JOB / "edl.json").read_text(encoding="utf-8"))
     words = [Word(**w) for w in json.loads((JOB / "transcript.json").read_text(encoding="utf-8"))]
     decisions = [Decision(start=r["start"], end=r["end"], decision="keep") for r in old_edl["ranges"]]
-    edl = build_edl(decisions, words, media.video_duration, fps=fps, fade_frames=d, total_frames=media.total_frames)
+    silences = []
+    if args.cut_silence:
+        settings = get_settings()
+        span = (min(w.start for w in words), max(w.end for w in words))  # as pipeline._detect_silences
+        found = find_silences(SOURCE, out_dir / "silences.json", SilenceParams.from_settings(settings),
+                              media.video_duration, span=span)
+        silences = reach_end(found.ranges, found.audio_s, media.video_duration)
+        print(f"silences: threshold {found.threshold_db} dBFS, {len(found.ranges)} >= {settings.silence_min_s} s "
+              f"({found.total_s:.1f} s)")
+    edl = build_edl(decisions, words, media.video_duration, fps=fps, fade_frames=d, total_frames=media.total_frames,
+                    silences=silences)
+    if args.cut_silence:
+        print(f"silence cuts in the EDL: {len(edl.silence_cuts)} ({sum(e - s for s, e in edl.silence_cuts):.1f} s)")
     removed = complement(edl)
     ranges = [(r.start_frame, r.end_frame) for r in edl.ranges]
     expected = sum(e - s for s, e in ranges)

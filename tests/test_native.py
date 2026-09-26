@@ -1,10 +1,18 @@
+import json
+import sys
 from itertools import pairwise
+from pathlib import Path
+from typing import ClassVar
 
 from core.models import Word
+from transcribe import native
 from transcribe.native import (
+    DEFAULT_SPEAKER,
     _group_into_sentences,
     _parse_json3,
+    _parse_youtube_vtt,
     _pick_track,
+    fetch_youtube_transcript,
     load_uploaded_transcript,
     parse_subtitle_text,
     segments_to_words,
@@ -231,3 +239,231 @@ def test_load_uploaded_transcript_parses_real_file(tmp_path):
     words, segments = result
     assert words[0].word == "Hello world."
     assert len(segments) == 1
+
+
+# ------------------------------------------------------------------ YouTube captions
+
+# The shape of a real YouTube auto-caption VTT (text made up): each cue opens
+# with a single-space line or the previous line again, new words carry karaoke
+# timestamp tags, and a 10ms cue in between re-shows the finished line.
+_ROLLING_VTT_LINES = (
+    "WEBVTT",
+    "Kind: captions",
+    "Language: en",
+    "",
+    "00:00:05.220 --> 00:00:08.930 align:start position:0%",
+    " ",
+    "so<00:00:05.940><c> welcome</c><00:00:06.180><c> to</c><00:00:06.540><c> the</c><00:00:06.900><c> weekly</c>",
+    "",
+    "00:00:08.930 --> 00:00:08.940 align:start position:0%",
+    "so welcome to the weekly",
+    " ",
+    "",
+    "00:00:08.940 --> 00:00:11.150 align:start position:0%",
+    "so welcome to the weekly",
+    "sync<00:00:09.179><c> meeting</c><00:00:10.019><c> &gt;&gt;</c><00:00:10.320><c> thanks</c>",
+    "",
+    "00:00:11.150 --> 00:00:11.160 align:start position:0%",
+    "sync meeting &gt;&gt; thanks",
+    " ",
+    "",
+    "00:00:11.160 --> 00:00:13.000 align:start position:0%",
+    "sync meeting &gt;&gt; thanks",
+    "Note:<00:00:11.500><c> slides</c><00:00:12.000><c> are</c><00:00:12.500><c> shared</c>",
+    "",
+)
+_ROLLING_VTT = "\n".join(_ROLLING_VTT_LINES)
+
+
+def test_parse_youtube_vtt_drops_rolling_repeats():
+    words, segments = _parse_youtube_vtt(_ROLLING_VTT)
+    assert [(w.start, w.end, w.word) for w in words] == [
+        (5.22, 8.93, "so welcome to the weekly"),
+        (8.94, 11.15, "sync meeting >> thanks"),
+        (11.16, 13.0, "Note: slides are shared"),
+    ]
+    # each line once; the naive Zoom-path parse sees them two or three times
+    text = " ".join(s.text for s in segments)
+    assert text == "so welcome to the weekly sync meeting >> thanks Note: slides are shared"
+    naive, _ = parse_subtitle_text(_ROLLING_VTT)
+    assert len(" ".join(w.word for w in naive).split()) > len(text.split())
+
+
+def test_parse_youtube_vtt_never_invents_speakers():
+    """Captions have no speakers; a caption line shaped like Zoom's "Name: text"
+    stays text, as it does on the json3 path."""
+    vtt = (
+        "WEBVTT\n\n00:00:00.000 --> 00:00:02.000\nJOHN SMITH: hello there.\n\n"
+        "00:00:02.000 --> 00:00:04.000\nNote: bring snacks.\n"
+    )
+    words, segments = _parse_youtube_vtt(vtt)
+    assert [(w.speaker, w.word) for w in words] == [
+        (DEFAULT_SPEAKER, "JOHN SMITH: hello there."),
+        (DEFAULT_SPEAKER, "Note: bring snacks."),
+    ]
+    assert {s.speaker for s in segments} == {DEFAULT_SPEAKER}
+
+
+def test_parse_youtube_vtt_leaves_creator_captions_unchanged():
+    # Two consecutive "No." cues are speech said twice, not a rolling repeat.
+    vtt = (
+        "WEBVTT\n\n00:00:01.200 --> 00:00:03.360\nAll right, so here we are,\nin front of the stage\n\n"
+        "00:00:04.000 --> 00:00:05.000\nNo.\n\n"
+        "00:00:05.500 --> 00:00:06.500\nNo.\n\n"
+        "00:00:07.000 --> 00:00:08.000\nand that's all.\n"
+    )
+    words, _ = _parse_youtube_vtt(vtt)
+    assert [(w.start, w.end, w.word) for w in words] == [
+        (1.2, 3.36, "All right, so here we are, in front of the stage"),
+        (4.0, 5.0, "No."),
+        (5.5, 6.5, "No."),
+        (7.0, 8.0, "and that's all."),
+    ]
+
+
+def test_parse_youtube_vtt_keeps_a_line_said_twice_in_auto_captions():
+    """A rolling cue repeats the old line first; a second line equal to it is
+    new speech that happens to match, not the repeat."""
+    vtt = (
+        "WEBVTT\n\n"
+        "00:00:01.000 --> 00:00:02.000\n \nno<00:00:01.500><c> way</c>\n\n"
+        "00:00:02.000 --> 00:00:02.010\nno way\n \n\n"
+        "00:00:02.010 --> 00:00:03.000\nno way\nno<00:00:02.500><c> way</c>\n\n"
+        "00:00:03.000 --> 00:00:03.010\nno way\n \n\n"
+        "00:00:03.010 --> 00:00:04.000\nno way\nokay<00:00:03.500><c> fine</c>\n"
+    )
+    words, _ = _parse_youtube_vtt(vtt)
+    assert [(w.start, w.word) for w in words] == [(1.0, "no way"), (2.01, "no way"), (3.01, "okay fine")]
+
+
+def test_parse_json3_clips_auto_caption_events_to_the_next_line():
+    """Auto-caption events last while the line is on screen, overlapping the
+    next line's speech; left as-is a kept sentence would swallow the start of
+    a removed one in the EDL."""
+    data = {
+        "events": [
+            {"tStartMs": 5220, "dDurationMs": 5940, "segs": [{"utf8": "so welcome to the"}]},
+            {"tStartMs": 8930, "dDurationMs": 2230, "aAppend": 1, "segs": [{"utf8": "\n"}]},
+            {"tStartMs": 8940, "dDurationMs": 6359, "segs": [{"utf8": "weekly sync."}]},
+            {"tStartMs": 11160, "dDurationMs": 6300, "segs": [{"utf8": "Let's start."}]},
+        ]
+    }
+    words, segments = _parse_json3(data)
+    assert [(w.start, w.end) for w in words] == [(5.22, 8.94), (8.94, 11.16), (11.16, 17.46)]
+    assert [s.text for s in segments] == ["so welcome to the weekly sync.", "Let's start."]
+    assert segments[0].end <= segments[1].start
+
+
+def test_pick_track_skips_hls_entries():
+    automatic = {
+        "en": [
+            {"ext": "vtt", "protocol": "m3u8_native", "url": "https://example.test/playlist.m3u8"},
+            {"ext": "vtt", "url": "https://example.test/api/timedtext?lang=en&fmt=vtt"},
+        ]
+    }
+    track = _pick_track({}, automatic)
+    assert track["url"].endswith("fmt=vtt")
+
+
+def test_pick_track_skips_machine_translations():
+    """Real case: an English meeting where YouTube also ran Arabic ASR, and
+    yt-dlp listed "Arabic translated to English" first under "en"."""
+    translated = "https://example.test/api/timedtext?caps=asr&kind=asr&lang=ar&tlang=en&fmt=json3"
+    original = "https://example.test/api/timedtext?caps=asr&kind=asr&lang=en&fmt=json3"
+    automatic = {
+        "ar-orig": [{"ext": "json3", "url": "https://example.test/api/timedtext?lang=ar&fmt=json3"}],
+        "en": [{"ext": "json3", "url": translated}, {"ext": "json3", "url": original}],
+    }
+    assert _pick_track({}, automatic)["url"] == original
+    assert _pick_track({}, {"en": [{"ext": "json3", "url": translated}]}) is None
+
+
+# A stand-in yt_dlp: extract_info returns INFO, dl writes the track's payload.
+_ORIGINAL_JSON3 = "https://example.test/api/timedtext?lang=en&fmt=json3"
+_VTT_ONLY = "https://example.test/api/timedtext?lang=en&fmt=vtt"
+
+
+class _FakeYDL:
+    info: ClassVar[dict] = {}
+    payloads: ClassVar[dict] = {}
+    failures_left = 0
+    instances: ClassVar[list] = []
+
+    def __init__(self, opts):
+        self.opts = opts
+        _FakeYDL.instances.append(self)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def extract_info(self, url, download):
+        assert download is False
+        if _FakeYDL.failures_left:
+            _FakeYDL.failures_left -= 1
+            raise OSError("read timed out")
+        return _FakeYDL.info
+
+    def dl(self, name, info, subtitle=False):
+        assert subtitle
+        Path(name).write_bytes(_FakeYDL.payloads[info["url"]])
+        return True
+
+
+def _install_fake_ydl(monkeypatch, automatic=None, manual=None, payloads=None, failures=0):
+    _FakeYDL.info = {"subtitles": manual or {}, "automatic_captions": automatic or {}}
+    _FakeYDL.payloads = payloads or {}
+    _FakeYDL.failures_left = failures
+    _FakeYDL.instances = []
+    monkeypatch.setitem(sys.modules, "yt_dlp", type("m", (), {"YoutubeDL": _FakeYDL}))
+    monkeypatch.setattr(native.time, "sleep", lambda s: None)
+
+
+def test_fetch_youtube_transcript_downloads_the_picked_json3_track(monkeypatch):
+    payload = {"events": [{"tStartMs": 0, "dDurationMs": 2000, "segs": [{"utf8": "Hello everyone."}]}]}
+    _install_fake_ydl(
+        monkeypatch,
+        automatic={"en": [{"ext": "json3", "url": _ORIGINAL_JSON3}]},
+        payloads={_ORIGINAL_JSON3: json.dumps(payload).encode()},
+    )
+    words, segments = fetch_youtube_transcript("https://youtube.com/watch?v=abc123")
+    assert [w.word for w in words] == ["Hello everyone."]
+    assert segments[0].speaker == DEFAULT_SPEAKER
+    opts = _FakeYDL.instances[0].opts
+    assert opts["skip_download"] and opts["noplaylist"] and "logger" in opts
+
+
+def test_fetch_youtube_transcript_vtt_fallback_uses_the_rolling_parser(monkeypatch):
+    _install_fake_ydl(
+        monkeypatch,
+        automatic={"en": [{"ext": "vtt", "url": _VTT_ONLY}]},
+        payloads={_VTT_ONLY: _ROLLING_VTT.encode()},
+    )
+    words, _ = fetch_youtube_transcript("https://youtube.com/watch?v=abc123")
+    assert [w.word for w in words][:2] == ["so welcome to the weekly", "sync meeting >> thanks"]
+
+
+def test_fetch_youtube_transcript_without_an_english_track_returns_none(monkeypatch):
+    _install_fake_ydl(monkeypatch, automatic={"fr": [{"ext": "json3", "url": _ORIGINAL_JSON3}]})
+    assert fetch_youtube_transcript("https://youtube.com/watch?v=abc123") is None
+
+
+def test_fetch_youtube_transcript_retries_once(monkeypatch):
+    payload = {"events": [{"tStartMs": 0, "dDurationMs": 2000, "segs": [{"utf8": "Second time lucky."}]}]}
+    _install_fake_ydl(
+        monkeypatch,
+        automatic={"en": [{"ext": "json3", "url": _ORIGINAL_JSON3}]},
+        payloads={_ORIGINAL_JSON3: json.dumps(payload).encode()},
+        failures=1,
+    )
+    words, _ = fetch_youtube_transcript("https://youtube.com/watch?v=abc123")
+    assert words[0].word == "Second time lucky."
+    assert len(_FakeYDL.instances) == 2
+
+
+def test_fetch_youtube_transcript_never_raises(monkeypatch):
+    _install_fake_ydl(monkeypatch, automatic={"en": [{"ext": "json3", "url": _ORIGINAL_JSON3}]}, failures=2)
+    assert fetch_youtube_transcript("https://youtube.com/watch?v=abc123") is None
+    assert len(_FakeYDL.instances) == 2

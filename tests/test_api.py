@@ -342,12 +342,14 @@ def test_upload_accepts_job_options(monkeypatch):
     response = client.post(
         "/jobs",
         files={"file": ("meeting.mp4", io.BytesIO(b"fake bytes"), "video/mp4")},
-        data={"decide_only": "true", "shorts_count": "2", "highlights_criteria": "  jokes about coffee "},
+        data={"decide_only": "true", "shorts_count": "2", "highlights_criteria": "  jokes about coffee ",
+              "cut_silence": "false"},
     )
     assert response.status_code == 200
     options = response.json()["options"]
     assert options["decide_only"] is True and options["shorts_count"] == 2
     assert options["highlights_criteria"] == "jokes about coffee"
+    assert options["cut_silence"] is False  # the UI's "Cut silences" box, unticked
     bad = client.post("/jobs", files={"file": ("m.mp4", io.BytesIO(b"x"), "video/mp4")}, data={"shorts_count": "99"})
     assert bad.status_code == 422
 

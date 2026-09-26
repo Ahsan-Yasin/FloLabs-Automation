@@ -44,6 +44,8 @@ class _FakeResponse:
 
 @pytest.fixture(autouse=True)
 def _fake_api_key(monkeypatch):
+    # these tests drive the Gemini transport; the OpenAI one is in test_openai.py
+    monkeypatch.setenv("LLM_PROVIDER", "gemini")
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
     get_settings.cache_clear()
     sleeps = []
@@ -110,9 +112,23 @@ def test_keep_ignores_removal_code_and_low_scores_drop_category(monkeypatch):
         assert j.removal_category == "none" and j.highlight_category == "none"
 
 
-def test_a_joke_keeps_its_tag_from_score_two(monkeypatch):
+def test_a_mild_joke_gets_no_head_start(monkeypatch):
+    """Owner: highlights/shorts are for learning; a joke needs 3+ like anything else."""
     _fake(monkeypatch, _echo(s=2, h="fun"))
-    assert all(j.highlight_category == "funny" for j in judge_segments(_segments(), caller=_caller()))
+    assert all(j.highlight_category == "none" for j in judge_segments(_segments(), caller=_caller()))
+
+
+def test_prompts_put_learning_first_and_keep_jokes_for_really_good_ones():
+    from core.config import get_settings
+    from decide.prompts import judge_prompt, rerank_prompt
+
+    s = get_settings()
+    judge = judge_prompt(s.highlights_criteria)
+    assert "LEARN" in judge and "a joke from 2" not in judge and "genuinely funny" in judge
+    rerank = rerank_prompt(s.highlights_criteria, s.shorts_criteria)
+    # a short must teach or show something inside the clip; plain status does not
+    assert "learn from" in rerank and "plain status" in rerank and "knowing something new" in rerank
+    assert "can learn from" in s.shorts_criteria and s.shorts_categories[0] == "concept"
 
 
 def test_prompt_is_compact_text_with_criteria_and_speaker_changes(monkeypatch):

@@ -117,6 +117,8 @@ class JobOptions(BaseModel):
     # Stop after decisions + selection so the owner can review them cheaply;
     # POST /jobs/{id}/render then renders using the saved decisions.
     decide_only: bool = False
+    # Cut stretches where nobody is speaking (None = SILENCE_CUT_ENABLED).
+    cut_silence: bool | None = None
 
 
 class EDLRange(BaseModel):
@@ -147,6 +149,10 @@ class EditDecisionList(BaseModel):
     merged_gap_count: int = 0
     merged_gap_seconds: float = 0.0
     used_full_video_fallback: bool = False
+    # Source stretches taken out of kept ranges only because nobody was
+    # speaking (before frame snapping). Text whose midpoint falls in one is
+    # still said in the output (see slice/transcript.remap_transcript).
+    silence_cuts: list[tuple[float, float]] = Field(default_factory=list)
 
 
 RemovedTier = Literal["transcript_only", "video"]
@@ -155,8 +161,9 @@ RemovedTier = Literal["transcript_only", "video"]
 class RemovedRange(BaseModel):
     """A stretch of the source that is NOT in the output (the EDL's complement).
 
-    tier "transcript_only": cut, but shorter than `removed_video_min_gap_s`,
-    so it is listed in the removed transcript/report but not in removed.mp4.
+    tier "transcript_only": cut, but shorter than `removed_video_min_gap_s`
+    or pure silence (nothing to hear), so it is listed in the removed
+    transcript/report but not in removed.mp4.
     tier "video": also rendered into removed.mp4 with a label.
     """
 
@@ -166,6 +173,8 @@ class RemovedRange(BaseModel):
     end_frame: int | None = None
     tier: RemovedTier = "video"
     reason: str = ""
+    # nobody was speaking (detected in the audio; pipeline.label_removed)
+    silence: bool = False
 
 
 class RenderPiece(BaseModel):
@@ -220,6 +229,9 @@ class ArtifactInfo(BaseModel):
 
 class JobStatus(str, Enum):
     QUEUED = "queued"
+    # Zoom jobs queued before Zoom finished the transcript wait for it here
+    # (up to transcript_wait_max_s) before downloading.
+    WAITING_TRANSCRIPT = "waiting_transcript"
     DOWNLOADING = "downloading"
     TRANSCRIBING = "transcribing"
     DECIDING = "deciding"
@@ -245,7 +257,7 @@ TERMINAL_STATUSES = frozenset(
     {JobStatus.DONE, JobStatus.FAILED, JobStatus.SKIPPED_DESYNC, JobStatus.CANCELLED, JobStatus.DECIDED}
 )
 
-TranscriptSource = Literal["asr", "youtube_captions", "uploaded_transcript"]
+TranscriptSource = Literal["asr", "youtube_captions", "uploaded_transcript", "zoom_transcript"]
 
 # Machine-readable failure reasons for n8n (plan §11). `retryable` on the job
 # says whether re-submitting the same request can succeed.
@@ -255,6 +267,7 @@ ErrorCode = Literal[
     "busy",
     "insufficient_disk",
     "zoom_auth",
+    "zoom_not_found",
     "zoom_download_invalid",
     "source_unsupported",
     "llm_quota_exhausted",
@@ -274,6 +287,13 @@ class JobRecord(BaseModel):
     # Meeting topic (Zoom's topic; for uploads, the file name). Shown on the
     # title card and in the report.
     title: str = ""
+    # Zoom jobs: the meeting instance UUID (always the UUID, never the numeric
+    # id, which means "latest instance" for recurring meetings), a hash of the
+    # options for idempotent POST /jobs/zoom, and what Zoom said about it
+    # (topic, start_time, host_email, duration_min, parts, auto_delete_date).
+    zoom_meeting_uuid: str | None = None
+    zoom_options_hash: str | None = None
+    zoom_meeting: dict | None = None
     source_path: str = ""
     source_url: str | None = None
     native_transcript_path: str | None = None
@@ -307,7 +327,7 @@ class JobRecord(BaseModel):
     # Where the cleaned meeting starts in final.mp4 (highlights reel + title card).
     final_offset_s: float = 0.0
     stage_timings: dict[str, float] = Field(default_factory=dict)
-    # Gemini calls/tokens/rate-limit waits for this job.
+    # LLM calls/tokens/rate-limit waits for this job.
     llm_usage: dict[str, float] = Field(default_factory=dict)
     # Set by JobStore: created once, bumped on every persisted update (and by
     # the heartbeat while a long ffmpeg command runs).

@@ -1,12 +1,14 @@
+import hashlib
 import shutil
+import threading
 import time
 import uuid
 from contextlib import asynccontextmanager
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
 from functools import lru_cache, partial
 from pathlib import Path
 
-from fastapi import FastAPI, Form, HTTPException, UploadFile
+from fastapi import FastAPI, Form, HTTPException, Query, UploadFile
 from fastapi.responses import (
     FileResponse,
     HTMLResponse,
@@ -16,12 +18,14 @@ from fastapi.responses import (
 from pydantic import BaseModel
 
 from core.config import get_settings
+from core.errors import PipelineError
 from core.logging import configure_logging, get_logger
 from core.models import TERMINAL_STATUSES, JobOptions, JobRecord, JobStatus
 from core.proc import run_checked
 from core.version import PIPELINE_VERSION
+from ingest import zoom
 from ingest.store import store_transcript, store_video, title_from_filename
-from pipeline import run_pipeline, run_youtube_pipeline
+from pipeline import run_pipeline, run_youtube_pipeline, run_zoom_pipeline
 
 from .auth import ApiKeyMiddleware, auth_enabled
 from .jobs import is_valid_job_id, job_store
@@ -76,6 +80,45 @@ def _ffmpeg_version() -> str | None:
 class YoutubeJobRequest(BaseModel):
     url: str
     options: JobOptions = JobOptions()
+
+
+class ZoomJobRequest(BaseModel):
+    # the meeting INSTANCE uuid from the recordings list or Zoom's webhook
+    meeting_uuid: str
+    options: JobOptions = JobOptions()
+
+
+# The recordings picker lists at most this many days per request (every 30
+# days is one more Zoom call).
+ZOOM_MAX_LIST_DAYS = 366
+# Serialises "is this meeting already a job?" with creating the job, so two
+# identical POST /jobs/zoom calls (an n8n retry) can't both create one.
+_zoom_submit_lock = threading.Lock()
+
+
+def _error_response(
+    status_code: int, error_code: str, message: str, retryable: bool = False, retry_after_s: int | None = None
+) -> JSONResponse:
+    """Same top-level shape as the busy answer, with the message in `detail`
+    where the other error answers keep theirs."""
+    return JSONResponse(
+        status_code=status_code,
+        headers={"Retry-After": str(retry_after_s)} if retry_after_s else None,
+        content={"error_code": error_code, "retryable": retryable, "retry_after_s": retry_after_s,
+                 "detail": message},
+    )
+
+
+def _zoom_error(exc: PipelineError) -> JSONResponse:
+    """Zoom not set up here -> 400; unknown host/meeting -> 404; Zoom refused
+    our credentials or failed -> 502."""
+    if isinstance(exc, zoom.ZoomNotConfigured):
+        status_code = 400
+    elif exc.code == "zoom_not_found":
+        status_code = 404
+    else:
+        status_code = 502
+    return _error_response(status_code, exc.code, str(exc), exc.retryable, exc.retry_after_s)
 
 
 def _busy_response() -> JSONResponse:
@@ -154,6 +197,7 @@ def create_job(
     highlights_criteria: str | None = Form(None),
     shorts_criteria: str | None = Form(None),
     title: str | None = Form(None),
+    cut_silence: bool | None = Form(None),
 ):
     """Hidden upload path (ops/regression); production jobs come from Zoom.
     `title` (the meeting name on the title card and in the report) defaults
@@ -170,6 +214,7 @@ def create_job(
             shorts_count=shorts_count,
             highlights_criteria=(highlights_criteria or "").strip() or None,
             shorts_criteria=(shorts_criteria or "").strip() or None,
+            cut_silence=cut_silence,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -214,6 +259,108 @@ async def create_youtube_job(body: YoutubeJobRequest):
     return _enqueue(job, run_youtube_pipeline, url)
 
 
+@app.get("/zoom/status")
+async def zoom_status() -> dict:
+    """Whether Zoom credentials are set (never the credentials themselves)."""
+    settings = get_settings()
+    return {
+        "configured": zoom.is_configured(settings),
+        "host_email": settings.zoom_host_email or None,
+        "require_native_transcript": settings.require_native_transcript,
+    }
+
+
+@app.get("/zoom/recordings")
+def list_zoom_recordings(
+    host: str | None = None,
+    from_date: str | None = Query(None, alias="from"),
+    to_date: str | None = Query(None, alias="to"),
+):
+    """A host's cloud recordings (default: ZOOM_HOST_EMAIL, the last 30 days),
+    newest first, with what the picker needs to show and whether each one can
+    be processed now. A plain `def`: Zoom calls are blocking HTTP."""
+    host_email = (host or get_settings().zoom_host_email).strip()
+    if not host_email:
+        raise HTTPException(status_code=400, detail="no host email: pass ?host= or set ZOOM_HOST_EMAIL in .env")
+    try:
+        end = date.fromisoformat(to_date) if to_date else datetime.now(UTC).date()
+        start = date.fromisoformat(from_date) if from_date else end - timedelta(days=29)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail="from/to must be dates like 2026-09-01") from exc
+    if start > end:
+        raise HTTPException(status_code=400, detail="'from' is after 'to'")
+    if (end - start).days >= ZOOM_MAX_LIST_DAYS:
+        raise HTTPException(status_code=400, detail=f"list at most {ZOOM_MAX_LIST_DAYS} days at a time")
+    try:
+        meetings = zoom.get_client().list_recordings(host_email, start, end)
+    except PipelineError as exc:
+        return _zoom_error(exc)
+    return {"host_email": host_email, "from": start.isoformat(), "to": end.isoformat(), "meetings": meetings}
+
+
+@app.post("/jobs/zoom")
+def create_zoom_job(body: ZoomJobRequest):
+    """Process one Zoom meeting instance. 425 while Zoom is still processing
+    the recording or its transcript (retry after `retry_after_s`). The same
+    meeting with the same options returns the job that already exists, with
+    "deduplicated": true, unless that one failed or was cancelled — so an n8n
+    retry never processes a meeting twice. Then the usual 503 when busy.
+
+    A plain `def`: the readiness check is a blocking Zoom call."""
+    meeting_uuid = body.meeting_uuid.strip()
+    if not meeting_uuid:
+        raise HTTPException(status_code=400, detail="meeting_uuid is required")
+    try:
+        meeting = zoom.get_client().get_meeting(meeting_uuid)
+    except PipelineError as exc:
+        return _zoom_error(exc)
+    choice = zoom.choose_files(meeting)
+    readiness = zoom.readiness(meeting, choice)
+    # "no_transcript" is only a problem when this server can't transcribe itself
+    if readiness != "ready" and not (readiness == "no_transcript" and not get_settings().require_native_transcript):
+        exc = zoom.not_ready_error(readiness)
+        return _error_response(425 if exc.retryable else 422, exc.code, str(exc), exc.retryable, exc.retry_after_s)
+
+    options_hash = hashlib.sha256(body.options.model_dump_json().encode()).hexdigest()[:16]
+    with _zoom_submit_lock:
+        existing = _find_zoom_job(meeting_uuid, options_hash)
+        if existing is not None:
+            return _zoom_job_response(existing, deduplicated=True)
+        if not _has_capacity():
+            return _busy_response()
+        info = zoom.meeting_info(meeting, choice)
+        job = JobRecord(
+            job_id=uuid.uuid4().hex,
+            status=JobStatus.QUEUED,
+            options=body.options,
+            title=" ".join(info["topic"].split())[:120],
+            zoom_meeting_uuid=meeting_uuid,
+            zoom_options_hash=options_hash,
+            zoom_meeting=info,
+        )
+        created = _enqueue(job, run_zoom_pipeline)
+    if isinstance(created, JSONResponse):
+        return created
+    return _zoom_job_response(created, deduplicated=False)
+
+
+def _find_zoom_job(meeting_uuid: str, options_hash: str) -> JobRecord | None:
+    for job_id in job_store.list_ids():
+        try:
+            job = job_store.get(job_id)
+        except Exception as exc:  # noqa: BLE001 — one unreadable job.json must not block new jobs
+            logger.warning("skipping unreadable job %s in the Zoom dedupe check: %s", job_id, exc)
+            continue
+        if (job is not None and job.zoom_meeting_uuid == meeting_uuid and job.zoom_options_hash == options_hash
+                and job.status not in (JobStatus.FAILED, JobStatus.CANCELLED)):
+            return job
+    return None
+
+
+def _zoom_job_response(job: JobRecord, deduplicated: bool) -> JSONResponse:
+    return JSONResponse(content={**job.model_dump(mode="json"), "deduplicated": deduplicated})
+
+
 @app.post("/jobs/{job_id}/render", response_model=JobRecord)
 async def render_decided_job(job_id: str):
     """Render a decide_only job, or re-render one whose render failed or was
@@ -239,8 +386,14 @@ async def render_decided_job(job_id: str):
     # A re-rendered failed job must not look failed while it waits in the queue.
     job.error = job.error_code = job.retry_after_s = None
     job.retryable = False
-    runner = run_youtube_pipeline if job.source_url else run_pipeline
-    args = (job.source_url,) if job.source_url else ()
+    # the Zoom/YouTube runners fetch the source again when it was deleted
+    # after delivery (delete_source_when_done)
+    if job.zoom_meeting_uuid:
+        runner, args = run_zoom_pipeline, ()
+    elif job.source_url:
+        runner, args = run_youtube_pipeline, (job.source_url,)
+    else:
+        runner, args = run_pipeline, ()
     job_store.update(job)
     try:
         job_queue.submit(job.job_id, partial(runner, job, job_queue.make_updater(job.job_id), *args))

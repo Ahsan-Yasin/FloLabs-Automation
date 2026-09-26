@@ -1,6 +1,6 @@
 """M4 regression: build the complete deliverable (final.mp4, removed.mp4,
 highlights.mp4, shorts, transcripts, report.pdf, manifest.json, bundle.zip)
-for the 98-minute regression meeting — with ZERO Gemini calls.
+for the 98-minute regression meeting — with ZERO LLM calls.
 
 It reuses the decisions and picks of an earlier `tools/decide_7b93.py` run
 (its decisions.json + selection.json) and that run's chapters, then runs the
@@ -46,8 +46,14 @@ SOURCE = ROOT / "storage" / "videos" / "50c55c4c8dd64542869bc4e6f30e69e5.mp4"
 
 
 class NoCalls(LazyCaller):
-    """Any attempt to reach Gemini is a bug in this tool (the saved decisions
+    """Any attempt to reach the LLM is a bug in this tool (the saved decisions
     no longer match the prompt): fail instead of spending tokens."""
+
+    def __init__(self, model: str) -> None:
+        super().__init__()
+        # the model is part of the decisions fingerprint: replay the saved run's
+        # answers whichever provider/model .env selects now
+        self.model = model
 
     def generate(self, *a, **k):
         raise RuntimeError("an LLM call was attempted; re-run tools/decide_7b93.py first")
@@ -69,7 +75,8 @@ def main() -> int:
     words = flag_overlaps(segments_to_words(segments))
     decisions = out / "decisions.json"
     shutil.copyfile(args.decide_dir / "decisions.json", decisions)
-    judgments = judge_segments(segments, caller=NoCalls(), persist_path=decisions)
+    saved_model = json.loads(decisions.read_text(encoding="utf-8"))["model"]
+    judgments = judge_segments(segments, caller=NoCalls(saved_model), persist_path=decisions)
     judgments, _ = repair_fragments(judgments)
     saved = json.loads((args.decide_dir / "selection.json").read_text(encoding="utf-8"))
     moments = [Moment.model_validate(m) for m in saved["moments"]]

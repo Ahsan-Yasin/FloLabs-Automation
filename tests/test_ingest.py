@@ -49,6 +49,10 @@ class _FakeYDL:
 
         Path(self.opts["outtmpl"].replace("%(ext)s", "mp4")).write_bytes(b"fake video")
 
+    def extract_info(self, url, download=True):
+        self.download([url])
+        return {"title": "A meeting"}
+
 
 def test_download_youtube_into_a_job_folder(monkeypatch, tmp_path):
     """With a destination the download lands in the job folder as source.<ext>
@@ -61,7 +65,7 @@ def test_download_youtube_into_a_job_folder(monkeypatch, tmp_path):
     job_folder = get_settings().jobs_dir / "yt-job"
     job_folder.mkdir(parents=True)
     (job_folder / "source.vtt").write_text("WEBVTT")
-    _, path = download_youtube("https://youtube.com/watch?v=abc123", dest_dir=job_folder)
+    _, path, _ = download_youtube("https://youtube.com/watch?v=abc123", dest_dir=job_folder)
     assert path == job_folder / "source.mp4" and path.read_bytes() == b"fake video"
     assert list(get_settings().videos_dir.iterdir()) == []
 

@@ -163,6 +163,11 @@ def build_report(path: Path, data: ReportData, *, font: Path | None = None, bold
     where = (f"{len(shown)} of them (1 s or longer) are collected in removed.mp4, labelled with their original "
              f"time and reason; the other {len(data.removed) - len(shown)} are listed in the table below only."
              if shown else "There is no removed.mp4 for this meeting; every cut is listed in the table below.")
+    silences = [e for e in data.removed if e.silence]
+    if silences:
+        where += (f" {len(silences)} of the cuts ({sum(e.duration for e in silences):.0f}s in total) are pauses "
+                  "where no one was speaking, shortened to a short beat; removed.mp4 leaves them out, as there is "
+                  "nothing to see or hear.")
     story.append(Paragraph(
         _esc(f"{len(data.removed)} cuts totalling {fmt_clock(removed_s)}. {where} "
              f"{data.merged_back_count} tiny gaps ({data.merged_back_s:.1f}s in total) were too short to cut "
@@ -223,7 +228,7 @@ def build_report(path: Path, data: ReportData, *, font: Path | None = None, bold
         if len(excerpt) > EXCERPT_CHARS:
             excerpt = excerpt[: EXCERPT_CHARS - 1].rstrip() + "…"
         rows.append([P(str(e.index)), P(f"{fmt_clock(e.start)}–{fmt_clock(e.end)}"), P(f"{e.duration:.1f}s"),
-                     P(e.reason or "—"), P(excerpt or "(no speech)"),
+                     P(e.reason or "—"), P(excerpt or ("(no one speaking)" if e.silence else "(no speech)")),
                      P(fmt_clock(e.removed_video_at) if e.removed_video_at is not None else "—")])
     story.append(table(rows, [9 * mm, 27 * mm, 15 * mm, 30 * mm, width - 102 * mm, 21 * mm]))
 

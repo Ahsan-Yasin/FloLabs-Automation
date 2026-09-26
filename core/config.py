@@ -9,20 +9,41 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     hf_token: str = ""
+
+    # --- LLM (decide: judge + re-rank; chapters) ----------------------------
+    # "openai" (default) or "gemini" (the older provider, kept as a fallback).
+    llm_provider: str = "openai"
+    openai_api_key: str = ""
+    # OpenAI's budget model ($0.10 / 1M input, $0.50 / 1M output, Sept 2026).
+    # Judging sentences keep/remove + a 0-10 score needs no big model: a
+    # 98-minute meeting is ~100k input + ~15k output tokens, about $0.02.
+    openai_model: str = "gpt-6-luna"
+    # Reasoning tokens are billed as output and slow every call; the compact
+    # one-line-per-sentence answers don't need them. Empty = model default.
+    openai_reasoning_effort: str = "none"
+    # Client-side limiter (usage tier 1 allows 500 requests/minute).
+    openai_rpm: int = 450
+    # Per-request HTTP timeout, so a stalled call can never wedge the worker.
+    openai_request_timeout_s: float = 120.0
+    # Hard cap per answer, so a runaway answer can't run up the bill; a
+    # 60-sentence judge answer is ~1k tokens, the re-rank ~3k.
+    openai_max_output_tokens: int = 16000
+    openai_base_url: str = "https://api.openai.com/v1"
     gemini_api_key: str = ""
     gemini_model: str = "gemini-3.5-flash-lite"
-    # Sentences judged per call. The v2 exchange is compact (numbered text
-    # lines in, 1-letter JSON keys out, ~15 output tokens per sentence), so 60
-    # fit comfortably; fewer calls also means the system prompt is re-sent
-    # less often. A truncated answer still splits the chunk automatically.
+    # Client-side limiter (the free tier allows 15 requests/minute).
+    gemini_rpm: int = 14
+    gemini_request_timeout_s: float = 120.0
+    # The settings below apply to whichever provider is used; they keep their
+    # historical gemini_ names because .env files already set them.
+    # Sentences judged per call. The exchange is compact (numbered text lines
+    # in, one short line per sentence out, ~15 output tokens each), so 60 fit
+    # comfortably; fewer calls also means the system prompt is re-sent less
+    # often. A truncated answer still splits the chunk automatically.
     gemini_max_segments_per_call: int = 60
     # Read-only neighbours shown on each side of a chunk so sentences at a
     # chunk edge are judged in context.
     gemini_context_segments: int = 3
-    # Client-side limiter (the free tier allows 15 requests/minute).
-    gemini_rpm: int = 14
-    # Per-request HTTP timeout, so a stalled call can never wedge the worker.
-    gemini_request_timeout_s: float = 120.0
     # The decide stage (all chunks + re-rank) must finish within this;
     # chapters (after rendering) get their own, smaller budget.
     decide_max_wall_s: float = 1800.0
@@ -34,17 +55,23 @@ class Settings(BaseSettings):
     # --- v2 highlights / shorts / chapters (plan D4, D6, D7, D10) ----------
     # What counts as "interesting" is the owner's call and will change; these
     # strings are injected verbatim into the prompts.
+    # Owner (2026-09-25): highlights and shorts are mainly for LEARNING — new
+    # things and clear explanations people would want to see; funny moments
+    # only when they are really good.
     highlights_criteria: str = (
-        "funny moments; new architectures or system designs being explained; new features being announced "
-        "or demoed; important concepts being explained clearly; decisions being made; surprising insights"
+        "moments people can learn from or would find new and interesting: new architectures or system designs "
+        "explained; new features announced or demoed; important concepts or how something works explained "
+        "clearly; surprising insights, facts or numbers; decisions and the reasons behind them. Genuinely funny "
+        "moments are welcome too, but only when they are really good"
     )
     shorts_criteria: str = (
-        "funny, light-hearted or surprising moments that make sense on their own without the rest of the "
-        "meeting"
+        "a self-contained moment someone outside the meeting can learn from — a clear explanation of a concept "
+        "or of how something works, a new architecture or feature, a useful insight or lesson — or, less often, "
+        "a genuinely funny moment that stands on its own"
     )
     # Highlight categories that shorts are drawn from first (then any other
-    # moment the re-rank marked short-worthy, by score).
-    shorts_categories: list[str] = ["funny"]
+    # moment the re-rank marked short-worthy — e.g. funny ones — by score).
+    shorts_categories: list[str] = ["concept", "new_architecture", "new_feature", "insight"]
     highlights_target_s: float = 300.0
     # Short meetings: the reel is at most this fraction of the meeting.
     highlights_max_fraction: float = 0.3
@@ -64,10 +91,14 @@ class Settings(BaseSettings):
     # otherwise stay short).
     highlights_max_share_per_window: float = 0.35
     highlights_diversity_window_s: float = 600.0
+    # At most this share of the reel may be funny moments ("mostly things to
+    # learn from, fun parts if they are good").
+    highlights_max_funny_share: float = 0.34
     # Candidate moments: sentences scoring >= floor (funny ones from
     # funny_floor) joined across pauses <= join gap / <= 2 bridged lines.
+    # Funny moments get no head start any more (was 2).
     highlights_candidate_floor: int = 3
-    highlights_funny_floor: int = 2
+    highlights_funny_floor: int = 3
     highlights_join_gap_s: float = 10.0
     rerank_max_candidates: int = 60
     rerank_context_segments: int = 3
@@ -94,6 +125,32 @@ class Settings(BaseSettings):
     # EDL tuning (spec section 3.4)
     min_gap_merge_seconds: float = 0.3
     min_segment_seconds: float = 0.5
+
+    # --- silence cutting (slice/silence.py) ---------------------------------
+    # Transcript timings can't show pauses (a caption cue stays on screen into
+    # the next line), so dead air inside a kept sentence used to stay in the
+    # video. The source audio is measured in 50 ms windows instead; a run
+    # quieter than the recording's own threshold for >= silence_min_s is
+    # taken out of the cleaned meeting and the highlights reel.
+    silence_cut_enabled: bool = True
+    silence_min_s: float = 1.0
+    # Left in on each side of a cut, so a word's tail or a breath is never
+    # clipped and a shortened pause is a natural ~0.55 s beat: after speech
+    # stops (a trailing word fades out more slowly) / before it resumes.
+    # Pauses up to ~1.1 s are left alone: what would be cut is shorter than a
+    # dissolve can cross.
+    silence_pad_after_s: float = 0.30
+    silence_pad_before_s: float = 0.25
+    # Threshold per recording (slice/silence.py; floor = p5 of the window
+    # levels, speech = p95, R = speech - floor): range_fraction * R above
+    # room tone, but never within speech_headroom of loud speech nor 10 dB of
+    # typical speech (protects quiet talkers); less than min_margin above
+    # room tone left = can't tell a pause from a quiet talker, nothing is cut.
+    # Measured: -55.2 dBFS on a clean Zoom call, -51.6 on a quiet, noisy
+    # room where -45 would cut speech.
+    silence_min_margin_db: float = 6.0
+    silence_range_fraction: float = 0.35
+    silence_speech_headroom_db: float = 18.0
 
     # --- v2 rendering (plan §6) -------------------------------------------
     # Dissolve between kept parts. The fade is snapped to an EVEN number of
@@ -140,6 +197,32 @@ class Settings(BaseSettings):
     # Delete the source recording when the job is done, if it lives inside the
     # job folder (Zoom downloads/uploads; never a file elsewhere). EC2: true.
     delete_source_when_done: bool = False
+
+    # --- v2 Zoom ingest (plan D13, §10) ------------------------------------
+    # Server-to-Server OAuth app (Zoom Marketplace, activated, with the scopes
+    # cloud_recording:read:list_user_recordings:admin,
+    # cloud_recording:read:list_recording_files:admin,
+    # cloud_recording:read:recording:admin). Secrets live in .env only.
+    zoom_account_id: str = ""
+    zoom_client_id: str = ""
+    zoom_client_secret: str = ""
+    # Whose recordings the UI lists by default (S2S tokens can't use "me").
+    zoom_host_email: str = ""
+    zoom_api_base: str = "https://api.zoom.us/v2"
+    zoom_oauth_url: str = "https://zoom.us/oauth/token"
+    # Download redirects only get the Bearer token when their host ends with
+    # one of these (never leak the token to a CDN or a foreign host).
+    zoom_allowed_hosts: list[str] = ["zoom.us", "zoom.com", "zoomgov.com"]
+    # Never transcribe ourselves: a job without a platform transcript fails
+    # "transcript_not_ready" instead of running WhisperX. True on EC2 (no
+    # WhisperX there); False locally so plain uploads still work.
+    require_native_transcript: bool = False
+    # POST /jobs/zoom answers 425 transcript_not_ready while Zoom is still
+    # processing the transcript. Inside a job, wait up to this long for a
+    # transcript that is still missing before failing (retryable) or, when
+    # require_native_transcript is False, falling back to WhisperX.
+    transcript_wait_max_s: float = 600.0
+    transcript_poll_s: float = 60.0
 
     # --- v2 service / lifecycle (plan D14-D16) -----------------------------
     # X-API-Key for every route except /health and the static UI pages.

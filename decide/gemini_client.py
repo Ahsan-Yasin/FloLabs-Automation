@@ -1,11 +1,14 @@
-"""Gemini calls for the v2 decide stage (plan D4, D17).
+"""LLM calls for the v2 decide stage (plan D4, D17): the provider-neutral
+judging / re-rank code, plus the Gemini transport.
 
-`GeminiCaller` is the one place that talks to the API: it enforces a
-client-side requests-per-minute limit and a per-request HTTP timeout, backs
-off on 429 using the server's own retryDelay, fails fast with
-`llm_quota_exhausted` when a DAILY quota is hit (retrying can't help until it
-resets), retries transient 5xx and network errors, enforces the current
-stage's wall-clock limit and counts calls/tokens.
+`make_caller` picks the provider from `llm_provider`: OpenAI (default, see
+openai_client.py) or Gemini. Both callers share one interface (model, usage,
+start_stage, generate) and the same rules: a client-side requests-per-minute
+limit and per-request HTTP timeout, waiting on 429 for the time the server
+asks, failing fast with `llm_quota_exhausted` when retrying can't help (a
+Gemini DAILY quota, an OpenAI account without credit), retrying transient 5xx
+and network errors, the current stage's wall-clock limit, and call/token
+counts.
 
 `judge_segments` is the per-chunk cleanup + scoring pass. It keeps the
 hard-won robustness of the v1 client — a truncated (MAX_TOKENS) chunk is split
@@ -28,10 +31,11 @@ from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import TYPE_CHECKING, TypeAlias
 
 from pydantic import ValidationError
 
-from core.config import get_settings
+from core.config import Settings, get_settings
 from core.errors import PipelineError
 from core.logging import get_logger
 from core.models import Decision, Moment, Segment, SegmentJudgment
@@ -44,6 +48,9 @@ from .prompts import (
     rerank_prompt,
     transcript_lines,
 )
+
+if TYPE_CHECKING:
+    from .openai_client import OpenAICaller
 
 logger = get_logger(__name__)
 
@@ -96,6 +103,11 @@ def _call_gemini(client, model: str, system_prompt: str, contents: str, schema: 
 
 
 def _finish_reason(response) -> str:
+    """Why the model stopped. OpenAI responses carry it directly (already
+    mapped to "MAX_TOKENS" on truncation); Gemini's is on the candidate."""
+    reason = getattr(response, "finish_reason", None)
+    if reason is not None:
+        return str(reason)
     candidates = getattr(response, "candidates", None) or []
     if candidates and getattr(candidates[0], "finish_reason", None) is not None:
         return str(candidates[0].finish_reason)
@@ -267,10 +279,13 @@ class LazyCaller:
     saved (a decide_only job being rendered) makes no API call at all."""
 
     def __init__(self) -> None:
-        self.model = get_settings().gemini_model
+        settings = get_settings()
+        # part of the decisions.json / rerank.json fingerprints: switching
+        # provider or model re-judges instead of reusing another model's answers
+        self.model = llm_model(settings)
         self.usage = LLMUsage()
-        self._real: GeminiCaller | None = None
-        self._stage: tuple[str, float | None] = ("decide", get_settings().decide_max_wall_s)
+        self._real: GeminiCaller | OpenAICaller | None = None
+        self._stage: tuple[str, float | None] = ("decide", settings.decide_max_wall_s)
 
     def start_stage(self, name: str, max_wall_s: float | None) -> None:
         self._stage = (name, max_wall_s)
@@ -285,15 +300,58 @@ class LazyCaller:
         return self._real.generate(system_prompt, contents, schema)
 
 
-def make_caller() -> GeminiCaller:
+# Anything judge_segments / rerank_moments / generate_chapters accept.
+Caller: TypeAlias = "GeminiCaller | OpenAICaller | LazyCaller"
+
+
+def _provider(settings: Settings) -> str:
+    return (settings.llm_provider or "").strip().lower()
+
+
+def llm_model(settings: Settings) -> str:
+    """The model the configured provider will use ("" for an unknown
+    provider, which make_caller reports)."""
+    return {"openai": settings.openai_model, "gemini": settings.gemini_model}.get(_provider(settings), "")
+
+
+def _api_key(value: str, name: str) -> str:
+    """The key as it can go into an HTTP header. .env keeps the spaces inside
+    a quoted value (and an OS env var keeps a trailing newline); httpx then
+    rejects the header with an error that quotes it — the full key in job.error
+    and job.log — or, for a curly quote, fails deep inside the judging loop as
+    a retryable "invalid answer". Either way: fail once, clearly, keyless."""
+    key = (value or "").strip()
+    if not key:
+        raise DecisionError(f"{name} is not set", retryable=False)
+    if not (key.isascii() and key.isprintable()) or any(c.isspace() for c in key):
+        raise DecisionError(f"{name} contains invalid characters (check for quotes or spaces pasted with it)",
+                            retryable=False)
+    return key
+
+
+def make_caller() -> GeminiCaller | OpenAICaller:
+    settings = get_settings()
+    provider = _provider(settings)
+    if provider == "openai":
+        from .openai_client import OpenAICaller
+
+        key = _api_key(settings.openai_api_key, "OPENAI_API_KEY")
+        return OpenAICaller(
+            key, settings.openai_model, settings.openai_rpm, settings.decide_max_wall_s,
+            base_url=settings.openai_base_url, timeout_s=settings.openai_request_timeout_s,
+            max_output_tokens=settings.openai_max_output_tokens, reasoning_effort=settings.openai_reasoning_effort,
+        )
+    if provider != "gemini":
+        raise DecisionError(f"unknown LLM_PROVIDER {settings.llm_provider!r} (use openai or gemini)",
+                            retryable=False)
+
     from google import genai
     from google.genai import types
 
-    settings = get_settings()
-    if not settings.gemini_api_key:
-        raise DecisionError("GEMINI_API_KEY is not set", retryable=False)
+    # the Gemini key goes out in a header too (x-goog-api-key)
+    key = _api_key(settings.gemini_api_key, "GEMINI_API_KEY")
     client = genai.Client(
-        api_key=settings.gemini_api_key,
+        api_key=key,
         http_options=types.HttpOptions(timeout=int(settings.gemini_request_timeout_s * 1000)),
     )
     return GeminiCaller(client, settings.gemini_model, settings.gemini_rpm, settings.decide_max_wall_s)
@@ -376,9 +434,10 @@ def _parse_judgments(raw: str, chunk: list[tuple[int, Segment]]) -> list[Segment
         if not 0 <= score <= 10:
             raise ValueError(f"line {i}: score {score} out of range")
         category = HIGHLIGHT_CODES.get(item.get("h", ""), "none")
-        # categories mean "worth a look" from 3 up; a joke keeps its tag from 2
-        # so light moments can still become shorts
-        if score < 2 or (score < 3 and category != "funny"):
+        # categories mean "worth a look" from 3 up — jokes included: the owner
+        # wants highlights and shorts people can learn from, with funny moments
+        # only when they are really good (no head start for light moments)
+        if score < 3:
             category = "none"
         removal = REMOVAL_CODES.get(item.get("c", ""), "none") if decision == "remove" else "none"
         out.append(SegmentJudgment(
@@ -409,17 +468,17 @@ def _judge_chunk(caller, system_prompt: str, chunk: list[tuple[int, Segment]], i
             reason = _finish_reason(response) if response is not None else "no response"
             if "MAX_TOKENS" in reason:
                 logger.warning(
-                    "gemini response for a %d-segment chunk was truncated (finish_reason=MAX_TOKENS) on attempt %d "
+                    "LLM response for a %d-segment chunk was truncated (finish_reason=MAX_TOKENS) on attempt %d "
                     "— lower gemini_max_segments_per_call if this recurs: %s", len(chunk), attempt + 1, exc,
                 )
                 if len(chunk) > 1:
                     return _split(caller, system_prompt, chunk, indexed, context)
             else:
-                logger.warning("gemini judgment parse failed on attempt %d (finish_reason=%s): %s",
+                logger.warning("LLM judgment parse failed on attempt %d (finish_reason=%s): %s",
                                attempt + 1, reason, exc)
             last_error = exc
     if len(chunk) > 1:
-        logger.warning("gemini failed twice on a %d-segment chunk (%s) — splitting", len(chunk), last_error)
+        logger.warning("LLM failed twice on a %d-segment chunk (%s) — splitting", len(chunk), last_error)
         return _split(caller, system_prompt, chunk, indexed, context)
     raise DecisionError(f"LLM returned invalid judgments after retry: {last_error}") from last_error
 
@@ -494,7 +553,7 @@ def _save(path: Path | None, fingerprint: str, model: str, judged: dict[int, Seg
 def judge_segments(
     segments: list[Segment],
     *,
-    caller: GeminiCaller | LazyCaller | None = None,
+    caller: Caller | None = None,
     highlights_criteria: str | None = None,
     on_progress: callable[[int, int], None] | None = None,
     persist_path: Path | None = None,
@@ -536,7 +595,7 @@ def judge_segments(
 def get_decisions(
     segments: list[Segment],
     on_progress: callable[[int, int], None] | None = None,
-    caller: GeminiCaller | None = None,
+    caller: Caller | None = None,
 ) -> list[Decision]:
     """keep/remove decisions only (compatibility wrapper around judge_segments)."""
     return [j.to_decision() for j in judge_segments(segments, caller=caller, on_progress=on_progress)]
@@ -652,7 +711,7 @@ def rerank_moments(
     candidates: list[Moment],
     judgments: list[SegmentJudgment],
     *,
-    caller: GeminiCaller | LazyCaller | None = None,
+    caller: Caller | None = None,
     highlights_criteria: str | None = None,
     shorts_criteria: str | None = None,
     context_segments: int | None = None,

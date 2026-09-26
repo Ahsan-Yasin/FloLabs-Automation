@@ -68,6 +68,81 @@ def _snap_to_word_boundaries(
     return snapped
 
 
+def _silence_cuts(
+    ranges: list[tuple[float, float]], silences: list[tuple[float, float]], pad_after: float, pad_before: float,
+    shortest: float, min_piece: float,
+) -> list[tuple[float, float]]:
+    """The part of each silence to take out of each (sorted) keep range.
+
+    `pad_after` is left after speech stops and `pad_before` before it
+    resumes (a word's tail or a breath is never clipped; a shortened pause is
+    a ~0.55 s beat) — but only toward speech that stays in the output. Where
+    a silence reaches the edge of a keep range, whatever is beyond that edge
+    is removed anyway (or is the file's edge), so the cut runs right up to
+    it: padding there leaves a sliver of dead air, and the short-keep rule
+    widened that sliver half into the removed sentence next door (a 1 s
+    "flash" of dead air plus its first word between two dissolves).
+
+    For the same reason a piece left at the edge of a keep range too short to
+    stand on its own (< `min_piece`) grows into the silence beside it, never
+    into the removed part on its other side. Cuts shorter than `shortest`
+    are dropped (the frame finish would only put them back).
+    """
+    silences = sorted(silences)
+    starts = [s for s, _ in silences]
+    cuts: list[tuple[float, float]] = []
+    for ks, ke in ranges:
+        inside = []
+        i = max(0, bisect.bisect_right(starts, ks) - 1)
+        while i < len(silences) and silences[i][0] < ke:
+            s, e = silences[i]
+            i += 1
+            a = ks if s <= ks else s + pad_after
+            b = ke if e >= ke else e - pad_before
+            if e > ks and b - a >= shortest:
+                inside.append((a, b))
+        while inside and ks < inside[0][0] < ks + min_piece:
+            a, b = inside[0]
+            if b - (ks + min_piece) >= shortest:
+                inside[0] = (ks + min_piece, b)
+                break
+            inside.pop(0)
+        while inside and ke - min_piece < inside[-1][1] < ke:
+            a, b = inside[-1]
+            if (ke - min_piece) - a >= shortest:
+                inside[-1] = (a, ke - min_piece)
+                break
+            inside.pop()
+        cuts += inside
+    return cuts
+
+
+def _subtract(
+    ranges: list[tuple[float, float]], cuts: list[tuple[float, float]]
+) -> tuple[list[tuple[float, float]], list[tuple[float, float]]]:
+    """Take `cuts` out of the (sorted, non-overlapping) keep `ranges`.
+    Returns what is left and the parts that were actually taken out."""
+    cuts = _coalesce_overlaps([c for c in cuts if c[1] > c[0]])
+    left: list[tuple[float, float]] = []
+    taken: list[tuple[float, float]] = []
+    j = 0
+    for start, end in ranges:
+        while j < len(cuts) and cuts[j][1] <= start:
+            j += 1
+        cursor = start
+        k = j
+        while k < len(cuts) and cuts[k][0] < end:
+            cut_start, cut_end = max(cuts[k][0], cursor), min(cuts[k][1], end)
+            if cut_start > cursor:
+                left.append((cursor, cut_start))
+            taken.append((cut_start, cut_end))
+            cursor = cut_end
+            k += 1
+        if cursor < end:
+            left.append((cursor, end))
+    return left, taken
+
+
 def _merge_small_gaps(ranges: list[tuple], min_gap) -> list[tuple]:
     """Merge KEEP ranges separated by < min_gap (avoids choppy micro-cuts)."""
     if not ranges:
@@ -116,6 +191,8 @@ def build_edl(
     full_video_fallback: bool = True,
     total_frames: int | None = None,
     min_gap_s: float | None = None,
+    silences: list[tuple[float, float]] | None = None,
+    silence_pad_s: tuple[float, float] | None = None,
 ) -> EditDecisionList:
     """Turn keep/remove decisions into a validated EDL.
 
@@ -123,10 +200,26 @@ def build_edl(
     every boundary is additionally snapped to the source frame grid and the
     result is safe to render with `fade_frames`-long dissolves:
 
-    coalesce -> snap to words -> snap to frames -> coalesce -> merge gaps
-    shorter than max(min_gap_merge_seconds, (d+1)/F) (put back, never shown as
-    a cut) -> merge/drop keeps shorter than max(min_segment_s, 2d/F) (2d/F
-    only when there are 2+ keeps) -> clamp to the source -> validate.
+    coalesce -> snap to words -> take out `silences` -> snap to frames ->
+    coalesce -> merge gaps shorter than max(min_gap_merge_seconds, (d+1)/F)
+    (put back, never shown as a cut) -> merge/drop keeps shorter than
+    max(min_segment_s, 2d/F) (2d/F only when there are 2+ keeps) -> clamp to
+    the source -> validate.
+
+    `silences` (source seconds nobody speaks in, slice/silence.py) are taken
+    out AFTER word snapping: caption "words" are whole sentences, and
+    snapping would stretch a cut inside one straight back out to the
+    sentence's edges. Each is padded by `silence_pad_s` = (after speech,
+    before speech; default: the silence_pad_* settings) relative to the keep
+    range it is cut from (_silence_cuts). They go in before the frame-grid
+    finish, so every rule after it (whole frames, tiny gaps merged back,
+    short keeps widened, complement tiling) still holds. Cuts too short to
+    survive the gap merge are dropped first, so they don't show up as "gaps
+    put back". A keep left shorter than 2d can only be speech between two
+    cuts inside one keep range (an edge piece is lengthened into its
+    silence), so widening it only puts back a little pause, never removed
+    content; or it is merged across a cut of <= 1 s. It is never dropped:
+    it carries both paddings (>= ~0.6 s) and a longer cut leaves room to widen.
     """
     settings = get_settings()
     min_segment_s = settings.min_segment_seconds if min_segment_s is None else min_segment_s
@@ -136,13 +229,33 @@ def build_edl(
     ranges = _coalesce_overlaps(ranges)
     ranges = _snap_to_word_boundaries(ranges, words)
     ranges = _coalesce_overlaps(ranges)  # snapping can push neighbors into overlap
+    taken: list[tuple[float, float]] = []
+    if silences:
+        pad_after, pad_before = ((settings.silence_pad_after_s, settings.silence_pad_before_s)
+                                 if silence_pad_s is None else silence_pad_s)
+        if fps is None:
+            shortest, min_piece = min_gap_s, min_segment_s
+        else:
+            rate = parse_rate(fps)
+            # d+2 frames, not d+1: snapping both edges to the grid can lose one
+            shortest = max(min_gap_s, float((fade_frames + 2) / rate))
+            # the frame finish's shortest keep, plus the frame its rounding can lose
+            min_piece = max(min_segment_s, float(2 * fade_frames / rate)) + float(1 / rate)
+        cuts = _silence_cuts(ranges, silences, pad_after, pad_before, shortest, min_piece)
+        ranges, taken = _subtract(ranges, cuts)
 
     if fps is None:
-        return _finish_seconds_edl(ranges, source_duration, settings, min_segment_s, full_video_fallback, min_gap_s)
-    return _finish_frame_edl(
-        ranges, source_duration, parse_rate(fps), fade_frames, settings, min_segment_s, full_video_fallback,
-        total_frames, min_gap_s,
-    )
+        edl = _finish_seconds_edl(ranges, source_duration, settings, min_segment_s, full_video_fallback, min_gap_s)
+    else:
+        edl = _finish_frame_edl(
+            ranges, source_duration, parse_rate(fps), fade_frames, settings, min_segment_s, full_video_fallback,
+            total_frames, min_gap_s,
+        )
+    # only the cuts that are still cuts (a short keep can be merged across one)
+    kept = [(r.start, r.end) for r in edl.ranges]
+    edl.silence_cuts = [(round(s, 3), round(e, 3)) for s, e in taken
+                        if not any(ks <= (s + e) / 2 < ke for ks, ke in kept)]
+    return edl
 
 
 def _finish_seconds_edl(

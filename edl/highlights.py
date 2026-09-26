@@ -3,17 +3,20 @@
 Everything here is pure (no LLM, no ffmpeg) so the selection rules can be
 tested and tuned in isolation:
 
-1. `candidate_moments`: runs of sentences scoring >= a floor (funny ones from
-   a lower floor), joined across short pauses / up to two bridged lines; the
-   best `max_candidates` go to the re-rank.
+1. `candidate_moments`: runs of sentences scoring >= a floor, joined across
+   short pauses / up to two bridged lines; the best `max_candidates` go to
+   the re-rank. (Funny moments used to enter from a lower floor; since the
+   owner asked for highlights/shorts people can LEARN from, they don't.)
 2. (the re-rank call in decide/gemini_client.py calibrates scores across the
    whole meeting, writes titles and completes each window)
 3. `select_highlights`: best score first above a quality floor, within a time
    budget, with a diversity cap so one stretch of the meeting can't fill the
-   reel; over-long moments are trimmed around their best sentence; then
-   chronological. Less than `min_total_s` of material -> no reel.
-4. `select_shorts`: short-worthy moments, preferred categories first, each
-   widened/trimmed at sentence boundaries to shorts_min_s..shorts_max_s.
+   reel and a cap on funny moments; over-long moments are trimmed around
+   their best sentence; then chronological. Less than `min_total_s` of
+   material -> no reel.
+4. `select_shorts`: short-worthy moments, preferred (learning) categories
+   first, each widened/trimmed at sentence boundaries to
+   shorts_min_s..shorts_max_s.
 
 These rules came out of a review of the real 98-minute meeting: the first
 version used a 7 -> 6 -> 5 -> 4 threshold ladder, kept only single sentences
@@ -31,7 +34,7 @@ def candidate_moments(
     judgments: list[SegmentJudgment],
     *,
     floor: int = 3,
-    funny_floor: int = 2,
+    funny_floor: int = 3,
     join_gap_s: float = 10.0,
     max_bridge: int = 2,
     max_candidates: int = 60,
@@ -125,15 +128,18 @@ def select_highlights(
     max_share_per_window: float = 0.35,
     window_s: float = 600.0,
     max_moment_s: float = 60.0,
+    max_funny_share: float = 1.0,
     judgments: list[SegmentJudgment] | None = None,
 ) -> list[Moment]:
     """Best score first (ties: the less-covered part of the meeting, then
     earlier) under the time budget. At most `max_share_per_window` of the
     budget may come from one `window_s` stretch — relaxed in a second pass if
-    the reel would otherwise stay under 60% of the budget. With `judgments`,
-    short moments are widened to `min_moment_s` and long ones are trimmed
-    around their best sentence to fit. Returns moments in chronological
-    order, or [] when there isn't `min_total_s` of qualifying material."""
+    the reel would otherwise stay under 60% of the budget — and at most
+    `max_funny_share` of it from funny moments (never relaxed: the reel is
+    for learning, jokes only season it). With `judgments`, short moments are
+    widened to `min_moment_s` and long ones are trimmed around their best
+    sentence to fit. Returns moments in chronological order, or [] when
+    there isn't `min_total_s` of qualifying material."""
     budget = highlights_budget(duration_s, target_s, max_fraction)
     if budget <= 0:
         return []
@@ -142,9 +148,10 @@ def select_highlights(
         pool = [_widen(m, judgments, min_moment_s) for m in pool]
     pool = [m for m in pool if m.duration >= min_moment_s or judgments]
     cap = max(max_share_per_window * budget, min_moment_s)
+    funny_cap = max_funny_share * budget
     chosen: list[Moment] = []
     used: dict[int, float] = defaultdict(float)
-    total = 0.0
+    total = funny = 0.0
 
     def bucket(m: Moment) -> int:
         return int(m.start // window_s) if window_s > 0 else 0
@@ -160,11 +167,15 @@ def select_highlights(
             for m in remaining:
                 room = min(budget - total, max_moment_s)
                 clip = m if m.duration <= room else _trim_around_peak(m, judgments, room)
+                if clip is not None and judgments:
+                    clip = _strip_junk_moment(clip, judgments, min_moment_s)
                 if clip is None or clip.duration < min_moment_s:
                     continue
                 if any(_overlaps(clip, c) for c in chosen):
                     continue
                 if not relaxed and used[bucket(clip)] + clip.duration > cap:
+                    continue
+                if clip.category == "funny" and funny + clip.duration > funny_cap:
                     continue
                 pick = (m, clip)
                 break
@@ -175,6 +186,8 @@ def select_highlights(
             chosen.append(clip)
             total += clip.duration
             used[bucket(clip)] += clip.duration
+            if clip.category == "funny":
+                funny += clip.duration
     if total < min_total_s:
         return []
     return sorted(chosen, key=lambda m: m.start)
@@ -216,13 +229,27 @@ def _trim_around_peak(m: Moment, judgments: list[SegmentJudgment] | None, max_s:
                                 "start": judgments[first].start, "end": judgments[last].end})
 
 
+def _strip_junk_moment(m: Moment, judgments: list[SegmentJudgment], min_s: float) -> Moment:
+    """`_strip_junk` for a reel clip: a moment may bridge removed lines
+    (candidate_moments), and the reel is cut straight from the source, so a
+    clip starting on a removed "hold on, one second" would put it — and its
+    dead air — at the very start of final.mp4."""
+    first, last = _strip_junk(m.first_index, m.last_index, judgments, min_s, keep=m.peak_index)
+    if (first, last) == (m.first_index, m.last_index):
+        return m
+    return m.model_copy(update={"first_index": first, "last_index": last,
+                                "start": judgments[first].start, "end": judgments[last].end})
+
+
 def _overlaps(a, b) -> bool:
     return a.start < b.end and b.start < a.end
 
 
 # ------------------------------------------------------------------ shorts
 
-_TRAILING_JUNK = {"filler", "greeting_small_talk", "housekeeping", "crosstalk", "dead_air"}
+_JUNK = {"filler", "greeting_small_talk", "housekeeping", "crosstalk", "dead_air"}
+# what shorts are mainly for (owner, 2026-09-25): moments people learn from
+LEARNING_CATEGORIES = ("concept", "new_architecture", "new_feature", "insight")
 
 
 def select_shorts(
@@ -232,17 +259,19 @@ def select_shorts(
     count: int = 4,
     min_s: float = 20.0,
     max_s: float = 60.0,
-    preferred_categories: list[str] | tuple[str, ...] = ("funny",),
+    preferred_categories: list[str] | tuple[str, ...] = LEARNING_CATEGORIES,
     min_score: float = 5.0,
 ) -> list[ShortClip]:
-    """Short-worthy moments, preferred categories first (by score), then any
-    other short-worthy moment by score. When the re-rank did not run (no
-    moment is marked reranked), preferred-category moments above `min_score`
-    stand in for the missing short-worthy flag. Each window is widened with
-    neighbouring sentences to >= `min_s`, trimmed to <= `max_s` from the side
-    farther from the moment's core, and stripped of trailing filler. Shorts
-    never overlap. A short may include material the cleanup removed — by
-    design."""
+    """Short-worthy moments, preferred categories first (by score) — by
+    default the ones people learn from — then any other short-worthy moment
+    (e.g. a funny one) by score; short_01 is the best preferred one. When the
+    re-rank did not run (no moment is marked reranked), preferred-category
+    moments above `min_score` stand in for the missing short-worthy flag.
+    Each window is widened with neighbouring sentences to >= `min_s`,
+    trimmed to <= `max_s` from the side farther from the moment's core, and
+    stripped of filler at either end. Shorts never overlap. A short may
+    include material the cleanup removed — by design — but never starts or
+    ends on removed filler/small talk/housekeeping."""
     if count <= 0 or not judgments:
         return []
     if any(m.reranked for m in moments):
@@ -258,7 +287,7 @@ def select_shorts(
         window = _fit_window(m.first_index, m.last_index, judgments, min_s, max_s, m.peak_index)
         if window is None:
             continue
-        first, last = _strip_trailing_junk(*window, judgments, min_s)
+        first, last = _strip_junk(*window, judgments, min_s, keep=m.peak_index)
         start, end = judgments[first].start, judgments[last].end
         if end - start < min_s or end - start > max_s:
             continue
@@ -266,15 +295,20 @@ def select_shorts(
             continue
         shorts.append(ShortClip(index=0, moment_id=m.id, start=start, end=end, score=m.score,
                                 category=m.category, title=m.title, hook=m.hook))
-    shorts.sort(key=lambda s: -s.score)
+    # numbered in pick order: preferred (learning) shorts first, best first
     return [s.model_copy(update={"index": k + 1}) for k, s in enumerate(shorts)]
 
 
-def _strip_trailing_junk(first: int, last: int, judgments: list[SegmentJudgment], min_s: float):
-    while (last > first and judgments[last].decision == "remove"
-           and judgments[last].removal_category in _TRAILING_JUNK
-           and judgments[last - 1].end - judgments[first].start >= min_s):
+def _strip_junk(first: int, last: int, judgments: list[SegmentJudgment], min_s: float, keep: int | None = None):
+    """Drop removed filler/small talk/housekeeping lines from both ends of
+    [first, last] while it still lasts >= `min_s` (never the `keep` line)."""
+    def junk(i: int) -> bool:
+        return i != keep and judgments[i].decision == "remove" and judgments[i].removal_category in _JUNK
+
+    while last > first and junk(last) and judgments[last - 1].end - judgments[first].start >= min_s:
         last -= 1
+    while first < last and junk(first) and judgments[last].end - judgments[first + 1].start >= min_s:
+        first += 1
     return first, last
 
 

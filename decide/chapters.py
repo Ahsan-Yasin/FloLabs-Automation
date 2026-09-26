@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from core.logging import get_logger
 from core.models import Chapter, Word
 
-from .gemini_client import DecisionError, GeminiCaller, LazyCaller, make_caller
+from .gemini_client import Caller, DecisionError, make_caller
 from .prompts import chapters_prompt
 
 logger = get_logger(__name__)
@@ -80,7 +80,7 @@ def chapter_lines(clean_words: list[Word]) -> str:
 
 
 def generate_chapters(
-    clean_words: list[Word], duration_s: float, *, caller: GeminiCaller | LazyCaller | None = None
+    clean_words: list[Word], duration_s: float, *, caller: Caller | None = None
 ) -> ChapterResult:
     """Topic chapters on the cleaned timeline. One retry with the problems
     spelled out; never raises for bad output (chapters are optional)."""

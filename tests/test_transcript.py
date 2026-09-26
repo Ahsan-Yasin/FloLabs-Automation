@@ -1,5 +1,5 @@
 from core.models import EditDecisionList, EDLRange, Word
-from slice.transcript import remap_transcript
+from slice.transcript import merge_spans, remap_transcript
 
 
 def test_remaps_words_onto_trimmed_timeline():
@@ -52,3 +52,37 @@ def test_remap_via_manifest_matches_hard_cut_formula():
     words = [Word(word="x", start=11.0, end=11.5, speaker="B")]
     (w,) = remap_transcript(words, manifest=manifest)
     assert (w.start, w.end) == (5.0, 5.5)  # 11.0 - 10.0 + 4.0
+
+
+def test_a_sentence_straddling_a_cut_pause_is_still_said():
+    """A caption sentence's timing spans its pauses: when the pause cut in it
+    holds the sentence's midpoint, the sentence goes to the kept part it
+    overlaps most (not silently into the removed transcript)."""
+    from core.models import RemovedRange, RenderManifest, RenderPiece
+    from report.text import removed_entries
+
+    # kept 0-4 s and 9-10 s @25 fps; 4-9 s is a cut pause
+    manifest = RenderManifest(kind="cleaned", fps="25/1", width=2, height=2, pieces=[
+        RenderPiece(src_start_frame=0, src_end_frame=100, out_start_frame=0),
+        RenderPiece(src_start_frame=225, src_end_frame=250, out_start_frame=100),
+    ])
+    pause = RemovedRange(start=4.0, end=9.0, start_frame=100, end_frame=225, tier="transcript_only",
+                         reason="silence (no one speaking)", silence=True)
+    sentence = Word(word="we shipped it (long pause) yesterday", start=1.0, end=10.0, speaker="A")  # midpoint 5.5
+    mistimed = Word(word="okay", start=5.0, end=6.0, speaker="B")  # wholly inside the pause: really not said
+
+    assert remap_transcript([sentence], manifest=manifest) == []  # the old midpoint rule lost it
+    clean = remap_transcript([sentence, mistimed], manifest=manifest, silence=[(4.0, 9.0)])
+    assert [(w.word, w.start, w.end) for w in clean] == [(sentence.word, 1.0, 4.0)]  # 3 s kept there vs 1 s
+    (entry,) = removed_entries([pause], [sentence, mistimed])
+    assert [line["text"] for line in entry.lines] == ["okay"] and entry.silence
+
+
+def test_pause_spans_that_overlap_are_merged_before_the_lookup():
+    """deliver passes the pause cuts (seconds) AND the pure-silence ranges
+    (frame-rounded): nested spans must not hide the one holding a midpoint."""
+    assert merge_spans([(4.02, 9.0), (12.0, 13.0), (4.0, 9.02)]) == [(4.0, 9.02), (12.0, 13.0)]
+    edl = EditDecisionList(ranges=[EDLRange(start=0.0, end=4.0), EDLRange(start=9.04, end=12.0)],
+                           source_duration=12.0)
+    sentence = Word(word="said before the pause", start=0.0, end=18.02, speaker="A")  # midpoint 9.01
+    assert [w.word for w in remap_transcript([sentence], edl, silence=[(4.0, 9.02), (4.02, 9.0)])] == [sentence.word]
