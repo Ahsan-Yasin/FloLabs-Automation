@@ -359,7 +359,9 @@
       busy(resend, true);
       try {
         await api("/api/v1/auth/resend-verification", { method: "POST" });
-        toast("Verification email sent. Check your inbox.");
+        toast(document.body.dataset.emailOff
+          ? "Email delivery isn't set up on this server: the new link is in the server log."
+          : "Verification email sent. Check your inbox.");
       } catch (err) {
         toast(err.code === "already_verified" ? "Your email is already verified." : err.message, err.code === "already_verified" ? "success" : "error");
       } finally {
@@ -403,7 +405,7 @@
 
   /* short, human status names (dashboard list, job page) */
   const STATUS_TEXT = {
-    queued: "Queued", waiting_transcript: "Waiting", downloading: "Downloading", transcribing: "Transcribing",
+    queued: "Queued", downloading: "Downloading", transcribing: "Transcribing",
     deciding: "AI editing", building_edl: "Planning cuts", slicing: "Rendering", rendering_highlights: "Rendering reel",
     assembling: "Assembling", rendering_removed: "Rendering removed parts", rendering_shorts: "Rendering shorts",
     reporting: "Writing report", bundling: "Packing", done: "Done", failed: "Failed", cancelled: "Cancelled",

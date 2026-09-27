@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 
 from core.config import get_settings
 from db.session import get_db
-from ingest import zoom
 from services import jobs_index, passwords, users, webhooks
 from services.errors import ServiceError, rate_limited
 from services.scopes import JOBS_READ
@@ -57,7 +56,6 @@ def public_config() -> dict:
         "signup_enabled": settings.signup_enabled,
         "signup_domains": sorted(settings.allowed_signup_domain_set),
         "limits": plan_limits(),
-        "zoom_configured": zoom.is_configured(settings),
         "legacy_api_enabled": settings.legacy_api_enabled,
         "contact_email": settings.contact_email or None,
     }

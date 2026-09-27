@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class Word(BaseModel):
@@ -229,9 +229,6 @@ class ArtifactInfo(BaseModel):
 
 class JobStatus(str, Enum):
     QUEUED = "queued"
-    # Zoom jobs queued before Zoom finished the transcript wait for it here
-    # (up to transcript_wait_max_s) before downloading.
-    WAITING_TRANSCRIPT = "waiting_transcript"
     DOWNLOADING = "downloading"
     TRANSCRIBING = "transcribing"
     DECIDING = "deciding"
@@ -257,19 +254,18 @@ TERMINAL_STATUSES = frozenset(
     {JobStatus.DONE, JobStatus.FAILED, JobStatus.SKIPPED_DESYNC, JobStatus.CANCELLED, JobStatus.DECIDED}
 )
 
-TranscriptSource = Literal["asr", "youtube_captions", "uploaded_transcript", "zoom_transcript"]
+TranscriptSource = Literal["asr", "youtube_captions", "uploaded_transcript"]
 
 # Machine-readable failure reasons for n8n (plan §11). `retryable` on the job
 # says whether re-submitting the same request can succeed.
+# error codes only Zoom ingest produced (see JobRecord._load_zoom_era_records)
+_ZOOM_ERA_ERROR_CODES = frozenset({"recording_not_ready", "zoom_auth", "zoom_not_found", "zoom_download_invalid",
+                                   "zoom_unavailable"})
+
 ErrorCode = Literal[
-    "recording_not_ready",
     "transcript_not_ready",
     "busy",
     "insufficient_disk",
-    "zoom_auth",
-    "zoom_not_found",
-    "zoom_download_invalid",
-    "zoom_unavailable",
     "source_unsupported",
     "llm_quota_exhausted",
     "llm_error",
@@ -284,19 +280,33 @@ ErrorCode = Literal[
 
 
 class JobRecord(BaseModel):
+    """One job, persisted as storage/jobs/<id>/job.json."""
+
+    @model_validator(mode="before")
+    @classmethod
+    def _load_zoom_era_records(cls, data):
+        """Zoom ingest was removed. Records written while it existed keep
+        loading: their extra zoom_* keys are ignored, a job still waiting for a
+        Zoom transcript becomes an interrupted failure, and Zoom-only values
+        map to their closest remaining ones."""
+        if not isinstance(data, dict):
+            return data
+        data = dict(data)
+        if data.get("status") == "waiting_transcript":
+            data.update(status="failed", error_code="interrupted", retryable=False,
+                        error=data.get("error") or "Zoom ingest was removed from this server")
+        if data.get("transcript_source") == "zoom_transcript":
+            data["transcript_source"] = "uploaded_transcript"
+        if data.get("error_code") in _ZOOM_ERA_ERROR_CODES:
+            data["error_code"] = "source_unsupported"
+        return data
+
     job_id: str
     status: JobStatus = JobStatus.QUEUED
     options: JobOptions = Field(default_factory=JobOptions)
-    # Meeting topic (Zoom's topic; for uploads, the file name). Shown on the
+    # The video's title (YouTube) or the file name (uploads). Shown on the
     # title card and in the report.
     title: str = ""
-    # Zoom jobs: the meeting instance UUID (always the UUID, never the numeric
-    # id, which means "latest instance" for recurring meetings), a hash of the
-    # options for idempotent POST /jobs/zoom, and what Zoom said about it
-    # (topic, start_time, host_email, duration_min, parts, auto_delete_date).
-    zoom_meeting_uuid: str | None = None
-    zoom_options_hash: str | None = None
-    zoom_meeting: dict | None = None
     source_path: str = ""
     source_url: str | None = None
     native_transcript_path: str | None = None

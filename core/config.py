@@ -195,34 +195,15 @@ class Settings(BaseSettings):
     # the UI can play them (local).
     serve_individual_artifacts: bool = True
     # Delete the source recording when the job is done, if it lives inside the
-    # job folder (Zoom downloads/uploads; never a file elsewhere). EC2: true.
+    # job folder (YouTube downloads and uploads; never a file elsewhere). EC2: true.
     delete_source_when_done: bool = False
 
-    # --- v2 Zoom ingest (plan D13, §10) ------------------------------------
-    # Server-to-Server OAuth app (Zoom Marketplace, activated, with the scopes
-    # cloud_recording:read:list_user_recordings:admin,
-    # cloud_recording:read:list_recording_files:admin,
-    # cloud_recording:read:recording:admin). Secrets live in .env only.
-    zoom_account_id: str = ""
-    zoom_client_id: str = ""
-    zoom_client_secret: str = ""
-    # Whose recordings the UI lists by default (S2S tokens can't use "me").
-    zoom_host_email: str = ""
-    zoom_api_base: str = "https://api.zoom.us/v2"
-    zoom_oauth_url: str = "https://zoom.us/oauth/token"
-    # Download redirects only get the Bearer token when their host ends with
-    # one of these (never leak the token to a CDN or a foreign host).
-    zoom_allowed_hosts: list[str] = ["zoom.us", "zoom.com", "zoomgov.com"]
-    # Never transcribe ourselves: a job without a platform transcript fails
-    # "transcript_not_ready" instead of running WhisperX. True on EC2 (no
-    # WhisperX there); False locally so plain uploads still work.
+    # --- transcripts -------------------------------------------------------
+    # Never transcribe ourselves: a job without a platform transcript (YouTube
+    # captions or an uploaded .vtt/.srt) fails "transcript_not_ready" instead
+    # of running WhisperX. True on servers without WhisperX; False locally so
+    # plain uploads still work.
     require_native_transcript: bool = False
-    # POST /jobs/zoom answers 425 transcript_not_ready while Zoom is still
-    # processing the transcript. Inside a job, wait up to this long for a
-    # transcript that is still missing before failing (retryable) or, when
-    # require_native_transcript is False, falling back to WhisperX.
-    transcript_wait_max_s: float = 600.0
-    transcript_poll_s: float = 60.0
 
     # --- v2 service / lifecycle (plan D14-D16) -----------------------------
     # Operator key (the pre-accounts shared secret), accepted as X-API-Key on
@@ -298,7 +279,7 @@ class Settings(BaseSettings):
     # recording length.
     plan_jobs_per_month: int = 0
     plan_max_minutes: int = 0
-    # The unprefixed pre-/api/v1 routes (/jobs, /zoom/...) still used by
+    # The unprefixed pre-/api/v1 routes (/jobs/...) still used by
     # older n8n flows. Turn off once everything calls /api/v1.
     legacy_api_enabled: bool = True
     # Optional animated 3D background on the home page (heavier; off).
@@ -311,6 +292,12 @@ class Settings(BaseSettings):
     @property
     def is_prod(self) -> bool:
         return self.app_env.strip().lower() == "prod"
+
+    @property
+    def email_delivers(self) -> bool:
+        """False for console/memory: messages go to the log (or a test list),
+        never to anyone's inbox."""
+        return self.email_backend.strip().lower() in ("smtp", "resend")
 
     @property
     def admin_email_set(self) -> set[str]:

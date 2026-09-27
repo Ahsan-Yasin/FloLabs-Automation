@@ -1,6 +1,6 @@
 # The service as deployed (Docker/EC2/CI): everything except WhisperX, which
 # pulls in torch and is only needed to transcribe recordings that come without
-# a transcript (Zoom and YouTube jobs bring their own).
+# a transcript (YouTube captions and uploaded .vtt/.srt files are reused).
 fastapi>=0.115
 uvicorn[standard]>=0.30
 pydantic>=2.7

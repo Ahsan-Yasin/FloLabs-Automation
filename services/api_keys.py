@@ -125,12 +125,18 @@ def revoke(db: Session, user_id: str, key_id: str) -> ApiKey:
 def rotate(db: Session, user: User, key_id: str) -> tuple[ApiKey, str]:
     """Revoke a key and create its replacement (same name and scopes)."""
     old = _own_key(db, user.id, key_id)
+    # scopes that no longer exist (zoom:read) are dropped. A key left with none
+    # is refused: an empty list would mean "every scope" to create().
+    scopes = [s for s in old.scopes if s in ALL_SCOPES]
+    if not scopes:
+        raise ServiceError("this key has no scopes left (zoom:read was removed); create a new key instead",
+                           code="validation_error", status=422)
     old.revoked_at = _now()
     remaining_days = None
     if old.expires_at is not None:
         remaining_days = max(1, (old.expires_at - _now()).days)
     db.flush()
-    return create(db, user, old.name, old.scopes, remaining_days)
+    return create(db, user, old.name, scopes, remaining_days)
 
 
 def revoke_all(db: Session, user_id: str) -> None:

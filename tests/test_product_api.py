@@ -143,8 +143,10 @@ def test_api_key_scopes(monkeypatch):
     created = _upload(client, bearer(writer))
     assert created.status_code == 200 and created.json()["owner_id"] == user_id
     assert api_main.job_queue.wait_idle(10)
-    assert client.get("/api/v1/zoom/status", headers=bearer(writer)).json()["error_code"] == "insufficient_scope"
-    assert client.get("/api/v1/zoom/status", headers=bearer(make_key(user_id, ["zoom:read"]))).status_code == 200
+    # Zoom was removed: its routes are gone, with or without the /api/v1 prefix
+    for path in ("/api/v1/zoom/status", "/api/v1/zoom/recordings", "/zoom/status"):
+        assert client.get(path, headers=bearer(writer)).status_code == 404, path
+    assert client.post("/api/v1/jobs/zoom", headers=bearer(writer), json={"meeting_uuid": "x"}).status_code in (404, 405)
 
 
 def test_unverified_accounts_can_look_but_not_create():
@@ -225,45 +227,6 @@ def test_recording_length_limit_stops_the_job_before_any_ai_call(monkeypatch):
     assert admin.get(f"/api/v1/jobs/{admin_job}").json()["status"] == "done"
 
 
-# ------------------------------------------------------------------ Zoom per owner
-@pytest.fixture
-def zoom_fake(monkeypatch):
-    from tests.test_zoom_api import FakeClient, _use
-
-    monkeypatch.setenv("ZOOM_ACCOUNT_ID", "acct")
-    monkeypatch.setenv("ZOOM_CLIENT_ID", "client")
-    monkeypatch.setenv("ZOOM_CLIENT_SECRET", "secret")
-    monkeypatch.setenv("ZOOM_HOST_EMAIL", "host@example.com")
-    get_settings.cache_clear()
-    return _use(monkeypatch, FakeClient())
-
-
-def test_zoom_jobs_dedupe_per_owner_and_respect_length_limits(monkeypatch, zoom_fake):
-    monkeypatch.setattr(api_main, "run_zoom_pipeline", _done)
-    ada, bob = signed_in("ada@example.com"), signed_in("bob@example.com")
-    body = {"meeting_uuid": "abc/def==", "options": {"decide_only": True}}
-    first = ada.post("/api/v1/jobs/zoom", json=body, headers=CSRF).json()
-    assert api_main.job_queue.wait_idle(10)
-    assert ada.post("/api/v1/jobs/zoom", json=body, headers=CSRF).json()["deduplicated"] is True
-    theirs = bob.post("/api/v1/jobs/zoom", json=body, headers=CSRF).json()
-    assert theirs["deduplicated"] is False and theirs["job_id"] != first["job_id"]
-    assert api_main.job_queue.wait_idle(10)
-
-    monkeypatch.setenv("PLAN_MAX_MINUTES", "30")  # the fake meeting is 60 minutes long
-    get_settings.cache_clear()
-    too_long = ada.post("/api/v1/jobs/zoom", json={"meeting_uuid": "abc/def=="}, headers=CSRF)
-    assert too_long.status_code == 402 and too_long.json()["error_code"] == "plan_limit"
-
-
-def test_zoom_default_host_comes_from_the_account(zoom_fake):
-    ada = signed_in()
-    assert ada.get("/api/v1/zoom/status").json()["host_email"] == "host@example.com"
-    ada.patch("/api/v1/auth/me", json={"zoom_host_email": "ada.host@example.com"}, headers=CSRF)
-    assert ada.get("/api/v1/zoom/status").json()["host_email"] == "ada.host@example.com"
-    ada.get("/api/v1/zoom/recordings")
-    assert zoom_fake.listed[-1][0] == "ada.host@example.com"
-
-
 # ------------------------------------------------------------------ keys API
 def test_key_management():
     unverified = signed_in("new@example.com", verified=False)
@@ -279,7 +242,8 @@ def test_key_management():
     assert body["name"] == "n8n prod" and body["scopes"] == ["jobs:read"] and body["display"].endswith("…")
     listed = ada.get("/api/v1/keys").json()
     assert "key" not in listed["items"][0] and key not in json.dumps(listed)
-    assert set(listed["scopes"]) == {"jobs:read", "jobs:write", "zoom:read"}
+    assert set(listed["scopes"]) == {"jobs:read", "jobs:write"}
+    assert ada.post("/api/v1/keys", json={"name": "old", "scopes": ["zoom:read"]}, headers=CSRF).status_code == 422
 
     client = new_client()
     assert client.get("/api/v1/jobs", headers=bearer(key)).status_code == 200
@@ -463,7 +427,8 @@ def test_published_api_schema():
     client = new_client()
     schema = client.get("/api/v1/openapi.json").json()
     paths = schema["paths"]
-    assert "/api/v1/jobs" in paths and "/api/v1/jobs/zoom" in paths and "/api/v1/keys" in paths
+    assert "/api/v1/jobs" in paths and "/api/v1/jobs/youtube" in paths and "/api/v1/keys" in paths
+    assert not any("zoom" in path for path in paths)
     assert not any(path.startswith(("/jobs", "/zoom")) for path in paths)
     assert set(schema["components"]["securitySchemes"]) == {"BearerAuth", "ApiKeyHeader"}
     assert paths["/api/v1/auth/login"]["post"]["security"] == []

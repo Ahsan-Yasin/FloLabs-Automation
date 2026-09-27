@@ -1,4 +1,5 @@
 # Everything, including local transcription with WhisperX (heavy: torch).
-# Servers that only process Zoom/YouTube jobs use requirements-server.txt.
+# Servers that only process YouTube jobs and uploads with a transcript use
+# requirements-server.txt.
 -r requirements-server.txt
 whisperx @ git+https://github.com/m-bain/whisperX.git

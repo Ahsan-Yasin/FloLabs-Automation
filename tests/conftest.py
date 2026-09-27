@@ -22,8 +22,6 @@ def _isolated_settings(tmp_path, monkeypatch):
     monkeypatch.setenv("HC_API_TOKEN", "")
     monkeypatch.setenv("MIN_FREE_DISK_BYTES", "0")
     monkeypatch.setenv("JOB_RETENTION_HOURS", "0")
-    for name in ("ZOOM_ACCOUNT_ID", "ZOOM_CLIENT_ID", "ZOOM_CLIENT_SECRET", "ZOOM_HOST_EMAIL"):
-        monkeypatch.setenv(name, "")  # never reach the real Zoom account from a test
     monkeypatch.setenv("REQUIRE_NATIVE_TRANSCRIPT", "false")
     # the defaults the tests are written against, whatever the shell or .env
     # says (e.g. CHAPTERS_ENABLED=false while running against real jobs)

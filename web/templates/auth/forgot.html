@@ -4,6 +4,7 @@
 {% block card %}
 <h1>Forgot your password?</h1>
 <p class="sub">Enter your email and we'll send you a link to choose a new one.</p>
+{% if not email_delivers %}<div class="alert alert-warn" style="margin-top:24px">{{ icon("alert") }}<span>Email delivery isn't set up on this server yet: reset links are written to the server log, not sent.</span></div>{% endif %}
 <form class="auth-form" data-form="forgot" novalidate>
   <div class="alert alert-danger" data-form-error hidden role="alert">{{ icon("alert") }}<span data-error-text></span></div>
   <div class="alert alert-success" data-form-success hidden role="status">{{ icon("check") }}<span>If an account exists for that address, a reset link is on its way. It works for one hour.</span></div>

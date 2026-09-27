@@ -84,6 +84,7 @@ def _context(request: Request) -> dict:
         "base_url": settings.base_url,
         "contact_email": settings.contact_email,
         "signup_enabled": settings.signup_enabled,
+        "email_delivers": settings.email_delivers,
         "hero_3d": settings.hero_3d,
         "version": PIPELINE_VERSION,
         "year": datetime.now(UTC).year,
@@ -337,15 +338,14 @@ def _api_reference(request: Request) -> list[dict]:
                 "method": method.upper(), "path": path, "summary": operation.get("summary", ""),
                 "public": operation.get("security") == [],
             })
-    order = ["Jobs", "Zoom", "API keys", "Account", "Accounts", "Admin", "Service"]
+    order = ["Jobs", "API keys", "Account", "Accounts", "Admin", "Service"]
     return [{"tag": tag, "endpoints": sorted(groups[tag], key=lambda e: (e["path"], e["method"]))}
             for tag in sorted(groups, key=lambda t: order.index(t) if t in order else len(order))]
 
 
 STATUS_DOCS = [
     ("queued", "Waiting for its turn (one job renders at a time)."),
-    ("waiting_transcript", "Zoom jobs: Zoom is still producing the transcript."),
-    ("downloading", "Fetching the recording from Zoom or YouTube."),
+    ("downloading", "Fetching the video from YouTube."),
     ("transcribing", "Reading the platform transcript (or transcribing it when there is none)."),
     ("deciding", "The AI judges every sentence (progress: sentences judged)."),
     ("building_edl", "Turning the decisions into frame-exact cuts."),
@@ -377,12 +377,7 @@ ERROR_DOCS = {
     "too_many_jobs": "You already have the maximum number of jobs waiting or running.",
     "plan_limit": "Your plan doesn't allow this (jobs per month, or recording length).",
     "webhook_url_invalid": "callback_url must be https:// and reach a public address.",
-    "recording_not_ready": "Zoom is still processing the recording; retry later.",
-    "transcript_not_ready": "Zoom hasn't produced the transcript yet (retryable), or there is none.",
-    "zoom_auth": "Zoom isn't set up on this server, or refused its credentials.",
-    "zoom_not_found": "Zoom doesn't know this recording (deleted?).",
-    "zoom_unavailable": "Zoom is having trouble; retry later.",
-    "zoom_download_invalid": "The file Zoom sent isn't a valid recording.",
+    "transcript_not_ready": "No captions or uploaded transcript, and this server doesn't transcribe itself.",
     "source_unsupported": "The recording can't be read (format, corrupt file, no audio/video).",
     "insufficient_disk": "The server is out of disk space; retry later.",
     "llm_quota_exhausted": "The AI provider's quota ran out; retry after retry_after_s.",

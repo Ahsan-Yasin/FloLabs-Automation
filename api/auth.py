@@ -4,7 +4,7 @@ AuthMiddleware is pure ASGI and runs before routing and before anything reads
 the request body:
   - it resolves the caller (services.auth.resolve) and stores it in
     request.state.principal;
-  - API paths (/api/..., and the older unprefixed /jobs and /zoom/...) need
+  - API paths (/api/..., and the older unprefixed /jobs/...) need
     a caller except for a few public ones (health, login, sign-up, ...): an
     anonymous multi-GB upload is answered 401 without being spooled to disk;
   - a state-changing request authenticated by cookies must carry
@@ -63,7 +63,7 @@ PUBLIC_API_PATHS = frozenset({
 
 
 def is_legacy_api_path(path: str) -> bool:
-    return path == "/jobs" or path.startswith(("/jobs/", "/zoom/"))
+    return path == "/jobs" or path.startswith("/jobs/")
 
 
 def is_api_path(path: str) -> bool:

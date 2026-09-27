@@ -41,7 +41,7 @@ def store_video(filename: str, fileobj: BinaryIO, job_id: str | None = None) -> 
 
 
 def store_transcript(filename: str, fileobj: BinaryIO, job_id: str | None = None) -> Path:
-    """Persist a user-supplied transcript (e.g. exported from Zoom) in the job
+    """Persist a user-supplied transcript (a .vtt or .srt exported from a meeting tool) in the job
     folder (`jobs/{job_id}/source.vtt`), or the shared transcripts dir when no
     job id is given."""
     suffix = Path(filename).suffix.lower()

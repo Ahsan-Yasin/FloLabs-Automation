@@ -197,7 +197,9 @@
 
   const params = new URLSearchParams(location.search);
   if (params.get("welcome")) {
-    toast("Account created. Check your inbox to confirm your email address.");
+    toast(document.body.dataset.emailOff
+      ? "Account created. Email delivery isn't set up on this server, so the confirmation link is in the server log."
+      : "Account created. Check your inbox to confirm your email address.");
     history.replaceState(null, "", "/app");
   }
   /* arriving from the home page: a pasted YouTube link, or "upload a recording" */

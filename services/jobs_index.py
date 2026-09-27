@@ -39,8 +39,6 @@ def _now() -> datetime:
 
 
 def source_kind_of(job: JobRecord) -> str:
-    if job.zoom_meeting_uuid:
-        return "zoom"
     if job.source_url:
         return "youtube"
     return "upload"

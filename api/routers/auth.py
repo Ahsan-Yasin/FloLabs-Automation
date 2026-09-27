@@ -72,8 +72,6 @@ class ChangePasswordIn(BaseModel):
 
 class ProfileIn(BaseModel):
     name: str | None = Field(default=None, max_length=120)
-    zoom_host_email: str | None = Field(default=None, max_length=320,
-                                        description="Default host for the Zoom recordings list; empty clears it")
     notify_on_done: bool | None = None
 
 
@@ -86,7 +84,6 @@ class UserOut(BaseModel):
     email_verified: bool
     email_verified_at: datetime | None
     created_at: datetime
-    zoom_host_email: str | None
     notify_on_done: bool
     webhook_secret_hint: str
 
@@ -103,7 +100,7 @@ def user_out(user: User) -> dict:
     return UserOut(
         id=user.id, email=user.email, name=user.name, role=user.role, is_admin=user.is_admin,
         email_verified=user.email_verified_at is not None, email_verified_at=user.email_verified_at,
-        created_at=user.created_at, zoom_host_email=user.zoom_host_email, notify_on_done=user.notify_on_done,
+        created_at=user.created_at, notify_on_done=user.notify_on_done,
         webhook_secret_hint=f"whsec_...{secret[-4:]}" if secret else "",
     ).model_dump(mode="json")
 
@@ -208,11 +205,10 @@ def me(principal: CurrentUser, db: DB):
     return user_out(load_user(db, principal))
 
 
-@router.patch("/me", response_model=UserOut, summary="Update name, Zoom host email, notifications")
+@router.patch("/me", response_model=UserOut, summary="Update your name and email notifications")
 def update_me(body: ProfileIn, principal: CurrentUser, db: DB):
     user = load_user(db, principal)
-    users.update_profile(db, user, name=body.name, zoom_host_email=body.zoom_host_email,
-                         notify_on_done=body.notify_on_done)
+    users.update_profile(db, user, name=body.name, notify_on_done=body.notify_on_done)
     db.commit()
     return user_out(user)
 

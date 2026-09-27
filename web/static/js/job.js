@@ -37,7 +37,6 @@
     asr: "Transcribed from scratch (no platform transcript).",
     youtube_captions: "Reused YouTube's own captions: no transcription needed.",
     uploaded_transcript: "Reused your uploaded transcript: no transcription needed.",
-    zoom_transcript: "Reused the meeting platform's transcript: no transcription needed.",
   };
   const WORKING = {
     queued: ["Waiting in line", "One job renders at a time. Yours starts as soon as the one ahead of it finishes."],

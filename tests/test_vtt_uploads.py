@@ -1,4 +1,4 @@
-"""Zoom / uploaded transcript parsing: the real-file quirks parse_subtitle_text
+"""Uploaded transcript parsing (.vtt/.srt exports from meeting tools, Zoom included): the real-file quirks parse_subtitle_text
 tolerates and the "Name: text" speaker heuristic (see transcribe.native)."""
 
 import pytest

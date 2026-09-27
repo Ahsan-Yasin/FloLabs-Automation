@@ -34,7 +34,7 @@ def test_public_pages_render(product, path):
     assert re.search(r'/static/css/site\.css\?v=[0-9a-f]{10}"', page)
 
 
-@pytest.mark.parametrize("path", ["/", "/about", "/pricing", "/privacy", "/terms", "/login", "/signup"])
+@pytest.mark.parametrize("path", ["/", "/about", "/pricing", "/docs", "/privacy", "/terms", "/login", "/signup"])
 def test_public_pages_no_longer_mention_zoom(product, path):
     assert "zoom" not in new_client().get(path).text.lower()
 
@@ -156,3 +156,25 @@ def test_static_files_the_pages_reference_exist(product):
     pages = client.get("/").text + client.get("/login").text
     for path in sorted(set(re.findall(r'"(/static/[^"?]+)\?v=', pages))):
         assert client.get(path).status_code == 200, path
+
+
+def test_pages_say_so_when_email_is_not_delivered(product):
+    # the tests' EMAIL_BACKEND is "memory": nothing reaches an inbox
+    client = signed_in(verified=False)
+    dashboard = html.unescape(client.get("/app").text)
+    assert "written to the server log instead of sent" in dashboard
+    assert 'data-email-off="1"' in dashboard
+    assert "reset links are written to the server log" in html.unescape(new_client().get("/forgot").text)
+
+
+def test_pages_promise_an_email_only_when_one_is_delivered(product, monkeypatch):
+    from core.config import get_settings
+
+    client = signed_in(verified=False)  # signed up while mail went to the test outbox
+    monkeypatch.setenv("EMAIL_BACKEND", "smtp")
+    monkeypatch.setenv("SMTP_HOST", "smtp.example.com")
+    get_settings.cache_clear()
+    dashboard = client.get("/app").text
+    assert "We sent a link to" in dashboard
+    assert "data-email-off" not in dashboard
+    assert "server log" not in new_client().get("/forgot").text

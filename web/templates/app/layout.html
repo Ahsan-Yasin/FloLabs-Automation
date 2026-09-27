@@ -39,7 +39,11 @@
 <div class="verify-banner" role="status">
   <div class="container-wide">
     {{ icon("mail") }}
+    {% if email_delivers %}
     <span>Confirm your email to create jobs and API keys. We sent a link to <strong>{{ current_user.email }}</strong>.</span>
+    {% else %}
+    <span>Confirm your email to create jobs and API keys. Email delivery isn't set up on this server yet, so the link for <strong>{{ current_user.email }}</strong> was written to the server log instead of sent.</span>
+    {% endif %}
     <button class="btn btn-sm btn-outline" type="button" data-resend-verification>Resend the email</button>
   </div>
 </div>

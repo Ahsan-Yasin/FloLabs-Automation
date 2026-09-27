@@ -21,7 +21,7 @@ def test_migrations_build_exactly_the_models_schema(monkeypatch):
     engine = get_engine()
     with engine.connect() as connection:
         context = MigrationContext.configure(connection, opts={"compare_type": True})
-        assert context.get_current_revision() == "0001"
+        assert context.get_current_revision() == "0002"
         assert compare_metadata(context, Base.metadata) == []
     tables = set(inspect(engine).get_table_names())
     assert {"users", "email_tokens", "refresh_tokens", "api_keys", "jobs_index", "webhook_deliveries"} <= tables
@@ -83,7 +83,7 @@ def test_cli_upgrade_creates_the_database(monkeypatch, capsys):
     assert cli_main(["upgrade"]) == 0
     assert (get_settings().storage_dir / "app.db").exists()
     assert cli_main(["current"]) == 0
-    assert "revision 0001" in capsys.readouterr().out
+    assert "revision 0002" in capsys.readouterr().out
     assert cli_main(["stats"]) == 0
     assert "users: 0" in capsys.readouterr().out
 

@@ -30,8 +30,6 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(16), default=ROLE_USER)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     email_verified_at: Mapped[datetime | None] = mapped_column(UTCDateTime(), default=None)
-    # default host for the Zoom recordings picker (the workspace Zoom app is shared)
-    zoom_host_email: Mapped[str | None] = mapped_column(String(320), default=None)
     # signs this user's job webhooks (X-HC-Signature); rotatable
     webhook_secret: Mapped[str] = mapped_column(String(128), default=new_webhook_secret)
     notify_on_done: Mapped[bool] = mapped_column(Boolean, default=True)
@@ -134,7 +132,7 @@ class JobIndex(Base):
     user_id: Mapped[str | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), default=None)
     status: Mapped[str] = mapped_column(String(32), index=True)
     title: Mapped[str] = mapped_column(String(200), default="")
-    # upload | youtube | zoom
+    # upload | youtube (older rows may say zoom)
     source_kind: Mapped[str] = mapped_column(String(16), default="upload")
     # web | api_key | bearer | ops
     created_via: Mapped[str] = mapped_column(String(16), default="web")

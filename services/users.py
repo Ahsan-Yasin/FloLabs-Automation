@@ -211,12 +211,10 @@ def change_password(db: Session, user: User, current: str, new: str, keep_family
     _set_password(db, user, new, keep_family=keep_family)
 
 
-def update_profile(db: Session, user: User, *, name: str | None = None, zoom_host_email: str | None = None,
+def update_profile(db: Session, user: User, *, name: str | None = None,
                    notify_on_done: bool | None = None) -> User:
     if name is not None:
         user.name = clean_name(name)
-    if zoom_host_email is not None:
-        user.zoom_host_email = normalize_email(zoom_host_email) if zoom_host_email.strip() else None
     if notify_on_done is not None:
         user.notify_on_done = bool(notify_on_done)
     invalidate_user(user.id)

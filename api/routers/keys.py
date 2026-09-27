@@ -29,7 +29,7 @@ CurrentUser = Annotated[Principal, Depends(require_user)]
 class KeyCreateIn(BaseModel):
     name: str = Field(max_length=80, examples=["n8n production"])
     scopes: list[str] | None = Field(default=None, description="Default: every scope",
-                                     examples=[["jobs:read", "jobs:write", "zoom:read"]])
+                                     examples=[["jobs:read", "jobs:write"]])
     expires_in_days: int | None = Field(default=None, ge=1, le=3650, description="Default: never expires")
 
 

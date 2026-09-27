@@ -35,7 +35,7 @@
 </script>
 {% block head %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}"{% if current_user %} data-authed="1"{% endif %}>
+<body class="{% block body_class %}{% endblock %}"{% if current_user %} data-authed="1"{% endif %}{% if not email_delivers %} data-email-off="1"{% endif %}>
 <a class="skip-link" href="#main">Skip to content</a>
 {% block header %}{% include "partials/nav.html" %}{% endblock %}
 {% block banner %}{% endblock %}

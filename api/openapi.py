@@ -12,10 +12,10 @@ your own automations (n8n, Zapier, Make, scripts).
 
 **Authentication.** Create an API key on the site (*API keys* page) and send it
 as `Authorization: Bearer hc_live_...` (or `X-API-Key: hc_live_...`). Keys carry
-scopes: `jobs:read`, `jobs:write`, `zoom:read`. A short-lived access token from
+scopes: `jobs:read` and `jobs:write`. A short-lived access token from
 `POST /api/v1/auth/login` works too (`Authorization: Bearer <token>`).
 
-**Jobs.** Create one with `POST /api/v1/jobs/zoom`, `/jobs/youtube` or `/jobs`
+**Jobs.** Create one with `POST /api/v1/jobs/youtube` or `POST /api/v1/jobs`
 (upload), then either poll `GET /api/v1/jobs/{job_id}` until `status` is
 `done` / `failed` / `decided`, or pass `callback_url` and receive a signed
 webhook. Download everything with `GET /api/v1/jobs/{job_id}/bundle`.
@@ -31,7 +31,6 @@ verification code for Python and Node.
 
 TAGS = [
     {"name": "Jobs", "description": "Create jobs, follow their progress, download their outputs."},
-    {"name": "Zoom", "description": "The workspace's Zoom cloud recordings."},
     {"name": "Accounts", "description": "Sign-up, login, sessions, email verification, password reset."},
     {"name": "API keys", "description": "Keys for automations (manage them with a signed-in session)."},
     {"name": "Account", "description": "Usage, webhook test, account deletion, public configuration."},

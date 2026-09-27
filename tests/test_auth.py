@@ -310,14 +310,12 @@ def test_reset_emails_are_limited_per_address():
 # ------------------------------------------------------------------ profile, secret
 def test_profile_updates():
     client = signed_in()
-    updated = client.patch("/api/v1/auth/me", headers=CSRF,
-                           json={"name": "  Ada   King ", "zoom_host_email": "Host@Example.com", "notify_on_done": False})
+    updated = client.patch("/api/v1/auth/me", headers=CSRF, json={"name": "  Ada   King ", "notify_on_done": False})
     body = updated.json()
-    assert body["name"] == "Ada King" and body["zoom_host_email"] == "host@example.com"
-    assert body["notify_on_done"] is False
-    cleared = client.patch("/api/v1/auth/me", headers=CSRF, json={"zoom_host_email": " "}).json()
-    assert cleared["zoom_host_email"] is None
-    assert client.patch("/api/v1/auth/me", headers=CSRF, json={"zoom_host_email": "nope"}).status_code == 422
+    assert body["name"] == "Ada King" and body["notify_on_done"] is False
+    # Zoom was removed: an old client still sending its field is ignored, not refused
+    old_client = client.patch("/api/v1/auth/me", headers=CSRF, json={"zoom_host_email": "host@example.com"})
+    assert old_client.status_code == 200 and "zoom_host_email" not in old_client.json()
 
 
 def test_webhook_secret_reveal_and_rotate():

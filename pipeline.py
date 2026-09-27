@@ -32,7 +32,6 @@ from edl.highlights import (
     select_highlights,
     select_shorts,
 )
-from ingest import zoom
 from ingest.store import title_from_filename
 from ingest.validate import AVSyncError, validate_video
 from ingest.youtube import download_youtube
@@ -86,10 +85,6 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
     job_dir = settings.jobs_dir / job.job_id
     job_dir.mkdir(parents=True, exist_ok=True)
     job.warnings = []
-    missing = (job.zoom_meeting or {}).get("segments_without_video") or 0
-    if missing:
-        # the output is shorter than the meeting; that must not go unnoticed
-        job.warnings.append(f"{missing} Zoom recording segment(s) had no video file to cut and are not in the output")
     job.error = job.error_code = None
     job.retryable = False
     job.retry_after_s = None
@@ -227,8 +222,8 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
 
 
 def _transcribe(job: JobRecord, source_path: Path, duration: float) -> tuple[list[Word], list[Segment]]:
-    # Reuse a platform-provided transcript when we have one (Zoom's own VTT, a
-    # user-supplied export for uploads, or YouTube's own captions) — skips the
+    # Reuse a platform-provided transcript when we have one (a user-supplied
+    # .vtt/.srt export for uploads, or YouTube's own captions) — skips the
     # WhisperX ASR/diarization pass entirely. Falls back to self-hosted
     # transcription whenever no transcript is available or it fails to parse,
     # unless the server has no WhisperX (require_native_transcript).
@@ -237,7 +232,7 @@ def _transcribe(job: JobRecord, source_path: Path, duration: float) -> tuple[lis
         # cues past the end of the media would become cuts with nothing to cut
         native = load_uploaded_transcript(Path(job.native_transcript_path), max_duration_s=duration)
         if native is not None:
-            job.transcript_source = "zoom_transcript" if job.zoom_meeting_uuid else "uploaded_transcript"
+            job.transcript_source = "uploaded_transcript"
     if native is None and job.source_url:
         native = fetch_youtube_transcript(job.source_url)
         if native is not None:
@@ -256,15 +251,12 @@ def _transcribe(job: JobRecord, source_path: Path, duration: float) -> tuple[lis
         return words, segments
 
     if get_settings().require_native_transcript:
-        # Only a Zoom transcript can still turn up later; captions or an
-        # upload that aren't there now never will.
-        retryable = job.zoom_meeting_uuid is not None
+        # captions or an uploaded transcript that aren't there now never will be
         raise PipelineError(
             "no usable platform transcript for this recording, and this server does not transcribe itself "
             "(REQUIRE_NATIVE_TRANSCRIPT=true)",
             code="transcript_not_ready",
-            retryable=retryable,
-            retry_after_s=zoom.NOT_READY_RETRY_AFTER_S if retryable else None,
+            retryable=False,
         )
     job.transcript_source = "asr"
     words = transcribe(source_path)
@@ -553,83 +545,8 @@ def run_youtube_pipeline(job: JobRecord, update: "callable[[JobRecord], None]", 
             _fail(job, update, exc)
             return
         job.source_path = str(download.path)
-        # the video's own title goes on the title card and the report, like a
-        # Zoom meeting's topic (the storage name is a meaningless hex id)
+        # the video's own title goes on the title card and the report (the
+        # storage name is a meaningless hex id)
         job.title = job.title or download.title[:120]
         update(job)
     run_pipeline(job, update)
-
-
-def run_zoom_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
-    """Fetch a Zoom cloud recording (MP4 + Zoom's own transcript) into the job
-    folder as source.mp4/source.vtt, then run the normal pipeline on it. A
-    re-render whose source was deleted after delivery (delete_source_when_done)
-    downloads it again."""
-    if not job.source_path or not Path(job.source_path).exists():
-        try:
-            _fetch_zoom_recording(job, update)
-        except Exception as exc:  # noqa: BLE001 — any failure must end the job, not leave it DOWNLOADING
-            logger.warning("job %s: Zoom download failed: %s", job.job_id, exc)
-            _fail(job, update, exc)
-            return
-    run_pipeline(job, update)
-
-
-def _fetch_zoom_recording(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
-    settings = get_settings()
-    job_dir = settings.jobs_dir / job.job_id
-    client = zoom.get_client()
-    uuid = job.zoom_meeting_uuid or ""
-    meeting = client.get_meeting(uuid)
-    # a re-render reuses its saved transcript, so it never waits for one
-    need_transcript = not (job.transcript_path and (job_dir / "segments.json").exists())
-    if need_transcript and zoom.readiness(meeting) == "transcript_not_ready":
-        job.status = JobStatus.WAITING_TRANSCRIPT
-        update(job)
-        logger.info("job %s: waiting up to %.0fs for Zoom's transcript", job.job_id, settings.transcript_wait_max_s)
-        meeting = zoom.wait_for_transcript(
-            client, uuid, meeting, max_wait_s=settings.transcript_wait_max_s, poll_s=settings.transcript_poll_s,
-            checkpoint=lambda: update(job),
-        )
-    status = zoom.readiness(meeting)
-    if need_transcript and settings.require_native_transcript and status in ("transcript_not_ready", "no_transcript"):
-        # fail before downloading gigabytes that could not be transcribed here
-        raise zoom.not_ready_error(status)
-
-    job.status = JobStatus.DOWNLOADING
-    job.progress_current = job.progress_total = 0
-    update(job)
-    with _stage(job, "downloading"):
-        source, vtt, info = zoom.download_meeting(
-            uuid, job_dir, client=client, meeting=meeting, on_progress=_download_progress(job, update)
-        )
-    job.source_path = str(source)
-    job.native_transcript_path = str(vtt) if vtt else None
-    job.zoom_meeting = info
-    if info.get("topic"):
-        job.title = " ".join(info["topic"].split())[:120]
-    if vtt is None and need_transcript:
-        logger.info("job %s: no Zoom transcript for this recording; it will be transcribed here", job.job_id)
-    job.progress_current = job.progress_total = 0
-    update(job)
-
-
-def _download_progress(job: JobRecord, update: "callable[[JobRecord], None]") -> "callable[[int, int], None]":
-    """Download progress in MiB, persisted about once a second: often enough
-    for the UI, the heartbeat and a cancel to land mid-download, without
-    rewriting job.json for every chunk. Purely time-based: Zoom may omit a
-    file's size, and a total that is 0 or too small must not turn every chunk
-    into a write (the caller persists the end state itself)."""
-    last = float("-inf")
-
-    def on_progress(done: int, total: int) -> None:
-        nonlocal last
-        now = time.monotonic()
-        if now - last < 1.0:
-            return
-        last = now
-        job.progress_current = done // 2**20
-        job.progress_total = -(-total // 2**20)
-        update(job)
-
-    return on_progress
