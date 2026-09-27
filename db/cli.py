@@ -110,6 +110,16 @@ def _set_password(args) -> int:
     return 0
 
 
+def _verify_email(args) -> int:
+    from services import users
+
+    with _session() as db:
+        user, newly = users.mark_verified_by_email(db, args.email)
+        db.commit()
+        print(f"{user.email} is {'now verified' if newly else 'already verified'}")
+    return 0
+
+
 def _index_jobs(_args) -> int:
     from services import jobs_index
 
@@ -143,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
     create.set_defaults(fn=_create_admin)
     for name, fn in (("promote", lambda a: _set_role(a, "admin")), ("demote", lambda a: _set_role(a, "user")),
                      ("activate", lambda a: _set_active(a, True)), ("deactivate", lambda a: _set_active(a, False)),
-                     ("set-password", _set_password)):
+                     ("set-password", _set_password), ("verify-email", _verify_email)):
         cmd = sub.add_parser(name)
         cmd.add_argument("email")
         cmd.set_defaults(fn=fn)

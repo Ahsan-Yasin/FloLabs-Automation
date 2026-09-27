@@ -251,6 +251,16 @@ def create_admin(db: Session, email: str, password: str, name: str = "") -> User
     return user
 
 
+def mark_verified_by_email(db: Session, email: str) -> tuple[User, bool]:
+    """(user, newly_verified). The operator vouches for the address, for when
+    email delivery isn't set up yet (python -m db.cli verify-email)."""
+    user = _require(db, email)
+    if user.email_verified_at is not None:
+        return user, False
+    _mark_verified(user, _now())
+    return user, True
+
+
 def _require(db: Session, email: str) -> User:
     user = get_by_email(db, email)
     if user is None:

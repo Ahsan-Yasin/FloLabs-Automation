@@ -88,6 +88,22 @@ def test_cli_upgrade_creates_the_database(monkeypatch, capsys):
     assert "users: 0" in capsys.readouterr().out
 
 
+def test_cli_verifies_an_address_without_email(monkeypatch, capsys):
+    """For servers whose email delivery isn't set up yet."""
+    from services import users
+
+    with session_scope() as db:
+        user = users.signup(db, "ada@example.com", "correct horse battery", "Ada")
+        user_id = user.id
+    assert cli_main(["verify-email", "Ada@Example.com"]) == 0
+    assert "now verified" in capsys.readouterr().out
+    with session_scope() as db:
+        assert db.get(models.User, user_id).email_verified_at is not None
+    assert cli_main(["verify-email", "ada@example.com"]) == 0
+    assert "already verified" in capsys.readouterr().out
+    assert cli_main(["verify-email", "nobody@example.com"]) != 0
+
+
 def test_prod_settings_are_checked():
     unsafe = Settings(app_env="prod", jwt_secret="short", app_base_url="http://x", email_backend="console",
                       dev_open_api=True)

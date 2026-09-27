@@ -111,7 +111,8 @@ async def lifespan(_app: FastAPI):
     if not settings.email_delivers:
         logger.warning("EMAIL_BACKEND=%s: confirmation, password-reset and job emails are written to this log, "
                        "not delivered. Set EMAIL_BACKEND=resend or smtp in .env to send real mail "
-                       "(test it with: python -m services.email --test you@example.com)", settings.email_backend)
+                       "(test it with: python -m services.email --test you@example.com). Until then, confirm an "
+                       "account by hand: python -m db.cli verify-email you@example.com", settings.email_backend)
     await run_in_threadpool(_startup_database)
     reconcile_on_startup(job_store)
     webhooks.start()
