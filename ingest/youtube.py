@@ -2,6 +2,7 @@ import shutil
 import uuid
 from pathlib import Path
 from typing import Any, NamedTuple
+from urllib.parse import urlsplit
 
 from core.config import get_settings
 from core.logging import get_logger
@@ -11,6 +12,53 @@ logger = get_logger(__name__)
 
 class YoutubeDownloadError(RuntimeError):
     """Raised when a YouTube URL can't be fetched as a local video file."""
+
+
+# Hosts a job's link may name. Anything else is refused before yt-dlp sees it,
+# and yt-dlp itself only has its YouTube extractor enabled (ydl_base_opts), so a
+# link can never make this server fetch an internal address or another site.
+YOUTUBE_HOSTS = frozenset({
+    "youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com",
+    "youtube-nocookie.com", "www.youtube-nocookie.com", "youtu.be",
+})
+MAX_URL_LENGTH = 2048
+
+
+def check_youtube_url(url: str) -> str:
+    """The link, trimmed, when it is a YouTube video link; ValueError (with a
+    message for the user) otherwise."""
+    url = (url or "").strip()
+    if not url:
+        raise ValueError("paste a YouTube link")
+    if len(url) > MAX_URL_LENGTH:
+        raise ValueError(f"the link is longer than {MAX_URL_LENGTH} characters")
+    try:
+        parts = urlsplit(url)
+        port = parts.port
+    except ValueError as exc:
+        raise ValueError("that isn't a valid link") from exc
+    if parts.scheme not in ("https", "http") or parts.username or parts.password or port not in (None, 80, 443):
+        raise ValueError("only YouTube links (https://www.youtube.com/... or https://youtu.be/...) are supported")
+    if (parts.hostname or "").lower().rstrip(".") not in YOUTUBE_HOSTS:
+        raise ValueError("only YouTube links (https://www.youtube.com/... or https://youtu.be/...) are supported")
+    if parts.path in ("", "/"):
+        raise ValueError("that is YouTube's home page; paste the link of one video")
+    return url
+
+
+class _Unsuitable(Exception):
+    """Raised from yt-dlp's match filter so the reason reaches the job's error."""
+
+
+def _refuse_unsuitable(info: dict[str, Any], *, incomplete: bool = False) -> None:
+    """yt-dlp match_filter: live streams never end, and very long videos
+    would fill the disk; both are refused before anything is downloaded."""
+    if info.get("is_live") or info.get("live_status") in ("is_live", "is_upcoming"):
+        raise _Unsuitable("live streams can't be cut; wait until the stream has ended")
+    duration = info.get("duration")
+    limit = get_settings().youtube_max_duration_s
+    if limit > 0 and isinstance(duration, (int, float)) and duration > limit:
+        raise _Unsuitable(f"the video is {duration / 3600:.1f} hours long; the limit is {limit / 3600:.1f} hours")
 
 
 # Leftovers yt-dlp or the job may put next to the download; never the video.
@@ -47,11 +95,21 @@ class _YtDlpLogger:
 def ydl_base_opts() -> dict[str, Any]:
     """yt-dlp options shared by every YouTube call (video download and caption
     fetch), so the two can't drift apart on runtime or ffmpeg setup."""
-    opts: dict[str, Any] = {"quiet": True, "noplaylist": True, "logger": _YtDlpLogger()}
+    settings = get_settings()
+    opts: dict[str, Any] = {
+        "quiet": True,
+        "noplaylist": True,
+        "logger": _YtDlpLogger(),
+        # only YouTube: never the generic extractor, which would fetch any URL
+        "allowed_extractors": ["youtube"],
+        "match_filter": _refuse_unsuitable,
+    }
+    if settings.youtube_max_bytes > 0:
+        opts["max_filesize"] = settings.youtube_max_bytes
 
     # Only pin a location when FFMPEG_BIN is an actual path (not just "ffmpeg" on
     # PATH) — otherwise let yt-dlp do its own normal PATH search.
-    ffmpeg_path = Path(get_settings().ffmpeg_bin)
+    ffmpeg_path = Path(settings.ffmpeg_bin)
     if ffmpeg_path.is_file():
         opts["ffmpeg_location"] = str(ffmpeg_path.parent)
 
@@ -116,6 +174,8 @@ def download_youtube(url: str, dest_dir: Path | None = None) -> YoutubeDownload:
 
     matches = sorted(p for p in out_dir.glob(f"{stem}.*") if p.suffix.lower() not in _NOT_THE_VIDEO)
     if not matches:
-        raise YoutubeDownloadError(f"download reported success but no output file found for {url}")
+        limit_gb = settings.youtube_max_bytes / 1024**3
+        raise YoutubeDownloadError(f"no video file was downloaded for {url} (larger than the {limit_gb:.0f} GB "
+                                   "limit, or not available)")
     title = " ".join(str(info.get("title") or "").split())
     return YoutubeDownload(video_id, matches[0], title)

@@ -63,7 +63,7 @@ def mask(address: str) -> str:
 
 def _sender() -> str:
     settings = get_settings()
-    return settings.email_from or f"{settings.app_name} <no-reply@localhost>"
+    return settings.email_from or settings.smtp_sender_fallback or f"{settings.app_name} <no-reply@localhost>"
 
 
 # ------------------------------------------------------------------ backends

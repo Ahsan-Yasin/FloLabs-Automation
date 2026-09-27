@@ -8,7 +8,9 @@
 # Run exactly ONE app process per storage folder: the job queue lives in
 # memory (one job renders at a time), so never add uvicorn --workers.
 
-ARG PYTHON_IMAGE=python:3.12-slim-bookworm
+# Debian trixie: its ffmpeg is 7.1. The renderer needs ffmpeg 7+ (it passes filter
+# graphs as files with -/filter_complex); bookworm's 5.1 can't render.
+ARG PYTHON_IMAGE=python:3.12-slim-trixie
 # yt-dlp needs a JavaScript runtime for YouTube. Pin a tag (e.g. bin-2.5.6) or a
 # digest for reproducible builds.
 ARG DENO_IMAGE=denoland/deno:bin

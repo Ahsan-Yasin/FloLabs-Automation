@@ -83,7 +83,7 @@ Until the domain is verified, Resend only delivers to your own account address.
 verification, create an *App password*, then:
 ```
 EMAIL_BACKEND=smtp
-EMAIL_FROM=Highlight Cutter <you@gmail.com>
+EMAIL_FROM=                    # optional: empty sends as SMTP_USER
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_TLS=starttls

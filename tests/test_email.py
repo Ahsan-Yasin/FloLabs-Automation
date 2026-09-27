@@ -194,3 +194,17 @@ def test_cli_sends_a_test_message(capsys):
     assert email.main(["--test", "ops@example.com"]) == 0
     assert email.outbox()[-1].to == "ops@example.com"
     assert "sent" in capsys.readouterr().out
+
+
+def test_smtp_without_email_from_sends_as_the_mailbox(monkeypatch):
+    """Gmail with an app password: only SMTP_USER and SMTP_PASSWORD filled in."""
+    _smtp_env(monkeypatch)
+    monkeypatch.setenv("SMTP_USER", "team@gmail.com")
+    monkeypatch.setenv("EMAIL_FROM", "")
+    get_settings.cache_clear()
+    monkeypatch.setattr(email.smtplib, "SMTP", _FakeSMTP)
+    email.SmtpBackend().send(_message())
+    assert _FakeSMTP.instances[-1].sent[0]["From"] == "Highlight Cutter <team@gmail.com>"
+    from core.config import settings_problems
+
+    assert not any("EMAIL_FROM" in problem for problem in settings_problems(get_settings()))

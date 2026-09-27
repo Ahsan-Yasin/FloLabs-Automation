@@ -17,17 +17,13 @@ jobs:
   test:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    # the same Debian as the Docker image: its ffmpeg is 7.1 (Ubuntu 24.04's 6.1
+    # lacks the -/filter_complex option the renderer uses)
+    container: python:3.12-slim-trixie
     steps:
+      - name: ffmpeg, fonts and git
+        run: apt-get update -q && apt-get install -y -q --no-install-recommends ffmpeg fonts-dejavu-core git ca-certificates
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: |
-            requirements-server.txt
-            requirements-dev-tools.txt
-      - name: ffmpeg and fonts
-        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg fonts-dejavu-core
       - name: Install (no WhisperX)
         run: pip install -r requirements-dev-server.txt
       - name: Lint

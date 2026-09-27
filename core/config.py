@@ -198,6 +198,13 @@ class Settings(BaseSettings):
     # job folder (YouTube downloads and uploads; never a file elsewhere). EC2: true.
     delete_source_when_done: bool = False
 
+    # --- YouTube -------------------------------------------------------------
+    # Downloads are refused above these (a 3-hour 720p meeting is about 2 GB).
+    # The API accepts only YouTube links, and yt-dlp runs with its YouTube
+    # extractor alone, so a link can never make the server fetch another host.
+    youtube_max_bytes: int = 6 * 1024**3
+    youtube_max_duration_s: float = 4 * 3600.0
+
     # --- transcripts -------------------------------------------------------
     # Never transcribe ourselves: a job without a platform transcript (YouTube
     # captions or an uploaded .vtt/.srt) fails "transcript_not_ready" instead
@@ -294,6 +301,14 @@ class Settings(BaseSettings):
         return self.app_env.strip().lower() == "prod"
 
     @property
+    def smtp_sender_fallback(self) -> str:
+        """With SMTP and no EMAIL_FROM, send as the signed-in mailbox: Gmail and
+        most providers only accept their own account as the sender."""
+        if self.email_backend.strip().lower() == "smtp" and "@" in self.smtp_user:
+            return f"{self.app_name} <{self.smtp_user.strip()}>"
+        return ""
+
+    @property
     def email_delivers(self) -> bool:
         """False for console/memory: messages go to the log (or a test list),
         never to anyone's inbox."""
@@ -347,7 +362,7 @@ def settings_problems(settings: Settings) -> list[str]:
         problems.append("SMTP_HOST is empty")
     if settings.email_backend == "resend" and not settings.resend_api_key:
         problems.append("RESEND_API_KEY is empty")
-    if not settings.email_from:
+    if not settings.email_from and not settings.smtp_sender_fallback:
         problems.append("EMAIL_FROM is empty (e.g. Highlight Cutter <no-reply@your-domain>)")
     if settings.dev_open_api:
         problems.append("DEV_OPEN_API must be false")

@@ -14,6 +14,7 @@ store helpers here. Every job route declares the scope it needs; a caller
 sees only the jobs it owns unless it is an admin (plan.MD §5.4).
 """
 
+import re
 import shutil
 import time
 import uuid
@@ -50,6 +51,7 @@ from core.proc import run_checked
 from core.version import PIPELINE_VERSION
 from db.session import check_db, get_engine, session_scope
 from ingest.store import store_transcript, store_video, title_from_filename
+from ingest.youtube import check_youtube_url
 from pipeline import run_pipeline, run_youtube_pipeline
 from services import jobs_index, webhooks
 from services import users as users_service
@@ -108,6 +110,11 @@ async def lifespan(_app: FastAPI):
     if not auth_enabled():
         logger.warning("DEV_OPEN_API=true and no HC_API_TOKEN: API calls without credentials are accepted "
                        "(local development only)")
+    ffmpeg_version = await run_in_threadpool(_ffmpeg_version)
+    if ffmpeg_version is None:
+        logger.error("ffmpeg was not found (FFMPEG_BIN=%s): no job can render", settings.ffmpeg_bin)
+    elif ffmpeg_too_old(ffmpeg_version):
+        logger.error("ffmpeg %s is too old: rendering needs ffmpeg %d or newer", ffmpeg_version, MIN_FFMPEG_MAJOR)
     if not settings.email_delivers:
         logger.warning("EMAIL_BACKEND=%s: confirmation, password-reset and job emails are written to this log, "
                        "not delivered. Set EMAIL_BACKEND=resend or smtp in .env to send real mail "
@@ -142,6 +149,18 @@ health_api = APIRouter(tags=["Service"])
 jobs_api = APIRouter(tags=["Jobs"])
 v1_only = APIRouter(tags=["Jobs"])
 legacy_only = APIRouter()
+
+
+# the renderer passes filter graphs as files with "-/filter_complex" (ffmpeg 7+)
+MIN_FFMPEG_MAJOR = 7
+
+
+def ffmpeg_too_old(version: str | None) -> bool:
+    """True for a release older than MIN_FFMPEG_MAJOR ("5.1.9-0+deb12u1").
+    Unknown versions and git builds ("N-117000-g...") are given the benefit of
+    the doubt."""
+    match = re.match(r"(\d+)\.", version or "")
+    return bool(match) and int(match.group(1)) < MIN_FFMPEG_MAJOR
 
 
 @lru_cache
@@ -416,9 +435,12 @@ def create_job(
 @jobs_api.post("/jobs/youtube", response_model=None, responses=_JOB_RESPONSES,
                summary="Process a YouTube video (its captions are used as the transcript)")
 def create_youtube_job(body: YoutubeJobRequest, request: Request, principal: JobsWrite):
-    url = body.url.strip()
-    if not url:
-        raise HTTPException(status_code=400, detail="url is required")
+    if not body.url.strip():
+        raise HTTPException(status_code=400, detail="url is required")  # the pre-v1 answer, kept
+    try:
+        url = check_youtube_url(body.url)
+    except ValueError as exc:
+        return _error_response(422, "validation_error", str(exc))
     callback = _validated_callback(body.callback_url)
     owner_id = _owner_for(principal)
     refused = _admission(principal, owner_id)

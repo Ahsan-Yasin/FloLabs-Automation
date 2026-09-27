@@ -1,6 +1,11 @@
 # Highlight Cutter → a complete, deployable product
 ## Implementation plan and hand-off prompt (for the implementing model)
 
+> **Status (end of 2026-09-27):** P0–P6 are built and committed on `prod`, plus the docs (ARCHITECTURE.md, DEPLOY.md, DESIGN.md, README). Changes from this plan, on the owner's instructions:
+> - **Zoom was removed from `prod`**: only YouTube links and uploads remain. Everything Zoom below (routes, `zoom:read`, the host email, `ZOOM_*`, the Zoom n8n recipe) no longer applies.
+> - **The website was redesigned** ("Ink & proof", see DESIGN.md) after the first dark "Studio" version was judged generic. There is no GSAP, and §9.2–9.4 and §18.6–18.7 are superseded.
+> - P7 is partly done: bandit and pip-audit are clean and in CI, the README is rewritten, and a security review has run. Removing the legacy routes and `HC_API_TOKEN` waits for the owner to confirm n8n uses `/api/v1`.
+
 Written 2026-09-27 from a full read of the code on branch `prod` (commit `cf77f90`, identical to `flolabs`).
 Repo: `D:\Coding\Python\FloLabs-Automation` (Windows 11, Python 3.12.10, venv at `.venv`, run everything with `.venv/Scripts/python.exe`; ffmpeg/ffprobe 9.0.1 on PATH). Baseline: **480 tests pass, `ruff check .` is clean.**
 

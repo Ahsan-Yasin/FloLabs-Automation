@@ -574,3 +574,15 @@ def test_signup_then_first_job_by_api_key_end_to_end(monkeypatch):
     assert status["status"] == "done"
     bundle = script.get(status["links"]["bundle"].replace("http://testserver", ""), headers=bearer(key))
     assert bundle.status_code == 200 and bundle.content == b"PK zip"
+
+
+def test_youtube_jobs_accept_only_youtube_links(monkeypatch):
+    """A job's link is fetched by this server: anything but YouTube is refused
+    before a job exists (no internal addresses, no other sites)."""
+    ada = signed_in()
+    for url in ("http://169.254.169.254/latest/meta-data/", "http://127.0.0.1:8000/health",
+                "https://example.com/talk.mp4"):
+        refused = ada.post("/api/v1/jobs/youtube", json={"url": url}, headers=CSRF)
+        assert refused.status_code == 422, url
+        assert refused.json()["error_code"] == "validation_error"
+    assert ada.get("/api/v1/jobs").json()["total"] == 0
