@@ -531,14 +531,18 @@ def test_unauthenticated_upload_is_rejected_before_the_body_is_read(monkeypatch)
     assert not any(get_settings().jobs_dir.iterdir())  # nothing was stored
 
 
-def test_api_docs_are_not_served(monkeypatch):
+def test_no_unprefixed_schema_or_redoc(monkeypatch):
+    """The API schema is published only under /api/v1 (plan.MD A7; see
+    tests/test_product_api.py). The unprefixed FastAPI defaults stay off,
+    with or without the operator key."""
     client = TestClient(api_main.app)
-    for path in ("/docs", "/redoc", "/openapi.json"):
+    for path in ("/redoc", "/openapi.json"):
         assert client.get(path).status_code == 404
     monkeypatch.setenv("HC_API_TOKEN", "s3cret")
     get_settings.cache_clear()
-    assert client.get("/openapi.json").status_code == 401
-    assert client.get("/openapi.json", headers={"X-API-Key": "s3cret"}).status_code == 404
+    for path in ("/redoc", "/openapi.json"):
+        assert client.get(path).status_code == 404
+        assert client.get(path, headers={"X-API-Key": "s3cret"}).status_code == 404
 
 
 def test_url_encoded_api_key_cookie_is_accepted(monkeypatch):

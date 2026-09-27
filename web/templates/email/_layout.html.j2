@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>{{ app_name }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f2ea;">
+<span style="display:none;max-height:0;max-width:0;overflow:hidden;opacity:0;color:#f4f2ea;">{% block preheader %}{% endblock %}</span>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f2ea;">
+  <tr>
+    <td align="center" style="padding:32px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
+        <tr>
+          <td style="padding:0 4px 18px;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:bold;color:#111915;">
+            <span style="display:inline-block;width:10px;height:10px;background:#e0533f;border-radius:2px;margin-right:4px;vertical-align:middle;"></span><span style="display:inline-block;width:10px;height:10px;background:#f2c94c;border-radius:2px;margin-right:8px;vertical-align:middle;"></span>{{ app_name }}
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#ffffff;border:1px solid #e4e0d2;border-radius:14px;padding:32px 30px;font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#1d1c17;">
+{% block content %}{% endblock %}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:18px 6px;font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;line-height:1.55;color:#6b6a60;">
+            {% block footer %}You received this email because of an account at <a href="{{ base_url }}" style="color:#6b6a60;">{{ base_url }}</a>.{% endblock %}
+            {% if contact_email %}Questions? Write to <a href="mailto:{{ contact_email }}" style="color:#6b6a60;">{{ contact_email }}</a>.{% endif %}
+            <br>&copy; {{ year }} {{ app_name }}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

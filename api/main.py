@@ -18,18 +18,20 @@ from fastapi.responses import (
 from pydantic import BaseModel
 from starlette.concurrency import run_in_threadpool
 
-from core.config import get_settings
+from core.config import get_settings, settings_problems
 from core.errors import PipelineError
 from core.logging import configure_logging, get_logger
 from core.models import TERMINAL_STATUSES, JobOptions, JobRecord, JobStatus
 from core.proc import run_checked
 from core.version import PIPELINE_VERSION
-from db.session import check_db
+from db.session import check_db, get_engine, session_scope
 from ingest import zoom
 from ingest.store import store_transcript, store_video, title_from_filename
 from pipeline import run_pipeline, run_youtube_pipeline, run_zoom_pipeline
+from services import users as users_service
 
-from .auth import ApiKeyMiddleware, auth_enabled
+from .auth import AuthMiddleware, auth_enabled
+from .errors import install_error_handlers
 from .jobs import is_valid_job_id, job_store
 from .queue import (
     JobQueue,
@@ -46,10 +48,27 @@ job_queue = JobQueue(job_store)
 BUSY_RETRY_AFTER_S = 60
 
 
+def _startup_database() -> None:
+    """Create/upgrade the product database and promote ADMIN_EMAILS users
+    who have verified their address."""
+    get_engine()
+    with session_scope() as db:
+        promoted = users_service.promote_configured_admins(db)
+    if promoted:
+        logger.info("promoted %d verified user(s) listed in ADMIN_EMAILS to admin", promoted)
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    settings = get_settings()
+    problems = settings_problems(settings)
+    if settings.is_prod and problems:
+        bullet = "\n  - "
+        raise RuntimeError(f"refusing to start with APP_ENV=prod:{bullet}{bullet.join(problems)}")
     if not auth_enabled():
-        logger.warning("HC_API_TOKEN is empty: the API is open (fine locally, never on a public host)")
+        logger.warning("DEV_OPEN_API=true and no HC_API_TOKEN: API calls without credentials are accepted "
+                       "(local development only)")
+    await run_in_threadpool(_startup_database)
     reconcile_on_startup(job_store)
     yield
 
@@ -63,7 +82,8 @@ app = FastAPI(
     redoc_url=None,
     openapi_url=None,
 )
-app.add_middleware(ApiKeyMiddleware)
+app.add_middleware(AuthMiddleware)
+install_error_handlers(app)
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
 _STARTED_AT = time.monotonic()
@@ -619,3 +639,9 @@ def _require_done(job_id: str, allow_decided: bool = False) -> JobRecord:
     if job.status != JobStatus.DONE and not (allow_decided and job.status == JobStatus.DECIDED):
         raise HTTPException(status_code=409, detail=f"job is not done yet (status={job.status.value})")
     return job
+
+
+# ---------------------------------------------------------------- product API (/api/v1)
+from .routers import auth as auth_routes
+
+app.include_router(auth_routes.router, prefix="/api/v1")

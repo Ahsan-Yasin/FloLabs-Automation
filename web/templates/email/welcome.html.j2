@@ -1,0 +1,22 @@
+{% extends "_layout.html.j2" %}
+{% from "_macros.html.j2" import button, heading %}
+{% block preheader %}Your email is confirmed. Here is how to get your first meeting cut.{% endblock %}
+{% block content %}
+{{ heading("You're all set") }}
+<p style="margin:0 0 16px;">Hi {{ name or "there" }}, your email is confirmed. Three ways to start:</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td style="padding:0 0 12px;vertical-align:top;width:26px;font-weight:bold;color:#e0533f;">1</td>
+    <td style="padding:0 0 12px;"><strong>Cut your first meeting.</strong> Pick a Zoom recording, paste a YouTube link or upload a file on the <a href="{{ app_link }}" style="color:#2f5fd0;">dashboard</a>.</td>
+  </tr>
+  <tr>
+    <td style="padding:0 0 12px;vertical-align:top;width:26px;font-weight:bold;color:#e0533f;">2</td>
+    <td style="padding:0 0 12px;"><strong>Connect an automation.</strong> Create an <a href="{{ keys_link }}" style="color:#2f5fd0;">API key</a> and call the API from n8n, Zapier, Make or a script.</td>
+  </tr>
+  <tr>
+    <td style="padding:0 0 4px;vertical-align:top;width:26px;font-weight:bold;color:#e0533f;">3</td>
+    <td style="padding:0 0 4px;"><strong>Get told when it's done.</strong> Add a callback URL to a job and we POST a signed webhook when it finishes. The <a href="{{ docs_link }}" style="color:#2f5fd0;">docs</a> have recipes.</td>
+  </tr>
+</table>
+{{ button(app_link, "Open the dashboard") }}
+{% endblock %}

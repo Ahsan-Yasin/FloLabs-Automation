@@ -69,8 +69,8 @@ def _reset_product_state() -> None:
     not leak from one test into the next."""
     import importlib
 
-    for module_name in ("api.ratelimit", "services.auth", "services.email", "services.webhooks",
-                        "services.jobs_index"):
+    for module_name in ("api.ratelimit", "services.usercache", "services.api_keys", "services.email",
+                        "services.webhooks", "services.jobs_index"):
         try:
             module = importlib.import_module(module_name)
         except ImportError:
@@ -78,3 +78,15 @@ def _reset_product_state() -> None:
         reset = getattr(module, "reset_for_tests", None)
         if reset is not None:
             reset()
+
+
+@pytest.fixture
+def product(monkeypatch):
+    """Account-layer tests: real authentication (the pre-accounts open dev
+    mode off) and a cheap password hash so hundreds of sign-ups stay fast."""
+    from services import passwords
+
+    monkeypatch.setenv("DEV_OPEN_API", "false")
+    get_settings.cache_clear()
+    passwords.use_fast_hasher_for_tests()
+    yield

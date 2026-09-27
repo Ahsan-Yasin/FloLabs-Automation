@@ -1,0 +1,11 @@
+{% extends "_layout.html.j2" %}
+{% from "_macros.html.j2" import button, link_fallback, heading %}
+{% block preheader %}Confirm your email address to start using {{ app_name }}.{% endblock %}
+{% block content %}
+{{ heading("Confirm your email") }}
+<p style="margin:0 0 12px;">Hi {{ name or "there" }},</p>
+<p style="margin:0;">Confirm that this is your address and you can start cutting meetings and create API keys for your automations.</p>
+{{ button(link, "Verify my email") }}
+<p style="margin:0 0 18px;font-size:14px;color:#4a4940;">The link works for {{ hours }} hours. If you didn't create an account, you can ignore this email.</p>
+{{ link_fallback(link) }}
+{% endblock %}

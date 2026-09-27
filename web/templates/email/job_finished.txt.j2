@@ -1,0 +1,29 @@
+Hi {{ name or "there" }},
+
+{% if status == "done" %}
+"{{ title }}" is cut and packed.
+{% if outputs %}
+
+In the bundle:
+{% for item in outputs %}
+- {{ item }}
+{% endfor %}
+{% endif %}
+
+Open the results: {{ link }}
+{% elif status == "decided" %}
+The AI has marked up "{{ title }}". Check its highlight and shorts picks, then render the video when you're happy:
+{{ link }}
+{% else %}
+"{{ title }}" could not be processed.
+{% if error %}
+{{ error }}{% if error_code %} ({{ error_code }}){% endif %}
+
+{% endif %}
+{% if retryable %}This kind of failure is usually temporary: submitting the job again should work.{% else %}Submitting it again as-is will likely fail the same way.{% endif %}
+
+Open the job: {{ link }}
+{% endif %}
+
+-- {{ app_name }} ({{ base_url }})
+Turn these emails off in your account settings: {{ base_url }}/app/account
