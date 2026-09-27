@@ -16,7 +16,7 @@
         [s.active_api_keys, "active API keys"],
         [s.disk_free_bytes === null ? "?" : fmt.bytes(s.disk_free_bytes), "free disk"],
       ];
-      box.replaceChildren(...cards.map(([value, label]) => el("div", { class: "card stat-card" }, el("b", { text: String(value) }), el("span", { text: label }))));
+      box.replaceChildren(...cards.map(([value, label]) => el("div", { class: "stat-card" }, el("b", { text: String(value) }), el("span", { text: label }))));
     } catch (err) {
       box.textContent = err.message;
     }
@@ -69,7 +69,7 @@
       body.replaceChildren(...items.map((j) => el("tr", {},
         el("td", {}, el("a", { class: "row-link", href: `/app/jobs/${encodeURIComponent(j.job_id)}`, text: j.title || "Untitled job" }),
           el("div", { class: "row-sub mono", text: j.job_id.slice(0, 12) })),
-        el("td", { text: j.owner_email || "—" }),
+        el("td", { class: "nowrap", text: j.owner_email || "—" }),
         el("td", {}, statusPill(j.status)),
         el("td", { text: j.source_kind }),
         el("td", { class: "time", text: fmt.ago(j.created_at) }))));

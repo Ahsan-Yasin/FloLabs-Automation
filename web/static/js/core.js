@@ -4,7 +4,7 @@
      so the server's refresh-token reuse detection never fires on us);
    - upload(): multipart POST with progress (XMLHttpRequest);
    - toast(), formatting helpers, tabs, copy buttons, theme, nav, logout,
-     reveal-on-scroll (Motion's inView), all respecting reduced motion. */
+     all respecting reduced motion. */
 (function () {
   "use strict";
 
@@ -301,12 +301,16 @@
     try { localStorage.setItem("hc-theme", theme); } catch (e) { /* not important */ }
     qsa("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === theme ? "true" : "false"));
     const meta = qs('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "light" ? "#f7f5ee" : "#080c0a");
+    if (meta) meta.setAttribute("content", theme === "light" ? "#f6f7f9" : "#141b2b");
   }
   qsa("[data-theme-set]").forEach((b) => {
     b.setAttribute("aria-pressed", b.dataset.themeSet === root.getAttribute("data-theme") ? "true" : "false");
     b.addEventListener("click", () => applyTheme(b.dataset.themeSet));
   });
+  if (root.getAttribute("data-theme") === "dark") {
+    const meta = qs('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", "#141b2b");
+  }
 
   /* ------------------------------------------------------------ header / nav */
   const header = qs("[data-header]");
@@ -382,23 +386,6 @@
     });
   }
 
-  /* ------------------------------------------------------------ reveal on scroll */
-  function reveal() {
-    const targets = qsa("[data-reveal]");
-    if (!targets.length) return;
-    if (reduced || !Motion || !Motion.inView) {
-      targets.forEach((t) => t.classList.add("is-revealed"));
-      return;
-    }
-    qsa("[data-reveal-group]").forEach((group) => {
-      qsa("[data-reveal]", group).forEach((child, i) => { child.style.transitionDelay = `${Math.min(i, 8) * 45}ms`; });
-    });
-    targets.forEach((t) => {
-      Motion.inView(t, () => { t.classList.add("is-revealed"); }, { amount: 0.18, margin: "0px 0px -40px 0px" });
-    });
-  }
-  reveal();
-
   /* docs table of contents: highlight the section being read */
   const toc = qs(".docs-toc");
   if (toc && "IntersectionObserver" in window) {
@@ -416,7 +403,7 @@
 
   /* short, human status names (dashboard list, job page) */
   const STATUS_TEXT = {
-    queued: "Queued", waiting_transcript: "Waiting for Zoom", downloading: "Downloading", transcribing: "Transcribing",
+    queued: "Queued", waiting_transcript: "Waiting", downloading: "Downloading", transcribing: "Transcribing",
     deciding: "AI editing", building_edl: "Planning cuts", slicing: "Rendering", rendering_highlights: "Rendering reel",
     assembling: "Assembling", rendering_removed: "Rendering removed parts", rendering_shorts: "Rendering shorts",
     reporting: "Writing report", bundling: "Packing", done: "Done", failed: "Failed", cancelled: "Cancelled",

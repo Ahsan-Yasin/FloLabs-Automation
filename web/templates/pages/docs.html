@@ -5,19 +5,17 @@
 
 {% macro code(id, lang="") -%}
 <div class="code-card">
-  <div class="code-card-head"><span class="tiny mono" style="color:#9aa597">{{ lang }}</span><button class="copy-btn" type="button" data-copy-target="#{{ id }}">{{ icon("copy") }}<span data-copy-label>Copy</span></button></div>
+  <div class="code-card-head"><span class="mono">{{ lang }}</span><button class="copy-btn" type="button" data-copy-target="#{{ id }}">{{ icon("copy") }}<span data-copy-label>Copy</span></button></div>
   <pre class="codeblock" id="{{ id }}">{{ caller() }}</pre>
 </div>
 {%- endmacro %}
 
 {% block content %}
 <section class="page-hero" style="padding-bottom:12px">
-  <div class="bg-grid"></div>
   <div class="container">
-    <span class="eyebrow">Documentation</span>
-    <h1 class="display" style="font-size:clamp(2.2rem,1.5rem + 2.6vw,3.6rem)">Connect {{ app_name }} to <span class="serif grad-text">anything.</span></h1>
-    <p class="lead">Every feature of the app is an HTTP call. Here is how to authenticate, create jobs, get told when they finish, and download the results.</p>
-    <div class="cluster" style="margin-top:24px"><a class="btn btn-primary" href="/api/docs">{{ icon("code") }} Interactive API reference</a><a class="btn btn-outline" href="/api/v1/openapi.json">OpenAPI schema</a></div>
+    <h1 class="display">Connect {{ app_name }} to anything.</h1>
+    <p class="lede">Every feature of the app is an HTTP call. Here is how to authenticate, create jobs, get told when they finish, and download the results.</p>
+    <div class="cluster" style="margin-top:24px"><a class="btn btn-primary" href="/api/docs">Interactive API reference</a><a class="btn btn-outline" href="/api/v1/openapi.json">OpenAPI schema</a></div>
   </div>
 </section>
 
@@ -73,7 +71,6 @@ X-API-Key: hc_live_AbCd1234_...{% endcall %}
         <tbody>
           <tr><td><code>jobs:read</code></td><td>List jobs, read their status, download outputs</td></tr>
           <tr><td><code>jobs:write</code></td><td>Create, render, cancel and delete jobs</td></tr>
-          <tr><td><code>zoom:read</code></td><td>List the workspace's Zoom cloud recordings</td></tr>
         </tbody>
       </table></div>
       <p>Keys see only your own jobs. Revoke or rotate a key on the API keys page and it stops working immediately. For short scripts you can also log in with <code>POST /api/v1/auth/login</code> and send the returned <code>access_token</code> as a bearer token (it lasts 15 minutes).</p>
@@ -82,12 +79,7 @@ X-API-Key: hc_live_AbCd1234_...{% endcall %}
 
     <section id="jobs">
       <h2>Create a job</h2>
-      <p>A job takes one recording from one of three sources. All three answer with the job (see <a class="link" href="#lifecycle">Follow a job</a>) and accept an optional <code>callback_url</code> for a webhook.</p>
-      <h3>From Zoom</h3>
-      <p>Use the meeting <em>instance</em> UUID from <code>GET /api/v1/zoom/recordings</code> or from Zoom's <code>recording.completed</code> event. Zoom's own transcript is reused. Sending the same meeting with the same options again returns the existing job with <code>"deduplicated": true</code>, so retries are safe. While Zoom is still processing, the answer is <code>425</code> with <code>retry_after_s</code>.</p>
-      {% call code("jobs-zoom", "shell") %}curl -X POST {{ base_url }}/api/v1/jobs/zoom \
-  -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span> -H <span class="s">"Content-Type: application/json"</span> \
-  -d <span class="s">'{"meeting_uuid": "Wb3kVw9xT8Wq1Z0rS5nYqg==", "options": {"shorts_count": 4}}'</span>{% endcall %}
+      <p>A job takes one recording from one of two sources. Both answer with the job (see <a class="link" href="#lifecycle">Follow a job</a>) and accept an optional <code>callback_url</code> for a webhook.</p>
       <h3>From YouTube</h3>
       {% call code("jobs-youtube", "shell") %}curl -X POST {{ base_url }}/api/v1/jobs/youtube \
   -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span> -H <span class="s">"Content-Type: application/json"</span> \
@@ -102,7 +94,7 @@ X-API-Key: hc_live_AbCd1234_...{% endcall %}
 
     <section id="options">
       <h2>Job options</h2>
-      <p>Send them as <code>options</code> in JSON (Zoom, YouTube) or as form fields (upload). Leave one out to use the server's default.</p>
+      <p>Send them as <code>options</code> in JSON (YouTube) or as form fields (upload). Leave one out to use the server's default.</p>
       <div class="table-wrap"><table class="table">
         <thead><tr><th>Option</th><th>Type</th><th>What it does</th></tr></thead>
         <tbody>
@@ -180,10 +172,10 @@ X-HC-Signature: t=1790000000,v1=5f2c...e91a
 
     <section id="recipes">
       <h2>n8n, Zapier and Make</h2>
-      <h3>n8n: cut every new Zoom recording</h3>
+      <h3>n8n: cut every new video on a YouTube channel</h3>
       <ol>
-        <li><strong>Trigger:</strong> a Webhook node subscribed to Zoom's <code>recording.completed</code> event (or a Schedule node).</li>
-        <li><strong>HTTP Request</strong> node: method <code>POST</code>, URL <code>{{ base_url }}/api/v1/jobs/zoom</code>, authentication "Header Auth" with name <code>Authorization</code> and value <code>Bearer hc_live_...</code>, JSON body <code>{"meeting_uuid": "{{ '{{' }} $json.payload.object.uuid {{ '}}' }}", "callback_url": "&lt;your n8n webhook URL&gt;"}</code>. Enable "Retry on fail"; a <code>425</code> means Zoom isn't ready yet.</li>
+        <li><strong>Trigger:</strong> an RSS Feed Trigger node on the channel's feed, <code>https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID</code>.</li>
+        <li><strong>HTTP Request</strong> node: method <code>POST</code>, URL <code>{{ base_url }}/api/v1/jobs/youtube</code>, authentication "Header Auth" with name <code>Authorization</code> and value <code>Bearer hc_live_...</code>, JSON body <code>{"url": "{{ '{{' }} $json.link {{ '}}' }}", "callback_url": "&lt;your n8n webhook URL&gt;"}</code>. Enable "Retry on fail": <code>429</code> and <code>503</code> answers are safe to retry.</li>
         <li><strong>Second workflow:</strong> a Webhook node at that callback URL receives <code>job.done</code>; an HTTP Request node downloads <code>{{ '{{' }} $json.body.job.links.bundle {{ '}}' }}</code> with the same header, as a file.</li>
       </ol>
       <h3>Zapier</h3>
@@ -253,7 +245,7 @@ api = httpx.Client(base_url=<span class="s">"{{ base_url }}/api/v1"</span>, time
       <h2>Self-hosting</h2>
       <p>The product is one Docker image plus Caddy for automatic HTTPS. On a small Linux server:</p>
       {% call code("selfhost", "shell") %}git clone &lt;your fork&gt; highlight-cutter &amp;&amp; cd highlight-cutter
-cp .env.example .env        <span class="c"># set APP_ENV=prod, APP_BASE_URL, JWT_SECRET, EMAIL_*, the AI key, Zoom</span>
+cp .env.example .env        <span class="c"># set APP_ENV=prod, APP_BASE_URL, JWT_SECRET, EMAIL_*, the AI key</span>
 DOMAIN=cut.example.com docker compose up -d
 docker compose exec app python -m db.cli create-admin you@example.com{% endcall %}
       <p>The repository's <code>DEPLOY.md</code> covers DNS, email (SPF and DKIM), backups, upgrades and sizing.</p>

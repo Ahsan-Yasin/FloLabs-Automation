@@ -4,90 +4,45 @@
 {% block description %}Why FloLabs built {{ app_name }}: meetings are where the work happens, and nobody wants to watch them twice.{% endblock %}
 
 {% block content %}
-<section class="page-hero grain">
-  <div class="bg-grid"></div>
-  <div class="glow glow-a"></div>
+<section class="page-hero">
   <div class="container">
-    <span class="eyebrow" data-reveal>About</span>
-    <h1 class="display" data-reveal>Meetings are where the work happens. <span class="serif grad-text">Nobody wants to watch them twice.</span></h1>
-    <p class="lead" data-reveal>{{ app_name }} turns a long recording into something people will actually watch: the moments worth learning from first, then the meeting without the noise.</p>
+    <h1 class="display">Meetings are where the work happens. Nobody wants to watch them twice.</h1>
+    <p class="lede">{{ app_name }} puts the moments worth learning from first, then plays the meeting without the noise.</p>
   </div>
 </section>
 
-<section class="section" style="padding-top:24px">
-  <div class="container story">
-    <div data-reveal>
-      <span class="eyebrow">The story</span>
-      <h2 class="h2" style="margin-top:14px">Built at FloLabs, <span class="serif">for our own recordings.</span></h2>
-    </div>
+<section class="section" style="padding-top:32px">
+  <div class="container two-col">
+    <h2 class="h2">Built at FloLabs, for our own recordings.</h2>
     {# OWNER: this is a factual starting point; replace or extend it with your own words. #}
-    <div class="prose" data-reveal>
-      <p>At FloLabs we record our product syncs, architecture reviews and demos. The recordings were the only complete record of decisions and explanations, and almost nobody watched them: an hour of meeting holds a few minutes that matter, surrounded by greetings, crosstalk and "can you see my screen?".</p>
-      <p>Cutting them by hand meant scrubbing through timelines. So we flipped the problem: the transcript already says everything that was said. An editor can mark up text in minutes, and a machine can cut a video exactly where the text says.</p>
-      <p>{{ app_name }} is that idea taken seriously: an AI copy editor that judges every sentence, a frame-exact renderer that cuts precisely what it marked, and the outputs people actually use, from a highlights reel to vertical shorts and a report of everything that was removed.</p>
+    <div class="prose">
+      <p>At FloLabs we record our product syncs, architecture reviews and demos. Those recordings were the only complete record of what was decided and explained, and almost nobody watched them. An hour of meeting holds a few minutes that matter, surrounded by greetings, crosstalk and &ldquo;can you see my screen?&rdquo;.</p>
+      <p>Cutting them by hand meant scrubbing through timelines. So we flipped the problem around. The transcript already says everything that was said. An editor can mark up text in minutes, and a machine can cut a video exactly where the text says.</p>
+      <p>{{ app_name }} is that idea taken seriously: an AI copy editor that judges every sentence, a frame-exact renderer that cuts precisely what it marked, and the outputs people use, from a highlights reel to vertical shorts and a report of everything that was removed.</p>
     </div>
   </div>
 </section>
 
 <section class="section" style="padding-top:0">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">How we build it</span>
-      <h2 class="h2" style="margin-top:14px">Four principles</h2>
-    </div>
-    <div class="principles" data-reveal-group>
-      <div class="card card-pad principle" data-reveal>
-        <span class="icon-tile">{{ icon("file") }}</span>
-        <h3>The transcript is the edit</h3>
-        <p>Decisions are made on text, where they are fast to make and easy to check. Every cut has a reason you can read, and the removed parts stay available.</p>
-      </div>
-      <div class="card card-pad principle" data-reveal>
-        <span class="icon-tile">{{ icon("scissors") }}</span>
-        <h3>Frame-exact, not roughly right</h3>
-        <p>Cuts land on the source's frame grid and the audio is assembled to the sample, so the video, the transcript and the chapters always agree.</p>
-      </div>
-      <div class="card card-pad principle" data-reveal>
-        <span class="icon-tile">{{ icon("cpu") }}</span>
-        <h3>Cheap by design</h3>
-        <p>The AI reads text in compact batches with a budget model: about two cents for a 98-minute meeting. Rendering runs on a small CPU server.</p>
-      </div>
-      <div class="card card-pad principle" data-reveal>
-        <span class="icon-tile">{{ icon("lock") }}</span>
-        <h3>Your recordings stay yours</h3>
-        <p>Videos are processed on the server you run. Only transcript text goes to the AI provider, and you can delete a job and everything it made at any time.</p>
-      </div>
-    </div>
+    <h2 class="h2" style="margin-bottom:28px">How we build it</h2>
+    <ul class="principles">
+      <li><h3>The transcript is the edit</h3><p>Decisions are made on text, where they are fast to make and easy to check. Every cut has a reason you can read, and the removed parts stay available.</p></li>
+      <li><h3>Frame-exact, not roughly right</h3><p>Cuts land on the source frame grid and the audio is assembled to the sample, so the video, the transcript and the chapters always agree.</p></li>
+      <li><h3>Cheap by design</h3><p>The AI reads text in compact batches with a budget model, about two cents for a 98-minute meeting. Rendering runs on a small CPU server.</p></li>
+      <li><h3>Your recordings stay yours</h3><p>Videos are processed on the server that runs {{ app_name }}. Only transcript text goes to the AI provider, and deleting a job deletes everything it made.</p></li>
+    </ul>
+    <p class="muted small" style="margin-top:28px;max-width:44em">Under the hood: FastAPI, ffmpeg, yt-dlp for YouTube, OpenAI or Gemini for reading the transcript, and SQLite or Postgres for accounts.</p>
   </div>
 </section>
 
-<section class="section" style="padding-top:0">
+<section class="closing">
   <div class="container">
-    <div class="card card-pad" data-reveal>
-      <div class="card-head">
-        <div>
-          <span class="eyebrow">Under the hood</span>
-          <h2 class="h3" style="margin-top:12px">The stack</h2>
-        </div>
-      </div>
-      <div class="stack-strip">
-        <span class="badge">FastAPI</span><span class="badge">ffmpeg</span><span class="badge">OpenAI / Gemini</span><span class="badge">Zoom API</span><span class="badge">yt-dlp</span><span class="badge">SQLite or Postgres</span><span class="badge">Docker + Caddy</span><span class="badge">Motion + GSAP</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" style="padding-top:0">
-  <div class="container">
-    <div class="gradient-border" data-reveal>
-      <div class="cta">
-        <div class="bg-grid"></div>
-        <h2 class="h2">Talk to us</h2>
-        <p class="lead">Questions, higher limits, or running it on your own infrastructure: we'd like to hear from you.</p>
-        <div class="cluster">
-          {% if contact_email %}<a class="btn btn-primary btn-lg" href="mailto:{{ contact_email }}">{{ icon("mail") }} {{ contact_email }}</a>{% endif %}
-          <a class="btn btn-outline btn-lg" href="/docs">Read the docs</a>
-        </div>
-      </div>
+    <h2 class="h2">Talk to us.</h2>
+    <p class="lede" style="margin-top:14px">Questions, higher limits, or running it on your own servers: we'd like to hear from you.</p>
+    <div class="cluster">
+      {% if contact_email %}<a class="btn btn-primary btn-lg" href="mailto:{{ contact_email }}">{{ icon("mail") }} Email us</a>{% endif %}
+      <a class="btn btn-outline btn-lg" href="/docs">Read the docs</a>
     </div>
   </div>
 </section>

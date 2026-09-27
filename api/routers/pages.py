@@ -218,8 +218,8 @@ def verify_page(request: Request, token: str = ""):
         state = "verified" if newly else "already"
         if newly:
             notifications.send_welcome(email, name)
-    except ServiceError as exc:
-        state = "expired" if "expired" in exc.message else "invalid"
+    except ServiceError:
+        state = "invalid"  # the service doesn't say whether a link expired or never existed
     return render(request, "auth/verify.html", state=state, email=email)
 
 

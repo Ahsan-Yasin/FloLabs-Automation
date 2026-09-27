@@ -3,7 +3,7 @@
 {% block title %}Create your account — {{ app_name }}{% endblock %}
 {% block card %}
 <h1>Create your account</h1>
-<p class="sub">Cut your first meeting in a few minutes. No credit card.</p>
+<p class="sub">Cut your first recording in a few minutes. No card needed.</p>
 {% if not signup_enabled %}
 <div class="alert alert-info" style="margin-top:28px">{{ icon("info") }}<span>Sign-up is closed on this site. Ask an admin for an account, then <a class="link" href="/login">log in</a>.</span></div>
 {% else %}
@@ -14,7 +14,7 @@
     <input class="input" id="name" name="name" type="text" autocomplete="name" maxlength="120">
   </div>
   <div class="field">
-    <label class="label" for="email">Work email</label>
+    <label class="label" for="email">Email</label>
     <input class="input" id="email" name="email" type="email" autocomplete="email" required spellcheck="false">
   </div>
   <div class="field">

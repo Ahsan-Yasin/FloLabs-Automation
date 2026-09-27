@@ -11,10 +11,10 @@
     <button class="btn btn-primary" type="button" data-new-key {% if not current_user.email_verified %}disabled title="Confirm your email first"{% endif %}>{{ icon("plus") }} New key</button>
   </div>
 
-  <div class="card card-pad" data-key-reveal hidden style="margin-bottom:22px;border-color:color-mix(in srgb,var(--accent) 45%,transparent)">
+  <div class="card card-pad" data-key-reveal hidden style="margin-bottom:22px;border-color:var(--ink-3)">
     <div class="key-reveal">
       <div class="card-head" style="margin-bottom:6px"><div><h2 class="card-title">Copy your new key now</h2><p class="subtle small">It won't be shown again. Store it in your automation tool's credentials.</p></div></div>
-      <div class="key-box"><span data-key-value></span><button class="copy-btn" type="button" data-copy-target="[data-key-value]" style="color:var(--text);border-color:var(--border-2);background:var(--surface-2)">{{ icon("copy") }}<span data-copy-label>Copy</span></button></div>
+      <div class="key-box"><span data-key-value></span><button class="copy-btn" type="button" data-copy-target="[data-key-value]">{{ icon("copy") }}<span data-copy-label>Copy</span></button></div>
       <div class="code-card" style="box-shadow:none">
         <div class="code-card-head"><span class="tiny mono" style="color:#9aa597">Try it</span><button class="copy-btn" type="button" data-copy-target="#key-curl">{{ icon("copy") }}<span data-copy-label>Copy</span></button></div>
         <pre class="codeblock" id="key-curl" data-key-curl></pre>

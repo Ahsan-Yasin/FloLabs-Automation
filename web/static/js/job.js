@@ -12,7 +12,6 @@
 
   const STEP_LABELS = {
     queued: "Queued",
-    waiting_transcript: "Waiting for Zoom's transcript",
     downloading: "Downloading the recording",
     transcribing: "Reading the transcript",
     deciding: "AI marking up the transcript",
@@ -38,11 +37,10 @@
     asr: "Transcribed from scratch (no platform transcript).",
     youtube_captions: "Reused YouTube's own captions: no transcription needed.",
     uploaded_transcript: "Reused your uploaded transcript: no transcription needed.",
-    zoom_transcript: "Used Zoom's own transcript: no transcription needed.",
+    zoom_transcript: "Reused the meeting platform's transcript: no transcription needed.",
   };
   const WORKING = {
     queued: ["Waiting in line", "One job renders at a time. Yours starts as soon as the one ahead of it finishes."],
-    waiting_transcript: ["Waiting for Zoom", "Zoom is still producing this meeting's transcript. We check again every minute."],
     downloading: ["Fetching the recording", "Downloading the video and its transcript."],
     transcribing: ["Reading the transcript", "Splitting the transcript into sentences and speakers."],
     deciding: ["The AI is marking up the transcript", "Every sentence gets a keep-or-cut decision and a highlight score."],
@@ -108,7 +106,7 @@
     qs("[data-job-title]").textContent = title;
     document.title = `${title} — ${document.title.split(" — ").pop()}`;
     qs("[data-job-status]").replaceChildren(statusPill(job.status));
-    const sourceLabel = job.zoom_meeting_uuid ? "Zoom recording" : job.source_url ? "YouTube" : "Upload";
+    const sourceLabel = job.source_url ? "YouTube" : "Upload";
     qs("[data-job-source]").textContent = sourceLabel;
     qs("[data-job-created]").textContent = job.created_at ? `Started ${fmt.date(job.created_at)}` : "";
     qs("[data-job-duration]").textContent = job.source_duration_s ? `${fmt.clock(job.source_duration_s)} long` : "";
@@ -153,11 +151,7 @@
 
   function renderStages() {
     const list = qs("[data-stages]");
-    let steps = job.source_url || job.zoom_meeting_uuid ? WITH_DOWNLOAD : NO_DOWNLOAD;
-    if (job.status === "waiting_transcript") {
-      const i = steps.indexOf("downloading");
-      steps = [...steps.slice(0, i), "waiting_transcript", ...steps.slice(i)];
-    }
+    const steps = job.source_url ? WITH_DOWNLOAD : NO_DOWNLOAD;
     const failed = ["failed", "cancelled", "skipped_desync"].includes(job.status);
     const current = job.status === "decided" ? steps.indexOf("slicing") : steps.indexOf(job.status);
     list.replaceChildren(...steps.map((step, i) => {
@@ -259,21 +253,22 @@
     }
     Object.entries(job.artifacts || {}).forEach(([name, info]) => {
       if (name.startsWith("shorts/") && name.endsWith(".srt")) return;
-      const label = ARTIFACT_LABELS[name] || name.replace("shorts/", "Short ");
+      const shortNo = /^shorts\/short_(\d+)\.mp4$/.exec(name);
+      const label = ARTIFACT_LABELS[name] || (shortNo ? `Short ${Number(shortNo[1])}` : name.replace("shorts/", ""));
       const iconName = name.endsWith(".mp4") ? "film" : name.endsWith(".pdf") ? "file" : "list";
       if (info.status !== "ok") {
         rows.push(el("div", { class: "artifact is-missing", title: info.reason || info.status },
           icon("x"), el("span", { class: "name", text: label }), el("span", { class: "meta", text: info.status })));
         return;
       }
-      const meta = [info.duration_s ? fmt.clock(info.duration_s) : "", fmt.bytes(info.bytes)].filter(Boolean).join(" · ");
+      const meta = [info.duration_s ? fmt.clock(info.duration_s) : "", fmt.bytes(info.bytes)].filter(Boolean);
       if (info.on_disk === false) {
         rows.push(el("div", { class: "artifact is-missing", title: "Only inside the zip" },
           icon(iconName), el("span", { class: "name", text: label }), el("span", { class: "meta", text: "in the zip" })));
         return;
       }
       rows.push(el("a", { class: "artifact", href: artifactUrl(name, !name.endsWith(".pdf")), ...(name.endsWith(".pdf") ? { target: "_blank", rel: "noopener" } : { download: true }) },
-        icon(iconName), el("span", { class: "name", text: label }), el("span", { class: "meta", text: meta })));
+        icon(iconName), el("span", { class: "name", text: label }), el("span", { class: "meta" }, meta.map((m) => el("span", { text: m })))));
     });
     list.replaceChildren(...rows);
     show(panel("downloads"), rows.length > 0);
@@ -334,12 +329,12 @@
       ` Shorts: ${(sel.shorts || []).length}. ${moments.length} candidate moments, best first.`;
     qs("[data-picks-body]").replaceChildren(...moments.map((m) => {
       const used = el("td", {});
-      if (m.in_highlights) used.appendChild(el("span", { class: "badge tag-reel", text: "reel" }));
-      if (m.in_shorts) used.appendChild(el("span", { class: "badge tag-short", text: "short", style: "margin-left:4px" }));
+      if (m.in_highlights) used.appendChild(el("span", { class: "badge badge-keep", text: "reel" }));
+      if (m.in_shorts) used.appendChild(el("span", { class: "badge", text: "short", style: "margin-left:4px" }));
       return el("tr", {},
         el("td", { class: "time", text: `${fmt.clock(m.start)}–${fmt.clock(m.end)}` }),
         el("td", { class: "num", text: String(Math.round(m.score)) }),
-        el("td", {}, el("div", { text: (m.title || "(untitled)") + (CATEGORY[m.category] ? ` · ${CATEGORY[m.category]}` : "") }),
+        el("td", {}, el("div", {}, m.title || "(untitled)", CATEGORY[m.category] ? el("span", { class: "badge", style: "margin-left:8px", text: CATEGORY[m.category] }) : null),
           m.hook ? el("div", { class: "row-sub", text: m.hook }) : null),
         used);
     }));
@@ -362,7 +357,7 @@
       box.replaceChildren(...items.map((d) => {
         const tone = d.state === "delivered" ? "badge-ok" : d.state === "pending" ? "badge-warn" : "badge-cut";
         const detail = d.state === "delivered" ? `HTTP ${d.status_code}` : d.state === "pending"
-          ? `retrying ${d.next_attempt_at ? fmt.ago(d.next_attempt_at).replace(" ago", "") : "soon"}${d.error ? ` · ${d.error}` : ""}` : (d.error || "gave up");
+          ? `retrying ${d.next_attempt_at ? fmt.ago(d.next_attempt_at).replace(" ago", "") : "soon"}${d.error ? `: ${d.error}` : ""}` : (d.error || "gave up");
         return el("div", { class: "artifact" }, icon("zap"),
           el("span", { class: "name", text: d.event }),
           el("span", { class: "meta" }, el("span", { class: `badge ${tone}`, text: d.state }), ` ${detail}`));

@@ -5,33 +5,27 @@
 {% block footer %}{% endblock %}
 {% block content %}
 <div class="auth-page">
-  <div class="auth-main grain">
-    <div class="bg-grid"></div>
+  <div class="auth-main">
     <a class="brand" href="/">{{ logo() }}<span>{{ app_name }}</span></a>
     <div class="auth-card">
       {% block card %}{% endblock %}
     </div>
-    <p class="tiny subtle" style="text-align:center">&copy; {{ year }} FloLabs &middot; <a class="link-muted" href="/privacy">Privacy</a> &middot; <a class="link-muted" href="/terms">Terms</a></p>
+    <div class="cluster tiny subtle" style="--gap:18px;justify-content:center">
+      <span>&copy; {{ year }} FloLabs</span>
+      <a class="link-muted" href="/privacy">Privacy</a>
+      <a class="link-muted" href="/terms">Terms</a>
+    </div>
   </div>
   <aside class="auth-aside" aria-hidden="true">
-    <div class="bg-grid"></div>
-    <div class="glow glow-a" style="left:40%;top:-160px"></div>
-    <div class="glow glow-c"></div>
-    <span class="eyebrow">{{ app_name }}</span>
-    <h2 style="margin-top:14px">The transcript is the edit. <span class="serif grad-text">The video follows.</span></h2>
-    <div class="window">
-      <div class="window-bar"><div class="window-dots"><span></span><span></span><span></span></div><div class="window-title">standup.mp4 &middot; transcript</div></div>
-      <div class="demo-transcript" style="border:0">
-        <div class="demo-line is-cut"><span class="demo-who">Sam</span><span class="demo-text"><span class="demo-strike"></span><span class="t">Hi all, give it one more minute for people to join.</span></span><span class="demo-why">greeting</span></div>
-        <div class="demo-line"><span class="demo-who">Priya</span><span class="demo-text"><span class="demo-hl"></span><span class="t">The exporter now retries with backoff, so long uploads finish.</span></span></div>
-        <div class="demo-line is-cut"><span class="demo-who">Alex</span><span class="demo-text"><span class="demo-strike"></span><span class="t">Sorry, you're on mute. Still on mute.</span></span><span class="demo-why">crosstalk</span></div>
+    <h2>The transcript is the edit. The video follows.</h2>
+    <div class="sheet">
+      <div class="sheet-head"><b>standup</b><span>2 of 3 lines cut</span></div>
+      <div class="lines">
+        <div class="line is-cut"><span class="tc">0:00:06</span><p class="said"><span class="who">Sam</span><span class="t">Hi all, give it one more minute for people to join.</span></p><span class="note">greeting</span></div>
+        <div class="line is-kept"><span class="tc">0:02:18</span><p class="said"><span class="who">Priya</span><span class="t">The exporter now retries with backoff, so long uploads finish.</span></p><span class="note"></span></div>
+        <div class="line is-cut"><span class="tc">0:02:41</span><p class="said"><span class="who">Alex</span><span class="t">Sorry, you're on mute. Still on mute.</span></p><span class="note">crosstalk</span></div>
       </div>
     </div>
-    <ul class="auth-points">
-      <li>{{ icon("sparkles") }}<span>An AI editor judges every sentence, with a reason for every cut.</span></li>
-      <li>{{ icon("scissors") }}<span>Frame-exact cuts with soft dissolves; silences shortened.</span></li>
-      <li>{{ icon("box") }}<span>Final video, shorts, removed parts and a PDF report in one zip.</span></li>
-    </ul>
   </aside>
 </div>
 {% endblock %}

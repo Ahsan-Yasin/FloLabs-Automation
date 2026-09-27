@@ -1,5 +1,5 @@
 {% from "partials/icons.html" import icon, logo %}
-{% set links = [("/#how", "How it works"), ("/#features", "Features"), ("/docs", "Docs"), ("/pricing", "Pricing"), ("/about", "About")] %}
+{% set links = [("/#the-edit", "How it works"), ("/docs", "Docs"), ("/pricing", "Pricing"), ("/about", "About")] %}
 <header class="site-header" data-header>
   <div class="container nav">
     <a class="brand" href="/" aria-label="{{ app_name }}, home">{{ logo() }}<span>{{ app_name }}</span></a>
@@ -10,10 +10,10 @@
     </nav>
     <div class="nav-actions">
       {% if current_user %}
-        <a class="btn btn-sm btn-primary hide-sm" href="/app">Dashboard {{ icon("arrow-right", "arrow") }}</a>
+        <a class="btn btn-sm btn-primary hide-sm" href="/app">Open dashboard</a>
       {% else %}
         <a class="btn btn-sm btn-ghost hide-sm" href="/login">Log in</a>
-        {% if signup_enabled %}<a class="btn btn-sm btn-primary hide-sm" href="/signup">Start free {{ icon("arrow-right", "arrow") }}</a>{% endif %}
+        {% if signup_enabled %}<a class="btn btn-sm btn-primary hide-sm" href="/signup">Start free</a>{% endif %}
       {% endif %}
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Menu" data-nav-toggle>{{ icon("menu") }}</button>
     </div>
@@ -22,7 +22,7 @@
     {% for href, label in links %}<a href="{{ href }}">{{ label }}</a>{% endfor %}
     <div class="cluster">
       {% if current_user %}
-        <a class="btn btn-primary btn-block" href="/app">Open the dashboard</a>
+        <a class="btn btn-primary btn-block" href="/app">Open dashboard</a>
       {% else %}
         <a class="btn btn-outline" href="/login">Log in</a>
         {% if signup_enabled %}<a class="btn btn-primary" href="/signup">Start free</a>{% endif %}

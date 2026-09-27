@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}{{ app_name }} — cut meeting recordings from the transcript{% endblock %}</title>
-<meta name="description" content="{% block description %}{{ app_name }} reads your meeting's transcript, cuts the filler frame-exact, and packs a highlights reel, vertical shorts, the removed parts and a PDF report into one zip. Zoom, YouTube and an API for your automations.{% endblock %}">
-<meta name="theme-color" content="#080c0a">
-<meta name="color-scheme" content="dark light">
+<title>{% block title %}{{ app_name }}: cut meeting recordings from the transcript{% endblock %}</title>
+<meta name="description" content="{% block description %}{{ app_name }} reads a recording's transcript, cuts the filler frame-exact, and packs a highlights reel, vertical shorts, the removed parts and a PDF report into one zip. Paste a YouTube link, upload a file, or call the API.{% endblock %}">
+<meta name="theme-color" content="#f6f7f9">
+<meta name="color-scheme" content="light dark">
 <link rel="icon" href="{{ asset('img/favicon.svg') }}" type="image/svg+xml">
 <link rel="canonical" href="{{ base_url }}{{ path }}">
 <meta property="og:type" content="website">
@@ -18,18 +18,19 @@
 {% block robots %}{% endblock %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="{{ asset('css/site.css') }}">
 <script nonce="{{ csp_nonce }}">
 (function () {
   var root = document.documentElement;
+  var theme = "light";
   try {
     var saved = localStorage.getItem("hc-theme");
-    if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
-  } catch (e) { /* storage blocked: keep the default */ }
+    if (saved === "light" || saved === "dark") theme = saved;
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) theme = "dark";
+  } catch (e) { /* storage blocked: follow the default */ }
+  root.setAttribute("data-theme", theme);
   root.classList.add("js");
-  /* never leave reveal-hidden content invisible if a script fails to load */
-  window.setTimeout(function () { if (!window.__hcReady) root.classList.add("reveal-off"); }, 2500);
 })();
 </script>
 {% block head %}{% endblock %}

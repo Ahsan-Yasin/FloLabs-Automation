@@ -1,19 +1,15 @@
 {% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
 {% block content %}
 <section class="page-hero">
-  <div class="bg-grid"></div>
   <div class="container">
-    <span class="eyebrow">{% block kicker %}Legal{% endblock %}</span>
-    <h1 class="display" style="font-size:clamp(2.2rem,1.5rem + 2.6vw,3.6rem)">{% block heading %}{% endblock %}</h1>
-    <p class="lead">Last updated {% block updated %}27 September 2026{% endblock %}.</p>
+    <h1 class="display">{% block heading %}{% endblock %}</h1>
+    <p class="lede">Last updated {% block updated %}27 September 2026{% endblock %}.</p>
   </div>
 </section>
 <section class="section" style="padding-top:8px">
   <div class="container">
-    <div class="alert alert-info" style="max-width:72ch;margin-bottom:28px">
-      <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
-      <span>This is a plain-language draft that describes how this service actually handles data. Have it reviewed before relying on it.</span>
-    </div>
+    <div class="alert alert-info" style="max-width:40em;margin-bottom:32px">{{ icon("info") }}<span>This is a plain-language draft that describes how this service actually handles data. Have it reviewed before relying on it.</span></div>
     <div class="prose">{% block body %}{% endblock %}</div>
   </div>
 </section>

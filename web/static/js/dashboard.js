@@ -51,7 +51,7 @@
     const placeholder = label.textContent;
     const set = (file) => {
       files[kind] = file || null;
-      label.textContent = file ? `${file.name} · ${fmt.bytes(file.size)}` : placeholder;
+      label.textContent = file ? `${file.name}, ${fmt.bytes(file.size)}` : placeholder;
       zone.classList.toggle("has-file", !!file);
     };
     zone.addEventListener("click", () => input.click());
@@ -115,7 +115,7 @@
       const month = u.limits && u.limits.jobs_per_month ? `${u.jobs_this_month} / ${u.limits.jobs_per_month}` : String(u.jobs_this_month);
       box.textContent = "";
       [[month, "jobs this month"], [String(u.jobs_active), "in progress"], [String(u.minutes_processed), "minutes cut"]].forEach(([v, label]) => {
-        box.appendChild(el("span", { class: "usage-chip" }, el("b", { text: v }), label));
+        box.appendChild(el("span", {}, el("b", { text: v }), label));
       });
     } catch (err) {
       box.textContent = "";
@@ -135,15 +135,15 @@
     const [iconName, sourceLabel] = SOURCE[item.source_kind] || ["film", "Job"];
     const bits = [sourceLabel, fmt.ago(item.created_at)];
     if (item.source_duration_s) bits.push(fmt.minutes(item.source_duration_s));
-    const end = el("div", { class: "job-card-end", style: "display:grid;justify-items:end;gap:8px" }, statusPill(item.status));
+    const end = el("div", { class: "end" }, statusPill(item.status));
     if (!TERMINAL.includes(item.status)) {
       if (item.queue_position > 0) end.appendChild(el("span", { class: "tiny subtle", text: `#${item.queue_position} in line` }));
       else if (item.progress_total > 0) {
         const pct = Math.round((item.progress_current / item.progress_total) * 100);
-        end.appendChild(el("div", { class: "progress mini-progress" }, el("span", { style: `width:${pct}%` })));
+        end.appendChild(el("div", { class: "progress" }, el("span", { style: `width:${pct}%` })));
       }
     }
-    return el("a", { class: "job-card", href: `/app/jobs/${encodeURIComponent(item.job_id)}` },
+    return el("a", { class: "job-row", href: `/app/jobs/${encodeURIComponent(item.job_id)}` },
       el("span", { class: "icon-tile" }, icon(iconName)),
       el("div", { style: "min-width:0" },
         el("strong", { text: item.title || "Untitled job" }),
@@ -200,7 +200,15 @@
     toast("Account created. Check your inbox to confirm your email address.");
     history.replaceState(null, "", "/app");
   }
-  if (location.hash === "#new") qs("#new").scrollIntoView({ block: "start" });
+  /* arriving from the home page: a pasted YouTube link, or "upload a recording" */
+  const pasted = params.get("url");
+  if (pasted) qs("#yt-url").value = pasted;
+  if (params.get("source") === "upload") qs("#tab-upload").click();
+  if (pasted || params.get("source")) {
+    history.replaceState(null, "", "/app#new");
+    qs("#new").scrollIntoView({ block: "start" });
+    (pasted ? submitBtn : qs('[data-dropzone="file"]')).focus({ preventScroll: true });
+  } else if (location.hash === "#new") qs("#new").scrollIntoView({ block: "start" });
 
   loadUsage();
   loadJobs(true);

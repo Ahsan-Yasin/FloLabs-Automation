@@ -40,7 +40,7 @@
         <p class="subtle small" style="margin-top:6px">Jobs created with a <code>callback_url</code> POST a signed event when they finish. Verify it with this secret. <a class="link" href="/docs#webhooks">How</a></p>
         <div class="field" style="margin-top:18px">
           <span class="label">Signing secret</span>
-          <div class="key-box" style="display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-2);background:var(--surface);font:500 13.5px/1.4 var(--font-mono);word-break:break-all">
+          <div class="key-box">
             <span data-secret style="flex:1">whsec_&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
             <button class="btn btn-sm btn-ghost" type="button" data-secret-reveal>{{ icon("eye") }} Reveal</button>
             <button class="btn btn-sm btn-ghost" type="button" data-copy-target="[data-secret]" data-secret-copy hidden>{{ icon("copy") }} <span data-copy-label>Copy</span></button>
@@ -68,7 +68,7 @@
       </section>
 
       <section class="card card-pad section-card danger-zone" id="danger" aria-labelledby="danger-title">
-        <h2 id="danger-title" style="color:var(--danger)">Delete account</h2>
+        <h2 id="danger-title" style="color:var(--cut)">Delete account</h2>
         <p class="muted small" style="margin-top:6px">Deletes your account, your API keys and every job with its recordings and outputs. There is no undo.</p>
         <div class="cluster" style="margin-top:16px"><button class="btn btn-danger" type="button" data-delete-account>{{ icon("trash") }} Delete my account</button></div>
       </section>

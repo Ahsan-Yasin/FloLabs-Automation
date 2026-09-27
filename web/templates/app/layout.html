@@ -21,11 +21,11 @@
         <a href="/app/account">{{ icon("sliders") }} Account settings</a>
         <a href="/app/keys">{{ icon("key") }} API keys</a>
         {% if current_user.is_admin %}<a href="/app/admin">{{ icon("shield") }} Admin</a>{% endif %}
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 12px">
-          <span class="small muted">Theme</span>
+        <div class="theme-row">
+          <span>Theme</span>
           <div class="theme-toggle" role="group" aria-label="Colour theme">
-            <button type="button" data-theme-set="dark" aria-pressed="true" aria-label="Dark theme">{{ icon("moon") }}</button>
-            <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light theme">{{ icon("sun") }}</button>
+            <button type="button" data-theme-set="light" aria-pressed="true" aria-label="Light theme">{{ icon("sun") }}</button>
+            <button type="button" data-theme-set="dark" aria-pressed="false" aria-label="Dark theme">{{ icon("moon") }}</button>
           </div>
         </div>
         <button type="button" data-logout>{{ icon("logout") }} Log out</button>
@@ -46,8 +46,8 @@
 {% endif %}
 {% endblock %}
 {% block footer %}
-<footer class="container-wide" style="padding:8px 0 40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:var(--text-3);font-size:13px">
-  <span>&copy; {{ year }} FloLabs &middot; {{ app_name }} {{ version }}</span>
-  <span><a class="link-muted" href="/docs">Docs</a> &middot; <a class="link-muted" href="/api/docs">API reference</a> &middot; <a class="link-muted" href="/privacy">Privacy</a></span>
+<footer class="container-wide app-footer">
+  <span>&copy; {{ year }} FloLabs. {{ app_name }} {{ version }}</span>
+  <span class="cluster" style="--gap:16px"><a class="link-muted" href="/docs">Docs</a><a class="link-muted" href="/api/docs">API reference</a><a class="link-muted" href="/privacy">Privacy</a></span>
 </footer>
 {% endblock %}

@@ -78,10 +78,10 @@
       const r = await api("/api/v1/webhooks/test", { method: "POST", json: { url: testForm.elements.url.value.trim() } });
       out.textContent = r.delivered ? `Delivered: your server answered HTTP ${r.status_code}.`
         : `Not delivered: ${r.error || `HTTP ${r.status_code}`}.`;
-      out.style.color = r.delivered ? "var(--ok)" : "var(--danger)";
+      out.style.color = r.delivered ? "var(--ok)" : "var(--cut)";
     } catch (err) {
       out.textContent = err.message;
-      out.style.color = "var(--danger)";
+      out.style.color = "var(--cut)";
     } finally {
       busy(btn, false);
     }
@@ -109,7 +109,7 @@
         }
         return el("div", { class: "artifact" }, icon("shield"),
           el("div", { style: "min-width:0" }, el("div", { class: "name", text: describe(s.user_agent) }),
-            el("div", { class: "row-sub", text: `${s.ip || "unknown address"} · active ${fmt.ago(s.last_active_at)}` })),
+            el("div", { class: "row-sub", text: `${s.ip || "unknown address"}, active ${fmt.ago(s.last_active_at)}` })),
           el("span", { style: "margin-left:auto" }, end));
       }));
     } catch (err) {
