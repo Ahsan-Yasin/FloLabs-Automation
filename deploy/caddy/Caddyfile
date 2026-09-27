@@ -1,0 +1,26 @@
+# Serves Highlight Cutter over HTTPS. Caddy fetches and renews the certificate
+# for {$DOMAIN} by itself (ports 80 and 443 must reach this machine); for
+# "localhost" it uses its own local certificate authority.
+#
+# docker compose: UPSTREAM defaults to the app container.
+# Bare metal (systemd): run Caddy with UPSTREAM=127.0.0.1:8000.
+{$DOMAIN:localhost} {
+	encode zstd gzip
+
+	# recordings are uploaded in one request; keep in step with the disk you have
+	request_body {
+		max_size 8GB
+	}
+
+	reverse_proxy {$UPSTREAM:app:8000} {
+		# long uploads and downloads of big zips
+		transport http {
+			read_timeout 30m
+			write_timeout 30m
+		}
+	}
+
+	header {
+		-Server
+	}
+}

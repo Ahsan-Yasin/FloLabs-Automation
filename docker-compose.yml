@@ -1,0 +1,44 @@
+# Highlight Cutter behind Caddy (automatic HTTPS). See DEPLOY.md.
+#   DOMAIN=cut.example.com docker compose up -d --build
+# Without DOMAIN it serves https://localhost with Caddy's own local certificate.
+services:
+  app:
+    build: .
+    image: highlight-cutter:latest
+    env_file: .env
+    environment:
+      # Caddy is the only client of this container: trust its X-Forwarded-For
+      TRUST_PROXY: "true"
+    volumes:
+      # owned by uid 10001 (the image's app user): sudo chown -R 10001:10001 storage
+      - ./storage:/app/storage
+    expose:
+      - "8000"
+    restart: unless-stopped
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+  caddy:
+    image: caddy:2
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "5" }
+
+volumes:
+  caddy_data: {}
+  caddy_config: {}

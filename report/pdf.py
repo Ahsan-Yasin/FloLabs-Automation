@@ -10,7 +10,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from xml.sax.saxutils import escape
+
+# escapes text for reportlab's paragraph markup; nothing is parsed (bandit B406 doesn't apply)
+from xml.sax.saxutils import escape  # nosec B406
 
 from reportlab.graphics.charts.barcharts import HorizontalBarChart
 from reportlab.graphics.shapes import Drawing

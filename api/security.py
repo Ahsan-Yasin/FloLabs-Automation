@@ -20,6 +20,7 @@ from starlette.datastructures import Headers, MutableHeaders
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from core.config import get_settings
+from core.logging import request_id_var
 
 _REQUEST_ID_RE = re.compile(r"^[A-Za-z0-9._-]{8,64}$")
 
@@ -103,4 +104,8 @@ class SecurityHeadersMiddleware:
                     headers.setdefault("Cache-Control", "no-cache")
             await send(message)
 
-        await self.app(scope, receive, send_with_headers)
+        token = request_id_var.set(request_id)
+        try:
+            await self.app(scope, receive, send_with_headers)
+        finally:
+            request_id_var.reset(token)

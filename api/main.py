@@ -308,6 +308,13 @@ def _can_see(job: JobRecord, principal: Principal) -> bool:
     return principal.is_admin or (principal.user_id is not None and job.owner_id == principal.user_id)
 
 
+def _webhooks_pending() -> int | None:
+    try:
+        return webhooks.pending_count()
+    except Exception:  # noqa: BLE001 — health must answer even when the database is down
+        return None
+
+
 # ---------------------------------------------------------------- service
 @health_api.get("/health", summary="Liveness and readiness")
 async def health() -> dict:
@@ -328,6 +335,7 @@ async def health() -> dict:
         "auth_enabled": auth_enabled(),
         "db": "ok" if await run_in_threadpool(check_db) else "error",
         "email_backend": settings.email_backend,
+        "webhooks_pending": await run_in_threadpool(_webhooks_pending),
         "uptime_s": round(time.monotonic() - _STARTED_AT, 1),
     }
 

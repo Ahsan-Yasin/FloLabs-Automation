@@ -197,7 +197,9 @@ def _autoescape(name: str | None) -> bool:
     return bool(name) and name.endswith(".html.j2")
 
 
-_env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=_autoescape,
+# autoescape is on for every .html.j2 (the callable above); only the plain-text
+# twins are unescaped, on purpose. Bandit can't see through the callable.
+_env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)), autoescape=_autoescape,  # nosec B701
                    undefined=StrictUndefined, trim_blocks=True, lstrip_blocks=True)
 
 

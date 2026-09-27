@@ -120,6 +120,34 @@ def _verify_email(args) -> int:
     return 0
 
 
+def _backup(args) -> int:
+    """A consistent copy of a live SQLite database (the sqlite3 online backup
+    API: safe while the app is writing, unlike copying the file)."""
+    import sqlite3
+    from pathlib import Path
+
+    from db.session import database_url
+
+    url = database_url()
+    if not url.startswith("sqlite:///"):
+        print("error: backup only handles SQLite; for Postgres use pg_dump", file=sys.stderr)
+        return 2
+    source = Path(url.removeprefix("sqlite:///"))
+    if not source.exists():
+        print(f"error: no database at {source}", file=sys.stderr)
+        return 1
+    dest = Path(args.dest)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    src, out = sqlite3.connect(source), sqlite3.connect(dest)
+    try:
+        src.backup(out)
+    finally:  # sqlite3's context manager commits but never closes
+        out.close()
+        src.close()
+    print(f"backed up {source} to {dest} ({dest.stat().st_size} bytes)")
+    return 0
+
+
 def _index_jobs(_args) -> int:
     from services import jobs_index
 
@@ -158,6 +186,9 @@ def main(argv: list[str] | None = None) -> int:
         cmd.add_argument("email")
         cmd.set_defaults(fn=fn)
     sub.add_parser("index-jobs", help="index job folders the database doesn't know yet").set_defaults(fn=_index_jobs)
+    backup = sub.add_parser("backup", help="copy the live SQLite database to DEST")
+    backup.add_argument("dest")
+    backup.set_defaults(fn=_backup)
     args = parser.parse_args(argv)
     try:
         return args.fn(args)

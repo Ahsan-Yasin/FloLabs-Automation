@@ -291,6 +291,13 @@ def send_test(url: str, user_id: str) -> dict:
     return {"delivered": status is not None and 200 <= status < 300, "status_code": status, "error": error}
 
 
+def pending_count() -> int:
+    """Deliveries still waiting for a (re)try; /health reports it."""
+    with session_scope() as db:
+        return db.scalar(select(func.count()).select_from(WebhookDelivery).where(
+            WebhookDelivery.delivered_at.is_(None), WebhookDelivery.next_attempt_at.is_not(None))) or 0
+
+
 def list_for_job(job_id: str) -> list[dict]:
     with session_scope() as db:
         rows = db.scalars(select(WebhookDelivery).where(WebhookDelivery.job_id == job_id)

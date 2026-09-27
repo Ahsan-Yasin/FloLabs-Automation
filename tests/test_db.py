@@ -116,3 +116,28 @@ def test_prod_settings_are_checked():
     assert settings_problems(safe) == []
     assert safe.cookie_secure_effective is True
     assert Settings(admin_emails=" A@x.com, b@y.com ,").admin_email_set == {"a@x.com", "b@y.com"}
+
+
+def test_cli_backup_copies_the_live_database(tmp_path, capsys):
+    from services import users
+
+    with session_scope() as db:
+        users.signup(db, "ada@example.com", "correct horse battery", "Ada")
+    dest = tmp_path / "backups" / "app.db"
+    assert cli_main(["backup", str(dest)]) == 0
+    assert "backed up" in capsys.readouterr().out
+    import sqlite3
+
+    copy = sqlite3.connect(dest)
+    try:
+        assert copy.execute("SELECT email FROM users").fetchall() == [("ada@example.com",)]
+    finally:
+        copy.close()
+
+
+def test_health_reports_pending_webhooks():
+    from api.main import app
+
+    body = TestClient(app).get("/health").json()
+    assert body["webhooks_pending"] == 0
+    assert body["db"] == "ok"

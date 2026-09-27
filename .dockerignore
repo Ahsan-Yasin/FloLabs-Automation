@@ -1,0 +1,21 @@
+# Never bake secrets, data or local tooling into the image.
+.env
+.env.*
+!.env.example
+storage/
+.venv/
+venv/
+.git/
+.github/
+.claude/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+tests/
+tools/
+*.pdf
+*.mp4
+*.mkv
+*.mov

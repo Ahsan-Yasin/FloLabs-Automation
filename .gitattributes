@@ -1,0 +1,7 @@
+# Files that run on Linux keep Unix line endings, even in a Windows checkout.
+*.sh text eol=lf
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+docker-compose.yml text eol=lf
+deploy/caddy/Caddyfile text eol=lf
+*.service text eol=lf

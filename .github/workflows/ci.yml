@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [prod]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements-server.txt
+            requirements-dev-tools.txt
+      - name: ffmpeg and fonts
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg fonts-dejavu-core
+      - name: Install (no WhisperX)
+        run: pip install -r requirements-dev-server.txt
+      - name: Lint
+        run: ruff check .
+      - name: Tests
+        run: pytest -q
+      - name: Security lint (bandit)
+        run: bandit -q -c bandit.yaml -r api services db core ingest decide edl slice transcribe bundle report pipeline.py deliver.py outputs.py
+      - name: Known vulnerabilities (pip-audit)
+        # the installed environment: requirements-server.txt pins yt-dlp to a git URL
+        run: pip-audit --progress-spinner off --skip-editable
+
+  image:
+    runs-on: ubuntu-24.04
+    needs: test
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the image
+        run: docker build -t highlight-cutter:ci .
+      - name: Smoke test the image
+        run: |
+          docker run -d --name hc -p 8000:8000 highlight-cutter:ci
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/health; then exit 0; fi
+            sleep 2
+          done
+          docker logs hc
+          exit 1

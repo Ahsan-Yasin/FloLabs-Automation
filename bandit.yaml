@@ -1,0 +1,9 @@
+# Bandit (Python security lint) settings. CI runs:
+#   bandit -q -c bandit.yaml -r <every application package>
+# Each skipped check was reviewed (2026-09-27):
+#   B101  assert: only import-time self-checks (api/routers/pages.py), never access control
+#   B404, B603  subprocess: core/proc.py runs ffmpeg/ffprobe with argument lists, never a shell
+#   B105, B106, B107  "hardcoded password": token type names ("bearer", "verify",
+#         "reset") and empty-string defaults, not secrets
+# Real findings get fixed, or a `# nosec <id>` with the reason on the same line.
+skips: [B101, B404, B603, B105, B106, B107]
