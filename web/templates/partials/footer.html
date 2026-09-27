@@ -1,0 +1,45 @@
+{% from "partials/icons.html" import icon, logo %}
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/">{{ logo() }}<span>{{ app_name }}</span></a>
+        <p>Meeting recordings, copy-edited from the transcript and cut frame-exact. Built by FloLabs.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="/#how">How it works</a></li>
+          <li><a href="/#features">What you get</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/app">Dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Developers</h4>
+        <ul>
+          <li><a href="/docs">Documentation</a></li>
+          <li><a href="/api/docs">API reference</a></li>
+          <li><a href="/docs#webhooks">Webhooks</a></li>
+          <li><a href="/docs#recipes">n8n, Zapier, Make</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About</a></li>
+          {% if contact_email %}<li><a href="mailto:{{ contact_email }}">Contact</a></li>{% endif %}
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; {{ year }} FloLabs. All rights reserved.</span>
+      <div class="theme-toggle" role="group" aria-label="Colour theme">
+        <button type="button" data-theme-set="dark" aria-pressed="true" aria-label="Dark theme">{{ icon("moon") }}</button>
+        <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light theme">{{ icon("sun") }}</button>
+      </div>
+    </div>
+  </div>
+</footer>

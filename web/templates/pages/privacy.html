@@ -1,0 +1,44 @@
+{% extends "pages/legal.html" %}
+{% block title %}Privacy — {{ app_name }}{% endblock %}
+{% block kicker %}Privacy{% endblock %}
+{% block heading %}Privacy policy{% endblock %}
+{% block body %}
+<p>{{ app_name }} is run by FloLabs. This page explains what the service stores, why, and for how long.</p>
+
+<h2>What we store</h2>
+<ul>
+  <li><strong>Your account:</strong> email address, name, a salted password hash (argon2id; never the password itself), whether your email is verified, your role, and your notification setting.</li>
+  <li><strong>Sessions and keys:</strong> hashes of your session and API-key secrets (never the secrets), with the time they were created and last used, and the browser and IP address a session was started from.</li>
+  <li><strong>Jobs:</strong> the recordings you submit, their transcripts, the AI's decisions, and everything a job produces (videos, shorts, report, transcripts, chapters), plus a job log.</li>
+  <li><strong>Webhook deliveries:</strong> the URL, the event and the payload of each webhook a job sends, with the answer your server gave.</li>
+</ul>
+
+<h2>Who else sees it</h2>
+<ul>
+  <li><strong>The AI provider</strong> (OpenAI or Google Gemini, whichever the operator configured) receives the transcript text of your recordings to decide what to keep and to write chapters. It never receives the video or audio.</li>
+  <li><strong>Zoom</strong>, when you process a Zoom recording: the service fetches the recording and its transcript through the workspace's Zoom app.</li>
+  <li><strong>YouTube</strong>, when you submit a link: the service downloads the video and its captions.</li>
+  <li><strong>The email provider</strong> that delivers verification, password-reset and "job finished" emails receives your email address and the message.</li>
+</ul>
+<p>We don't sell data, show ads, or use tracking cookies or third-party analytics.</p>
+
+<h2>Cookies</h2>
+<p>Two cookies keep you signed in: <code>hc_access</code> (15 minutes) and <code>hc_refresh</code> (30 days). Both are HttpOnly, sent only to this site, and deleted when you log out. Your colour theme is remembered in your browser's local storage.</p>
+
+<h2>How long we keep it</h2>
+<ul>
+  <li>Jobs and their files stay until you delete them, or until the operator's retention period removes finished jobs.</li>
+  <li>Deleting your account deletes your jobs and their files, your API keys and your sessions.</li>
+  <li>Server logs are kept for operations and troubleshooting.</li>
+</ul>
+
+<h2>Your choices</h2>
+<ul>
+  <li>Delete any job, and everything it produced, from its page or through the API.</li>
+  <li>Turn off "job finished" emails in your account settings.</li>
+  <li>Sign out other browsers, revoke API keys, or delete your account at any time.</li>
+</ul>
+
+<h2>Contact</h2>
+<p>{% if contact_email %}Write to <a href="mailto:{{ contact_email }}">{{ contact_email }}</a> with any question about your data.{% else %}Contact the operator of this site with any question about your data.{% endif %}</p>
+{% endblock %}

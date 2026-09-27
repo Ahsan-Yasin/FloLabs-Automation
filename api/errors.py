@@ -18,7 +18,10 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from core.logging import get_logger
 from services.errors import ServiceError
+
+logger = get_logger(__name__)
 
 CODES_BY_STATUS = {
     400: "bad_request", 401: "unauthorized", 402: "plan_limit", 403: "forbidden", 404: "not_found",
@@ -89,3 +92,12 @@ def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(RequestValidationError)
     async def _validation_error(_request: Request, exc: RequestValidationError):
         return JSONResponse(status_code=422, content=error_body("validation_error", jsonable_encoder(exc.errors())))
+
+    @app.exception_handler(Exception)
+    async def _unexpected(request: Request, exc: Exception):
+        logger.error("unhandled error on %s %s", request.method, request.url.path, exc_info=exc)
+        if _html_renderer is not None and _wants_html(request):
+            page = _html_renderer(request, 500, "")
+            if page is not None:
+                return page
+        return JSONResponse(status_code=500, content=error_body("internal", "unexpected server error; it was logged"))

@@ -49,6 +49,9 @@ class Principal:
     api_key_id: str | None = None
     # authenticated by a cookie the browser sends on its own (CSRF applies)
     cookie_auth: bool = False
+    # only the refresh cookie was valid (the access cookie had expired): a
+    # page load hands out fresh cookies (api/routers/pages.py)
+    refresh_only: bool = False
 
     @property
     def is_admin(self) -> bool:
@@ -105,9 +108,9 @@ def _is_ops_token(value: str | None) -> bool:
     return bool(token and value) and hmac.compare_digest(value.encode(), token.encode())
 
 
-def _from_user(user: UserSnapshot, via: str, *, cookie_auth: bool = False) -> Principal:
+def _from_user(user: UserSnapshot, via: str, *, cookie_auth: bool = False, refresh_only: bool = False) -> Principal:
     return Principal(via=via, user_id=user.id, email=user.email, name=user.name, role=user.role,
-                     email_verified=user.email_verified, cookie_auth=cookie_auth)
+                     email_verified=user.email_verified, cookie_auth=cookie_auth, refresh_only=refresh_only)
 
 
 def principal_from_access_token(token: str, via: str = "bearer", cookie_auth: bool = False) -> Principal | None:
@@ -139,7 +142,7 @@ def _from_refresh_cookie(raw: str) -> Principal | None:
     user = get_user_snapshot(user_id)
     if user is None or not user.is_active:
         return None
-    return _from_user(user, "session", cookie_auth=True)
+    return _from_user(user, "session", cookie_auth=True, refresh_only=True)
 
 
 def resolve(creds: Credentials, method: str) -> Principal | None:

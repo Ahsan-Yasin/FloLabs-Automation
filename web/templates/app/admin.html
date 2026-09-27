@@ -1,0 +1,35 @@
+{% extends "app/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Admin — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="container-wide app-main">
+  <div class="page-head"><div><h1>Admin</h1><p>Accounts, jobs and the queue across the workspace.</p></div></div>
+  <div class="stat-cards" data-stats>
+    {% for _ in range(4) %}<div class="card stat-card"><span class="skeleton" style="width:50%;height:26px"></span></div>{% endfor %}
+  </div>
+
+  <section class="section-card" style="margin-top:30px">
+    <div class="card-head" style="align-items:center">
+      <h2 class="card-title">Users</h2>
+      <input class="input" type="search" placeholder="Search by email or name" data-user-search style="max-width:280px;min-height:40px" aria-label="Search users">
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Jobs</th><th>Last login</th><th>Joined</th><th class="actions"><span class="visually-hidden">Actions</span></th></tr></thead>
+        <tbody data-users><tr><td colspan="7"><span class="skeleton" style="width:40%"></span></td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section-card" style="margin-top:30px">
+    <div class="card-head"><h2 class="card-title">All jobs</h2></div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Job</th><th>Owner</th><th>Status</th><th>Source</th><th>Created</th></tr></thead>
+        <tbody data-all-jobs><tr><td colspan="5"><span class="skeleton" style="width:40%"></span></td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('js/admin.js') }}" defer></script>{% endblock %}

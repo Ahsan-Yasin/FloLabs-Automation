@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}{{ title }} — {{ app_name }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+{% block footer %}{% endblock %}
+{% block content %}
+<section class="error-page grain">
+  <div class="bg-grid"></div>
+  <div class="glow glow-a"></div>
+  <div>
+    <div class="error-code grad-text">{{ code }}</div>
+    <h1 class="h2" style="margin-top:10px">{{ title }}</h1>
+    <p>{{ message }}</p>
+    <div class="cluster">
+      {% if current_user %}<a class="btn btn-primary" href="/app">{{ icon("home") }} Back to the dashboard</a>{% else %}<a class="btn btn-primary" href="/">{{ icon("home") }} Go to the home page</a>{% endif %}
+      <a class="btn btn-outline" href="/docs">Read the docs</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

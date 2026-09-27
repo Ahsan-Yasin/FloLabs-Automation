@@ -1,0 +1,39 @@
+{% extends "pages/legal.html" %}
+{% block title %}Terms — {{ app_name }}{% endblock %}
+{% block kicker %}Terms{% endblock %}
+{% block heading %}Terms of service{% endblock %}
+{% block body %}
+<p>These terms cover your use of {{ app_name }}, run by FloLabs. By creating an account you agree to them.</p>
+
+<h2>Your account</h2>
+<ul>
+  <li>Give a real email address and keep your password and API keys secret. You're responsible for what happens with your account and keys.</li>
+  <li>Tell us if you think your account or a key has been misused; revoke keys and sign out other sessions from your account page.</li>
+</ul>
+
+<h2>Your content</h2>
+<ul>
+  <li>You keep all rights to the recordings you submit and to everything the service produces from them.</li>
+  <li>You give us permission to process your recordings only to provide the service: to transcribe, analyse, cut and package them as you ask.</li>
+  <li>Only submit recordings you have the right to process, and respect the people in them: get the consent your jurisdiction requires for recording and processing meetings.</li>
+</ul>
+
+<h2>Acceptable use</h2>
+<ul>
+  <li>Don't use the service to break the law, infringe others' rights, or process content you're not allowed to.</li>
+  <li>Don't try to access other people's jobs or accounts, overload the service, or get around its limits.</li>
+</ul>
+
+<h2>The service</h2>
+<ul>
+  <li>The service is provided as it is. AI decisions can be wrong: review important outputs before you publish them.</li>
+  <li>We may change or stop features, and we may suspend accounts that break these terms.</li>
+  <li>To the extent the law allows, FloLabs isn't liable for indirect losses, or for losses caused by content you submit.</li>
+</ul>
+
+<h2>Changes</h2>
+<p>If these terms change in a way that matters, we'll say so on this page and, for significant changes, by email.</p>
+
+<h2>Contact</h2>
+<p>{% if contact_email %}Questions: <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.{% else %}Contact the operator of this site with any question about these terms.{% endif %}</p>
+{% endblock %}

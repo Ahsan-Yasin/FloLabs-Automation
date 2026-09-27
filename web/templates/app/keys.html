@@ -1,0 +1,64 @@
+{% extends "app/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}API keys — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="container-wide app-main" style="max-width:980px">
+  <div class="page-head">
+    <div>
+      <h1>API keys</h1>
+      <p>Let n8n, Zapier, Make or your own scripts create jobs and download results. <a class="link" href="/docs#auth">How keys work</a></p>
+    </div>
+    <button class="btn btn-primary" type="button" data-new-key {% if not current_user.email_verified %}disabled title="Confirm your email first"{% endif %}>{{ icon("plus") }} New key</button>
+  </div>
+
+  <div class="card card-pad" data-key-reveal hidden style="margin-bottom:22px;border-color:color-mix(in srgb,var(--accent) 45%,transparent)">
+    <div class="key-reveal">
+      <div class="card-head" style="margin-bottom:6px"><div><h2 class="card-title">Copy your new key now</h2><p class="subtle small">It won't be shown again. Store it in your automation tool's credentials.</p></div></div>
+      <div class="key-box"><span data-key-value></span><button class="copy-btn" type="button" data-copy-target="[data-key-value]" style="color:var(--text);border-color:var(--border-2);background:var(--surface-2)">{{ icon("copy") }}<span data-copy-label>Copy</span></button></div>
+      <div class="code-card" style="box-shadow:none">
+        <div class="code-card-head"><span class="tiny mono" style="color:#9aa597">Try it</span><button class="copy-btn" type="button" data-copy-target="#key-curl">{{ icon("copy") }}<span data-copy-label>Copy</span></button></div>
+        <pre class="codeblock" id="key-curl" data-key-curl></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Name</th><th>Key</th><th>Scopes</th><th>Last used</th><th>Created</th><th class="actions"><span class="visually-hidden">Actions</span></th></tr></thead>
+      <tbody data-keys><tr><td colspan="6"><span class="skeleton" style="width:40%"></span></td></tr></tbody>
+    </table>
+  </div>
+  <p class="hint" style="margin-top:14px">Keys see only your jobs. Revoke a key and every automation using it stops at once; rotate to replace it with a new secret.</p>
+</div>
+
+<dialog class="modal" data-key-dialog aria-labelledby="key-dialog-title">
+  <form method="dialog" data-key-form novalidate>
+    <div class="modal-body">
+      <h2 class="h3" id="key-dialog-title">New API key</h2>
+      <div class="alert alert-danger" data-form-error hidden role="alert" style="margin-top:14px">{{ icon("alert") }}<span data-error-text></span></div>
+      <div class="field" style="margin-top:18px">
+        <label class="label" for="key-name">Name</label>
+        <input class="input" id="key-name" name="name" maxlength="80" required placeholder="n8n production" autocomplete="off">
+      </div>
+      <fieldset class="field" style="border:0;padding:0;margin:16px 0 0">
+        <legend class="label" style="margin-bottom:8px">Allowed to</legend>
+        <div style="display:grid;gap:8px" data-scope-list></div>
+      </fieldset>
+      <div class="field">
+        <label class="label" for="key-expiry">Expires</label>
+        <select class="select" id="key-expiry" name="expires">
+          <option value="">Never</option>
+          <option value="30">In 30 days</option>
+          <option value="90">In 90 days</option>
+          <option value="365">In a year</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn-primary" type="submit">Create key</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('js/keys.js') }}" defer></script>{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "app/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Dashboard — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="container-wide app-main">
+  <div class="page-head">
+    <div>
+      <h1>Hi {{ current_user.first_name }}</h1>
+      <p>Cut a new recording, or pick up where you left off.</p>
+    </div>
+    <div class="usage-chips" data-usage aria-label="Usage">
+      <span class="usage-chip"><span class="skeleton" style="width:90px"></span></span>
+      <span class="usage-chip"><span class="skeleton" style="width:90px"></span></span>
+      <span class="usage-chip"><span class="skeleton" style="width:90px"></span></span>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <section class="card card-pad" id="new" aria-labelledby="new-title">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title" id="new-title">New job</h2>
+          <p class="subtle small">Pick a source. You'll get an email when it's done.</p>
+        </div>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Source" data-tabs data-source-tabs>
+        <button class="tab" role="tab" type="button" aria-selected="true" aria-controls="src-youtube" id="tab-youtube" data-source="youtube">{{ icon("youtube") }} YouTube link</button>
+        <button class="tab" role="tab" type="button" aria-selected="false" aria-controls="src-upload" id="tab-upload" data-source="upload">{{ icon("upload") }} Upload a file</button>
+      </div>
+
+      <form data-new-job novalidate>
+        <div class="alert alert-danger" data-form-error hidden role="alert" style="margin-top:18px">{{ icon("alert") }}<span data-error-text></span></div>
+
+        <div class="source-panel" id="src-youtube" role="tabpanel" aria-labelledby="tab-youtube">
+          <div class="field">
+            <label class="label" for="yt-url">YouTube link</label>
+            <input class="input" id="yt-url" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…" spellcheck="false">
+            <span class="hint">Captions are reused as the transcript when the video has them.</span>
+          </div>
+        </div>
+
+        <div class="source-panel" id="src-upload" role="tabpanel" aria-labelledby="tab-upload" hidden>
+          <div class="dropzone" data-dropzone="file" tabindex="0" role="button" aria-label="Choose a recording to upload">
+            {{ icon("upload") }}
+            <strong data-file-label>Drop a recording here, or click to choose</strong>
+            <span class="hint">.mp4, .mkv or .mov</span>
+          </div>
+          <input type="file" data-file-input="file" accept=".mp4,.mkv,.mov,video/mp4,video/x-matroska,video/quicktime" hidden>
+          <div class="dropzone small" data-dropzone="transcript" tabindex="0" role="button" aria-label="Attach a transcript" style="margin-top:10px">
+            {{ icon("file") }}<span data-file-label>Have a transcript? Attach a .vtt or .srt (optional)</span>
+          </div>
+          <input type="file" data-file-input="transcript" accept=".vtt,.srt" hidden>
+          <div class="field" style="margin-top:14px"><label class="label" for="up-title">Title <span class="opt">(optional)</span></label><input class="input" id="up-title" maxlength="120" placeholder="Defaults to the file name"></div>
+          <div data-upload-progress hidden style="margin-top:14px"><div class="progress"><span></span></div><p class="hint" style="margin-top:6px" data-upload-label></p></div>
+        </div>
+
+        <div style="margin-top:20px;display:grid;gap:10px">
+          <label class="check"><input type="checkbox" name="decide_only"><div><strong>Show me the AI's picks first</strong><span>Nothing renders until you press &ldquo;Render now&rdquo;.</span></div></label>
+          <label class="check"><input type="checkbox" name="cut_silence" checked><div><strong>Cut silences</strong><span>Pauses where nobody speaks become a short beat.</span></div></label>
+        </div>
+
+        <details class="advanced">
+          <summary>{{ icon("sliders") }} Advanced options {{ icon("chevron-down") }}</summary>
+          <div class="adv-body">
+            <label class="check"><input type="checkbox" name="transitions" checked><div><strong>Dissolves between kept parts</strong><span>Untick for hard cuts.</span></div></label>
+            <div class="form-row">
+              <div class="field"><label class="label" for="opt-reel">Highlights reel (minutes)</label><input class="input" id="opt-reel" name="highlights_minutes" type="number" min="0" max="15" step="0.5" placeholder="5"></div>
+              <div class="field"><label class="label" for="opt-shorts">Number of shorts</label><input class="input" id="opt-shorts" name="shorts_count" type="number" min="0" max="10" placeholder="4"></div>
+            </div>
+            <div class="field"><label class="label" for="opt-hc">What counts as a highlight <span class="opt">(optional)</span></label><textarea class="textarea" id="opt-hc" name="highlights_criteria" rows="2" placeholder="e.g. roadmap decisions, and anything explained on the whiteboard"></textarea></div>
+            <div class="field"><label class="label" for="opt-sc">What makes a good short <span class="opt">(optional)</span></label><textarea class="textarea" id="opt-sc" name="shorts_criteria" rows="2" placeholder="e.g. a self-contained tip a customer would find useful"></textarea></div>
+            <div class="field"><label class="label" for="opt-cb">Webhook URL <span class="opt">(optional)</span></label><input class="input" id="opt-cb" name="callback_url" type="url" placeholder="https://your-automation.example.com/hook" spellcheck="false"><span class="hint">Gets a signed POST when the job finishes. <a class="link" href="/docs#webhooks">How to verify it</a>.</span></div>
+          </div>
+        </details>
+
+        <button class="btn btn-primary btn-lg btn-block" type="submit" data-submit style="margin-top:22px">{{ icon("scissors") }} Start cutting</button>
+      </form>
+    </section>
+
+    <section aria-labelledby="jobs-title">
+      <div class="card-head" style="margin-bottom:14px;align-items:center">
+        <h2 class="card-title" id="jobs-title">Your jobs</h2>
+        <div class="tabs" role="group" aria-label="Filter jobs" data-job-filter>
+          <button class="tab" type="button" aria-selected="true" data-status="">All</button>
+          <button class="tab" type="button" aria-selected="false" data-status="active">Active</button>
+          <button class="tab" type="button" aria-selected="false" data-status="done">Done</button>
+          <button class="tab" type="button" aria-selected="false" data-status="failed">Failed</button>
+        </div>
+      </div>
+      <div class="jobs-list" data-jobs aria-live="polite" aria-busy="true">
+        {% for _ in range(3) %}<div class="job-card" aria-hidden="true"><span class="skeleton" style="width:38px;height:38px;border-radius:12px"></span><div style="display:grid;gap:8px"><span class="skeleton" style="width:60%"></span><span class="skeleton" style="width:35%"></span></div><span class="skeleton" style="width:70px;height:24px"></span></div>{% endfor %}
+      </div>
+      <button class="btn btn-outline btn-block" type="button" data-jobs-more hidden style="margin-top:12px">Load more</button>
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('js/dashboard.js') }}" defer></script>{% endblock %}

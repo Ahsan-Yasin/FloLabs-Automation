@@ -1,0 +1,33 @@
+{% extends "auth/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Choose a new password — {{ app_name }}{% endblock %}
+{% block card %}
+{% if token_valid %}
+<h1>Choose a new password</h1>
+<p class="sub">You'll be signed out everywhere, then you can log in with the new one.</p>
+<form class="auth-form" data-form="reset" data-token="{{ token }}" novalidate>
+  <div class="alert alert-danger" data-form-error hidden role="alert">{{ icon("alert") }}<span data-error-text></span></div>
+  <div class="field" style="margin-top:4px">
+    <label class="label" for="password">New password</label>
+    <div class="input-group">
+      <input class="input" id="password" name="password" type="password" autocomplete="new-password" minlength="10" required autofocus>
+      <button class="input-action" type="button" data-toggle-password aria-label="Show password">{{ icon("eye") }}</button>
+    </div>
+    <div class="pw-meter" data-pw-meter data-score="0" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <span class="hint" data-pw-hint>At least 10 characters.</span>
+  </div>
+  <button class="btn btn-primary btn-lg btn-block" type="submit">Save the new password</button>
+</form>
+<div data-form-done hidden>
+  <div class="result-icon" style="margin-top:28px">{{ icon("check") }}</div>
+  <h2 class="h3" style="margin-top:18px">Password changed</h2>
+  <p class="muted" style="margin-top:8px">Log in with your new password.</p>
+  <a class="btn btn-primary btn-lg btn-block" style="margin-top:22px" href="/login">Log in</a>
+</div>
+{% else %}
+<div class="result-icon bad">{{ icon("alert") }}</div>
+<h1 style="margin-top:20px">This link has expired</h1>
+<p class="sub">Reset links work for one hour and only once. Ask for a new one.</p>
+<a class="btn btn-primary btn-lg btn-block" style="margin-top:26px" href="/forgot">Send a new link</a>
+{% endif %}
+{% endblock %}

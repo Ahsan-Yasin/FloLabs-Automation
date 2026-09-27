@@ -37,10 +37,10 @@ from fastapi import (
 )
 from fastapi.responses import (
     FileResponse,
-    HTMLResponse,
     JSONResponse,
     PlainTextResponse,
 )
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
 
@@ -71,6 +71,7 @@ from .queue import (
     is_protected,
     reconcile_on_startup,
 )
+from .security import SecurityHeadersMiddleware
 
 configure_logging()
 logger = get_logger(__name__)
@@ -129,10 +130,12 @@ app = FastAPI(
     swagger_ui_parameters={"persistAuthorization": True, "displayRequestDuration": True},
 )
 app.add_middleware(AuthMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)  # outermost: every answer gets the headers
 install_error_handlers(app)
 install_openapi(app)
 
 WEB_DIR = Path(__file__).resolve().parent.parent / "web"
+app.mount("/static", StaticFiles(directory=WEB_DIR / "static"), name="static")
 _STARTED_AT = time.monotonic()
 
 health_api = APIRouter(tags=["Service"])
@@ -319,9 +322,10 @@ def _job_payload(job: JobRecord, request: Request) -> dict:
     gives resource links; the unprefixed routes keep the full record."""
     enriched = job.model_copy(update={"stale": _is_stale(job), "queue_position": _queue_position(job.job_id),
                                       "links": webhooks.links_for(job)})
-    if request.url.path.startswith(API_V1):
-        return webhooks.public_job(enriched)
-    return enriched.model_dump(mode="json")
+    payload = webhooks.public_job(enriched) if request.url.path.startswith(API_V1) else enriched.model_dump(mode="json")
+    # POST /jobs/{id}/render would be accepted (decided, or a retryable failed render with saved picks)
+    payload["can_render"] = _can_render(job)
+    return payload
 
 
 def _job_response(job: JobRecord, request: Request, **extra) -> JSONResponse:
@@ -363,21 +367,6 @@ async def health() -> dict:
         "email_backend": settings.email_backend,
         "uptime_s": round(time.monotonic() - _STARTED_AT, 1),
     }
-
-
-@app.get("/", response_class=HTMLResponse, include_in_schema=False)
-async def index() -> str:
-    return (WEB_DIR / "index.html").read_text(encoding="utf-8")
-
-
-@app.get("/app", response_class=HTMLResponse, include_in_schema=False)
-async def app_page() -> str:
-    return (WEB_DIR / "app.html").read_text(encoding="utf-8")
-
-
-@app.get("/styles.css", include_in_schema=False)
-async def styles() -> FileResponse:
-    return FileResponse(WEB_DIR / "styles.css", media_type="text/css")
 
 
 # ---------------------------------------------------------------- create jobs
@@ -881,6 +870,7 @@ from .routers import (
 from .routers import admin as admin_routes
 from .routers import auth as auth_routes
 from .routers import keys as keys_routes
+from .routers import pages as page_routes
 
 app.include_router(health_api, include_in_schema=False)          # /health
 app.include_router(health_api, prefix=API_V1)                    # /api/v1/health
@@ -895,3 +885,5 @@ app.include_router(zoom_api, prefix=API_V1)
 app.include_router(legacy_only, include_in_schema=False)
 app.include_router(jobs_api, include_in_schema=False)
 app.include_router(zoom_api, include_in_schema=False)
+# the website (last: its routes are plain paths like /, /about, /app)
+app.include_router(page_routes.router)

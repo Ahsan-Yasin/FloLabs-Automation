@@ -1,0 +1,95 @@
+{% extends "app/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Account settings — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="container-wide app-main" style="max-width:1080px">
+  <div class="page-head"><div><h1>Account settings</h1><p>{{ current_user.email }}</p></div></div>
+  <div class="settings-grid">
+    <nav class="settings-nav" aria-label="Settings sections">
+      <a href="#profile">Profile</a>
+      <a href="#password">Password</a>
+      <a href="#webhooks">Webhooks</a>
+      <a href="#sessions">Signed-in browsers</a>
+      <a href="#danger">Delete account</a>
+    </nav>
+    <div>
+      <section class="card card-pad section-card" id="profile" aria-labelledby="profile-title">
+        <h2 id="profile-title">Profile</h2>
+        <form data-profile-form novalidate style="margin-top:18px">
+          <div class="field"><label class="label" for="p-name">Name</label><input class="input" id="p-name" name="name" maxlength="120" autocomplete="name"></div>
+          <label class="check" style="margin-top:16px"><input type="checkbox" name="notify_on_done"><div><strong>Email me when a job finishes</strong><span>Done, failed, or picks ready to review.</span></div></label>
+          <div class="cluster" style="margin-top:18px"><button class="btn btn-primary" type="submit">Save</button></div>
+        </form>
+      </section>
+
+      <section class="card card-pad section-card" id="password" aria-labelledby="pw-title">
+        <h2 id="pw-title">Password</h2>
+        <p class="subtle small" style="margin-top:6px">Changing it signs out every other browser.</p>
+        <form data-password-form novalidate style="margin-top:18px">
+          <div class="alert alert-danger" data-form-error hidden role="alert">{{ icon("alert") }}<span data-error-text></span></div>
+          <div class="form-row" style="margin-top:4px">
+            <div class="field"><label class="label" for="pw-current">Current password</label><input class="input" id="pw-current" name="current_password" type="password" autocomplete="current-password" required></div>
+            <div class="field"><label class="label" for="pw-new">New password</label><input class="input" id="pw-new" name="new_password" type="password" autocomplete="new-password" minlength="10" required></div>
+          </div>
+          <div class="cluster" style="margin-top:18px"><button class="btn btn-primary" type="submit">Change password</button></div>
+        </form>
+      </section>
+
+      <section class="card card-pad section-card" id="webhooks" aria-labelledby="wh-title">
+        <h2 id="wh-title">Webhooks</h2>
+        <p class="subtle small" style="margin-top:6px">Jobs created with a <code>callback_url</code> POST a signed event when they finish. Verify it with this secret. <a class="link" href="/docs#webhooks">How</a></p>
+        <div class="field" style="margin-top:18px">
+          <span class="label">Signing secret</span>
+          <div class="key-box" style="display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid var(--border-2);background:var(--surface);font:500 13.5px/1.4 var(--font-mono);word-break:break-all">
+            <span data-secret style="flex:1">whsec_&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
+            <button class="btn btn-sm btn-ghost" type="button" data-secret-reveal>{{ icon("eye") }} Reveal</button>
+            <button class="btn btn-sm btn-ghost" type="button" data-copy-target="[data-secret]" data-secret-copy hidden>{{ icon("copy") }} <span data-copy-label>Copy</span></button>
+          </div>
+        </div>
+        <div class="cluster" style="margin-top:12px"><button class="btn btn-sm btn-outline" type="button" data-secret-rotate>{{ icon("refresh") }} Rotate secret</button></div>
+        <form data-webhook-test novalidate style="margin-top:22px">
+          <div class="field">
+            <label class="label" for="wh-url">Send a test event</label>
+            <div class="cluster" style="flex-wrap:nowrap">
+              <input class="input" id="wh-url" name="url" type="url" placeholder="https://your-automation.example.com/hook" spellcheck="false" required>
+              <button class="btn btn-outline" type="submit">{{ icon("zap") }} Send ping</button>
+            </div>
+            <span class="hint" data-webhook-result>Posts a signed <code>ping</code> event to the URL right now.</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="card card-pad section-card" id="sessions" aria-labelledby="sess-title">
+        <div class="card-head">
+          <div><h2 id="sess-title">Signed-in browsers</h2><p class="subtle small" style="margin-top:6px">Sign out a browser you don't recognise.</p></div>
+          <button class="btn btn-sm btn-outline" type="button" data-logout-all>{{ icon("logout") }} Sign out everywhere</button>
+        </div>
+        <div class="artifact-list" data-sessions><span class="skeleton" style="width:50%"></span></div>
+      </section>
+
+      <section class="card card-pad section-card danger-zone" id="danger" aria-labelledby="danger-title">
+        <h2 id="danger-title" style="color:var(--danger)">Delete account</h2>
+        <p class="muted small" style="margin-top:6px">Deletes your account, your API keys and every job with its recordings and outputs. There is no undo.</p>
+        <div class="cluster" style="margin-top:16px"><button class="btn btn-danger" type="button" data-delete-account>{{ icon("trash") }} Delete my account</button></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<dialog class="modal" data-delete-dialog aria-labelledby="delete-title">
+  <form method="dialog" data-delete-form novalidate>
+    <div class="modal-body">
+      <h2 class="h3" id="delete-title">Delete your account?</h2>
+      <p class="muted" style="margin-top:8px">Type your email address and your password to confirm. Your jobs and their files are deleted for good.</p>
+      <div class="alert alert-danger" data-form-error hidden role="alert" style="margin-top:14px">{{ icon("alert") }}<span data-error-text></span></div>
+      <div class="field" style="margin-top:16px"><label class="label" for="del-email">Email</label><input class="input" id="del-email" name="confirm_email" type="email" autocomplete="off" required></div>
+      <div class="field"><label class="label" for="del-pw">Password</label><input class="input" id="del-pw" name="password" type="password" autocomplete="current-password" required></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn-danger" type="submit">Delete everything</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('js/account.js') }}" defer></script>{% endblock %}

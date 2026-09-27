@@ -1,0 +1,17 @@
+{% extends "auth/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Reset your password — {{ app_name }}{% endblock %}
+{% block card %}
+<h1>Forgot your password?</h1>
+<p class="sub">Enter your email and we'll send you a link to choose a new one.</p>
+<form class="auth-form" data-form="forgot" novalidate>
+  <div class="alert alert-danger" data-form-error hidden role="alert">{{ icon("alert") }}<span data-error-text></span></div>
+  <div class="alert alert-success" data-form-success hidden role="status">{{ icon("check") }}<span>If an account exists for that address, a reset link is on its way. It works for one hour.</span></div>
+  <div class="field" style="margin-top:4px">
+    <label class="label" for="email">Email</label>
+    <input class="input" id="email" name="email" type="email" autocomplete="email" required autofocus spellcheck="false">
+  </div>
+  <button class="btn btn-primary btn-lg btn-block" type="submit">Send the reset link</button>
+</form>
+<p class="auth-switch"><a class="link" href="/login">Back to log in</a></p>
+{% endblock %}

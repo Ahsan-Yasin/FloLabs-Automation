@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}{{ app_name }} — we mark up the transcript, then we cut the video{% endblock %}
+
+{% block content %}
+{# ---------------------------------------------------------------- hero #}
+<section class="hero grain">
+  <div class="bg-grid"></div>
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+  <div class="container hero-inner">
+    <a class="pill" href="/docs" data-reveal><span class="pill-tag">NEW</span>An API and signed webhooks for your automations {{ icon("arrow-right", "arrow") }}</a>
+    <h1 class="display" data-reveal>We mark up the transcript. <span class="serif grad-text">Then we cut the video.</span></h1>
+    <p class="lead" data-reveal>{{ app_name }} reads every sentence of your meeting, strikes the filler, crosstalk and small talk, and cuts the recording frame-exact. Then it packs a highlights reel, vertical shorts, the removed parts and a PDF report into one zip.</p>
+    <div class="hero-ctas" data-reveal>
+      {% if current_user %}
+      <a class="btn btn-primary btn-lg" href="/app">Open your dashboard {{ icon("arrow-right", "arrow") }}</a>
+      {% elif signup_enabled %}
+      <a class="btn btn-primary btn-lg" href="/signup">Start free {{ icon("arrow-right", "arrow") }}</a>
+      {% else %}
+      <a class="btn btn-primary btn-lg" href="/login">Log in {{ icon("arrow-right", "arrow") }}</a>
+      {% endif %}
+      <a class="btn btn-outline btn-lg" href="/docs">{{ icon("code") }} Read the API docs</a>
+    </div>
+    <p class="hero-note" data-reveal>Paste a YouTube link or upload a recording (.mp4, .mkv, .mov).</p>
+
+    <div class="hero-window-wrap">
+      <div class="window" data-demo aria-label="Example: a meeting transcript marked up by the AI editor" role="img">
+        <div class="window-bar">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <div class="window-title">weekly-product-sync.mp4 &middot; transcript</div>
+          <div class="spacer"></div>
+          <span class="badge badge-accent">AI editor</span>
+        </div>
+        <div class="window-body">
+          <div class="demo-transcript">
+            <div class="demo-label"><span>Transcript</span><i class="k">kept</i><i class="x">cut</i></div>
+            {% set lines = [
+              ("Sam", "Can everyone hear me okay? Great, let's get started.", "greeting"),
+              ("Priya", "This quarter we shipped transcript reuse, which cut a third of our compute.", ""),
+              ("Sam", "Sorry, one second, my dog is barking.", "interruption"),
+              ("Priya", "The last blocker is rate limits on long recordings; we handle it with backoff.", ""),
+              ("Alex", "Uh, yeah, so, um, anyway.", "filler"),
+              ("Alex", "Decision: the renderer moves to frame-exact cuts this sprint.", ""),
+            ] %}
+            {% for who, text, why in lines %}
+            <div class="demo-line{% if why %} is-cut{% endif %}" data-demo-line{% if why %} data-cut{% endif %}>
+              <span class="demo-who">{{ who }}</span>
+              <span class="demo-text">{% if why %}<span class="demo-strike"></span>{% else %}<span class="demo-hl"></span>{% endif %}<span class="t">{{ text }}</span></span>
+              {% if why %}<span class="demo-why">{{ why }}</span>{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          <div class="demo-side">
+            <div class="demo-bars">
+              <div class="demo-bar-row">
+                <div class="demo-bar-head"><span>Recording</span><b>1:38:12</b></div>
+                <div class="demo-bar orig">
+                  <span class="seg x" style="flex:1.2"></span><span class="seg k" style="flex:3"></span><span class="seg x" style="flex:0.8"></span><span class="seg k" style="flex:2.6"></span><span class="seg x" style="flex:1.6"></span><span class="seg k" style="flex:2.2"></span><span class="seg x" style="flex:1"></span>
+                </div>
+              </div>
+              <div class="demo-bar-row">
+                <div class="demo-bar-head"><span>Final video</span><b data-demo-counter>41:05</b></div>
+                <div class="demo-bar final"><span class="seg" style="flex:1"></span></div>
+              </div>
+            </div>
+            <div class="demo-outputs">
+              <div class="out-chip">{{ icon("film") }}final.mp4<span class="meta">reel + meeting</span></div>
+              <div class="out-chip">{{ icon("phone") }}4 shorts<span class="meta">1080&times;1920</span></div>
+              <div class="out-chip">{{ icon("scissors") }}removed.mp4<span class="meta">labelled</span></div>
+              <div class="out-chip">{{ icon("file") }}report.pdf<span class="meta">+ transcripts</span></div>
+              <div class="out-chip">{{ icon("list") }}chapters.txt<span class="meta">YouTube-ready</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-footer">
+          <span class="demo-counter">3 of 6 lines cut &middot; <b>58%</b> shorter</span>
+          <button class="btn btn-sm btn-ghost" type="button" data-demo-replay hidden>{{ icon("refresh") }} Replay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ---------------------------------------------------------------- works with #}
+<section class="section-tight">
+  <div class="container">
+    <div class="works-with" data-reveal>
+      <span>Plugs into</span>
+      <strong>YouTube</strong><strong>n8n</strong><strong>Zapier</strong><strong>Make</strong><strong>any HTTP client</strong>
+    </div>
+  </div>
+</section>
+
+{# ---------------------------------------------------------------- stats #}
+<section class="section-tight" style="padding-top:0">
+  <div class="container">
+    <div class="stats" data-reveal-group>
+      <div class="stat" data-reveal><div class="stat-value">Frame-exact</div><p class="stat-label">Every cut lands on the source frame grid and the audio lines up to the sample, with soft dissolves in between.</p></div>
+      <div class="stat" data-reveal><div class="stat-value grad-text">~$0.02</div><p class="stat-label">of AI per 98-minute meeting on the budget model: it reads text, never video.</p></div>
+      <div class="stat" data-reveal><div class="stat-value">One zip</div><p class="stat-label">Final video, highlights, shorts, removed parts, report, transcripts and chapters.</p></div>
+      <div class="stat" data-reveal><div class="stat-value">One call</div><p class="stat-label">From a YouTube link to the finished bundle, with a signed webhook when it's done.</p></div>
+    </div>
+  </div>
+</section>
+
+{# ---------------------------------------------------------------- how it works #}
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">How it works</span>
+      <h2 class="h2" style="margin-top:14px">A copy editor for your recordings, <span class="serif">not a video editor.</span></h2>
+      <p class="lead">No timelines, no scrubbing. The transcript is the edit; ffmpeg cuts exactly what the editor marked.</p>
+    </div>
+    {% macro scene(n) %}
+      {% if n == 1 %}
+        <span class="scene-tag">01 &middot; Sources</span>
+        <div class="src-row"><span class="icon-tile">{{ icon("youtube") }}</span><div><strong>YouTube link</strong><span>Its captions become the transcript</span></div><span class="badge badge-ok">captions</span></div>
+        <div class="src-row"><span class="icon-tile">{{ icon("upload") }}</span><div><strong>Upload a recording</strong><span>.mp4, .mkv or .mov from any meeting tool</span></div><span class="badge">file</span></div>
+        <div class="src-row"><span class="icon-tile">{{ icon("file") }}</span><div><strong>Transcript, if you have one</strong><span>A .vtt or .srt export skips transcription</span></div><span class="badge">optional</span></div>
+      {% elif n == 2 %}
+        <span class="scene-tag">02 &middot; AI editor</span>
+        <div class="judge-row"><span>&ldquo;Can everyone hear me okay?&rdquo;</span><span class="badge badge-cut">cut &middot; greeting</span><span class="score">0</span></div>
+        <div class="judge-row"><span>&ldquo;We shipped transcript reuse&hellip;&rdquo;</span><span class="badge badge-accent">keep &middot; new feature</span><span class="score">8</span></div>
+        <div class="judge-row"><span>&ldquo;Here is how the backoff works&hellip;&rdquo;</span><span class="badge badge-accent">keep &middot; concept</span><span class="score">9</span></div>
+        <div class="judge-row"><span>&ldquo;Uh, yeah, so, um&hellip;&rdquo;</span><span class="badge badge-cut">cut &middot; filler</span><span class="score">0</span></div>
+      {% elif n == 3 %}
+        <span class="scene-tag">03 &middot; Frame-exact cut</span>
+        <div class="cut-track"><div class="k" style="flex:3"></div><div class="x" style="flex:1"></div><div class="k" style="flex:2.4"></div><div class="x" style="flex:0.7"></div><div class="k" style="flex:2"></div></div>
+        <div class="fade-mark"><span>00:00</span><span>dissolve</span><span>silence shortened</span><span>41:05</span></div>
+        <div class="judge-row"><span>Pauses where nobody speaks</span><span class="badge badge-note">shortened to a beat</span><span class="score">&minus;75 s</span></div>
+      {% else %}
+        <span class="scene-tag">04 &middot; Delivered</span>
+        <div class="zip-grid">
+          <div class="out-chip">{{ icon("film") }}final.mp4</div>
+          <div class="out-chip">{{ icon("phone") }}shorts/</div>
+          <div class="out-chip">{{ icon("scissors") }}removed.mp4</div>
+          <div class="out-chip">{{ icon("file") }}report.pdf</div>
+          <div class="out-chip">{{ icon("list") }}chapters.txt</div>
+          <div class="out-chip">{{ icon("zap") }}webhook sent</div>
+        </div>
+      {% endif %}
+    {% endmacro %}
+    <div class="how-grid">
+      <div class="how-visual" aria-hidden="true">
+        <div class="how-stage">
+          {% for n in [1, 2, 3, 4] %}<div class="how-scene{% if n == 1 %} is-active{% endif %}" data-scene="{{ n }}">{{ scene(n) }}</div>{% endfor %}
+        </div>
+      </div>
+      <div class="how-steps">
+        <div class="how-rail" aria-hidden="true"><div class="how-rail-fill"></div></div>
+        <ol class="how-list" role="list">
+        {% set steps = [
+          ("Pick a recording", "Paste a YouTube link or upload a recording. YouTube captions, or a .vtt/.srt transcript exported from your meeting tool, are reused, so nothing is transcribed twice."),
+          ("An AI editor reads it", "Every sentence is judged keep or cut, with a reason, and scored for how much someone could learn from it. You decide what a highlight is, in plain words, per job."),
+          ("ffmpeg cuts exactly that", "Cuts land on the source's frame grid, kept parts are joined with short dissolves, and long silences are shortened to a natural beat. No drift, no dropped words."),
+          ("One zip, delivered", "The final video opens with a highlights reel, then plays the cleaned meeting. Shorts, the removed parts, a PDF report, transcripts and YouTube chapters come with it."),
+        ] %}
+        {% for title, body in steps %}
+        <li class="how-step{% if loop.first %} is-active{% endif %}" data-step="{{ loop.index }}">
+          <span class="how-num" aria-hidden="true">{{ loop.index }}</span>
+          <h3>{{ title }}</h3>
+          <p>{{ body }}</p>
+          <div class="how-inline" aria-hidden="true"><div class="how-scene">{{ scene(loop.index) }}</div></div>
+        </li>
+        {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ---------------------------------------------------------------- what you get #}
+<section class="section" id="features" style="padding-top:0">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">What you get</span>
+      <h2 class="h2" style="margin-top:14px">Seven outputs from one recording. <span class="serif">Zero scrubbing.</span></h2>
+    </div>
+    <div class="bento" data-reveal-group>
+      <article class="card bento-card wide card-hover" data-reveal>
+        <div class="bento-copy">
+          <span class="icon-tile">{{ icon("film") }}</span>
+          <h3 style="margin-top:16px">Highlights first, then the whole meeting</h3>
+          <p>final.mp4 opens with three to five minutes of the moments worth learning from, a title card, then the cleaned meeting. Chapters point at both.</p>
+        </div>
+        <div class="bento-visual">
+          <div class="mini-timeline">
+            <div class="mini-track"><div class="reel">HIGHLIGHTS</div><div class="tcard">CARD</div><div class="meeting">CLEANED MEETING</div></div>
+            <div class="mini-scale"><span>00:00</span><span>04:52</span><span>41:05</span></div>
+          </div>
+        </div>
+      </article>
+      <article class="card bento-card card-hover" data-reveal>
+        <div class="bento-copy">
+          <span class="icon-tile">{{ icon("phone") }}</span>
+          <h3 style="margin-top:16px">Shorts, ready to post</h3>
+          <p>Vertical 1080&times;1920 clips of self-contained moments, with captions and a title burned in.</p>
+        </div>
+        <div class="bento-visual"><div class="mini-phones"><div class="phone"><i></i><i></i></div><div class="phone"><i></i><i></i></div><div class="phone"><i></i><i></i></div></div></div>
+      </article>
+      <article class="card bento-card card-hover" data-reveal>
+        <div class="bento-copy">
+          <span class="icon-tile">{{ icon("scissors") }}</span>
+          <h3 style="margin-top:16px">What was removed, and why</h3>
+          <p>Every cut collected in its own video, labelled with its time in the original and the reason.</p>
+        </div>
+        <div class="bento-visual">
+          <div class="mini-list removed">
+            <div><span class="ts">00:00&ndash;00:42</span><span class="why">greetings</span></div>
+            <div><span class="ts">12:07&ndash;12:31</span><span class="why">crosstalk</span></div>
+            <div><span class="ts">31:44&ndash;33:02</span><span class="why">tangent</span></div>
+          </div>
+        </div>
+      </article>
+      <article class="card bento-card card-hover" data-reveal>
+        <div class="bento-copy">
+          <span class="icon-tile">{{ icon("chart") }}</span>
+          <h3 style="margin-top:16px">A report you can forward</h3>
+          <p>A PDF with what was cut, minutes by reason, the highlights, the shorts and the chapters.</p>
+        </div>
+        <div class="bento-visual"><div class="mini-doc"><div class="l" style="width:60%"></div><div class="l" style="width:85%"></div><div class="bars"><span style="height:80%"></span><span style="height:55%"></span><span style="height:35%"></span><span style="height:20%"></span></div></div></div>
+      </article>
+      <article class="card bento-card card-hover" data-reveal>
+        <div class="bento-copy">
+          <span class="icon-tile">{{ icon("list") }}</span>
+          <h3 style="margin-top:16px">YouTube chapters</h3>
+          <p>Timestamps that follow YouTube's rules, ready to paste into the description.</p>
+        </div>
+        <div class="bento-visual">
+          <div class="mini-list">
+            <div><span class="ts">00:00</span>Highlights</div>
+            <div><span class="ts">04:52</span>Roadmap review</div>
+            <div><span class="ts">18:30</span>Rate limits and backoff</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+{# ---------------------------------------------------------------- automation #}
+<section class="section" id="api" style="padding-top:0">
+  <div class="container auto-grid">
+    <div data-reveal>
+      <span class="eyebrow">Built for automation</span>
+      <h2 class="h2" style="margin-top:14px">Every button is an <span class="serif">API call.</span></h2>
+      <p class="lead" style="margin-top:16px">Create an API key, send jobs from n8n, Zapier, Make or a script, and get a signed webhook the moment a job finishes. No polling required.</p>
+      <div class="auto-steps">
+        <div class="auto-step"><span class="icon-tile">{{ icon("key") }}</span><div><strong>Scoped API keys</strong><span>Read-only or read-write; revoke or rotate any time.</span></div></div>
+        <div class="auto-step"><span class="icon-tile">{{ icon("zap") }}</span><div><strong>Signed webhooks</strong><span>HMAC-SHA256 signatures, retries for an hour, delivery log per job.</span></div></div>
+        <div class="auto-step"><span class="icon-tile">{{ icon("book") }}</span><div><strong>Documented API</strong><span>OpenAPI schema, interactive reference and copy-paste recipes.</span></div></div>
+      </div>
+      <div class="cluster" style="margin-top:30px"><a class="btn btn-outline" href="/docs">{{ icon("book") }} Read the docs</a><a class="link" href="/api/docs">Open the API reference &rarr;</a></div>
+    </div>
+    <div class="code-card" data-reveal>
+      <div class="code-card-head">
+        <div class="tabs" role="tablist" aria-label="Code examples" data-tabs>
+          <button class="tab" role="tab" type="button" aria-selected="true" aria-controls="code-curl" id="tab-curl">curl</button>
+          <button class="tab" role="tab" type="button" aria-selected="false" aria-controls="code-python" id="tab-python">Python</button>
+          <button class="tab" role="tab" type="button" aria-selected="false" aria-controls="code-hook" id="tab-hook">Webhook</button>
+        </div>
+        <button class="copy-btn" type="button" data-copy-panel>{{ icon("copy") }}<span data-copy-label>Copy</span></button>
+      </div>
+<pre class="codeblock code-panel" id="code-curl" role="tabpanel" aria-labelledby="tab-curl"><span class="c"># Cut a YouTube video; get a webhook when it's done</span>
+curl -X POST {{ base_url }}/api/v1/jobs/youtube \
+  -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "url": "https://www.youtube.com/watch?v=VIDEO_ID",
+    "options": { "shorts_count": 4 },
+    "callback_url": "https://n8n.example.com/webhook/cut"
+  }'</span></pre>
+<pre class="codeblock code-panel" id="code-python" role="tabpanel" aria-labelledby="tab-python" hidden><span class="k">import</span> os, time, httpx
+
+api = httpx.Client(base_url=<span class="s">"{{ base_url }}/api/v1"</span>,
+                   headers={<span class="s">"Authorization"</span>: <span class="s">f"Bearer {os.environ['HC_API_KEY']}"</span>})
+job = api.post(<span class="s">"/jobs/youtube"</span>, json={<span class="s">"url"</span>: <span class="s">"https://youtu.be/..."</span>}).json()
+<span class="k">while</span> job[<span class="s">"status"</span>] <span class="k">not in</span> (<span class="s">"done"</span>, <span class="s">"failed"</span>):
+    time.sleep(<span class="n">30</span>)
+    job = api.get(<span class="s">f"/jobs/{job['job_id']}"</span>).json()
+open(<span class="s">"meeting.zip"</span>, <span class="s">"wb"</span>).write(api.get(<span class="s">f"/jobs/{job['job_id']}/bundle"</span>).content)</pre>
+<pre class="codeblock code-panel" id="code-hook" role="tabpanel" aria-labelledby="tab-hook" hidden><span class="c"># POST to your callback_url</span>
+X-HC-Event: job.done
+X-HC-Signature: t=<span class="n">1790000000</span>,v1=<span class="s">5f2c...e91a</span>
+
+{
+  <span class="k">"event"</span>: <span class="s">"job.done"</span>,
+  <span class="k">"job"</span>: {
+    <span class="k">"job_id"</span>: <span class="s">"8c1d..."</span>, <span class="k">"status"</span>: <span class="s">"done"</span>,
+    <span class="k">"links"</span>: { <span class="k">"bundle"</span>: <span class="s">"{{ base_url }}/api/v1/jobs/8c1d.../bundle"</span> }
+  }
+}</pre>
+    </div>
+  </div>
+</section>
+
+{# ---------------------------------------------------------------- pricing teaser + FAQ #}
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Questions</span>
+      <h2 class="h2" style="margin-top:14px">Good to know</h2>
+    </div>
+    <div class="faq">
+      {% set faqs = [
+        ("Which recordings work?", ["YouTube videos (their captions become the transcript) and uploads in .mp4, .mkv or .mov from any meeting tool. If you have the meeting's transcript as a .vtt or .srt file, attach it to the upload and nothing needs transcribing."]),
+        ("What does the AI see?", ["Only the transcript text. The recording itself never leaves the server that processes it; the AI provider receives sentences and returns keep-or-cut decisions and scores."]),
+        ("Can I decide what counts as a highlight?", ["Yes. Each job can carry its own highlight and shorts criteria in plain words, and you can ask for the AI's picks first, review them, and only then render."]),
+        ("How do I know when a job is done?", ["The dashboard updates live, you get an email when a job finishes (switch it off in your account), and automations can pass a callback URL to receive a signed webhook."]),
+        ("Where do my files live?", ["On the server that runs " ~ app_name ~ ". You can delete a job and everything it produced at any time; operators can also set a retention period."]),
+        ("Can we run it ourselves?", ["Yes. The whole product is one Docker image behind Caddy with automatic HTTPS, and it runs on a small cloud server. The deployment guide walks through it."]),
+      ] %}
+      {% for q, answers in faqs %}
+      <details data-reveal>
+        <summary>{{ q }} {{ icon("chevron-down") }}</summary>
+        <div class="answer">{% for a in answers %}<p>{{ a }}</p>{% endfor %}</div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="gradient-border" data-reveal>
+      <div class="cta">
+        <div class="bg-grid"></div>
+        <div class="glow glow-a" style="top:-260px"></div>
+        <h2 class="h2">Stop watching meetings twice. <span class="serif grad-text">Cut them once.</span></h2>
+        <p class="lead">Sign up, verify your email, and cut your first recording in a few minutes.</p>
+        <div class="cluster">
+          {% if current_user %}
+          <a class="btn btn-primary btn-lg" href="/app">Open your dashboard {{ icon("arrow-right", "arrow") }}</a>
+          {% else %}
+          {% if signup_enabled %}<a class="btn btn-primary btn-lg" href="/signup">Start free {{ icon("arrow-right", "arrow") }}</a>{% endif %}
+          <a class="btn btn-outline btn-lg" href="/pricing">See pricing</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block vendor_scripts %}
+<script src="{{ asset('vendor/gsap-3.15.0.min.js') }}" defer></script>
+<script src="{{ asset('vendor/ScrollTrigger-3.15.0.min.js') }}" defer></script>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('js/home.js') }}" defer></script>{% endblock %}

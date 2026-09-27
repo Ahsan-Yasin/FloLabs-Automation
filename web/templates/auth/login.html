@@ -1,0 +1,23 @@
+{% extends "auth/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Log in — {{ app_name }}{% endblock %}
+{% block card %}
+<h1>Welcome back</h1>
+<p class="sub">Log in to your {{ app_name }} account.</p>
+<form class="auth-form" data-form="login" data-next="{{ next }}" novalidate>
+  <div class="alert alert-danger" data-form-error hidden role="alert">{{ icon("alert") }}<span data-error-text></span></div>
+  <div class="field" style="margin-top:4px">
+    <label class="label" for="email">Email</label>
+    <input class="input" id="email" name="email" type="email" autocomplete="email" required autofocus spellcheck="false">
+  </div>
+  <div class="field">
+    <div style="display:flex;justify-content:space-between;align-items:baseline"><label class="label" for="password">Password</label><a class="link small" href="/forgot">Forgot it?</a></div>
+    <div class="input-group">
+      <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="input-action" type="button" data-toggle-password aria-label="Show password">{{ icon("eye") }}</button>
+    </div>
+  </div>
+  <button class="btn btn-primary btn-lg btn-block" type="submit">Log in</button>
+</form>
+{% if signup_enabled %}<p class="auth-switch">New here? <a class="link" href="/signup{% if next != '/app' %}?next={{ next | urlencode }}{% endif %}">Create an account</a></p>{% endif %}
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon, logo %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+{% block body_class %}app-body{% endblock %}
+{% block header %}
+<header class="app-header">
+  <div class="container-wide app-bar">
+    <a class="brand" href="/app" aria-label="{{ app_name }} dashboard">{{ logo() }}<span class="hide-sm">{{ app_name }}</span></a>
+    <nav class="app-nav" aria-label="App">
+      <a href="/app"{% if active == "dashboard" %} aria-current="page"{% endif %}>{{ icon("grid") }}<span>Dashboard</span></a>
+      <a href="/app/keys"{% if active == "keys" %} aria-current="page"{% endif %}>{{ icon("key") }}<span>API keys</span></a>
+      <a href="/docs">{{ icon("book") }}<span>Docs</span></a>
+      {% if current_user.is_admin %}<a href="/app/admin"{% if active == "admin" %} aria-current="page"{% endif %}>{{ icon("shield") }}<span>Admin</span></a>{% endif %}
+    </nav>
+    <div class="grow"></div>
+    <a class="btn btn-sm btn-primary hide-sm" href="/app#new">{{ icon("plus") }} New job</a>
+    <details class="dropdown">
+      <summary class="user-btn" aria-label="Account menu"><span class="avatar" aria-hidden="true">{{ current_user.initials }}</span>{{ icon("chevron-down") }}</summary>
+      <div class="menu">
+        <div class="menu-head"><strong>{{ current_user.name or current_user.first_name }}</strong><span>{{ current_user.email }}</span></div>
+        <a href="/app/account">{{ icon("sliders") }} Account settings</a>
+        <a href="/app/keys">{{ icon("key") }} API keys</a>
+        {% if current_user.is_admin %}<a href="/app/admin">{{ icon("shield") }} Admin</a>{% endif %}
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 12px">
+          <span class="small muted">Theme</span>
+          <div class="theme-toggle" role="group" aria-label="Colour theme">
+            <button type="button" data-theme-set="dark" aria-pressed="true" aria-label="Dark theme">{{ icon("moon") }}</button>
+            <button type="button" data-theme-set="light" aria-pressed="false" aria-label="Light theme">{{ icon("sun") }}</button>
+          </div>
+        </div>
+        <button type="button" data-logout>{{ icon("logout") }} Log out</button>
+      </div>
+    </details>
+  </div>
+</header>
+{% endblock %}
+{% block banner %}
+{% if current_user and not current_user.email_verified %}
+<div class="verify-banner" role="status">
+  <div class="container-wide">
+    {{ icon("mail") }}
+    <span>Confirm your email to create jobs and API keys. We sent a link to <strong>{{ current_user.email }}</strong>.</span>
+    <button class="btn btn-sm btn-outline" type="button" data-resend-verification>Resend the email</button>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block footer %}
+<footer class="container-wide" style="padding:8px 0 40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:var(--text-3);font-size:13px">
+  <span>&copy; {{ year }} FloLabs &middot; {{ app_name }} {{ version }}</span>
+  <span><a class="link-muted" href="/docs">Docs</a> &middot; <a class="link-muted" href="/api/docs">API reference</a> &middot; <a class="link-muted" href="/privacy">Privacy</a></span>
+</footer>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ app_name }} — cut meeting recordings from the transcript{% endblock %}</title>
+<meta name="description" content="{% block description %}{{ app_name }} reads your meeting's transcript, cuts the filler frame-exact, and packs a highlights reel, vertical shorts, the removed parts and a PDF report into one zip. Zoom, YouTube and an API for your automations.{% endblock %}">
+<meta name="theme-color" content="#080c0a">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="{{ asset('img/favicon.svg') }}" type="image/svg+xml">
+<link rel="canonical" href="{{ base_url }}{{ path }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ app_name }}">
+<meta property="og:title" content="{{ self.title() | trim }}">
+<meta property="og:description" content="{{ self.description() | trim }}">
+<meta property="og:url" content="{{ base_url }}{{ path }}">
+<meta name="twitter:card" content="summary">
+{% block robots %}{% endblock %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}">
+<script nonce="{{ csp_nonce }}">
+(function () {
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem("hc-theme");
+    if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+  } catch (e) { /* storage blocked: keep the default */ }
+  root.classList.add("js");
+  /* never leave reveal-hidden content invisible if a script fails to load */
+  window.setTimeout(function () { if (!window.__hcReady) root.classList.add("reveal-off"); }, 2500);
+})();
+</script>
+{% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}"{% if current_user %} data-authed="1"{% endif %}>
+<a class="skip-link" href="#main">Skip to content</a>
+{% block header %}{% include "partials/nav.html" %}{% endblock %}
+{% block banner %}{% endblock %}
+<main id="main" tabindex="-1">
+{% block content %}{% endblock %}
+</main>
+{% block footer %}{% include "partials/footer.html" %}{% endblock %}
+<div class="toasts" id="toasts" role="status" aria-live="polite" aria-atomic="false"></div>
+<script src="{{ asset('vendor/motion-13.4.4.js') }}" defer></script>
+{% block vendor_scripts %}{% endblock %}
+<script src="{{ asset('js/core.js') }}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

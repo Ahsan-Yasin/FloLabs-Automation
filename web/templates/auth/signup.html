@@ -1,0 +1,34 @@
+{% extends "auth/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Create your account — {{ app_name }}{% endblock %}
+{% block card %}
+<h1>Create your account</h1>
+<p class="sub">Cut your first meeting in a few minutes. No credit card.</p>
+{% if not signup_enabled %}
+<div class="alert alert-info" style="margin-top:28px">{{ icon("info") }}<span>Sign-up is closed on this site. Ask an admin for an account, then <a class="link" href="/login">log in</a>.</span></div>
+{% else %}
+<form class="auth-form" data-form="signup" data-next="{{ next }}" novalidate>
+  <div class="alert alert-danger" data-form-error hidden role="alert">{{ icon("alert") }}<span data-error-text></span></div>
+  <div class="field" style="margin-top:4px">
+    <label class="label" for="name">Name <span class="opt">(optional)</span></label>
+    <input class="input" id="name" name="name" type="text" autocomplete="name" maxlength="120">
+  </div>
+  <div class="field">
+    <label class="label" for="email">Work email</label>
+    <input class="input" id="email" name="email" type="email" autocomplete="email" required spellcheck="false">
+  </div>
+  <div class="field">
+    <label class="label" for="password">Password</label>
+    <div class="input-group">
+      <input class="input" id="password" name="password" type="password" autocomplete="new-password" minlength="10" required aria-describedby="pw-hint">
+      <button class="input-action" type="button" data-toggle-password aria-label="Show password">{{ icon("eye") }}</button>
+    </div>
+    <div class="pw-meter" data-pw-meter data-score="0" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <span class="hint" id="pw-hint" data-pw-hint>At least 10 characters. A short sentence works well.</span>
+  </div>
+  <button class="btn btn-primary btn-lg btn-block" type="submit">Create account</button>
+  <p class="tiny subtle" style="margin-top:14px;text-align:center">By creating an account you agree to the <a class="link-muted" href="/terms">terms</a> and the <a class="link-muted" href="/privacy">privacy policy</a>.</p>
+</form>
+{% endif %}
+<p class="auth-switch">Already have an account? <a class="link" href="/login{% if next != '/app' %}?next={{ next | urlencode }}{% endif %}">Log in</a></p>
+{% endblock %}

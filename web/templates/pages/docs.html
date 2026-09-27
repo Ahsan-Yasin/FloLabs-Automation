@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Documentation — {{ app_name }} API{% endblock %}
+{% block description %}How to call the {{ app_name }} API from n8n, Zapier, Make or your own code: API keys, jobs, webhooks, errors and limits.{% endblock %}
+
+{% macro code(id, lang="") -%}
+<div class="code-card">
+  <div class="code-card-head"><span class="tiny mono" style="color:#9aa597">{{ lang }}</span><button class="copy-btn" type="button" data-copy-target="#{{ id }}">{{ icon("copy") }}<span data-copy-label>Copy</span></button></div>
+  <pre class="codeblock" id="{{ id }}">{{ caller() }}</pre>
+</div>
+{%- endmacro %}
+
+{% block content %}
+<section class="page-hero" style="padding-bottom:12px">
+  <div class="bg-grid"></div>
+  <div class="container">
+    <span class="eyebrow">Documentation</span>
+    <h1 class="display" style="font-size:clamp(2.2rem,1.5rem + 2.6vw,3.6rem)">Connect {{ app_name }} to <span class="serif grad-text">anything.</span></h1>
+    <p class="lead">Every feature of the app is an HTTP call. Here is how to authenticate, create jobs, get told when they finish, and download the results.</p>
+    <div class="cluster" style="margin-top:24px"><a class="btn btn-primary" href="/api/docs">{{ icon("code") }} Interactive API reference</a><a class="btn btn-outline" href="/api/v1/openapi.json">OpenAPI schema</a></div>
+  </div>
+</section>
+
+<div class="container docs-shell">
+  <nav class="docs-toc" aria-label="On this page">
+    <h4>Start</h4>
+    <a href="#quickstart">Quickstart</a>
+    <a href="#auth">Authentication</a>
+    <h4>Jobs</h4>
+    <a href="#jobs">Create a job</a>
+    <a href="#options">Job options</a>
+    <a href="#lifecycle">Follow a job</a>
+    <a href="#outputs">Outputs</a>
+    <h4>Automations</h4>
+    <a href="#webhooks">Webhooks</a>
+    <a href="#recipes">n8n, Zapier, Make</a>
+    <h4>Reference</h4>
+    <a href="#errors">Errors</a>
+    <a href="#limits">Limits</a>
+    <a href="#reference">Endpoints</a>
+    <a href="#self-hosting">Self-hosting</a>
+  </nav>
+
+  <div class="docs-content">
+    <section id="quickstart">
+      <h2>Quickstart</h2>
+      <ol>
+        <li><a class="link" href="/signup">Create an account</a> and click the link in the verification email.</li>
+        <li>Open <a class="link" href="/app/keys">API keys</a> and create a key. Copy it: it is shown only once.</li>
+        <li>Send a job and follow it:</li>
+      </ol>
+      {% call code("qs-curl", "shell") %}<span class="c"># 1. create a job from a YouTube video</span>
+curl -s -X POST {{ base_url }}/api/v1/jobs/youtube \
+  -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span> -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"url": "https://www.youtube.com/watch?v=VIDEO_ID"}'</span>
+
+<span class="c"># 2. poll it (or pass "callback_url" and receive a webhook instead)</span>
+curl -s {{ base_url }}/api/v1/jobs/JOB_ID -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span>
+
+<span class="c"># 3. download everything once status is "done"</span>
+curl -L -o meeting.zip {{ base_url }}/api/v1/jobs/JOB_ID/bundle -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span>{% endcall %}
+    </section>
+
+    <section id="auth">
+      <h2>Authentication</h2>
+      <p>Send your API key on every request, in either header:</p>
+      {% call code("auth-headers", "http") %}Authorization: Bearer hc_live_AbCd1234_...
+<span class="c"># or</span>
+X-API-Key: hc_live_AbCd1234_...{% endcall %}
+      <p>Keys carry <strong>scopes</strong>. Give each automation only what it needs:</p>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Scope</th><th>Allows</th></tr></thead>
+        <tbody>
+          <tr><td><code>jobs:read</code></td><td>List jobs, read their status, download outputs</td></tr>
+          <tr><td><code>jobs:write</code></td><td>Create, render, cancel and delete jobs</td></tr>
+          <tr><td><code>zoom:read</code></td><td>List the workspace's Zoom cloud recordings</td></tr>
+        </tbody>
+      </table></div>
+      <p>Keys see only your own jobs. Revoke or rotate a key on the API keys page and it stops working immediately. For short scripts you can also log in with <code>POST /api/v1/auth/login</code> and send the returned <code>access_token</code> as a bearer token (it lasts 15 minutes).</p>
+      <div class="alert alert-warn">{{ icon("alert") }}<span>Keep keys out of source code and shared workflows: store them in your automation tool's credentials. A key in a public repository should be revoked at once.</span></div>
+    </section>
+
+    <section id="jobs">
+      <h2>Create a job</h2>
+      <p>A job takes one recording from one of three sources. All three answer with the job (see <a class="link" href="#lifecycle">Follow a job</a>) and accept an optional <code>callback_url</code> for a webhook.</p>
+      <h3>From Zoom</h3>
+      <p>Use the meeting <em>instance</em> UUID from <code>GET /api/v1/zoom/recordings</code> or from Zoom's <code>recording.completed</code> event. Zoom's own transcript is reused. Sending the same meeting with the same options again returns the existing job with <code>"deduplicated": true</code>, so retries are safe. While Zoom is still processing, the answer is <code>425</code> with <code>retry_after_s</code>.</p>
+      {% call code("jobs-zoom", "shell") %}curl -X POST {{ base_url }}/api/v1/jobs/zoom \
+  -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span> -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"meeting_uuid": "Wb3kVw9xT8Wq1Z0rS5nYqg==", "options": {"shorts_count": 4}}'</span>{% endcall %}
+      <h3>From YouTube</h3>
+      {% call code("jobs-youtube", "shell") %}curl -X POST {{ base_url }}/api/v1/jobs/youtube \
+  -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span> -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"url": "https://www.youtube.com/watch?v=VIDEO_ID", "options": {"decide_only": true}}'</span>{% endcall %}
+      <h3>Upload a file</h3>
+      <p>Multipart form: <code>file</code> (.mp4, .mkv or .mov), optionally <code>transcript</code> (.vtt or .srt), <code>title</code>, <code>callback_url</code>, and any option as a form field.</p>
+      {% call code("jobs-upload", "shell") %}curl -X POST {{ base_url }}/api/v1/jobs \
+  -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span> \
+  -F <span class="s">"file=@weekly-sync.mp4"</span> -F <span class="s">"transcript=@weekly-sync.vtt"</span> \
+  -F <span class="s">"title=Weekly sync"</span> -F <span class="s">"shorts_count=2"</span>{% endcall %}
+    </section>
+
+    <section id="options">
+      <h2>Job options</h2>
+      <p>Send them as <code>options</code> in JSON (Zoom, YouTube) or as form fields (upload). Leave one out to use the server's default.</p>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Option</th><th>Type</th><th>What it does</th></tr></thead>
+        <tbody>
+          {% for name, kind, text in options %}<tr><td><code>{{ name }}</code></td><td class="num">{{ kind }}</td><td>{{ text }}</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+      <p>With <code>decide_only</code> the job stops at status <code>decided</code>: fetch <code>GET /api/v1/jobs/{job_id}/selection</code> to review the AI's picks, then <code>POST /api/v1/jobs/{job_id}/render</code> to render with them (no new AI calls).</p>
+    </section>
+
+    <section id="lifecycle">
+      <h2>Follow a job</h2>
+      <p><code>GET /api/v1/jobs/{job_id}</code> returns the job. Poll it every 15&ndash;60 seconds, or skip polling with a webhook. Useful fields: <code>status</code>, <code>progress_current</code>/<code>progress_total</code> (for stages with countable work), <code>queue_position</code> (0 = running), <code>error_code</code>, <code>retryable</code>, <code>warnings</code>, <code>artifacts</code> and <code>links</code>.</p>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+        <tbody>
+          {% for status, text in statuses %}<tr><td><span class="status status-{{ status }}">{{ status }}</span></td><td>{{ text }}</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+      <p>List your jobs with <code>GET /api/v1/jobs?limit=50&amp;offset=0&amp;status=active</code>. Delete one with <code>DELETE /api/v1/jobs/{job_id}</code>; a running job needs <code>?force=true</code> and is cancelled at its next checkpoint.</p>
+    </section>
+
+    <section id="outputs">
+      <h2>Outputs</h2>
+      <p><code>GET /api/v1/jobs/{job_id}/bundle</code> downloads <code>bundle.zip</code> with everything (resumable: Range requests are supported). Single files: <code>GET /api/v1/jobs/{job_id}/artifacts/{name}</code>, add <code>?download=true</code> for an attachment.</p>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>File</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td><code>final.mp4</code></td><td>The highlights reel, a title card, then the cleaned meeting</td></tr>
+          <tr><td><code>highlights.mp4</code></td><td>The reel on its own</td></tr>
+          <tr><td><code>removed.mp4</code></td><td>Every removed stretch of a second or more, labelled with source time and reason</td></tr>
+          <tr><td><code>shorts/short_NN.mp4</code> + <code>.srt</code></td><td>Vertical 1080&times;1920 shorts with captions; <code>shorts/shorts.json</code> lists titles and source times</td></tr>
+          <tr><td><code>transcript_clean.txt/.json</code></td><td>What is said in final.mp4, on its timeline</td></tr>
+          <tr><td><code>transcript_removed.txt/.json</code></td><td>What was cut, with source times and reasons</td></tr>
+          <tr><td><code>chapters.txt</code></td><td>YouTube chapter lines for final.mp4</td></tr>
+          <tr><td><code>report.pdf</code></td><td>Summary, minutes removed by reason, highlights, shorts, chapters</td></tr>
+          <tr><td><code>manifest.json</code></td><td>Every file with its size, SHA-256, duration and status, plus warnings and timings</td></tr>
+        </tbody>
+      </table></div>
+      <p>Optional outputs can fail on their own without failing the job: their <code>status</code> in <code>artifacts</code> says <code>failed</code> or <code>skipped</code>, with a reason, and <code>warnings</code> explains.</p>
+    </section>
+
+    <section id="webhooks">
+      <h2>Webhooks</h2>
+      <p>Pass <code>callback_url</code> when you create a job. When it finishes you get one <code>POST</code>:</p>
+      {% call code("hook-payload", "http") %}POST /your/callback HTTP/1.1
+Content-Type: application/json
+X-HC-Event: job.done            <span class="c"># job.done | job.failed | job.decided | job.cancelled</span>
+X-HC-Delivery: 3f9a...           <span class="c"># unique per delivery</span>
+X-HC-Signature: t=1790000000,v1=5f2c...e91a
+
+{"id": "3f9a...", "event": "job.done", "created_at": "2026-09-27T10:12:44Z",
+ "job": {"job_id": "8c1d...", "status": "done", "title": "Weekly sync", "artifacts": {...},
+         "links": {"job": "{{ base_url }}/api/v1/jobs/8c1d...", "bundle": "{{ base_url }}/api/v1/jobs/8c1d.../bundle"}}}{% endcall %}
+      <p><strong>Verify the signature</strong> with your webhook secret (account page): HMAC-SHA256 over <code>"&lt;t&gt;." + raw body</code>, compared in constant time, and reject timestamps older than five minutes.</p>
+      {% call code("hook-python", "python") %}<span class="k">import</span> hashlib, hmac, time
+
+<span class="k">def</span> <span class="f">verify</span>(secret: str, raw_body: bytes, header: str) -&gt; bool:
+    fields = dict(part.split(<span class="s">"="</span>, <span class="n">1</span>) <span class="k">for</span> part <span class="k">in</span> header.split(<span class="s">","</span>))
+    t = int(fields[<span class="s">"t"</span>])
+    <span class="k">if</span> abs(time.time() - t) &gt; <span class="n">300</span>:
+        <span class="k">return</span> False
+    expected = hmac.new(secret.encode(), f<span class="s">"{t}."</span>.encode() + raw_body, hashlib.sha256).hexdigest()
+    <span class="k">return</span> hmac.compare_digest(expected, fields.get(<span class="s">"v1"</span>, <span class="s">""</span>)){% endcall %}
+      {% call code("hook-node", "javascript") %}<span class="k">import</span> crypto <span class="k">from</span> <span class="s">"node:crypto"</span>;
+
+<span class="k">export function</span> <span class="f">verify</span>(secret, rawBody, header) {
+  <span class="k">const</span> f = Object.fromEntries(header.split(<span class="s">","</span>).map((p) =&gt; p.split(<span class="s">"="</span>)));
+  <span class="k">if</span> (Math.abs(Date.now() / <span class="n">1000</span> - Number(f.t)) &gt; <span class="n">300</span>) <span class="k">return</span> false;
+  <span class="k">const</span> expected = crypto.createHmac(<span class="s">"sha256"</span>, secret).update(`${f.t}.`).update(rawBody).digest(<span class="s">"hex"</span>);
+  <span class="k">return</span> f.v1?.length === expected.length &amp;&amp; crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(f.v1));
+}{% endcall %}
+      <p><strong>Retries:</strong> anything but a 2xx answer (or no answer within 10 seconds) is retried after 1, 5 and 30 minutes, then given up. Each job page lists its deliveries. Answer quickly and do the work afterwards; use <code>X-HC-Delivery</code> to ignore duplicates.</p>
+      <p><strong>Rules for the URL:</strong> <code>https://</code>, reachable on a public address, no redirects. Test yours from the account page, or with <code>POST /api/v1/webhooks/test</code>, which sends a signed <code>ping</code>.</p>
+    </section>
+
+    <section id="recipes">
+      <h2>n8n, Zapier and Make</h2>
+      <h3>n8n: cut every new Zoom recording</h3>
+      <ol>
+        <li><strong>Trigger:</strong> a Webhook node subscribed to Zoom's <code>recording.completed</code> event (or a Schedule node).</li>
+        <li><strong>HTTP Request</strong> node: method <code>POST</code>, URL <code>{{ base_url }}/api/v1/jobs/zoom</code>, authentication "Header Auth" with name <code>Authorization</code> and value <code>Bearer hc_live_...</code>, JSON body <code>{"meeting_uuid": "{{ '{{' }} $json.payload.object.uuid {{ '}}' }}", "callback_url": "&lt;your n8n webhook URL&gt;"}</code>. Enable "Retry on fail"; a <code>425</code> means Zoom isn't ready yet.</li>
+        <li><strong>Second workflow:</strong> a Webhook node at that callback URL receives <code>job.done</code>; an HTTP Request node downloads <code>{{ '{{' }} $json.body.job.links.bundle {{ '}}' }}</code> with the same header, as a file.</li>
+      </ol>
+      <h3>Zapier</h3>
+      <ol>
+        <li>Action <strong>Webhooks by Zapier &rarr; POST</strong> to <code>{{ base_url }}/api/v1/jobs/youtube</code> with the header <code>Authorization: Bearer hc_live_...</code> and data <code>url</code>. Add <code>callback_url</code> pointing at a <strong>Catch Hook</strong> trigger of a second Zap.</li>
+        <li>The second Zap receives <code>job.done</code> and can post <code>job.links.app</code> to Slack or email.</li>
+      </ol>
+      <h3>Make</h3>
+      <ol>
+        <li>An <strong>HTTP &rarr; Make a request</strong> module: POST, JSON body, header <code>Authorization</code>. Parse the response to keep <code>job_id</code>.</li>
+        <li>A <strong>Webhooks &rarr; Custom webhook</strong> scenario receives the finished event.</li>
+      </ol>
+      <h3>A 20-line Python client</h3>
+      {% call code("client-python", "python") %}<span class="k">import</span> os, time, httpx
+
+api = httpx.Client(base_url=<span class="s">"{{ base_url }}/api/v1"</span>, timeout=<span class="n">60</span>,
+                   headers={<span class="s">"Authorization"</span>: f<span class="s">"Bearer {os.environ['HC_API_KEY']}"</span>})
+
+<span class="k">def</span> <span class="f">cut</span>(youtube_url: str, out: str = <span class="s">"meeting.zip"</span>) -&gt; dict:
+    job = api.post(<span class="s">"/jobs/youtube"</span>, json={<span class="s">"url"</span>: youtube_url}).raise_for_status().json()
+    <span class="k">while</span> job[<span class="s">"status"</span>] <span class="k">not in</span> (<span class="s">"done"</span>, <span class="s">"failed"</span>, <span class="s">"cancelled"</span>, <span class="s">"skipped_desync"</span>):
+        time.sleep(<span class="n">30</span>)
+        job = api.get(f<span class="s">"/jobs/{job['job_id']}"</span>).raise_for_status().json()
+    <span class="k">if</span> job[<span class="s">"status"</span>] != <span class="s">"done"</span>:
+        <span class="k">raise</span> RuntimeError(f<span class="s">"{job['error_code']}: {job['error']}"</span>)
+    <span class="k">with</span> api.stream(<span class="s">"GET"</span>, f<span class="s">"/jobs/{job['job_id']}/bundle"</span>) <span class="k">as</span> r, open(out, <span class="s">"wb"</span>) <span class="k">as</span> f:
+        <span class="k">for</span> chunk <span class="k">in</span> r.iter_bytes():
+            f.write(chunk)
+    <span class="k">return</span> job{% endcall %}
+    </section>
+
+    <section id="errors">
+      <h2>Errors</h2>
+      <p>Every error has the same shape. Branch on <code>error_code</code>; retry only when <code>retryable</code> is true, after <code>retry_after_s</code> seconds (also sent as a <code>Retry-After</code> header).</p>
+      {% call code("err-shape", "json") %}{<span class="k">"error_code"</span>: <span class="s">"too_many_jobs"</span>, <span class="k">"retryable"</span>: true, <span class="k">"retry_after_s"</span>: <span class="n">60</span>,
+ <span class="k">"detail"</span>: <span class="s">"you already have 2 job(s) waiting or running (the limit is 2); wait for one to finish"</span>}{% endcall %}
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>error_code</th><th>Meaning</th></tr></thead>
+        <tbody>{% for code, text in errors %}<tr><td><code>{{ code }}</code></td><td>{{ text }}</td></tr>{% endfor %}</tbody>
+      </table></div>
+    </section>
+
+    <section id="limits">
+      <h2>Limits</h2>
+      <ul>
+        <li><strong>API keys:</strong> 120 requests per minute per key; signed-in browsers 600 per minute. Over the limit: <code>429 rate_limited</code>.</li>
+        <li><strong>Queue:</strong> one job renders at a time; each account can have {{ limits.max_queued_per_user or "several" }} jobs waiting or running (<code>429 too_many_jobs</code>). When the whole queue is full: <code>503 busy</code>.</li>
+        <li><strong>Plan:</strong> {% if limits.jobs_per_month %}{{ limits.jobs_per_month }} jobs a month{% else %}no monthly job limit{% endif %}{% if limits.max_minutes %}, recordings up to {{ limits.max_minutes }} minutes{% endif %} (<code>402 plan_limit</code>).</li>
+        <li><strong>API keys per account:</strong> {{ limits.max_api_keys }}.</li>
+      </ul>
+    </section>
+
+    <section id="reference">
+      <h2>Endpoints</h2>
+      <p>Generated from the live schema. The <a class="link" href="/api/docs">interactive reference</a> shows every request and response body and lets you try calls with your key.</p>
+      {% for group in reference %}
+      <h3>{{ group.tag }}</h3>
+      <div class="table-wrap"><table class="table">
+        <tbody>
+          {% for e in group.endpoints %}<tr><td style="width:88px"><span class="method {{ e.method }}">{{ e.method }}</span></td><td><span class="endpoint-path">{{ e.path }}</span>{% if e.public %} <span class="badge">no auth</span>{% endif %}</td><td class="muted">{{ e.summary }}</td></tr>{% endfor %}
+        </tbody>
+      </table></div>
+      {% endfor %}
+    </section>
+
+    <section id="self-hosting">
+      <h2>Self-hosting</h2>
+      <p>The product is one Docker image plus Caddy for automatic HTTPS. On a small Linux server:</p>
+      {% call code("selfhost", "shell") %}git clone &lt;your fork&gt; highlight-cutter &amp;&amp; cd highlight-cutter
+cp .env.example .env        <span class="c"># set APP_ENV=prod, APP_BASE_URL, JWT_SECRET, EMAIL_*, the AI key, Zoom</span>
+DOMAIN=cut.example.com docker compose up -d
+docker compose exec app python -m db.cli create-admin you@example.com{% endcall %}
+      <p>The repository's <code>DEPLOY.md</code> covers DNS, email (SPF and DKIM), backups, upgrades and sizing.</p>
+    </section>
+  </div>
+</div>
+{% endblock %}

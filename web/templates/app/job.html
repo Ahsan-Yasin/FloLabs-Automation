@@ -1,0 +1,107 @@
+{% extends "app/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}{{ job_title or "Job" }} — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="container-wide app-main" data-job="{{ job_id }}">
+  <a class="link-muted small" href="/app" style="display:inline-flex;align-items:center;gap:6px">{{ icon("arrow-left") }} All jobs</a>
+
+  <div class="job-head" style="margin-top:14px">
+    <div style="min-width:0">
+      <h1 data-job-title>{{ job_title or "Untitled job" }}</h1>
+      <div class="job-meta">
+        <span data-job-status><span class="skeleton" style="width:80px;height:24px;display:inline-block"></span></span>
+        <span data-job-source></span>
+        <span data-job-created></span>
+        <span data-job-duration></span>
+      </div>
+    </div>
+    <div class="cluster">
+      <a class="btn btn-primary" data-action="bundle" hidden download>{{ icon("download") }} Download everything</a>
+      <button class="btn btn-primary" type="button" data-action="render" hidden>{{ icon("play") }} Render now</button>
+      <button class="btn btn-danger" type="button" data-action="delete">{{ icon("trash") }} <span data-delete-label>Delete</span></button>
+    </div>
+  </div>
+
+  <div class="alert alert-danger" data-job-error hidden role="alert" style="margin-bottom:18px">{{ icon("alert") }}<div><strong data-error-title>This job failed</strong><div class="small" data-error-text style="margin-top:4px"></div></div></div>
+  <div class="alert alert-warn" data-job-warnings hidden style="margin-bottom:18px">{{ icon("info") }}<div data-warnings-list class="small"></div></div>
+
+  <div class="job-grid">
+    <div class="job-main">
+      <section class="card card-pad section-card" data-panel="working">
+        <span class="eyebrow" data-working-eyebrow>In progress</span>
+        <h2 class="h3" style="margin-top:12px" data-working-title>Getting started&hellip;</h2>
+        <p class="muted" style="margin-top:8px" data-working-text>This page updates by itself. You can close it: we'll email you when the job is done.</p>
+        <div class="progress is-indeterminate" style="margin-top:20px" data-working-progress><span></span></div>
+      </section>
+
+      <section class="card card-pad section-card" data-panel="video" hidden>
+        <div class="card-head"><div><h2>Final video</h2><p class="subtle small" data-final-note></p></div></div>
+        <div class="video-frame"><video controls preload="metadata" playsinline data-final-video></video></div>
+        <ul class="chapter-list" data-chapter-list aria-label="Chapters"></ul>
+      </section>
+
+      <section class="card card-pad section-card" data-panel="picks" hidden>
+        <div class="card-head">
+          <div><h2>What the AI picked</h2><p class="picks-summary" data-picks-summary></p></div>
+          <button class="btn btn-primary" type="button" data-action="render-picks" hidden>{{ icon("play") }} Render now</button>
+        </div>
+        <div class="table-wrap"><table class="table">
+          <thead><tr><th>Source time</th><th>Score</th><th>Moment</th><th>Used in</th></tr></thead>
+          <tbody data-picks-body></tbody>
+        </table></div>
+      </section>
+
+      <section class="card card-pad section-card" data-panel="shorts" hidden>
+        <div class="card-head"><div><h2>Shorts</h2><p class="subtle small">Vertical clips with captions, ready to post.</p></div></div>
+        <div class="shorts-grid" data-shorts></div>
+      </section>
+
+      <section class="card card-pad section-card" data-panel="removed" hidden>
+        <div class="card-head"><div><h2>Removed parts</h2><p class="subtle small">Every cut of a second or more, labelled with its time in the original and why it went.</p></div></div>
+        <div class="video-frame"><video controls preload="none" playsinline data-removed-video></video></div>
+      </section>
+
+      <section class="card card-pad section-card" data-panel="chapters" hidden>
+        <div class="card-head">
+          <div><h2>YouTube chapters</h2><p class="subtle small">Paste these lines into the video's description.</p></div>
+          <button class="btn btn-sm btn-outline" type="button" data-copy-target="#chapters-text">{{ icon("copy") }} <span data-copy-label>Copy</span></button>
+        </div>
+        <textarea class="textarea chapters-box" id="chapters-text" readonly data-chapters></textarea>
+      </section>
+
+      <section class="card card-pad section-card" data-panel="transcript" hidden>
+        <div class="card-head"><div><h2>What made the cut</h2><p class="subtle small">Struck-through text was cut; highlighted text is in the final video.</p></div></div>
+        <div class="marked-transcript" data-marked></div>
+      </section>
+    </div>
+
+    <aside class="job-side">
+      <section class="card card-pad section-card">
+        <h2>Progress</h2>
+        <ol class="stages" data-stages style="margin-top:14px"></ol>
+        <div class="stage-progress" data-stage-progress hidden>
+          <span data-stage-progress-label></span>
+          <div class="progress"><span data-stage-progress-fill></span></div>
+        </div>
+        <p class="hint" data-transcript-source hidden style="margin-top:12px"></p>
+      </section>
+
+      <section class="card card-pad section-card" data-panel="downloads" hidden>
+        <h2>Downloads</h2>
+        <div class="artifact-list" data-artifacts style="margin-top:14px"></div>
+      </section>
+
+      <section class="card card-pad section-card" data-panel="webhooks" hidden>
+        <h2>Webhook</h2>
+        <div data-webhooks style="margin-top:12px;display:grid;gap:8px"></div>
+      </section>
+
+      <details class="card card-pad section-card advanced" data-log style="margin-top:22px;border-top:1px solid var(--border)">
+        <summary>{{ icon("file") }} Job log {{ icon("chevron-down") }}</summary>
+        <pre class="log-view" data-log-view>Loading&hellip;</pre>
+      </details>
+    </aside>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('js/job.js') }}" defer></script>{% endblock %}

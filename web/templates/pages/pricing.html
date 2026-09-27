@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Pricing — {{ app_name }}{% endblock %}
+{% block description %}Plans for {{ app_name }}: start free, talk to us about higher limits, or run it on your own server.{% endblock %}
+
+{% block content %}
+<section class="page-hero grain">
+  <div class="bg-grid"></div>
+  <div class="glow glow-a"></div>
+  <div class="container" style="text-align:center">
+    <span class="eyebrow" data-reveal>Pricing</span>
+    <h1 class="display" style="margin-inline:auto" data-reveal>Simple, <span class="serif grad-text">and honest about it.</span></h1>
+    <p class="lead" style="margin-inline:auto" data-reveal>{% if limits.jobs_per_month %}Start with {{ limits.jobs_per_month }} jobs a month for free.{% else %}Unlimited jobs while we're in beta.{% endif %} Need more, or want it on your own servers? Let's talk.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:12px">
+  <div class="container">
+    <div class="plans" data-reveal-group>
+      <div class="card plan" data-reveal>
+        <span class="plan-name">Free</span>
+        <div class="plan-price">$0 <small>/ month</small></div>
+        <p class="plan-desc">Everything the product does, for individuals and small teams.</p>
+        <ul class="plan-list">
+          <li>{{ icon("check") }}{% if limits.jobs_per_month %}{{ limits.jobs_per_month }} jobs a month{% else %}Unlimited jobs during the beta{% endif %}</li>
+          <li>{{ icon("check") }}{% if limits.max_minutes %}Recordings up to {{ limits.max_minutes }} minutes{% else %}Recordings of any length{% endif %}</li>
+          <li>{{ icon("check") }}{{ limits.max_queued_per_user or "Several" }} jobs in the queue at once</li>
+          <li>{{ icon("check") }}All outputs: final video, shorts, removed parts, report</li>
+          <li>{{ icon("check") }}API keys and signed webhooks</li>
+        </ul>
+        {% if current_user %}<a class="btn btn-outline btn-block" href="/app">Open your dashboard</a>{% elif signup_enabled %}<a class="btn btn-outline btn-block" href="/signup">Start free</a>{% endif %}
+      </div>
+      <div class="card plan featured" data-reveal>
+        <span class="plan-name" style="color:var(--accent-text)">Team</span>
+        <div class="plan-price">Let's talk</div>
+        <p class="plan-desc">For teams that record every meeting and want them all cut.</p>
+        <ul class="plan-list">
+          <li>{{ icon("check") }}Higher monthly limits and longer recordings</li>
+          <li>{{ icon("check") }}More jobs in parallel</li>
+          <li>{{ icon("check") }}Your workspace's Zoom account connected</li>
+          <li>{{ icon("check") }}Custom highlight and shorts criteria as defaults</li>
+          <li>{{ icon("check") }}Help wiring it into n8n, Zapier or Make</li>
+        </ul>
+        {% if contact_email %}<a class="btn btn-primary btn-block" href="mailto:{{ contact_email }}?subject={{ app_name | urlencode }}%20for%20teams">Contact us {{ icon("arrow-right", "arrow") }}</a>{% else %}<a class="btn btn-primary btn-block" href="/about">Contact us {{ icon("arrow-right", "arrow") }}</a>{% endif %}
+      </div>
+      <div class="card plan" data-reveal>
+        <span class="plan-name">Self-hosted</span>
+        <div class="plan-price">Your server</div>
+        <p class="plan-desc">Run the whole product on your own cloud account.</p>
+        <ul class="plan-list">
+          <li>{{ icon("check") }}One Docker image, Caddy for HTTPS</li>
+          <li>{{ icon("check") }}Runs on a small CPU-only server</li>
+          <li>{{ icon("check") }}Recordings never leave your infrastructure</li>
+          <li>{{ icon("check") }}Bring your own AI key (OpenAI or Gemini)</li>
+          <li>{{ icon("check") }}Deployment guide included</li>
+        </ul>
+        <a class="btn btn-outline btn-block" href="/docs#self-hosting">Read the deployment guide</a>
+      </div>
+    </div>
+    <p class="subtle small" style="text-align:center;margin-top:28px">Processing costs you control: the AI reads transcript text only, about two cents for a 98-minute meeting on the budget model.</p>
+  </div>
+</section>
+{% endblock %}

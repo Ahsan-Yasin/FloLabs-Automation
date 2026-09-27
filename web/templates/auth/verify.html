@@ -1,0 +1,20 @@
+{% extends "auth/layout.html" %}
+{% from "partials/icons.html" import icon %}
+{% block title %}Email verification — {{ app_name }}{% endblock %}
+{% block card %}
+{% if state in ("verified", "already") %}
+<div class="result-icon">{{ icon("check") }}</div>
+<h1 style="margin-top:20px">{% if state == "verified" %}Email verified{% else %}Already verified{% endif %}</h1>
+<p class="sub">{{ email }} is confirmed. You can create jobs and API keys now.</p>
+{% if current_user %}
+<a class="btn btn-primary btn-lg btn-block" style="margin-top:26px" href="/app">Open the dashboard {{ icon("arrow-right", "arrow") }}</a>
+{% else %}
+<a class="btn btn-primary btn-lg btn-block" style="margin-top:26px" href="/login">Log in {{ icon("arrow-right", "arrow") }}</a>
+{% endif %}
+{% else %}
+<div class="result-icon bad">{{ icon("alert") }}</div>
+<h1 style="margin-top:20px">{% if state == "expired" %}This link has expired{% else %}This link doesn't work{% endif %}</h1>
+<p class="sub">Verification links work for 24 hours. Log in and send yourself a new one from the banner at the top of the dashboard.</p>
+<a class="btn btn-primary btn-lg btn-block" style="margin-top:26px" href="{% if current_user %}/app{% else %}/login{% endif %}">{% if current_user %}Open the dashboard{% else %}Log in{% endif %}</a>
+{% endif %}
+{% endblock %}
