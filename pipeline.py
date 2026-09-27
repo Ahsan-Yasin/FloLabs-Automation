@@ -120,6 +120,8 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
         return
 
     duration = media.video_duration or video_info.duration
+    # usage accounting and plan limits (api/main.py checks it on the next update)
+    job.source_duration_s = round(float(duration), 3) if duration else None
     caller = LazyCaller()
     prior_usage = dict(job.llm_usage)  # a rendered decide_only job keeps its decide-run usage
     try:

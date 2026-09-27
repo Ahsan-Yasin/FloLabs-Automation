@@ -2,10 +2,14 @@ import json
 import os
 import re
 import threading
+from collections.abc import Callable
 from datetime import UTC, datetime
 
 from core.config import get_settings
+from core.logging import get_logger
 from core.models import JobRecord
+
+logger = get_logger(__name__)
 
 # Job ids are uuid4 hex (or short test/fixture names). Anything else must never
 # be joined onto jobs_dir: on Windows "<id>." and "<id> " open the same folder
@@ -31,6 +35,11 @@ class JobStore:
         # Jobs whose folder was deleted: late updates from a finishing worker
         # must not recreate the folder.
         self._deleted: set[str] = set()
+        # Product-layer hooks (api/main.py wires them to services.jobs_index):
+        # called after every save / when a job is deleted, outside the lock.
+        # They must not raise; errors are logged and ignored here too.
+        self.on_change: Callable[[JobRecord], None] | None = None
+        self.on_delete: Callable[[str], None] | None = None
 
     def _path(self, job_id: str):
         return get_settings().jobs_dir / job_id / "job.json"
@@ -44,6 +53,7 @@ class JobStore:
             self._deleted.discard(job.job_id)
             self._cache[job.job_id] = job
             self._persist(job)
+        self._notify(job)
 
     def update(self, job: JobRecord) -> None:
         with self._lock:
@@ -54,6 +64,7 @@ class JobStore:
                 job.created_at = job.updated_at
             self._cache[job.job_id] = job
             self._persist(job)
+        self._notify(job)
 
     def get(self, job_id: str) -> JobRecord | None:
         if not is_valid_job_id(job_id):
@@ -77,6 +88,11 @@ class JobStore:
         with self._lock:
             self._cache.pop(job_id, None)
             self._deleted.add(job_id)
+        if self.on_delete is not None:
+            try:
+                self.on_delete(job_id)
+            except Exception:  # bookkeeping must never block a delete
+                logger.exception("job store: on_delete hook failed for %s", job_id)
 
     def list_ids(self) -> list[str]:
         jobs_dir = get_settings().jobs_dir
@@ -85,6 +101,13 @@ class JobStore:
         with self._lock:
             deleted = set(self._deleted)
         return [p.parent.name for p in jobs_dir.glob("*/job.json") if p.parent.name not in deleted]
+
+    def _notify(self, job: JobRecord) -> None:
+        if self.on_change is not None:
+            try:
+                self.on_change(job)
+            except Exception:  # bookkeeping must never fail a job
+                logger.exception("job store: on_change hook failed for %s", job.job_id)
 
     def _persist(self, job: JobRecord) -> None:
         path = self._path(job.job_id)

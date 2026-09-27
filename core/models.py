@@ -269,6 +269,7 @@ ErrorCode = Literal[
     "zoom_auth",
     "zoom_not_found",
     "zoom_download_invalid",
+    "zoom_unavailable",
     "source_unsupported",
     "llm_quota_exhausted",
     "llm_error",
@@ -276,6 +277,8 @@ ErrorCode = Literal[
     "timeout",
     "interrupted",
     "cancelled",
+    # the owner's plan does not allow a recording this long
+    "plan_limit",
     "internal",
 ]
 
@@ -335,3 +338,15 @@ class JobRecord(BaseModel):
     updated_at: datetime | None = None
     # Computed on read by the API: running but no heartbeat for stale_after_s.
     stale: bool = False
+    # --- product layer (plan.MD) ---------------------------------------------
+    # The account that owns the job (None: created with the operator key
+    # before any admin existed; visible to admins only).
+    owner_id: str | None = None
+    # Where to POST the signed "job finished" webhook.
+    callback_url: str | None = None
+    # Length of the source recording (set once it has been probed).
+    source_duration_s: float | None = None
+    # Computed on read by the API: place in the queue (0 = running).
+    queue_position: int | None = None
+    # Computed on read by the API: URLs of this job's resources.
+    links: dict[str, str] = Field(default_factory=dict)
