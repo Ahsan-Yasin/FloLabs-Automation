@@ -297,6 +297,10 @@
 
   /* ------------------------------------------------------------ theme */
   function applyTheme(theme) {
+    if (!reduced) {
+      root.classList.add("theme-easing");
+      setTimeout(() => root.classList.remove("theme-easing"), 250);
+    }
     root.setAttribute("data-theme", theme);
     try { localStorage.setItem("hc-theme", theme); } catch (e) { /* not important */ }
     qsa("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === theme ? "true" : "false"));
