@@ -225,11 +225,13 @@ class Settings(BaseSettings):
     transcript_poll_s: float = 60.0
 
     # --- v2 service / lifecycle (plan D14-D16) -----------------------------
-    # X-API-Key for every route except /health and the static UI pages.
-    # Empty = auth disabled (local dev only; set it on EC2).
+    # Operator key (the pre-accounts shared secret), accepted as X-API-Key on
+    # every API route with admin rights. Kept so existing n8n flows keep
+    # working; give n8n a per-user API key instead and then empty this.
     hc_api_token: str = ""
-    # Jobs allowed in the system at once (running + waiting). 1 = one at a time.
-    max_queue_depth: int = 1
+    # Jobs allowed in the system at once (running + waiting), across all
+    # users. One job renders at a time; the rest wait in order.
+    max_queue_depth: int = 10
     heartbeat_interval_s: float = 30.0
     stale_after_s: float = 600.0
     job_max_wall_s: float = 10800.0
@@ -238,6 +240,98 @@ class Settings(BaseSettings):
     # Delete finished jobs older than this at startup. 0 = never (local dev;
     # EC2 sets 24). A job folder containing a `.keep` file is never deleted.
     job_retention_hours: float = 0.0
+
+    # --- product: site, accounts, API keys, email (plan.MD §11) -----------
+    # "dev" (local) or "prod" (a public server: the checks in
+    # settings_problems() must pass or the app refuses to start).
+    app_env: str = "dev"
+    app_name: str = "Highlight Cutter"
+    # Public address of the site, used in email links and webhook payloads.
+    app_base_url: str = "http://127.0.0.1:8000"
+    # Empty = SQLite file storage/app.db. Postgres: postgresql+psycopg://...
+    database_url: str = ""
+    # migrate (Alembic, default) | create_all (tests) | none (operator runs
+    # `python -m db.cli upgrade` by hand)
+    db_schema_mode: str = "migrate"
+    # Signs access tokens (HS256). At least 32 random characters in prod:
+    #   python -c "import secrets; print(secrets.token_urlsafe(48))"
+    # Empty in dev = a random secret kept in storage/dev_jwt_secret.
+    jwt_secret: str = ""
+    jwt_access_ttl_min: int = 15
+    jwt_refresh_ttl_days: int = 30
+    # auto = Secure cookies whenever APP_BASE_URL is https
+    cookie_secure: str = "auto"
+    # Take the client IP from X-Forwarded-For (only behind your own proxy).
+    trust_proxy: bool = False
+    signup_enabled: bool = True
+    # Comma list of email domains allowed to sign up (empty = anyone).
+    allowed_signup_domains: str = ""
+    # Comma list: these addresses become admins once their email is verified.
+    admin_emails: str = ""
+    # Local development only: with no HC_API_TOKEN, API calls without any
+    # credentials act as the operator (the pre-accounts behaviour). Refused
+    # when APP_ENV=prod.
+    dev_open_api: bool = False
+    # console (dev: printed to the log) | memory (tests) | smtp | resend
+    email_backend: str = "console"
+    email_from: str = ""
+    email_reply_to: str = ""
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    # starttls | ssl | none
+    smtp_tls: str = "starttls"
+    email_timeout_s: float = 20.0
+    resend_api_key: str = ""
+    # Jobs one user may have waiting or running at once (429 too_many_jobs).
+    max_queued_per_user: int = 2
+    max_api_keys_per_user: int = 10
+    rate_limit_enabled: bool = True
+    webhooks_enabled: bool = True
+    webhook_timeout_s: float = 10.0
+    # Allow http:// callback URLs (dev) / private-network hosts (local
+    # receivers such as a self-hosted n8n on the same machine or LAN).
+    webhook_allow_http: bool = False
+    webhook_allow_private: bool = False
+    # Free-plan limits for non-admin users (0 = unlimited). Minutes = source
+    # recording length.
+    plan_jobs_per_month: int = 0
+    plan_max_minutes: int = 0
+    # The unprefixed pre-/api/v1 routes (/jobs, /zoom/...) still used by
+    # older n8n flows. Turn off once everything calls /api/v1.
+    legacy_api_enabled: bool = True
+    # Optional animated 3D background on the home page (heavier; off).
+    hero_3d: bool = False
+    # One JSON object per log line (for log shipping in prod).
+    log_json: bool = False
+    # Public contact address shown on the about/legal pages.
+    contact_email: str = ""
+
+    @property
+    def is_prod(self) -> bool:
+        return self.app_env.strip().lower() == "prod"
+
+    @property
+    def admin_email_set(self) -> set[str]:
+        return {e.strip().lower() for e in self.admin_emails.split(",") if e.strip()}
+
+    @property
+    def allowed_signup_domain_set(self) -> set[str]:
+        return {d.strip().lower().lstrip("@") for d in self.allowed_signup_domains.split(",") if d.strip()}
+
+    @property
+    def cookie_secure_effective(self) -> bool:
+        value = self.cookie_secure.strip().lower()
+        if value in ("true", "1", "yes"):
+            return True
+        if value in ("false", "0", "no"):
+            return False
+        return self.app_base_url.lower().startswith("https://")
+
+    @property
+    def base_url(self) -> str:
+        return self.app_base_url.rstrip("/")
 
     @property
     def videos_dir(self) -> Path:
@@ -250,6 +344,31 @@ class Settings(BaseSettings):
     @property
     def transcripts_dir(self) -> Path:
         return self.storage_dir / "transcripts"
+
+
+def settings_problems(settings: Settings) -> list[str]:
+    """What is unsafe or broken for APP_ENV=prod (the app refuses to start
+    with any of these); in dev they are only logged as warnings."""
+    problems = []
+    if len(settings.jwt_secret) < 32:
+        problems.append("JWT_SECRET must be set to at least 32 random characters")
+    if not settings.app_base_url.lower().startswith("https://"):
+        problems.append("APP_BASE_URL must be the public https:// address of the site")
+    if settings.email_backend in ("console", "memory"):
+        problems.append("EMAIL_BACKEND must be smtp or resend (console/memory never deliver mail)")
+    if settings.email_backend == "smtp" and not settings.smtp_host:
+        problems.append("SMTP_HOST is empty")
+    if settings.email_backend == "resend" and not settings.resend_api_key:
+        problems.append("RESEND_API_KEY is empty")
+    if not settings.email_from:
+        problems.append("EMAIL_FROM is empty (e.g. Highlight Cutter <no-reply@your-domain>)")
+    if settings.dev_open_api:
+        problems.append("DEV_OPEN_API must be false")
+    if settings.webhook_allow_http:
+        problems.append("WEBHOOK_ALLOW_HTTP must be false")
+    if not settings.cookie_secure_effective:
+        problems.append("COOKIE_SECURE must not be false")
+    return problems
 
 
 @lru_cache

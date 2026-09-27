@@ -1,0 +1,3 @@
+# CI: the server requirements (no WhisperX/torch) plus the test tools.
+-r requirements-server.txt
+-r requirements-dev-tools.txt

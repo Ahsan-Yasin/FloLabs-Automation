@@ -1,0 +1,21 @@
+# The service as deployed (Docker/EC2/CI): everything except WhisperX, which
+# pulls in torch and is only needed to transcribe recordings that come without
+# a transcript (Zoom and YouTube jobs bring their own).
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.7
+pydantic-settings>=2.3
+python-multipart>=0.0.9
+httpx>=0.27
+google-genai>=0.3
+reportlab>=4.4,<6
+# silence detection (slice/silence.py)
+numpy>=1.26
+yt-dlp[default,curl-cffi] @ git+https://github.com/yt-dlp/yt-dlp.git
+# product layer (plan.MD): database, accounts and sessions, pages
+sqlalchemy>=2.0,<3
+alembic>=1.13
+PyJWT>=2.9
+argon2-cffi>=23.1
+email-validator>=2.2
+jinja2>=3.1

@@ -10,3 +10,8 @@ storage/jobs/*
 .pytest_cache/
 *.egg-info/
 .ruff_cache/
+# product database (SQLite) and the dev-only session signing secret
+storage/*.db
+storage/*.db-wal
+storage/*.db-shm
+storage/dev_jwt_secret

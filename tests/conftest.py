@@ -29,6 +29,52 @@ def _isolated_settings(tmp_path, monkeypatch):
     # says (e.g. CHAPTERS_ENABLED=false while running against real jobs)
     monkeypatch.setenv("CHAPTERS_ENABLED", "true")
     monkeypatch.setenv("SILENCE_CUT_ENABLED", "true")
+    # one job at a time, as the service tests were written (the product
+    # default queues up to 10)
+    monkeypatch.setenv("MAX_QUEUE_DEPTH", "1")
+    # product layer: a fresh SQLite file per test (inside the temp storage),
+    # built straight from the models (fast); mail goes to an in-memory outbox
+    monkeypatch.setenv("APP_ENV", "dev")
+    monkeypatch.setenv("DATABASE_URL", "")
+    monkeypatch.setenv("DB_SCHEMA_MODE", "create_all")
+    monkeypatch.setenv("EMAIL_BACKEND", "memory")
+    monkeypatch.setenv("APP_BASE_URL", "http://testserver")
+    monkeypatch.setenv("JWT_SECRET", "test-jwt-secret-" + "x" * 40)
+    monkeypatch.setenv("ADMIN_EMAILS", "")
+    monkeypatch.setenv("SIGNUP_ENABLED", "true")
+    monkeypatch.setenv("ALLOWED_SIGNUP_DOMAINS", "")
+    monkeypatch.setenv("PLAN_JOBS_PER_MONTH", "0")
+    monkeypatch.setenv("PLAN_MAX_MINUTES", "0")
+    monkeypatch.setenv("LEGACY_API_ENABLED", "true")
+    monkeypatch.setenv("WEBHOOKS_ENABLED", "true")
+    monkeypatch.setenv("WEBHOOK_ALLOW_HTTP", "false")
+    monkeypatch.setenv("WEBHOOK_ALLOW_PRIVATE", "false")
+    # The service tests predate accounts: they call the API without
+    # credentials, which the pre-accounts dev mode allows. Tests of the
+    # account layer turn this off (see tests/product_helpers.py).
+    monkeypatch.setenv("DEV_OPEN_API", "true")
     get_settings.cache_clear()
+    _reset_product_state()
     yield
+    _reset_product_state()
+    from db.session import dispose_all
+
+    dispose_all()
     get_settings.cache_clear()
+
+
+def _reset_product_state() -> None:
+    """In-process caches of the product layer (rate-limit buckets, the user
+    cache behind access tokens, the email outbox, pending webhook work) must
+    not leak from one test into the next."""
+    import importlib
+
+    for module_name in ("api.ratelimit", "services.auth", "services.email", "services.webhooks",
+                        "services.jobs_index"):
+        try:
+            module = importlib.import_module(module_name)
+        except ImportError:
+            continue
+        reset = getattr(module, "reset_for_tests", None)
+        if reset is not None:
+            reset()

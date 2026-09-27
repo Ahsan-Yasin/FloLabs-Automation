@@ -16,6 +16,7 @@ from fastapi.responses import (
     PlainTextResponse,
 )
 from pydantic import BaseModel
+from starlette.concurrency import run_in_threadpool
 
 from core.config import get_settings
 from core.errors import PipelineError
@@ -23,6 +24,7 @@ from core.logging import configure_logging, get_logger
 from core.models import TERMINAL_STATUSES, JobOptions, JobRecord, JobStatus
 from core.proc import run_checked
 from core.version import PIPELINE_VERSION
+from db.session import check_db
 from ingest import zoom
 from ingest.store import store_transcript, store_video, title_from_filename
 from pipeline import run_pipeline, run_youtube_pipeline, run_zoom_pipeline
@@ -167,6 +169,7 @@ async def health() -> dict:
         "running_job_id": job_queue.running_job_id,
         "queue_depth": job_queue.depth(),
         "auth_enabled": auth_enabled(),
+        "db": "ok" if await run_in_threadpool(check_db) else "error",
         "uptime_s": round(time.monotonic() - _STARTED_AT, 1),
     }
 
