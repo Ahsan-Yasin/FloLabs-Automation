@@ -71,7 +71,7 @@
           el("div", { class: "row-sub mono", text: j.job_id.slice(0, 12) })),
         el("td", { class: "nowrap", text: j.owner_email || "—" }),
         el("td", {}, statusPill(j.status)),
-        el("td", { text: j.source_kind }),
+        el("td", { text: { youtube: "YouTube", upload: "Upload" }[j.source_kind] || j.source_kind }),
         el("td", { class: "time", text: fmt.ago(j.created_at) }))));
     } catch (err) {
       body.replaceChildren(el("tr", {}, el("td", { colspan: "5", text: err.message })));

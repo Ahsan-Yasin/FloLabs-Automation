@@ -193,6 +193,7 @@
     trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3"/>',
     refresh: '<path d="M20 11a8 8 0 10-2.34 5.66M20 4v7h-7"/>',
     key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3M14 9l2 2"/>',
+    shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
     zap: '<path d="M13 3L5 13.5h6.5L10 21l8-10.5h-6.5z"/>',
     x: '<path d="M6 6l12 12M18 6L6 18"/>',
     external: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/>',
@@ -305,7 +306,7 @@
     try { localStorage.setItem("hc-theme", theme); } catch (e) { /* not important */ }
     qsa("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === theme ? "true" : "false"));
     const meta = qs('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "light" ? "#f6f7f9" : "#141b2b");
+    if (meta) meta.setAttribute("content", theme === "light" ? "#ffffff" : "#0f1524");
   }
   qsa("[data-theme-set]").forEach((b) => {
     b.setAttribute("aria-pressed", b.dataset.themeSet === root.getAttribute("data-theme") ? "true" : "false");
@@ -313,7 +314,7 @@
   });
   if (root.getAttribute("data-theme") === "dark") {
     const meta = qs('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", "#141b2b");
+    if (meta) meta.setAttribute("content", "#0f1524");
   }
 
   /* ------------------------------------------------------------ header / nav */

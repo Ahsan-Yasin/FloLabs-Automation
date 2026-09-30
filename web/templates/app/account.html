@@ -2,7 +2,7 @@
 {% from "partials/icons.html" import icon %}
 {% block title %}Account settings — {{ app_name }}{% endblock %}
 {% block content %}
-<div class="container-wide app-main" style="max-width:1080px">
+<div class="container-wide app-main">
   <div class="page-head"><div><h1>Account settings</h1><p>{{ current_user.email }}</p></div></div>
   <div class="settings-grid">
     <nav class="settings-nav" aria-label="Settings sections">
@@ -12,7 +12,7 @@
       <a href="#sessions">Signed-in browsers</a>
       <a href="#danger">Delete account</a>
     </nav>
-    <div>
+    <div class="settings-body">
       <section class="card card-pad section-card" id="profile" aria-labelledby="profile-title">
         <h2 id="profile-title">Profile</h2>
         <form data-profile-form novalidate style="margin-top:18px">

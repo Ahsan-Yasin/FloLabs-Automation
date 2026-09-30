@@ -16,6 +16,14 @@
       "port": 8000
     },
     {
+      "name": "ui-preview",
+      "runtimeExecutable": ".venv/Scripts/python.exe",
+      "runtimeArgs": [
+        "C:/Users/Ahsan/AppData/Local/Temp/claude/D--Coding-Python-FloLabs-Automation/ed3aafc2-fa67-4d1c-8a77-fef4c3ba982c/scratchpad/preview_server.py"
+      ],
+      "port": 8137
+    },
+    {
       "name": "3js-static",
       "runtimeExecutable": ".venv/Scripts/python.exe",
       "runtimeArgs": [

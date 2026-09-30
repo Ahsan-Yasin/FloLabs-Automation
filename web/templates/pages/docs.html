@@ -21,18 +21,18 @@
 
 <div class="container docs-shell">
   <nav class="docs-toc" aria-label="On this page">
-    <h4>Start</h4>
+    <p class="toc-group">Start</p>
     <a href="#quickstart">Quickstart</a>
     <a href="#auth">Authentication</a>
-    <h4>Jobs</h4>
+    <p class="toc-group">Jobs</p>
     <a href="#jobs">Create a job</a>
     <a href="#options">Job options</a>
     <a href="#lifecycle">Follow a job</a>
     <a href="#outputs">Outputs</a>
-    <h4>Automations</h4>
+    <p class="toc-group">Automations</p>
     <a href="#webhooks">Webhooks</a>
     <a href="#recipes">n8n, Zapier, Make</a>
-    <h4>Reference</h4>
+    <p class="toc-group">Reference</p>
     <a href="#errors">Errors</a>
     <a href="#limits">Limits</a>
     <a href="#reference">Endpoints</a>
@@ -56,7 +56,7 @@ curl -s -X POST {{ base_url }}/api/v1/jobs/youtube \
 curl -s {{ base_url }}/api/v1/jobs/JOB_ID -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span>
 
 <span class="c"># 3. download everything once status is "done"</span>
-curl -L -o meeting.zip {{ base_url }}/api/v1/jobs/JOB_ID/bundle -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span>{% endcall %}
+curl -L -o meeting.zip {{ base_url }}/api/v1/jobs/JOB_ID/bundle \n  -H <span class="s">"Authorization: Bearer $HC_API_KEY"</span>{% endcall %}
     </section>
 
     <section id="auth">

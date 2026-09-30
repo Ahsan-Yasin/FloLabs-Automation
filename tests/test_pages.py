@@ -48,8 +48,8 @@ def test_home_hero_form_hands_the_link_to_the_dashboard(product):
     page = new_client().get("/").text
     assert '<form class="hero-form" action="/app" method="get">' in page
     assert 'name="url"' in page
-    # the struck filler in the headline is decoration: screen readers skip it
-    assert '<span class="cut-run" aria-hidden="true">' in page
+    # the job window under the headline is an example: its pretend controls are hidden from screen readers
+    assert '<span class="btn btn-primary" aria-hidden="true">' in page
 
 
 def test_app_pages_redirect_to_login_and_keep_the_query(product):

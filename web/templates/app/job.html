@@ -23,7 +23,7 @@
   </div>
 
   <div class="alert alert-danger" data-job-error hidden role="alert" style="margin-bottom:18px">{{ icon("alert") }}<div><strong data-error-title>This job failed</strong><div class="small" data-error-text style="margin-top:4px"></div></div></div>
-  <div class="alert alert-warn" data-job-warnings hidden style="margin-bottom:18px">{{ icon("info") }}<div data-warnings-list class="small"></div></div>
+  <div class="alert alert-warn" data-job-warnings hidden style="margin-bottom:18px">{{ icon("info") }}<div><strong>Notes on this job</strong><div data-warnings-list class="small" style="margin-top:4px"></div></div></div>
 
   <div class="job-grid">
     <div class="job-main">
@@ -96,7 +96,7 @@
         <div data-webhooks style="margin-top:12px;display:grid;gap:8px"></div>
       </section>
 
-      <details class="card card-pad section-card advanced" data-log style="margin-top:20px">
+      <details class="card card-pad section-card advanced" data-log>
         <summary>{{ icon("file") }} Job log {{ icon("chevron-down") }}</summary>
         <pre class="log-view" data-log-view>Loading&hellip;</pre>
       </details>
