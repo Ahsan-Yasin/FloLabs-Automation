@@ -386,7 +386,7 @@ def test_defaults_use_the_budget_model_without_reasoning(monkeypatch):
     for name in ("LLM_PROVIDER", "OPENAI_MODEL", "OPENAI_REASONING_EFFORT", "OPENAI_RPM"):
         monkeypatch.delenv(name, raising=False)
     defaults = Settings(_env_file=None)  # the code defaults, whatever the local .env says
-    assert defaults.llm_provider == "openai" and defaults.openai_model == "gpt-6-luna"
+    assert defaults.openai_model == "gpt-6-luna"  # the default provider is anthropic (test_anthropic.py)
     assert defaults.openai_reasoning_effort == "none" and defaults.openai_rpm <= 500
 
 

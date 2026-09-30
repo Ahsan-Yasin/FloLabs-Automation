@@ -4,6 +4,7 @@ pydantic>=2.7
 pydantic-settings>=2.3
 python-multipart>=0.0.9
 httpx>=0.27
+anthropic>=1.9,<2
 google-genai>=0.3
 reportlab>=4.4,<6
 # silence detection (slice/silence.py); EC2 installs no WhisperX/torch to pull it in

@@ -594,3 +594,15 @@ def test_a_dropped_placeholder_is_tolerated_but_unknown_codes_are_not():
         parse_judge_lines("10 k 5 banana")
     with pytest.raises(ValueError):
         parse_judge_lines("10 maybe 5 - -")
+
+
+def test_an_arrow_copied_from_the_format_line_means_no_code():
+    """Claude Haiku writes the prompt's "<... or ->" placeholder as "->" (a
+    real meeting failed chunk after chunk on "120 k 2 - ->")."""
+    from decide.gemini_client import parse_judge_lines
+
+    items = parse_judge_lines("120 k 2 - ->\n121 r 0 fill ->\n122 k 6 -> arch\n123 k 3 → —")
+    assert [(x["i"], x["c"], x["h"]) for x in items] == [
+        (120, "-", "-"), (121, "fill", "-"), (122, "-", "arch"), (123, "-", "-")]
+    with pytest.raises(ValueError):
+        parse_judge_lines("10 k 5 => idea")  # other stray symbols still make the answer invalid

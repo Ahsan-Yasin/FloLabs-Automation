@@ -5,8 +5,8 @@ produces one zip per meeting: the highlights reel followed by the cleaned
 meeting, vertical shorts, a video of everything removed, a PDF report,
 transcripts and YouTube chapters (see "What a finished job delivers").
 The platform's own transcript (Zoom's VTT, YouTube's captions) is reused when
-there is one, else WhisperX transcribes; an LLM pass (OpenAI `gpt-6-luna` by
-default) judges every sentence; ffmpeg does the cutting. Includes a small web
+there is one, else WhisperX transcribes; an LLM pass (Claude `claude-haiku-4-5`
+by default, OpenAI or Gemini via `LLM_PROVIDER`) judges every sentence; ffmpeg does the cutting. Includes a small web
 UI.
 
 ## Pipeline
@@ -85,13 +85,16 @@ Fill in `.env`:
 
   WhisperX itself runs self-hosted and free; this token is only for
   downloading the gated model weights.
-- `OPENAI_API_KEY` — the AI pass (keep/remove, highlight scores, re-rank,
-  chapters). `OPENAI_MODEL` defaults to `gpt-6-luna`, OpenAI's budget model
-  ($0.10 / 1M input, $0.50 / 1M output tokens: a 98-minute meeting is about
-  100k in + 15k out ≈ $0.02), with `OPENAI_REASONING_EFFORT=none`. The account
-  needs billing credit — a key without it fails the job with
-  `llm_quota_exhausted`. Set `LLM_PROVIDER=gemini` (plus `GEMINI_API_KEY`,
-  `GEMINI_MODEL`) to use Gemini instead.
+- `ANTHROPIC_API_KEY` — the AI pass (keep/remove, highlight scores, re-rank,
+  chapters). `LLM_PROVIDER` picks the provider: `anthropic` (default), `openai`
+  or `gemini`. `ANTHROPIC_MODEL` defaults to `claude-haiku-4-5`, Anthropic's
+  cheapest model ($1 / 1M input, $5 / 1M output tokens: a 98-minute meeting is
+  about 100k in + 15k out ≈ $0.18). The account needs credit — a key without
+  it fails the job with `llm_quota_exhausted`.
+- `LLM_PROVIDER=openai` uses `OPENAI_API_KEY` / `OPENAI_MODEL` (default
+  `gpt-6-luna`, $0.10 / $0.50 per 1M tokens ≈ $0.02 per 98-minute meeting,
+  `OPENAI_REASONING_EFFORT=none`); `LLM_PROVIDER=gemini` uses `GEMINI_API_KEY`,
+  `GEMINI_MODEL`.
 - `ZOOM_ACCOUNT_ID`, `ZOOM_CLIENT_ID`, `ZOOM_CLIENT_SECRET` — a Zoom
   Server-to-Server OAuth app (Zoom Marketplace → Develop → Build app). It
   must be **activated** and have the scopes

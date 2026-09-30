@@ -50,6 +50,7 @@ from .prompts import (
 )
 
 if TYPE_CHECKING:
+    from .anthropic_client import AnthropicCaller
     from .openai_client import OpenAICaller
 
 logger = get_logger(__name__)
@@ -284,7 +285,7 @@ class LazyCaller:
         # provider or model re-judges instead of reusing another model's answers
         self.model = llm_model(settings)
         self.usage = LLMUsage()
-        self._real: GeminiCaller | OpenAICaller | None = None
+        self._real: GeminiCaller | OpenAICaller | AnthropicCaller | None = None
         self._stage: tuple[str, float | None] = ("decide", settings.decide_max_wall_s)
 
     def start_stage(self, name: str, max_wall_s: float | None) -> None:
@@ -301,7 +302,7 @@ class LazyCaller:
 
 
 # Anything judge_segments / rerank_moments / generate_chapters accept.
-Caller: TypeAlias = "GeminiCaller | OpenAICaller | LazyCaller"
+Caller: TypeAlias = "GeminiCaller | OpenAICaller | AnthropicCaller | LazyCaller"
 
 
 def _provider(settings: Settings) -> str:
@@ -311,7 +312,11 @@ def _provider(settings: Settings) -> str:
 def llm_model(settings: Settings) -> str:
     """The model the configured provider will use ("" for an unknown
     provider, which make_caller reports)."""
-    return {"openai": settings.openai_model, "gemini": settings.gemini_model}.get(_provider(settings), "")
+    return {
+        "anthropic": settings.anthropic_model,
+        "openai": settings.openai_model,
+        "gemini": settings.gemini_model,
+    }.get(_provider(settings), "")
 
 
 def _api_key(value: str, name: str) -> str:
@@ -329,9 +334,17 @@ def _api_key(value: str, name: str) -> str:
     return key
 
 
-def make_caller() -> GeminiCaller | OpenAICaller:
+def make_caller() -> GeminiCaller | OpenAICaller | AnthropicCaller:
     settings = get_settings()
     provider = _provider(settings)
+    if provider == "anthropic":
+        from .anthropic_client import AnthropicCaller
+
+        key = _api_key(settings.anthropic_api_key, "ANTHROPIC_API_KEY")
+        return AnthropicCaller(
+            key, settings.anthropic_model, settings.anthropic_rpm, settings.decide_max_wall_s,
+            timeout_s=settings.anthropic_request_timeout_s, max_output_tokens=settings.anthropic_max_output_tokens,
+        )
     if provider == "openai":
         from .openai_client import OpenAICaller
 
@@ -342,7 +355,7 @@ def make_caller() -> GeminiCaller | OpenAICaller:
             max_output_tokens=settings.openai_max_output_tokens, reasoning_effort=settings.openai_reasoning_effort,
         )
     if provider != "gemini":
-        raise DecisionError(f"unknown LLM_PROVIDER {settings.llm_provider!r} (use openai or gemini)",
+        raise DecisionError(f"unknown LLM_PROVIDER {settings.llm_provider!r} (use anthropic, openai or gemini)",
                             retryable=False)
 
     from google import genai
@@ -379,6 +392,12 @@ def _answer_lines(raw: str) -> list[str]:
     return [ln.strip() for ln in (raw or "").splitlines() if ln.strip() and not ln.strip().startswith("```")]
 
 
+# "no code" placeholders. The format line in the prompt reads "<removal code
+# or -> <highlight code or ->", and Claude Haiku copies the "->" (seen on a
+# real meeting: every retry and every split repeated it until the job failed).
+_NO_CODE = frozenset({"-", "->", "→", "–", "—"})
+
+
 def parse_judge_lines(raw: str) -> list[dict]:
     """'312 r 0 fill -' lines -> dicts. The model sometimes drops one of the
     '-' placeholders ('313 k 5 arch'); the codes are told apart by value
@@ -399,7 +418,9 @@ def parse_judge_lines(raw: str) -> list[dict]:
                 highlight = token
             elif token.isdigit():
                 continue  # the model occasionally repeats a number ("126 k 4 4 idea"); the first one is the score
-            elif token != "-":
+            elif token in _NO_CODE:
+                continue
+            else:
                 raise ValueError(f"unknown code {token!r} in {line[:60]!r}")
         items.append({"i": int(n), "d": d.lower(), "s": int(score), "c": removal, "h": highlight})
     if not items:

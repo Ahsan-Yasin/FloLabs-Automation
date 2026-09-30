@@ -17,7 +17,7 @@ def _isolated_settings(tmp_path, monkeypatch):
     monkeypatch.setenv("STORAGE_DIR", str(tmp_path / "storage"))
     # never spend real tokens from a test: a test that needs a key sets its own
     monkeypatch.setenv("LLM_PROVIDER", "openai")
-    for name in ("OPENAI_API_KEY", "GEMINI_API_KEY"):
+    for name in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY"):
         monkeypatch.setenv(name, "")
     monkeypatch.setenv("HC_API_TOKEN", "")
     monkeypatch.setenv("MIN_FREE_DISK_BYTES", "0")

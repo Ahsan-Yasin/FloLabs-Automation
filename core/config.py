@@ -11,8 +11,19 @@ class Settings(BaseSettings):
     hf_token: str = ""
 
     # --- LLM (decide: judge + re-rank; chapters) ----------------------------
-    # "openai" (default) or "gemini" (the older provider, kept as a fallback).
-    llm_provider: str = "openai"
+    # "anthropic" (default), "openai" or "gemini" — switch with LLM_PROVIDER.
+    llm_provider: str = "anthropic"
+    anthropic_api_key: str = ""
+    # Anthropic's cheapest model ($1 / 1M input, $5 / 1M output, Sept 2026):
+    # a 98-minute meeting (~100k input + ~15k output tokens) is about $0.18.
+    anthropic_model: str = "claude-haiku-4-5"
+    # Client-side limiter (Anthropic's usage tier 1 allows 50 requests/minute).
+    anthropic_rpm: int = 45
+    # Per-request HTTP timeout, so a stalled call can never wedge the worker.
+    anthropic_request_timeout_s: float = 120.0
+    # Hard cap per answer (Haiku 4.5 allows 64k); a 60-sentence judge answer
+    # is ~1k tokens, the re-rank ~3k.
+    anthropic_max_output_tokens: int = 16000
     openai_api_key: str = ""
     # OpenAI's budget model ($0.10 / 1M input, $0.50 / 1M output, Sept 2026).
     # Judging sentences keep/remove + a 0-10 score needs no big model: a
