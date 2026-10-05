@@ -10,3 +10,11 @@ storage/jobs/*
 .pytest_cache/
 *.egg-info/
 .ruff_cache/
+
+# prompt-tuning eval: real meeting transcripts, labels, results and the report
+# quote internal meetings -- keep them out of git (the harness code is tracked)
+tools/prompt_eval/raw/
+tools/prompt_eval/datasets/
+tools/prompt_eval/results/
+tools/prompt_eval/REPORT.md
+tools/prompt_eval/spend_ledger.json

@@ -76,6 +76,14 @@ its own (filler like "yeah", "mhm", "sorry go ahead", false starts talked over).
 yourself" / "hi, I'm X, I study Y" — even though it's on-topic, it is not agenda content.
 - Waiting-for-people-to-join dead air, technical housekeeping (audio/video troubleshooting), \
 and meta-commentary about the meeting itself ("let's wait for everyone", "can we start now").
+- Lines that are ONLY about the meeting rather than the work: who is missing or late, \
+leaving early, rescheduling, when people are free ("I'm online until 3"), setting up another \
+call or a one-to-one, "let me know". They are housekeeping, never a decision — even when the \
+meeting has nothing else in it. A line that also reports work done, in progress or planned is \
+a status update and is kept ("I missed Monday, but I've started the parser rewrite and should \
+finish it by Friday").
+- Thanks, goodbyes, apologies, welcomes ("feel welcome") and reassurance ("it's okay", "no \
+problem") — remove, also when they sit between kept lines.
 - Any tangent that isn't the thing the meeting was called to discuss.
 - Hand-offs and bare calls to speak that only pass the floor ("let's move to the design \
 team", "any updates?", "go ahead", "you can share your screen") and praise with no content \
@@ -91,8 +99,15 @@ states a decision, or would be missed by someone who only wants the meeting's re
 This includes status updates, blockers, and task assignments even when they're introduced by \
 someone being called on by name ("can you give us an update?") — being called on is not the \
 same as being asked to introduce yourself; judge the answer by whether it's substance or filler.
+- A line that opens a real item ("you said you drafted the points") or gives a work \
+instruction is content; a bare check ("did you hear me?") is not. Setting up for this meeting \
+on screen — logging in, opening or sharing a file, naming or logging this meeting in a \
+tracker — is housekeeping, and so are fragments that never become a sentence ("And the…").
 - A segment that only finishes a kept sentence (the previous segment stops mid-sentence) \
-takes the same decision as that sentence — never cut a sentence in half.
+takes the same decision as that sentence — never cut a sentence in half, at its start or its \
+end: when a kept thought begins in a hesitant lead-in line ("so the thing I keep coming back \
+to is, um," + "caching only helps when the data barely changes"), keep both. A stray word, \
+bare number or "okay?" that is not part of the sentence is still removed.
 - Overlap alone is NOT a reason to remove."""
 
 JUDGE_TEMPLATE = CLEANUP_RULES + """
@@ -114,10 +129,13 @@ score of that moment. Anchors: 0-2 logistics, filler, routine status ("I worked 
 on it"); 3-5 useful substance (a concrete update, a real question answered), a mildly funny \
 remark; 6-7 something a viewer can learn from — a concept or how something works explained \
 clearly, a new architecture or feature explained or demoed, a surprising fact or number, a \
-decision with its reason — or a genuinely funny moment; 8-10 the best of the meeting: new \
-ideas or explanations people would want to watch even if they missed the meeting. Score \
-independently of keep/remove.
-- highlight code when the score is 3 or more, the best fit: {highlight_codes}"""
+decision or opinion with its reason, a root cause found — or a genuinely funny moment; 8-10 \
+the best of the meeting: new ideas or explanations people would want to watch even if they \
+missed the meeting (a clear teaching moment belongs here). Score independently of \
+keep/remove; small talk, thanks and scheduling are 0-2 even inside a good stretch.
+- highlight code when the score is 3 or more, the best fit: {highlight_codes}
+- Every line has all five fields in this order: number, k or r, score (a number), removal \
+code or -, highlight code or -. Use only the codes listed above, never invent one."""
 
 RESCORE_NOTE = (
     "Your previous answer scored every kept line 0. Re-read the scoring anchors: routine status is 0-2, but "
@@ -134,12 +152,15 @@ candidate id (even weak ones), nothing else:
 <id>|<score>|<code>|<a>|<b>|<y or n>|<title>|<why>
 - score 0-10, spread across the candidates: the best ~15% get 8-10, the weakest 1-3. Rank \
 highest what a viewer can learn from or would find new: clear explanations, new \
-architectures or features, insights, decisions with their reasons. A funny moment ranks high \
-only when it is genuinely funny; a routine update ranks low.
+architectures or features, insights, decisions with their reasons. A decision, opinion or \
+root cause stated with its reason is worth at least 5, even when short. Score the best point \
+inside a candidate, not the small talk, thanks or welcomes around it. A funny moment ranks \
+high only when it is genuinely funny; a routine update ranks low.
 - code: the category, one of {highlight_codes}
 - a, b: first and last line number of a clip that works on its own: start where the thought \
 starts (include the setup; never start on "which", "and", "so", "the first one"…), end after \
-the payoff; usually 15-45 seconds; you may use the "~" lines
+the payoff; usually 15-45 seconds; you may use the "~" lines; leave out small talk, \
+thanks and scheduling at either end
 - y if, as a 20-60 second vertical clip, it is: {shorts_criteria}. That means the clip itself \
 explains or shows something — what a concept is, how something works, what a new feature or \
 design does and why, a lesson learned — so a viewer comes away knowing something new; a line \
