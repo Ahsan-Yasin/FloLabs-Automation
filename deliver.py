@@ -2,7 +2,8 @@
 chapters and report, then manifest.json + bundle.zip (plan §6.4, D9-D12, D18).
 
 The zip the owner gets for each meeting:
-    final.mp4            highlights reel, title card, then the cleaned meeting
+    final.mp4            intro, highlights reel, title card, the cleaned meeting, outro
+                         (the intro/outro are the owner's clips, when there are any)
     highlights.mp4       the reel on its own
     shorts/short_NN.mp4  vertical shorts (+ .srt captions, shorts.json)
     removed.mp4          every cut of 1 s or more (not pure silences), labelled with time + reason
@@ -36,6 +37,7 @@ from core.models import ArtifactInfo, JobRecord, JobStatus, Moment, RenderManife
 from core.timeline import parse_rate
 from core.version import PIPELINE_VERSION
 from decide.chapters import ChapterResult, finalize_chapters, format_chapters
+from decide.pricing import estimate_cost_usd
 from outputs import RenderInputs, RenderOutputs, render_outputs
 from report.pdf import ReportData, build_report
 from report.text import (
@@ -82,6 +84,7 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
     job.artifacts = dict(out.artifacts)
     job.output_video_path = str(out.final_path)
     job.final_offset_s = round(out.final_offset_s, 6)
+    job.intro_s, job.outro_s = round(out.intro_s, 6), round(out.outro_s, 6)
     for name, secs in out.timings.items():
         job.stage_timings[f"render_{name}"] = secs
     _write_json(job_dir / "render_manifest.json", out.cleaned.model_dump())
@@ -95,7 +98,8 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
     # sentence after it into one removed range.
     silence = inp.render.edl.silence_cuts + [(r.start, r.end) for r in inp.render.removed if r.silence]
     clean_words = remap_transcript(words, manifest=out.cleaned, silence=silence)
-    # what is said in the reel at the start of final.mp4 (its own timeline = final's)
+    # what is said in the reel near the start of final.mp4 (its own timeline
+    # = final's, shifted by the intro)
     reel_words = []
     if out.highlights is not None:
         reel_silence = inp.render.reel_edl.silence_cuts if inp.render.reel_edl is not None else []
@@ -111,15 +115,16 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
         write_removed_transcript(job_dir / "transcript_removed.txt", job_dir / "transcript_removed.json", entries,
                                  meeting=meeting, source_duration_s=source_s)
         write_clean_transcript(job_dir / "transcript_clean.txt", job_dir / "transcript_clean.json",
-                               clean_lines(clean_words, out.final_offset_s, reel_words), meeting=meeting,
-                               offset_s=out.final_offset_s, final_duration_s=out.final_duration_s)
+                               clean_lines(clean_words, out.final_offset_s, reel_words, reel_offset_s=out.intro_s),
+                               meeting=meeting, offset_s=out.final_offset_s, final_duration_s=out.final_duration_s,
+                               intro_s=out.intro_s, outro_s=out.outro_s)
         for name in ("transcript_clean.txt", "transcript_clean.json", "transcript_removed.txt",
                      "transcript_removed.json"):
             job.artifacts[name] = ArtifactInfo(path=name, kind="json" if name.endswith(".json") else "text",
                                                mandatory=True)
 
         chapters_text = _chapters(job, job_dir, inp.chapter_fn, clean_words, out)
-        highlights = _reel_rows(out.highlights, inp.reel)
+        highlights = _reel_rows(out.highlights, inp.reel, offset_s=out.intro_s)
         shorts_rows = [(r.path.relative_to(job_dir).as_posix(), r.clip.start, r.clip.end, r.clip.title, r.clip.hook)
                        for r in out.shorts]
         if out.shorts:
@@ -145,6 +150,10 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
                     cleaned_duration_s=out.cleaned.measured_duration_s or 0.0,
                     highlights_duration_s=_duration(out.highlights),
                     card_s=out.card_s,
+                    intro_name=out.intro_name,
+                    intro_s=out.intro_s,
+                    outro_name=out.outro_name,
+                    outro_s=out.outro_s,
                     removed=entries,
                     merged_back_count=inp.render.edl.merged_gap_count,
                     merged_back_s=inp.render.edl.merged_gap_seconds,
@@ -155,6 +164,8 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
                                for name, a in _ordered(job.artifacts).items()],
                     warnings=job.warnings,
                     llm_usage=job.llm_usage,
+                    llm_model=_llm_model(),
+                    llm_cost_usd=estimate_cost_usd(job.llm_usage, _llm_model()),
                     stage_timings=job.stage_timings,
                 ), font=find_font(), bold_font=find_font(bold=True))
                 job.artifacts["report.pdf"] = ArtifactInfo(path="report.pdf", kind="pdf")
@@ -196,7 +207,8 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
 def _chapters(job: JobRecord, job_dir: Path, chapter_fn: ChapterFn | None, clean_words: list[Word],
               out: RenderOutputs) -> str:
     """Topic chapters on the cleaned meeting, placed on final.mp4 (after the
-    reel: shifted, with "00:00 Highlights" first). Optional."""
+    intro and the reel: shifted, with "00:00 Highlights" first when there is
+    a reel; the intro belongs to the first chapter). Optional."""
     if chapter_fn is None:
         return ""
     cleaned_s = out.cleaned.measured_duration_s or 0.0
@@ -218,7 +230,7 @@ def _chapters(job: JobRecord, job_dir: Path, chapter_fn: ChapterFn | None, clean
                                                      reason=reason[:300])
         return ""
     entries, problems = finalize_chapters(result.chapters, final_duration_s=out.final_duration_s,
-                                          reel_s=out.final_offset_s)
+                                          reel_s=out.reel_s, intro_s=out.intro_s)
     if problems:
         job.warnings.append("chapters skipped: " + "; ".join(problems))
         job.artifacts["chapters.txt"] = ArtifactInfo(path="chapters.txt", kind="text", status="skipped",
@@ -228,6 +240,7 @@ def _chapters(job: JobRecord, job_dir: Path, chapter_fn: ChapterFn | None, clean
     _write_json(job_dir / "chapters.json", {
         "timeline": "final",
         "cleaned_starts_at_s": round(out.final_offset_s, 3),
+        "intro_s": round(out.intro_s, 3),
         "chapters_cleaned_timeline": [c.model_dump() for c in result.chapters],
         "entries": [{"t": t, "title": title} for t, title in entries],
     })
@@ -237,9 +250,10 @@ def _chapters(job: JobRecord, job_dir: Path, chapter_fn: ChapterFn | None, clean
     return text
 
 
-def _reel_rows(manifest: RenderManifest | None, reel: list[Moment]) -> list[tuple[float, float, float, str]]:
+def _reel_rows(manifest: RenderManifest | None, reel: list[Moment],
+               offset_s: float = 0.0) -> list[tuple[float, float, float, str]]:
     """(time in final.mp4, source start, source end, title) per reel clip. The
-    reel is the first thing in final.mp4, so its own timeline is final's.
+    reel starts at `offset_s` in final.mp4 (right after the intro, if any).
     Pieces of one moment split by cut pauses are one clip."""
     if manifest is None:
         return []
@@ -255,7 +269,7 @@ def _reel_rows(manifest: RenderManifest | None, reel: list[Moment]) -> list[tupl
             rows[-1] = (*rows[-1][:2], e, rows[-1][3])
             continue
         title = (best.title or best.category.replace("_", " ")) if best is not None else ""
-        rows.append((float(Fraction(p.out_start_frame) / fps), s, e, title))
+        rows.append((offset_s + float(Fraction(p.out_start_frame) / fps), s, e, title))
         last_id = best.id if best is not None else None
     return rows
 
@@ -292,9 +306,13 @@ def _manifest(job: JobRecord, inp: DeliverInputs, out: RenderOutputs, highlights
         "source": {"name": Path(inp.render.source).name, "duration_s": round(media.video_duration, 3),
                    "fps": f"{media.fps.numerator}/{media.fps.denominator}", "width": media.width,
                    "height": media.height, "transcript": job.transcript_source},
+        # in order: intro + highlights + title card + cleaned meeting + outro = duration
         "final": {"duration_s": round(out.final_duration_s, 3), "frames": out.final_frames,
                   "cleaned_starts_at_s": round(out.final_offset_s, 3),
-                  "highlights_s": round(_duration(out.highlights), 3), "title_card_s": round(out.card_s, 3)},
+                  "intro_file": out.intro_name or None, "intro_s": round(out.intro_s, 3),
+                  "highlights_s": round(_duration(out.highlights), 3), "title_card_s": round(out.card_s, 3),
+                  "cleaned_s": round(out.cleaned.measured_duration_s or 0.0, 3),
+                  "outro_file": out.outro_name or None, "outro_s": round(out.outro_s, 3)},
         "artifacts": {name: a.model_dump(exclude={"on_disk"}) for name, a in job.artifacts.items()},
         "highlights": [{"final_at_s": round(a, 3), "source_start": round(s, 3), "source_end": round(e, 3),
                         "title": t} for a, s, e, t in highlights],
@@ -313,7 +331,17 @@ def _manifest(job: JobRecord, inp: DeliverInputs, out: RenderOutputs, highlights
         "warnings": job.warnings,
         "stage_timings": job.stage_timings,
         "llm_usage": job.llm_usage,
+        "llm_model": _llm_model(),
+        "llm_cost_usd": estimate_cost_usd(job.llm_usage, _llm_model()),
     }
+
+
+def _llm_model() -> str:
+    """The configured AI model (the one this job's calls went to, unless the
+    setting changed between deciding and rendering a decide_only job)."""
+    from decide.gemini_client import llm_model
+
+    return llm_model(get_settings())
 
 
 def _cleanup(job: JobRecord, job_dir: Path, source: Path) -> None:

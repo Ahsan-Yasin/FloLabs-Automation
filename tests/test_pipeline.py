@@ -51,6 +51,10 @@ def _manifest_for(edl, kind="cleaned"):
     )
 
 
+# the owner's clips at 25 fps: 6.92 s intro, 5.04 s outro
+CLIP_FRAMES = {"intro": 173, "outro": 126}
+
+
 def _header(frames):
     return StreamHeader(frames, frames / 25, "25/1", 640, 360, "yuv420p", "x", frames / 25, None, 48000, 2, "aac",
                         frames / 25)
@@ -121,10 +125,26 @@ def _fake_renderers(monkeypatch, calls, cleaned_progress=((1, 1),), fail=None):
         srt_path.write_text("1\n00:00:00,000 --> 00:00:01,000\nhi\n", encoding="utf-8")
         return slice_pipeline.ShortResult(clip, out_path, srt_path, 25, clip.end - clip.start, 1)
 
+    def fake_clip(path, media, work_dir, kind):
+        calls.append(("clip", kind, Path(path).name))
+        maybe_fail(kind)
+        work_dir.mkdir(parents=True, exist_ok=True)
+        (work_dir / f"{kind}_video.mp4").write_bytes(b"v")
+        frames = CLIP_FRAMES[kind]
+        manifest = RenderManifest(kind=kind, fps="25/1", width=640, height=360, expected_frames=frames)
+        return slice_pipeline.Track(kind, Fraction(25), work_dir / f"{kind}_video.mp4", [], frames, frames * 1920,
+                                    manifest)
+
+    def fake_compatible(paths, headers=None):
+        # fail={"concat:intro": ...}: that clip's encoding doesn't match the meeting's
+        maybe_fail("concat:" + Path(paths[-1]).stem.split("_")[0])
+
     monkeypatch.setattr(outputs_module, "extract_audio_flac", lambda *a, **k: calls.append(("flac", None)))
     monkeypatch.setattr(outputs_module, "render_track", fake_track)
     monkeypatch.setattr(outputs_module, "assemble", fake_assemble)
     monkeypatch.setattr(outputs_module, "render_card", fake_card)
+    monkeypatch.setattr(outputs_module, "render_clip", fake_clip)
+    monkeypatch.setattr(outputs_module, "assert_concat_compatible", fake_compatible)
     monkeypatch.setattr(outputs_module, "render_removed", fake_removed)
     monkeypatch.setattr(outputs_module, "render_short_clip", fake_short)
 
@@ -548,6 +568,115 @@ def test_a_card_that_does_not_concat_falls_back_to_no_card(monkeypatch):
     assert job.status == JobStatus.DONE
     assert attempts[:2] == [["highlights", "card", "cleaned"], ["highlights", "cleaned"]]
     assert any("title card skipped" in w for w in job.warnings)
+
+
+def _owner_clips():
+    folder = get_settings().intro_outro_dir  # a per-test folder (tests/conftest.py)
+    folder.mkdir(parents=True, exist_ok=True)
+    for name in ("CTD - Opening.mp4", "FloLabs - Widescreen outro.mp4"):
+        (folder / name).write_bytes(b"x")
+
+
+def test_intro_and_outro_wrap_final_mp4_and_shift_its_timeline(monkeypatch):
+    import math
+
+    from core.timeline import fmt_clock
+
+    calls = []
+    _scored_meeting(monkeypatch, calls)
+    _owner_clips()
+    job = _make_job("job-intro-outro", native_transcript_path="t.vtt", title="Weekly sync")
+    pipeline_module.run_pipeline(job, lambda j: None)
+    assert job.status == JobStatus.DONE, job.error
+    job_dir = get_settings().jobs_dir / job.job_id
+    assert (job_dir / "final.mp4").read_bytes() == b"mp4:intro+highlights+card+cleaned+outro"
+    assert ("clip", "intro", "CTD - Opening.mp4") in calls and ("clip", "outro", "FloLabs - Widescreen outro.mp4") in calls
+    # only final.mp4 gets them
+    assert (job_dir / "highlights.mp4").read_bytes() == b"mp4:highlights"
+    hl = json.loads((job_dir / "edl_highlights.json").read_text(encoding="utf-8"))
+    hl_frames = sum(r["end_frame"] - r["start_frame"] for r in hl["ranges"])
+    assert job.final_offset_s == (173 + hl_frames + 50) / 25
+    assert (job.intro_s, job.outro_s) == (173 / 25, 126 / 25)
+
+    manifest = json.loads((job_dir / "manifest.json").read_text(encoding="utf-8"))
+    final = manifest["final"]
+    assert (final["intro_file"], final["outro_file"]) == ("CTD - Opening.mp4", "FloLabs - Widescreen outro.mp4")
+    assert (final["intro_s"], final["outro_s"], final["title_card_s"]) == (6.92, 5.04, 2.0)
+    parts = final["intro_s"] + final["highlights_s"] + final["title_card_s"] + final["cleaned_s"] + final["outro_s"]
+    assert abs(parts - final["duration_s"]) < 0.002 and final["cleaned_starts_at_s"] == round(job.final_offset_s, 3)
+    assert manifest["highlights"][0]["final_at_s"] == 6.92  # the reel starts after the intro
+    assert job.artifacts["final.mp4"].duration_s == final["duration_s"]
+
+    clean = json.loads((job_dir / "transcript_clean.json").read_text(encoding="utf-8"))
+    reel_lines = [x for x in clean["lines"] if x["section"] == "highlights"]
+    meeting_lines = [x for x in clean["lines"] if x["section"] == "meeting"]
+    assert 6.92 <= reel_lines[0]["start"] < 6.92 + 1.0 and reel_lines[-1]["end"] <= job.final_offset_s
+    assert meeting_lines[0]["start"] == round(job.final_offset_s, 3)  # "sentence 0." starts the meeting
+    assert clean["intro_s"] == 6.92 and clean["outro_s"] == 5.04
+    # "Highlights" covers intro + reel + card; the topics move by all three
+    offset = math.floor(job.final_offset_s + 1e-6)
+    assert Path(job.chapters_path).read_text(encoding="utf-8").splitlines() == [
+        "00:00 Highlights", f"{fmt_clock(offset)} Intro", f"{fmt_clock(offset + 120)} Plans",
+        f"{fmt_clock(offset + 300)} Wrap-up"]
+    assert not any("intro" in w or "outro" in w for w in job.warnings)
+
+
+def test_the_job_option_turns_the_intro_and_outro_off(monkeypatch):
+    calls = []
+    _scored_meeting(monkeypatch, calls)
+    _owner_clips()
+    job = _make_job("job-no-intro", native_transcript_path="t.vtt", options=JobOptions(intro_outro=False))
+    pipeline_module.run_pipeline(job, lambda j: None)
+    assert job.status == JobStatus.DONE
+    assert (get_settings().jobs_dir / job.job_id / "final.mp4").read_bytes() == b"mp4:highlights+card+cleaned"
+    assert not any(c[0] == "clip" for c in calls) and job.intro_s == job.outro_s == 0
+
+
+def test_a_clip_that_fails_or_does_not_match_is_left_out_with_a_warning(monkeypatch):
+    from core.errors import RenderAssertError
+
+    calls = []
+    _scored_meeting(monkeypatch, calls, fail={"intro": RuntimeError("moov atom not found"),
+                                              "concat:outro": RenderAssertError("concat piece outro_video.mp4 has "
+                                                                                "extradata_hash='b'")})
+    _owner_clips()
+    job = _make_job("job-bad-clips", native_transcript_path="t.vtt")
+    pipeline_module.run_pipeline(job, lambda j: None)
+    assert job.status == JobStatus.DONE, job.error
+    job_dir = get_settings().jobs_dir / job.job_id
+    assert (job_dir / "final.mp4").read_bytes() == b"mp4:highlights+card+cleaned"
+    assert "intro skipped: CTD - Opening.mp4: moov atom not found" in job.warnings
+    assert any(w.startswith("outro skipped: FloLabs - Widescreen outro.mp4: concat piece") for w in job.warnings)
+    assert job.intro_s == 0 and job.final_offset_s == pytest.approx(
+        sum(r["end_frame"] - r["start_frame"] for r in json.loads(
+            (job_dir / "edl_highlights.json").read_text(encoding="utf-8"))["ranges"]) / 25 + 2)
+    assert json.loads((job_dir / "manifest.json").read_text(encoding="utf-8"))["final"]["intro_file"] is None
+
+
+def test_if_the_joined_file_still_fails_the_card_goes_first_then_the_clips(monkeypatch):
+    from core.errors import RenderAssertError
+
+    calls = []
+    _scored_meeting(monkeypatch, calls)
+    _owner_clips()
+    real_assemble = outputs_module.assemble
+    attempts = []
+
+    def picky(tracks, out_path, work_dir, kind, on_step=None):
+        attempts.append([t.kind for t in tracks])
+        if kind == "final" and any(t.kind in ("card", "intro") for t in tracks):
+            raise RenderAssertError("final output: 1 video frames, expected exactly 2")
+        return real_assemble(tracks, out_path, work_dir, kind, on_step)
+
+    monkeypatch.setattr(outputs_module, "assemble", picky)
+    job = _make_job("job-retry-order", native_transcript_path="t.vtt")
+    pipeline_module.run_pipeline(job, lambda j: None)
+    assert job.status == JobStatus.DONE
+    assert attempts[:3] == [["intro", "highlights", "card", "cleaned", "outro"],
+                            ["intro", "highlights", "cleaned", "outro"], ["highlights", "cleaned", "outro"]]
+    assert {"title card skipped: it did not match the meeting video's encoding",
+            "intro skipped: it did not match the meeting video's encoding"} <= set(job.warnings)
+    assert job.intro_s == 0 and job.outro_s == 126 / 25
 
 
 def test_ec2_mode_keeps_only_the_zip_and_manifest(monkeypatch):

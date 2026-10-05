@@ -208,14 +208,14 @@ One `bundle.zip` per meeting (`GET /jobs/{id}/bundle`, resumable), with:
 
 | File | What it is |
 |---|---|
-| `final.mp4` | the highlights reel (mostly things worth learning — at most a third funny), a 2 s "topic / Full meeting" card, then the cleaned meeting |
+| `final.mp4` | your intro clip, the highlights reel (mostly things worth learning — at most a third funny), a 2 s "topic / Full meeting" card, the cleaned meeting, then your outro clip |
 | `highlights.mp4` | the reel on its own (only when the meeting has ≥ 60 s of highlight material) |
 | `shorts/short_NN.mp4` + `.srt`, `shorts/shorts.json` | 1080×1920 shorts with burned-in captions and the moment's title — self-contained moments people can learn from first (concepts, how things work, new architectures/features, insights), a genuinely funny one only to fill a slot |
 | `removed.mp4` | every cut of 1 s or more (except pure silences), each labelled "Removed 01:10–02:30 · reason" (original-recording time) |
 | `report.pdf` | what was removed, when and why (minutes by reason, every cut with its text), highlights, shorts, chapters |
 | `transcript_removed.txt/.json` | the removed text with original-recording timestamps and reasons |
 | `transcript_clean.txt/.json` | what `final.mp4` says, with `final.mp4` timestamps |
-| `chapters.txt` | YouTube chapters for `final.mp4` (`00:00 Highlights` first when there is a reel) |
+| `chapters.txt` | YouTube chapters for `final.mp4` (`00:00 Highlights` first when there is a reel; the intro is part of the first chapter) |
 | `manifest.json` | size, sha256, duration and status of every file, warnings, timings, AI usage |
 
 Only `final.mp4`, the two transcripts and the manifest are mandatory. Any
@@ -226,6 +226,26 @@ also served at `GET /jobs/{id}/artifacts/{name}` (e.g. `shorts/short_01.mp4`,
 `SERVE_INDIVIDUAL_ARTIFACTS=false` (only the zip + manifest stay on disk) and
 `DELETE_SOURCE_WHEN_DONE=true`. `tools/deliver_7b93.py` builds the whole zip
 for the regression meeting from saved AI decisions, with no AI calls.
+
+**Intro and outro.** Put two videos in the `intro_outro/` folder of the
+project (next to this README; any of .mp4 .mov .m4v .mkv .webm, any size or
+frame rate). The file names decide which is which: a name with *intro*,
+*opening*, *open* or *start* in it is the intro, *outro*, *ending*,
+*closing* or *end* the outro (e.g. `CTD - Opening.mp4` and `FloLabs -
+Widescreen outro.mp4`); if only one of two files is named that way, the other
+one takes the other role. Every job then plays the intro at the very start of
+`final.mp4` and the outro at the very end (`highlights.mp4`, the shorts and
+`removed.mp4` stay as they are). Each clip is converted to the meeting's own
+size and frame rate (fitted inside the frame with black bars if its shape
+differs, its sound kept, silence if it has none) and joined with a hard cut.
+The transcript, chapters (the intro belongs to the first chapter), report and
+manifest all use the times of the finished `final.mp4`. A missing clip is
+simply left out; one that can't be used is left out with a warning in the job
+— it never fails the job. Swap a clip by replacing the file; the next job
+uses it. Off for every job: `INTRO_OUTRO_ENABLED=false`; per job: the "Add
+intro & outro" box (`options.intro_outro`, or the `intro_outro` form field
+for uploads). `INTRO_OUTRO_DIR`, `INTRO_FILE` and `OUTRO_FILE` point
+elsewhere (relative paths are inside the project folder).
 
 ## Tests
 

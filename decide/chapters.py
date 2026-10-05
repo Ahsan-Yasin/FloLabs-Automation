@@ -4,10 +4,11 @@
    from the CLEANED transcript (numbered lines with their cleaned time).
    Sentence-level picks put a chapter exactly where the new topic starts; the
    first version used ~50 s blocks and started 5 of 12 chapters 20-40 s early.
-2. `finalize_chapters`: map them onto the final video — with a highlights reel
-   in front, shift by the reel's measured length and prepend "00:00
-   Highlights"; without one, the first topic starts at 00:00 — then drop
-   entries that would break YouTube's rules and validate what is left.
+2. `finalize_chapters`: map them onto the final video — shift by what plays
+   before the meeting (intro, highlights reel, title card); with a reel,
+   prepend "00:00 Highlights"; without one, the first topic starts at 00:00
+   — then drop entries that would break YouTube's rules and validate what is
+   left.
 3. `format_chapters`: the text to paste into the video description.
 
 YouTube only turns a description into chapters when: the first timestamp is
@@ -169,18 +170,25 @@ def _to_chapters(items, clean_words: list[Word]) -> list[Chapter]:
 
 
 def finalize_chapters(
-    chapters: list[Chapter], *, final_duration_s: float, reel_s: float = 0.0
+    chapters: list[Chapter], *, final_duration_s: float, reel_s: float = 0.0, intro_s: float = 0.0
 ) -> tuple[list[tuple[int, str]], list[str]]:
     """Place chapters on the final video and validate. Returns (entries as
     (whole seconds, title), problems); entries is empty whenever problems is
-    not — an invalid list must not be published, YouTube would ignore it."""
-    body = [(c.start + reel_s, clean_title(c.title)) for c in sorted(chapters, key=lambda c: c.start)]
+    not — an invalid list must not be published, YouTube would ignore it.
+
+    final.mp4 = intro_s + reel_s (highlights reel + title card) + the
+    cleaned meeting + outro. The intro (a few seconds) is never a chapter of
+    its own (YouTube needs 10 s): it is part of the first one — "Highlights"
+    when there is a reel, else the first topic, forced to 00:00. The outro
+    only lengthens the last chapter (`final_duration_s` includes it)."""
+    meeting_at = intro_s + reel_s
+    body = [(c.start + meeting_at, clean_title(c.title)) for c in sorted(chapters, key=lambda c: c.start)]
     body = [(t, title) for t, title in body if title]
     if reel_s > 0:
         # the first topic starts where the meeting starts, else "Highlights"
         # would also cover the opening of the meeting
         if body:
-            body[0] = (reel_s, body[0][1])
+            body[0] = (meeting_at, body[0][1])
         entries = [(0.0, "Highlights")] + body
     else:
         entries = body

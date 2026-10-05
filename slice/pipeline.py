@@ -9,7 +9,7 @@ the file with an atomic rename. So:
 
     cleaned.mp4    = assemble([cleaned])
     highlights.mp4 = assemble([highlights])
-    final.mp4      = assemble([highlights, title card, cleaned])
+    final.mp4      = assemble([intro, highlights, title card, cleaned, outro])
     removed.mp4    = assemble([removed, with a label on every clip])
 
 and final.mp4's audio is encoded once from the lossless chunks, never from
@@ -54,6 +54,7 @@ from .ffmpeg_wrapper import (
     AudioPiece,
     audio_input_args,
     build_card_graph,
+    build_clip_graph,
     build_short_graph,
     concat_copy,
     drawtext,
@@ -61,6 +62,8 @@ from .ffmpeg_wrapper import (
     mux,
     render_audio_chunk,
     render_card_video,
+    render_clip_audio,
+    render_clip_video,
     render_short,
     render_silence_flac,
     render_video_part,
@@ -74,6 +77,7 @@ from .profile import (
     assert_concat_compatible,
     assert_frames,
     probe_header,
+    probe_media,
 )
 
 logger = get_logger(__name__)
@@ -441,6 +445,47 @@ def render_card(
     manifest = RenderManifest(kind="card", fps=rate_str(fps), width=width, height=height, expected_frames=frames,
                               expected_audio_samples=samples)
     return Track("card", fps, video, [audio], frames, samples, manifest)
+
+
+# ------------------------------------------------------------- intro / outro
+
+
+def render_clip(path: Path, media: MediaInfo, work_dir: Path, kind: str) -> Track:
+    """The owner's intro or outro clip as a track of final.mp4, converted to
+    the MEETING's format so `assemble` can join it by concat -c copy: the
+    STANDARD profile at the meeting's size and frame rate, fitted inside the
+    frame with black bars, the meeting's colour tags, and audio resampled to
+    the meeting's channel count (silence if the clip has none). Hard cuts at
+    both joins.
+
+    Length: the NEAREST whole frame on the meeting's grid (as a source's own
+    frame count is taken, MediaInfo.total_frames), so the clip keeps its
+    length to within half a frame; if that rounds up, the last frame is
+    held. Its audio is exactly the samples of those frames."""
+    clip = probe_media(path)
+    fps = media.fps
+    width, height = media.even_width, media.even_height
+    frames = max(1, round_half_up(Fraction(clip.video_duration) * fps))
+    samples = samples_at_frame(frames, fps)
+    work_dir.mkdir(parents=True, exist_ok=True)
+    video = work_dir / f"{kind}_video.mp4"
+    graph = build_clip_graph(fps=fps, width=width, height=height, frames=frames, color_tags=dict(media.color_tags))
+    render_clip_video(path, video, graph, work_dir / f"{kind}_graph.txt", fps, frames)
+    assert_frames(video, frames, kind)
+    audio = work_dir / f"{kind}_audio.flac"
+    if clip.has_audio:
+        render_clip_audio(path, audio, samples, audio_channels(media))
+    else:
+        render_silence_flac(audio, samples, audio_channels(media))
+    got = probe_header(audio).audio_duration_ts
+    if got != samples:
+        raise RenderAssertError(f"{kind} audio: {got} samples, expected exactly {samples}")
+    manifest = RenderManifest(kind=kind, fps=rate_str(fps), width=width, height=height, expected_frames=frames,
+                              expected_audio_samples=samples)
+    logger.info("%s %s: %dx%d @ %s -> %d frames (%.3fs) at %dx%d @ %s, %s", kind, path.name, clip.width,
+                clip.height, rate_str(clip.fps), frames, float(Fraction(frames) / fps), width, height, rate_str(fps),
+                "with audio" if clip.has_audio else "no audio: silence")
+    return Track(kind, fps, video, [audio], frames, samples, manifest)
 
 
 # -------------------------------------------------------------------- shorts

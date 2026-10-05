@@ -4,6 +4,11 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# The repository folder: settings that name the owner's own files (the
+# intro/outro clips) resolve against it, so starting the server from another
+# folder can't silently lose them.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
@@ -14,9 +19,11 @@ class Settings(BaseSettings):
     # "anthropic" (default), "openai" or "gemini" — switch with LLM_PROVIDER.
     llm_provider: str = "anthropic"
     anthropic_api_key: str = ""
-    # Anthropic's cheapest model ($1 / 1M input, $5 / 1M output, Sept 2026):
-    # a 98-minute meeting (~100k input + ~15k output tokens) is about $0.18.
-    anthropic_model: str = "claude-haiku-4-5"
+    # Claude Sonnet 5.5 ($2 / 1M input, $10 / 1M output, cache reads $0.20,
+    # Oct 2026), with thinking off: about $0.08 per 30 minutes of meeting.
+    # Haiku 4.5 (claude-haiku-4-5, half the price) judged noticeably worse
+    # and kept breaking the answer format.
+    anthropic_model: str = "claude-sonnet-5-5"
     # Client-side limiter (Anthropic's usage tier 1 allows 50 requests/minute).
     anthropic_rpm: int = 45
     # Per-request HTTP timeout, so a stalled call can never wedge the worker.
@@ -190,6 +197,16 @@ class Settings(BaseSettings):
     # "<topic> / Full meeting" card between the highlights reel and the
     # cleaned meeting in final.mp4 (0 = none). Only used when there is a reel.
     title_card_s: float = 2.0
+    # The owner's intro / outro clips at the very start / end of final.mp4
+    # (nothing else gets them). Found in intro_outro_dir by file name ("...
+    # Opening.mp4" / "... outro.mp4", see slice/intro_outro.py); intro_file /
+    # outro_file name one explicitly. Relative paths are resolved against the
+    # project folder, not the process's working directory. A missing folder
+    # or file just means no intro / outro. Per job: options.intro_outro.
+    intro_outro_enabled: bool = True
+    intro_outro_dir: Path = Path("intro_outro")
+    intro_file: str = ""
+    outro_file: str = ""
     # Also ship the highlights reel on its own (it is the start of final.mp4).
     highlights_file_enabled: bool = True
     # final.mp4 already contains the cleaned meeting; a separate copy doubles

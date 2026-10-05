@@ -290,14 +290,29 @@ def drawtext(font: Path, textfile: Path, *, size: int, x: str = "(w-tw)/2", y: s
     return "drawtext=" + ":".join(parts)
 
 
-def color_params(tags: dict[str, str]) -> str:
+COLOR_OPTS = {"color_primaries": "color_primaries", "color_transfer": "color_trc", "color_space": "colorspace",
+              "color_range": "range"}
+
+
+def color_params(tags: dict[str, str], *, reset_missing: bool = False) -> str:
     """setparams for the source's colour tags, so a generated frame (title
     card) encodes with the same SPS/VUI as pieces cut from the source — else
     `concat -c copy` would join two different streams (the extradata assert
-    catches that)."""
-    keys = {"color_primaries": "color_primaries", "color_transfer": "color_trc", "color_space": "colorspace",
-            "color_range": "range"}
-    opts = [f"{keys[k]}={v}" for k, v in tags.items() if k in keys and v and v != "unknown"]
+    catches that).
+
+    reset_missing: also set every tag the source does NOT have to "unknown",
+    for frames that bring tags of their own (an intro/outro clip). Left
+    alone, a bt709-tagged or full-range clip kept its tags when the meeting
+    was untagged, so x264 wrote a different SPS and the clip was always
+    dropped. The title card's colour source carries no tags, so it doesn't
+    need this."""
+    opts = []
+    for key, opt in COLOR_OPTS.items():
+        value = tags.get(key)
+        if value and value != "unknown":
+            opts.append(f"{opt}={value}")
+        elif reset_missing:
+            opts.append(f"{opt}=unknown")
     return ("setparams=" + ":".join(opts) + ",") if opts else ""
 
 
@@ -327,6 +342,52 @@ def render_card_video(dest: Path, graph: str, graph_path: Path, fps: Fraction, f
     cmd = [ffmpeg_bin(), *BASE_ARGS, "-/filter_complex", str(graph_path), "-map", "[vout]", "-an",
            *video_args(fps), "-frames:v", str(frames), str(dest)]
     run_checked(cmd, timeout=ffmpeg_timeout(float(Fraction(frames) / fps)))
+
+
+# ------------------------------------------------------------ intro / outro
+
+
+def build_clip_graph(*, fps: Fraction, width: int, height: int, frames: int, color_tags: dict[str, str]) -> str:
+    """An intro/outro clip on the meeting's frame grid and frame size: the
+    same exact-frames chain as a piece cut from the source (fps resample from
+    t=0, clone-pad, trim to `frames`), then square pixels (an anamorphic clip
+    keeps its shape), scaled to fit inside width x height with its aspect
+    kept, centred on black, and tagged EXACTLY like the meeting (every tag
+    the meeting lacks reset to unknown) so it encodes to the same SPS.
+
+    Levels are converted to the meeting's range (full-range pixels labelled
+    tv looked crushed, tv pixels labelled pc washed out; the scaler treats
+    an untagged clip as tv). Matrix/primaries/transfer are only labelled,
+    not converted: right for the usual SDR bt709 or untagged HD clip, while
+    a bt601 or HDR clip shows slightly shifted colours."""
+    out_range = "pc" if color_tags.get("color_range") == "pc" else "tv"
+    normalise = (f"scale=w=trunc(iw*sar/2)*2:h=ih,setsar=1,"
+                 f"scale={width}:{height}:force_original_aspect_ratio=decrease:force_divisible_by=2:"
+                 f"out_range={out_range},"
+                 f"pad={width}:{height}:-1:-1:color=black,setsar=1,format=yuv420p,"
+                 f"{color_params(color_tags, reset_missing=True)}")
+    return exact_frames_chain(0, frames, fps, normalise) + "[vout]"
+
+
+def render_clip_video(src: Path, dest: Path, graph: str, graph_path: Path, fps: Fraction, frames: int) -> None:
+    graph_path.write_text(graph, encoding="utf-8")
+    cmd = [ffmpeg_bin(), *BASE_ARGS, "-i", str(src), "-/filter_complex", str(graph_path), "-map", "[vout]", "-an",
+           *video_args(fps), "-frames:v", str(frames), str(dest)]
+    # decoding a 1080p60 clip costs more than its length suggests
+    run_checked(cmd, timeout=ffmpeg_timeout(4.0 * float(Fraction(frames) / fps)))
+
+
+def render_clip_audio(src: Path, dest: Path, samples: int, channels: int) -> None:
+    """The clip's audio as exactly `samples` samples of 48 kHz FLAC with the
+    meeting's channel count: normalised like audio.flac (gap-free from t=0,
+    where the clip's video starts too), then padded with silence or cut to
+    the length of the clip's frames, so A/V stay in sync at every join."""
+    layout = "mono" if channels == 1 else "stereo"
+    chain = (f"aresample=async=1:first_pts=0,aresample={AUDIO_RATE},"
+             f"aformat=sample_rates={AUDIO_RATE}:channel_layouts={layout},"
+             f"apad,atrim=end_sample={samples},{AUDIO_REFRAME}")
+    cmd = [ffmpeg_bin(), *BASE_ARGS, "-i", str(src), "-vn", "-af", chain, "-c:a", "flac", str(dest)]
+    run_checked(cmd, timeout=ffmpeg_timeout(samples / AUDIO_RATE))
 
 
 # --------------------------------------------------------------------- shorts

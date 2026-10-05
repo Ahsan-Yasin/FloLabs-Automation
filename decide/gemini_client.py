@@ -122,12 +122,17 @@ class LLMUsage:
     output_tokens: int = 0
     rate_limit_wait_s: float = 0.0
     retries: int = 0
+    # parts of prompt_tokens served from / written to the prompt cache (Claude)
+    cache_read_tokens: int = 0
+    cache_write_tokens: int = 0
 
     def as_dict(self) -> dict[str, float]:
         return {
             "calls": self.calls,
             "prompt_tokens": self.prompt_tokens,
             "output_tokens": self.output_tokens,
+            "cache_read_tokens": self.cache_read_tokens,
+            "cache_write_tokens": self.cache_write_tokens,
             "rate_limit_wait_s": round(self.rate_limit_wait_s, 1),
             "retries": self.retries,
         }

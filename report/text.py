@@ -1,7 +1,8 @@
 """Plain-text and JSON transcripts shipped in the bundle (plan D11).
 
 * transcript_clean: what is said in final.mp4, with final.mp4 times (the
-  cleaned meeting starts after the highlights reel and the title card).
+  cleaned meeting starts after the intro, the highlights reel and the title
+  card).
 * transcript_removed: every cut, with its SOURCE time range (the original
   recording's clock — the same times the labels in removed.mp4 show), the
   reason, whether it is in removed.mp4, and the words that were cut.
@@ -153,24 +154,32 @@ def write_removed_transcript(txt_path: Path, json_path: Path, entries: list[Remo
     }, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
-def clean_lines(clean_words: list[Word], offset_s: float, reel_words: list[Word] | None = None) -> list[dict]:
-    """final.mp4 lines: the highlights reel's words (reel timeline = final's,
-    it comes first) then the cleaned meeting's, shifted by `offset_s`."""
+def clean_lines(clean_words: list[Word], offset_s: float, reel_words: list[Word] | None = None,
+                reel_offset_s: float = 0.0) -> list[dict]:
+    """final.mp4 lines: the highlights reel's words, shifted by
+    `reel_offset_s` (the intro before it), then the cleaned meeting's,
+    shifted by `offset_s`. The owner's intro/outro clips have no transcript."""
     def lines(words: list[Word], offset: float, section: str) -> list[dict]:
         return [{"start": round(w.start + offset, 3), "end": round(w.end + offset, 3), "speaker": w.speaker,
                  "text": w.word.strip(), "section": section} for w in words if w.word.strip()]
 
-    return lines(reel_words or [], 0.0, "highlights") + lines(clean_words, offset_s, "meeting")
+    return lines(reel_words or [], reel_offset_s, "highlights") + lines(clean_words, offset_s, "meeting")
 
 
 _SECTION_TITLES = {"highlights": "HIGHLIGHTS REEL", "meeting": "FULL MEETING"}
 
 
 def write_clean_transcript(txt_path: Path, json_path: Path, lines: list[dict], *, meeting: str, offset_s: float,
-                           final_duration_s: float) -> None:
+                           final_duration_s: float, intro_s: float = 0.0, outro_s: float = 0.0) -> None:
     notes = [f"Times are positions in final.mp4 ({fmt_clock(final_duration_s)} long)."]
     if offset_s > 0:
-        notes.append(f"final.mp4 opens with the highlights reel; the full meeting starts at {fmt_clock(offset_s)}.")
+        # offset_s = intro + highlights reel + title card
+        opening = [part for part, there in ((f"the intro ({intro_s:.0f}s)", intro_s > 0),
+                                            ("the highlights reel", offset_s - intro_s > 1e-6)) if there]
+        notes.append(f"final.mp4 opens with {' and '.join(opening)}; the full meeting starts at "
+                     f"{fmt_clock(offset_s)}.")
+    if outro_s > 0:
+        notes.append(f"It ends with the outro ({outro_s:.0f}s) after the meeting.")
     header = _header(f"Transcript: {meeting}" if meeting else "Transcript", notes)
     body: list[str] = []
     paragraph: list[str] = []
@@ -196,4 +205,5 @@ def write_clean_transcript(txt_path: Path, json_path: Path, lines: list[dict], *
     flush()
     txt_path.write_text("\n".join(header + body).rstrip() + "\n", encoding="utf-8")
     json_path.write_text(json.dumps({"timeline": "final", "meeting": meeting, "cleaned_starts_at_s": round(offset_s, 3),
+                                     "intro_s": round(intro_s, 3), "outro_s": round(outro_s, 3),
                                      "lines": lines}, indent=2, ensure_ascii=False), encoding="utf-8")

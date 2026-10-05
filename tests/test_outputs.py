@@ -183,6 +183,36 @@ def test_transcript_files(tmp_path):
     assert "the full meeting starts at 01:02" in text
 
 
+def test_clean_transcript_with_an_intro_and_outro(tmp_path):
+    reel = [Word(word="the best bit", start=1.0, end=3.0, speaker="A")]
+    meeting = [Word(word="hi", start=0.0, end=1.0, speaker="B")]
+    # final.mp4: intro 6.92 s, reel from 6.92 s, card, meeting from 70 s
+    lines = clean_lines(meeting, offset_s=70.0, reel_words=reel, reel_offset_s=6.92)
+    assert [(x["section"], x["start"]) for x in lines] == [("highlights", 7.92), ("meeting", 70.0)]
+    write_clean_transcript(tmp_path / "c.txt", tmp_path / "c.json", lines, meeting="Sync", offset_s=70.0,
+                           final_duration_s=400, intro_s=6.92, outro_s=5.02)
+    text = (tmp_path / "c.txt").read_text(encoding="utf-8")
+    assert "final.mp4 opens with the intro (7s) and the highlights reel; the full meeting starts at 01:10." in text
+    assert "It ends with the outro (5s) after the meeting." in text and "[00:07] A: the best bit" in text
+    data = json.loads((tmp_path / "c.json").read_text(encoding="utf-8"))
+    assert (data["cleaned_starts_at_s"], data["intro_s"], data["outro_s"]) == (70.0, 6.92, 5.02)
+    # an intro but no reel
+    write_clean_transcript(tmp_path / "c.txt", tmp_path / "c.json", clean_lines(meeting, 6.92), meeting="Sync",
+                           offset_s=6.92, final_duration_s=400, intro_s=6.92)
+    text = (tmp_path / "c.txt").read_text(encoding="utf-8")
+    assert "opens with the intro (7s); the full meeting starts at 00:06." in text and "outro" not in text
+
+
+def test_reel_rows_start_after_the_intro():
+    from core.models import Moment
+    from deliver import _reel_rows
+
+    reel = [Moment(id=0, start=10.0, end=20.0, first_index=0, last_index=1, score=9, title="Cache")]
+    manifest = RenderManifest(kind="highlights", fps="25/1", width=64, height=64,
+                              pieces=[RenderPiece(src_start_frame=250, src_end_frame=500, out_start_frame=0)])
+    assert _reel_rows(manifest, reel, offset_s=6.92) == [(6.92, 10.0, 20.0, "Cache")]
+
+
 # ------------------------------------------------------------------- report
 
 
@@ -193,8 +223,9 @@ def test_report_pdf_contains_the_removed_parts_and_highlights(tmp_path):
 
     data = ReportData(
         meeting="Weekly sync", job_id="abc123", version="2.0.0", created="2026-09-25 10:00 UTC",
-        source_name="source.mp4", source_duration_s=600, final_duration_s=520, cleaned_duration_s=420,
+        source_name="source.mp4", source_duration_s=600, final_duration_s=532, cleaned_duration_s=420,
         highlights_duration_s=98, card_s=2, removed=removed_entries(_removed(), _words()),
+        intro_name="CTD - Opening.mp4", intro_s=6.93, outro_name="FloLabs - Widescreen outro.mp4", outro_s=5.03,
         merged_back_count=3, merged_back_s=1.2,
         highlights=[(0.0, 120.0, 150.0, "The coffee machine incident")],
         shorts=[("shorts/short_01.mp4", 120.0, 150.0, "Coffee", "It exploded — twice")],
@@ -208,8 +239,12 @@ def test_report_pdf_contains_the_removed_parts_and_highlights(tmp_path):
     build_report(out, data, font=find_font(), bold_font=find_font(bold=True))
     text = "".join(page.extract_text() for page in PdfReader(out).pages)
     for needle in ("Meeting edit report", "Weekly sync", "small talk", "line 1.", "The coffee machine incident",
-                   "It exploded", "01:40 Intro", "failed: boom", "100,000 input"):
+                   "It exploded", "01:40 Intro", "failed: boom", "100,000 input", "CTD - Opening.mp4 (6.9s)",
+                   "FloLabs - Widescreen outro.mp4 (5.0s)"):
         assert needle in text, needle
+    # what final.mp4 is made of, in order (the table cell may wrap)
+    assert ("= intro 6.9s + highlights 01:38 + title card 2s + cleaned meeting 07:00 + outro 5.0s"
+            in " ".join(text.split()))
 
 
 # ------------------------------------------------------------------- bundle

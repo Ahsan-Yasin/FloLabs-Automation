@@ -138,6 +138,7 @@ def test_text_and_usage_are_parsed(monkeypatch):
     response = caller.generate("s", "c")
     assert response.text == "0 k 4 - -\n1 r 0 fill -" and response.finish_reason == "completed"
     assert caller.usage.as_dict() == {"calls": 1, "prompt_tokens": 1200, "output_tokens": 300,
+                                      "cache_read_tokens": 0, "cache_write_tokens": 0,
                                       "rate_limit_wait_s": 0.0, "retries": 0}
 
 

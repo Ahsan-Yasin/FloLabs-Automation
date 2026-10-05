@@ -411,6 +411,10 @@
           <input type="checkbox" id="cutSilence" checked />
           <span>Cut silences <small>(pauses where no one is speaking are shortened to a short beat)</small></span>
         </label>
+        <label class="opt" for="introOutro">
+          <input type="checkbox" id="introOutro" checked />
+          <span>Add intro &amp; outro <small>(the clips in the intro_outro folder, at the start and end of the final video)</small></span>
+        </label>
 
         <button class="submit" id="submitBtn">Start cutting</button>
 
@@ -590,6 +594,7 @@ const markedTranscriptWrap = document.getElementById("markedTranscriptWrap");
 const markedTranscriptEl = document.getElementById("markedTranscript");
 const decideOnlyEl = document.getElementById("decideOnly");
 const cutSilenceEl = document.getElementById("cutSilence");
+const introOutroEl = document.getElementById("introOutro");
 const picksEl = document.getElementById("picks");
 const picksSummaryEl = document.getElementById("picksSummary");
 const picksBodyEl = document.getElementById("picksBody");
@@ -844,6 +849,7 @@ async function submit() {
     formData.append("file", selectedFile);
     formData.append("decide_only", decideOnlyEl.checked ? "true" : "false");
     formData.append("cut_silence", cutSilenceEl.checked ? "true" : "false");
+    formData.append("intro_outro", introOutroEl.checked ? "true" : "false");
     if (selectedTranscript) formData.append("transcript", selectedTranscript);
     request = () => fetch("/jobs", { method: "POST", body: formData });
   }
@@ -851,9 +857,9 @@ async function submit() {
 }
 
 // The per-job options the YouTube and Zoom tabs send as JSON (the upload
-// form sends the same two as form fields).
+// form sends the same three as form fields).
 function jobOptions() {
-  return { decide_only: decideOnlyEl.checked, cut_silence: cutSilenceEl.checked };
+  return { decide_only: decideOnlyEl.checked, cut_silence: cutSilenceEl.checked, intro_outro: introOutroEl.checked };
 }
 
 // Shared by every source: reset the page, send the request, then poll.
@@ -1165,10 +1171,16 @@ function renderResults(job) {
   } else {
     videoEl.style.display = "none";
   }
+  // final.mp4 = intro + highlights reel (+ title card) + meeting + outro
   const offset = job.final_offset_s || 0;
-  finalNoteEl.textContent = offset > 0
-    ? `Opens with the highlights reel; the full meeting starts at ${clock(offset)}.`
-    : "The cleaned meeting (no highlights reel for this one).";
+  const intro = job.intro_s || 0;
+  const reel = offset - intro > 0.01;
+  const opening = [intro > 0 ? "the intro" : "", reel ? "the highlights reel" : ""].filter(Boolean).join(" and ");
+  finalNoteEl.textContent = (offset > 0
+    ? `Opens with ${opening}; the full meeting starts at ${clock(offset)}.`
+    : "The cleaned meeting.")
+    + (reel ? "" : " No highlights reel for this one.")
+    + ((job.outro_s || 0) > 0 ? " Ends with the outro." : "");
 
   resultActionsEl.textContent = "";
   if (job.bundle_path) addLink(resultActionsEl, `/jobs/${id}/bundle`, "Download everything (.zip)", { download: true, primary: true });

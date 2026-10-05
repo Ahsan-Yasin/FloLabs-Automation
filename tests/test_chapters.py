@@ -89,6 +89,30 @@ def test_with_a_reel_the_first_topic_starts_where_the_meeting_starts():
     assert problems == [] and entries[:2] == [(0, "Highlights"), (182, "Roadmap")]
 
 
+def test_the_intro_is_part_of_highlights_and_shifts_the_topics():
+    chapters = [Chapter(start=0.0, title="Welcome"), Chapter(start=120.0, title="Roadmap"),
+                Chapter(start=400.0, title="Q&A")]
+    entries, problems = finalize_chapters(chapters, final_duration_s=910, reel_s=182.4, intro_s=6.92)
+    assert problems == []
+    assert entries == [(0, "Highlights"), (189, "Welcome"), (309, "Roadmap"), (589, "Q&A")]
+
+
+def test_without_a_reel_the_first_topic_covers_the_intro():
+    chapters = [Chapter(start=5.0, title="Welcome"), Chapter(start=120.0, title="Roadmap"),
+                Chapter(start=400.0, title="Q&A")]
+    entries, problems = finalize_chapters(chapters, final_duration_s=610, intro_s=6.92)
+    assert problems == [] and entries == [(0, "Welcome"), (126, "Roadmap"), (406, "Q&A")]
+
+
+def test_the_outro_only_lengthens_the_last_chapter():
+    chapters = [Chapter(start=0.0, title="A"), Chapter(start=100.0, title="B"), Chapter(start=195.0, title="C")]
+    # 200 s meeting: C (5 s) is too short and dropped, leaving too few chapters
+    assert finalize_chapters(chapters, final_duration_s=200)[0] == []
+    # + a 5 s outro: C now runs 10 s and is kept
+    entries, problems = finalize_chapters(chapters, final_duration_s=205.0)
+    assert problems == [] and entries[-1] == (195, "C")
+
+
 def test_too_close_and_too_late_chapters_are_dropped():
     chapters = [Chapter(start=0.0, title="A"), Chapter(start=4.0, title="too close"),
                 Chapter(start=100.0, title="B"), Chapter(start=200.0, title="C"), Chapter(start=295.0, title="late")]

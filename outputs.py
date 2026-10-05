@@ -2,14 +2,16 @@
 
 Order (chosen for disk and for "mandatory first"):
     audio.flac -> cleaned track -> highlights track -> title card
-    -> final.mp4 = highlights + card + cleaned   (mandatory)
+    -> intro / outro tracks (the owner's clips, converted to the meeting's format)
+    -> final.mp4 = intro + highlights + card + cleaned + outro   (mandatory)
     -> highlights.mp4 / cleaned.mp4 (optional copies) -> tracks deleted
     -> removed.mp4 (optional) -> shorts (optional) -> audio.flac deleted
 
 Only the cleaned track and final.mp4 are mandatory: anything else that fails
 becomes a failed artifact plus a warning and the job still finishes
-(partial-success contract, D18). Cancellation, the job wall clock and a full
-disk are never softened.
+(partial-success contract, D18). The title card, intro and outro are only
+ever left out of final.mp4 (with a warning), never the reason it fails.
+Cancellation, the job wall clock and a full disk are never softened.
 """
 
 from __future__ import annotations
@@ -40,11 +42,12 @@ from slice.pipeline import (
     Track,
     assemble,
     render_card,
+    render_clip,
     render_removed,
     render_short_clip,
     render_track,
 )
-from slice.profile import MediaInfo
+from slice.profile import MediaInfo, assert_concat_compatible
 
 logger = get_logger(__name__)
 
@@ -63,6 +66,9 @@ class RenderInputs:
     shorts: list[ShortClip]
     words: list[Word]  # source timeline (captions)
     title: str = ""
+    # the owner's clips for the start / end of final.mp4 (slice/intro_outro.py)
+    intro: Path | None = None
+    outro: Path | None = None
 
 
 @dataclass
@@ -71,10 +77,17 @@ class RenderOutputs:
     final_path: Path
     final_frames: int
     final_duration_s: float
-    # where the cleaned meeting starts in final.mp4 (highlights + card)
+    # where the cleaned meeting starts in final.mp4 (intro + highlights + card)
     final_offset_s: float
     highlights: RenderManifest | None = None
     card_s: float = 0.0
+    # final.mp4 = intro_s + reel_s + cleaned + outro_s; reel_s is the
+    # highlights reel + title card (0 = no reel), which starts at intro_s
+    intro_s: float = 0.0
+    reel_s: float = 0.0
+    outro_s: float = 0.0
+    intro_name: str = ""
+    outro_name: str = ""
     removed: RenderManifest | None = None
     shorts: list[ShortResult] = field(default_factory=list)
     artifacts: dict[str, ArtifactInfo] = field(default_factory=dict)
@@ -149,22 +162,55 @@ def render_outputs(inp: RenderInputs, *, set_status: StatusFn, on_progress: Prog
 
         # ---- final.mp4 (mandatory)
         set_status(JobStatus.ASSEMBLING)
+
+        def clip_track(kind: str, path: Path | None) -> Track | None:
+            """The intro/outro track, or None. A clip that can't be converted,
+            or whose encoding doesn't match the cleaned meeting's (checked
+            here, header-only, so the warning names the right piece), is
+            left out with a warning: like the title card, it must never
+            cost the job."""
+            if path is None:
+                return None
+            try:
+                track = render_clip(path, media, work / kind, kind)
+                tracks.append(track)
+                assert_concat_compatible([cleaned.video, track.video])
+                return track
+            except Exception as exc:
+                if is_fatal(exc):
+                    raise
+                logger.exception("%s %s left out of final.mp4", kind, path.name)
+                warnings.append(f"{kind} skipped: {path.name}: {_short_reason(exc)}")
+                return None
+
+        t0 = time.monotonic()
+        intro, outro = clip_track("intro", inp.intro), clip_track("outro", inp.outro)
+        if inp.intro or inp.outro:
+            timings["intro_outro"] = round(time.monotonic() - t0, 2)
         t0 = time.monotonic()
         final_path = job_dir / "final.mp4"
-        parts = [t for t in (highlights, card, cleaned) if t is not None]
-        try:
-            header = assemble(parts, final_path, work / "final", "final")
-        except RenderAssertError:
-            if card is None:
-                raise
-            # a card that doesn't concat cleanly must never cost the whole job
-            logger.exception("final.mp4 with the title card failed its asserts; retrying without the card")
-            warnings.append("title card skipped: it did not match the meeting video's encoding")
-            card = None
-            parts = [t for t in (highlights, cleaned) if t is not None]
-            header = assemble(parts, final_path, work / "final", "final")
+        parts = [t for t in (intro, highlights, card, cleaned, outro) if t is not None]
+        # if the joined file still fails its asserts, drop the generated
+        # pieces one at a time and retry: the title card first (the clips
+        # were already checked against the meeting), then the intro, the
+        # outro. Never the reel or the meeting.
+        droppable = [(t, label) for t, label in ((card, "title card"), (intro, "intro"), (outro, "outro"))
+                     if t is not None]
+        while True:
+            try:
+                header = assemble(parts, final_path, work / "final", "final")
+                break
+            except RenderAssertError:
+                if not droppable:
+                    raise
+                dropped, label = droppable.pop(0)
+                logger.exception("final.mp4 with the %s failed its asserts; retrying without it", label)
+                warnings.append(f"{label} skipped: it did not match the meeting video's encoding")
+                parts = [t for t in parts if t is not dropped]
+        card, intro, outro = (t if any(p is t for p in parts) else None for t in (card, intro, outro))
         final_frames = sum(t.frames for t in parts)
-        offset_frames = sum(t.frames for t in parts[:-1])
+        offset_frames = sum(t.frames for t in parts[:next(i for i, t in enumerate(parts) if t is cleaned)])
+        intro_frames = intro.frames if intro is not None else 0
         fps = media.fps
         artifacts["final.mp4"] = ArtifactInfo(path="final.mp4", mandatory=True,
                                               duration_s=float(Fraction(final_frames) / fps))
@@ -192,6 +238,11 @@ def render_outputs(inp: RenderInputs, *, set_status: StatusFn, on_progress: Prog
             final_offset_s=float(Fraction(offset_frames) / fps),
             highlights=highlights.manifest if highlights is not None else None,
             card_s=card.duration_s if card is not None else 0.0,
+            intro_s=float(Fraction(intro_frames) / fps),
+            reel_s=float(Fraction(offset_frames - intro_frames) / fps),
+            outro_s=outro.duration_s if outro is not None else 0.0,
+            intro_name=inp.intro.name if intro is not None and inp.intro else "",
+            outro_name=inp.outro.name if outro is not None and inp.outro else "",
             artifacts=artifacts,
             warnings=warnings,
             timings=timings,

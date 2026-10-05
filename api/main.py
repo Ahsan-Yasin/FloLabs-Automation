@@ -198,6 +198,7 @@ def create_job(
     shorts_criteria: str | None = Form(None),
     title: str | None = Form(None),
     cut_silence: bool | None = Form(None),
+    intro_outro: bool | None = Form(None),
 ):
     """Hidden upload path (ops/regression); production jobs come from Zoom.
     `title` (the meeting name on the title card and in the report) defaults
@@ -215,6 +216,7 @@ def create_job(
             highlights_criteria=(highlights_criteria or "").strip() or None,
             shorts_criteria=(shorts_criteria or "").strip() or None,
             cut_silence=cut_silence,
+            intro_outro=intro_outro,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -471,7 +473,7 @@ async def get_job_log(job_id: str) -> str:
 
 @app.get("/jobs/{job_id}/video")
 async def get_job_video(job_id: str) -> FileResponse:
-    """final.mp4 (highlights reel, title card, cleaned meeting)."""
+    """final.mp4 (intro, highlights reel, title card, cleaned meeting, outro)."""
     job = _require_done(job_id)
     if not job.output_video_path:
         raise HTTPException(status_code=404, detail="output video not available")

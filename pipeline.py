@@ -37,6 +37,7 @@ from ingest.store import title_from_filename
 from ingest.validate import AVSyncError, validate_video
 from ingest.youtube import download_youtube
 from outputs import RenderInputs
+from slice.intro_outro import find_intro_outro
 from slice.profile import MediaInfo, probe_media
 from slice.silence import SilenceParams, find_silences, reach_end, trim_to_speech
 from transcribe import (
@@ -72,8 +73,9 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
     """End-to-end pipeline: transcribe -> one AI pass (keep/remove + highlight
     score per sentence) -> re-rank the best moments -> EDL on the source frame
     grid + highlights/shorts selection -> [stop here if decide_only] ->
-    deliver: final.mp4 (reel + card + cleaned meeting), removed.mp4, shorts,
-    transcripts, chapters, report.pdf, manifest.json, bundle.zip.
+    deliver: final.mp4 (intro + reel + card + cleaned meeting + outro),
+    removed.mp4, shorts, transcripts, chapters, report.pdf, manifest.json,
+    bundle.zip.
 
     Mutates `job` and calls `update` after each stage so callers can
     persist/observe progress (and, under the job queue, cancel). Decisions,
@@ -98,7 +100,7 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
     job.bundle_path = job.bundle_sha256 = None
     job.bundle_bytes = None
     job.chapters_path = job.output_video_path = None
-    job.final_offset_s = 0.0
+    job.final_offset_s = job.intro_s = job.outro_s = 0.0
 
     try:
         check_disk()
@@ -200,6 +202,9 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
             finally:
                 job.llm_usage = _add_usage(prior_usage, caller.usage.as_dict())
 
+        # looked up per job, so a clip the owner swaps in is used by the next job
+        clips = find_intro_outro(settings, opts.intro_outro)
+        job.warnings.extend(clips.notes)
         deliver(job, update, DeliverInputs(
             render=RenderInputs(
                 job_dir=job_dir,
@@ -211,6 +216,8 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
                 shorts=shorts,
                 words=words,
                 title=job.title or title_from_filename(source_path.name),
+                intro=clips.intro,
+                outro=clips.outro,
             ),
             reel=reel,
             chapter_fn=chapter_fn if settings.chapters_enabled else None,

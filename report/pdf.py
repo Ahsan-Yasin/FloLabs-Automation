@@ -53,6 +53,11 @@ class ReportData:
     highlights_duration_s: float
     card_s: float
     removed: list[RemovedEntry]
+    # the owner's intro / outro clips in final.mp4 (file name, seconds; "" / 0 = none)
+    intro_name: str = ""
+    intro_s: float = 0.0
+    outro_name: str = ""
+    outro_s: float = 0.0
     merged_back_count: int = 0
     merged_back_s: float = 0.0
     # (final.mp4 time, source start, source end, title)
@@ -64,6 +69,9 @@ class ReportData:
     artifacts: list[tuple[str, str, float | None, int | None, str]] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     llm_usage: dict[str, float] = field(default_factory=dict)
+    llm_model: str = ""
+    # estimate from list prices (decide.pricing); None = unknown model
+    llm_cost_usd: float | None = None
     stage_timings: dict[str, float] = field(default_factory=dict)
 
 
@@ -134,14 +142,25 @@ def build_report(path: Path, data: ReportData, *, font: Path | None = None, bold
     removed_s = sum(e.duration for e in data.removed)
     pct = 100 * removed_s / data.source_duration_s if data.source_duration_s else 0.0
     final_parts = []
+    if data.intro_s:
+        final_parts.append(f"intro {data.intro_s:.1f}s")
     if data.highlights_duration_s:
         final_parts.append(f"highlights {fmt_clock(data.highlights_duration_s)}")
     if data.card_s:
         final_parts.append(f"title card {data.card_s:.0f}s")
     final_parts.append(f"cleaned meeting {fmt_clock(data.cleaned_duration_s)}")
+    if data.outro_s:
+        final_parts.append(f"outro {data.outro_s:.1f}s")
     facts = [
         ["Original recording", f"{fmt_clock(data.source_duration_s)}  ({data.source_name})"],
         ["Final video", f"{fmt_clock(data.final_duration_s)}  = " + " + ".join(final_parts)],
+    ]
+    clips = [f"{role} {name} ({secs:.1f}s)" for role, name, secs in (("intro", data.intro_name, data.intro_s),
+                                                                       ("outro", data.outro_name, data.outro_s))
+             if secs]
+    if clips:
+        facts.append(["Intro / outro", "  ·  ".join(clips)])
+    facts += [
         ["Removed", f"{fmt_clock(removed_s)} in {len(data.removed)} cuts ({pct:.0f}% of the recording)"],
         ["Job", f"{data.job_id}  ·  {data.created}  ·  v{data.version}"],
     ]
@@ -236,8 +255,12 @@ def build_report(path: Path, data: ReportData, *, font: Path | None = None, bold
     notes = list(data.warnings)
     if data.llm_usage:
         u = data.llm_usage
-        notes.append(f"AI usage: {int(u.get('calls', 0))} calls, {int(u.get('prompt_tokens', 0)):,} input and "
-                     f"{int(u.get('output_tokens', 0)):,} output tokens.")
+        model = f" ({data.llm_model})" if data.llm_model else ""
+        cached = int(u.get("cache_read_tokens", 0) or 0)
+        cached_note = f" ({cached:,} from cache)" if cached else ""
+        cost = f" — about ${data.llm_cost_usd:.2f}" if data.llm_cost_usd is not None else ""
+        notes.append(f"AI usage{model}: {int(u.get('calls', 0))} calls, {int(u.get('prompt_tokens', 0)):,} input"
+                     f"{cached_note} and {int(u.get('output_tokens', 0)):,} output tokens{cost}.")
     if data.stage_timings:
         notes.append("Processing time: " + ", ".join(f"{k} {v / 60:.1f} min" if v >= 60 else f"{k} {v:.0f}s"
                                                     for k, v in data.stage_timings.items()))

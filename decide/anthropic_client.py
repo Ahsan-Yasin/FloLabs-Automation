@@ -47,6 +47,21 @@ QUOTA_MESSAGE = (
     "the Anthropic account has no credit left — add credits at console.anthropic.com "
     "(Settings > Billing), then retry the job"
 )
+FALLBACK_BETA = "server-side-fallback-2026-07-01"
+
+
+def _model_params(model: str) -> dict:
+    """Per-model request settings.
+
+    Claude Sonnet 5.5 thinks by default (reasoning is billed as output) and
+    rejects thinking "disabled"; "between_tools" is its thinking-off switch —
+    the one-line-per-sentence answers need no reasoning. It also gets the
+    server-side refusal fallback: if a safety classifier declines a chunk, the
+    API re-runs it on a fallback model in the same call instead of failing.
+    Haiku 4.5 doesn't think unless asked, so it needs neither."""
+    if model.startswith("claude-sonnet-5-5"):
+        return {"thinking": {"type": "between_tools"}, "betas": [FALLBACK_BETA], "fallbacks": "default"}
+    return {}
 
 
 @dataclass
@@ -74,6 +89,7 @@ def request_params(model: str, system_prompt: str, contents: str, schema: dict |
         # not cached, at no cost.
         "system": [{"type": "text", "text": system_prompt, "cache_control": {"type": "ephemeral"}}],
         "messages": [{"role": "user", "content": contents}],
+        **_model_params(model),
     }
     if schema is not None:
         params["output_config"] = {"format": {"type": "json_schema", "schema": schema}}
@@ -81,7 +97,11 @@ def request_params(model: str, system_prompt: str, contents: str, schema: dict |
 
 
 def _call_anthropic(client: anthropic.Anthropic, params: dict):
-    """The single network call (tests replace this or the HTTP transport)."""
+    """The single network call (tests replace this or the HTTP transport).
+    Beta features (Sonnet 5.5's thinking-off switch and fallback) live on
+    the beta endpoint."""
+    if params.get("betas"):
+        return client.beta.messages.create(**params)
     return client.messages.create(**params)
 
 
@@ -90,6 +110,10 @@ def parse_message(message) -> ClaudeResponse:
     the callers already treat as an invalid answer (retry, then split)."""
     stop = str(getattr(message, "stop_reason", None) or "unknown")
     texts = [block.text for block in (message.content or []) if getattr(block, "type", "") == "text"]
+    for block in message.content or []:
+        if getattr(block, "type", "") == "fallback":
+            logger.warning("claude: the requested model declined a chunk; %s answered it instead",
+                           getattr(message, "model", "the fallback model"))
     if stop == "refusal":
         details = getattr(message, "stop_details", None)
         logger.warning("claude refused to answer (%s)", getattr(details, "category", None))
@@ -197,6 +221,10 @@ class AnthropicCaller:
             # cached and cache-written input tokens are input too
             self.usage.prompt_tokens += sum(int(response.usage.get(k) or 0) for k in (
                 "input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))
+            # cache reads cost a tenth of normal input, cache writes 1.25x: kept
+            # apart so the report's cost estimate is right
+            self.usage.cache_read_tokens += int(response.usage.get("cache_read_input_tokens") or 0)
+            self.usage.cache_write_tokens += int(response.usage.get("cache_creation_input_tokens") or 0)
             self.usage.output_tokens += int(response.usage.get("output_tokens") or 0)
             return response
 

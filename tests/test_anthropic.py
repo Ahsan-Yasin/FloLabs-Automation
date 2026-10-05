@@ -57,7 +57,7 @@ def _error(status, kind, message, headers=None):
                                          "request_id": "req_1"}, headers=headers)
 
 
-def _caller(handler, **kw):
+def _caller(handler, model="claude-haiku-4-5", **kw):
     """A real SDK client whose HTTP goes to `handler(request) -> httpx2.Response`
     (or raises); returns (caller, recorded requests)."""
     requests = []
@@ -67,7 +67,7 @@ def _caller(handler, **kw):
         return handler(request)
 
     http = anthropic.DefaultHttpxClient(transport=httpx2.MockTransport(record))
-    return AnthropicCaller(KEY, "claude-haiku-4-5", 1000, http_client=http, **kw), requests
+    return AnthropicCaller(KEY, model, 1000, http_client=http, **kw), requests
 
 
 def _body(request) -> dict:
@@ -256,18 +256,71 @@ def test_stage_deadline():
 # ---------------------------------------------------------------- settings / provider switch
 
 
-def test_defaults_use_claude_haiku(monkeypatch):
+def test_defaults_use_claude_sonnet(monkeypatch):
     for name in ("LLM_PROVIDER", "ANTHROPIC_MODEL", "ANTHROPIC_RPM"):
         monkeypatch.delenv(name, raising=False)
     defaults = Settings(_env_file=None)  # the code defaults, whatever the local .env says
-    assert defaults.llm_provider == "anthropic" and defaults.anthropic_model == "claude-haiku-4-5"
+    assert defaults.llm_provider == "anthropic" and defaults.anthropic_model == "claude-sonnet-5-5"
     assert defaults.anthropic_rpm <= 50
 
 
 def test_make_caller_builds_the_claude_caller():
     caller = make_caller()
-    assert isinstance(caller, AnthropicCaller) and caller.model == "claude-haiku-4-5"
+    assert isinstance(caller, AnthropicCaller) and caller.model == "claude-sonnet-5-5"
     assert caller.client.max_retries == 0
+
+
+# ---------------------------------------------------------------- Sonnet 5.5, cache, cost
+
+
+def test_sonnet_turns_thinking_off_and_asks_for_the_refusal_fallback():
+    caller, requests = _caller(lambda r: httpx2.Response(200, json=_message("ok")), model="claude-sonnet-5-5")
+    caller.generate("s", "c")
+    (request,) = requests
+    body = _body(request)
+    assert body["thinking"] == {"type": "between_tools"}  # Sonnet 5.5 400s on "disabled"
+    assert body["fallbacks"] == "default"
+    assert "server-side-fallback-2026-07-01" in request.headers["anthropic-beta"]
+    assert request.url.path == "/v1/messages"
+
+
+def test_haiku_requests_stay_plain():
+    params = request_params("claude-haiku-4-5", "s", "c", max_output_tokens=10)
+    assert not {"thinking", "betas", "fallbacks"} & set(params)
+
+
+def test_a_fallback_answer_is_used_and_logged(caplog):
+    content = [{"type": "fallback", "from": {"model": "claude-sonnet-5-5"}, "to": {"model": "claude-opus-5-5"}},
+               {"type": "text", "text": "0 k 4 - idea"}]
+    caller, _ = _caller(lambda r: httpx2.Response(200, json=_message(content=content)), model="claude-sonnet-5-5")
+    with caplog.at_level(logging.WARNING):
+        assert caller.generate("s", "c").text == "0 k 4 - idea"
+    assert "declined a chunk" in caplog.text
+
+
+def test_cache_reads_and_writes_are_counted_apart():
+    usage = {"input_tokens": 500, "output_tokens": 100, "cache_creation_input_tokens": 1200,
+             "cache_read_input_tokens": 0}
+    caller, _ = _caller(lambda r: httpx2.Response(200, json=_message("ok", usage=usage)))
+    caller.generate("s", "c")
+    usage = {**usage, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 1200}
+    caller2, _ = _caller(lambda r: httpx2.Response(200, json=_message("ok", usage=usage)))
+    caller2.usage = caller.usage
+    caller2.generate("s", "c")
+    u = caller.usage.as_dict()
+    assert u["prompt_tokens"] == 3400 and u["cache_write_tokens"] == 1200 and u["cache_read_tokens"] == 1200
+
+
+def test_cost_estimate_prices_cache_and_output_per_model():
+    from decide.pricing import estimate_cost_usd
+
+    usage = {"calls": 18, "prompt_tokens": 1_000_000, "cache_read_tokens": 400_000, "cache_write_tokens": 100_000,
+             "output_tokens": 100_000}
+    # 500k plain * $2 + 400k read * $0.20 + 100k write * $2.50 + 100k out * $10 = 1.00 + 0.08 + 0.25 + 1.00
+    assert estimate_cost_usd(usage, "claude-sonnet-5-5") == pytest.approx(2.33)
+    assert estimate_cost_usd(usage, "claude-haiku-4-5") == pytest.approx(1.165)
+    assert estimate_cost_usd(usage, "gemini-3.5-flash-lite") is None  # unknown price: no guess
+    assert estimate_cost_usd({}, "claude-sonnet-5-5") is None
 
 
 def test_missing_claude_key_is_not_retryable(monkeypatch):

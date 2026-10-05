@@ -119,6 +119,8 @@ class JobOptions(BaseModel):
     decide_only: bool = False
     # Cut stretches where nobody is speaking (None = SILENCE_CUT_ENABLED).
     cut_silence: bool | None = None
+    # Put the owner's intro/outro clips around final.mp4 (None = INTRO_OUTRO_ENABLED).
+    intro_outro: bool | None = None
 
 
 class EDLRange(BaseModel):
@@ -241,7 +243,7 @@ class JobStatus(str, Enum):
     RENDERING_HIGHLIGHTS = "rendering_highlights"
     RENDERING_REMOVED = "rendering_removed"
     RENDERING_SHORTS = "rendering_shorts"
-    # highlights + title card + cleaned meeting -> final.mp4
+    # intro + highlights + title card + cleaned meeting + outro -> final.mp4
     ASSEMBLING = "assembling"
     BUNDLING = "bundling"
     DONE = "done"
@@ -324,8 +326,11 @@ class JobRecord(BaseModel):
     bundle_path: str | None = None
     bundle_bytes: int | None = None
     bundle_sha256: str | None = None
-    # Where the cleaned meeting starts in final.mp4 (highlights reel + title card).
+    # Where the cleaned meeting starts in final.mp4 (intro + highlights reel + title card).
     final_offset_s: float = 0.0
+    # Length of the intro / outro clips in final.mp4 (0 = none).
+    intro_s: float = 0.0
+    outro_s: float = 0.0
     stage_timings: dict[str, float] = Field(default_factory=dict)
     # LLM calls/tokens/rate-limit waits for this job.
     llm_usage: dict[str, float] = Field(default_factory=dict)

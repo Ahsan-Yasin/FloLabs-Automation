@@ -29,6 +29,12 @@ def _isolated_settings(tmp_path, monkeypatch):
     # says (e.g. CHAPTERS_ENABLED=false while running against real jobs)
     monkeypatch.setenv("CHAPTERS_ENABLED", "true")
     monkeypatch.setenv("SILENCE_CUT_ENABLED", "true")
+    # the owner's real intro_outro/ folder must never reach a test: an empty
+    # per-test folder (a test that needs clips puts them there)
+    monkeypatch.setenv("INTRO_OUTRO_ENABLED", "true")
+    monkeypatch.setenv("INTRO_OUTRO_DIR", str(tmp_path / "intro_outro"))
+    monkeypatch.setenv("INTRO_FILE", "")
+    monkeypatch.setenv("OUTRO_FILE", "")
     get_settings.cache_clear()
     yield
     get_settings.cache_clear()

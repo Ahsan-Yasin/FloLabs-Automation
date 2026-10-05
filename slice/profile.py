@@ -151,6 +151,41 @@ def probe_media(path: Path) -> MediaInfo:
     )
 
 
+def video_length_s(path: Path, fps: Fraction) -> float:
+    """How long the first video stream's picture lasts on ffmpeg's input
+    timeline (t=0 = the file's start_time, where `-i` puts it): the end of
+    its last frame (max pts + duration over its packets; a packet without a
+    duration counts one frame at `fps`). Headers only, nothing is decoded.
+
+    For a short clip, not a meeting: the stream's own duration is missing in
+    Matroska/WebM, and probe_media then falls back to the container's, which
+    is the longer audio (an outro's music tail: the clip came up short and
+    was dropped) or nothing at all (a live-written WebM became a 1-frame
+    intro). Packet times are there in every container. 0.0 if no video
+    packet has a timestamp."""
+    cmd = [get_settings().ffprobe_bin, "-v", "error", "-select_streams", "v:0", "-show_entries",
+           "packet=pts_time,duration_time:format=start_time", "-print_format", "json", str(path)]
+    data = json.loads(run_checked(cmd, timeout=ffprobe_timeout()).stdout or "{}")
+    ends = []
+    for packet in data.get("packets", []):
+        try:
+            pts = float(packet["pts_time"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        try:
+            duration = float(packet["duration_time"])
+        except (KeyError, TypeError, ValueError):
+            duration = 0.0
+        ends.append(pts + (duration if duration > 0 else float(1 / fps)))
+    if not ends:
+        return 0.0
+    try:
+        start = float(data.get("format", {}).get("start_time") or 0.0)
+    except (TypeError, ValueError):
+        start = 0.0
+    return max(0.0, max(ends) - start)  # max: B-frame packets come in decode order
+
+
 @dataclass(frozen=True)
 class StreamHeader:
     """Header-only facts about a rendered file (never decodes frames)."""
