@@ -53,6 +53,8 @@ class ReportData:
     highlights_duration_s: float
     card_s: float
     removed: list[RemovedEntry]
+    # the final video's file name (Final_<Meeting>_<date>_Youtube.mp4; old jobs: final.mp4)
+    final_name: str = "final.mp4"
     # the owner's intro / outro clips in final.mp4 (file name, seconds; "" / 0 = none)
     intro_name: str = ""
     intro_s: float = 0.0
@@ -153,7 +155,7 @@ def build_report(path: Path, data: ReportData, *, font: Path | None = None, bold
         final_parts.append(f"outro {data.outro_s:.1f}s")
     facts = [
         ["Original recording", f"{fmt_clock(data.source_duration_s)}  ({data.source_name})"],
-        ["Final video", f"{fmt_clock(data.final_duration_s)}  = " + " + ".join(final_parts)],
+        ["Final video", f"{data.final_name}: {fmt_clock(data.final_duration_s)}  = " + " + ".join(final_parts)],
     ]
     clips = [f"{role} {name} ({secs:.1f}s)" for role, name, secs in (("intro", data.intro_name, data.intro_s),
                                                                        ("outro", data.outro_name, data.outro_s))
@@ -207,7 +209,10 @@ def build_report(path: Path, data: ReportData, *, font: Path | None = None, bold
     # ---- highlights
     story.append(Paragraph("Highlights reel", s_h2))
     if data.highlights:
-        rows = [["#", "In final.mp4", "Original time", "Length", "Moment"]]
+        # the file name is too long for the narrow column: it is named once, above the table
+        story.append(Paragraph(_esc(f"Times in the second column are positions in {data.final_name}."), s_small))
+        story.append(Spacer(1, 4))
+        rows = [["#", "In final video", "Original time", "Length", "Moment"]]
         for i, (at, s, e, title) in enumerate(data.highlights, 1):
             rows.append([P(str(i)), P(fmt_clock(at)), P(f"{fmt_clock(s)}–{fmt_clock(e)}"), P(f"{e - s:.0f}s"),
                          P(title)])
@@ -231,8 +236,8 @@ def build_report(path: Path, data: ReportData, *, font: Path | None = None, bold
     # ---- chapters
     if data.chapters.strip():
         story.append(Paragraph("YouTube chapters", s_h2))
-        story.append(Paragraph("Paste these lines into the video description (they are also in chapters.txt).",
-                               s_small))
+        story.append(Paragraph(_esc(f"Paste these lines into the description of {data.final_name} (they are "
+                                    "also in chapters.txt)."), s_small))
         story.append(Spacer(1, 4))
         story.append(Paragraph("<br/>".join(_esc(line) for line in data.chapters.strip().splitlines()), s_body))
 

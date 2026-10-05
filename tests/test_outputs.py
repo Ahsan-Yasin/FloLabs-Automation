@@ -192,7 +192,7 @@ def test_clean_transcript_with_an_intro_and_outro(tmp_path):
     write_clean_transcript(tmp_path / "c.txt", tmp_path / "c.json", lines, meeting="Sync", offset_s=70.0,
                            final_duration_s=400, intro_s=6.92, outro_s=5.02)
     text = (tmp_path / "c.txt").read_text(encoding="utf-8")
-    assert "final.mp4 opens with the intro (7s) and the highlights reel; the full meeting starts at 01:10." in text
+    assert "The video opens with the intro (7s) and the highlights reel; the full meeting starts at 01:10." in text
     assert "It ends with the outro (5s) after the meeting." in text and "[00:07] A: the best bit" in text
     data = json.loads((tmp_path / "c.json").read_text(encoding="utf-8"))
     assert (data["cleaned_starts_at_s"], data["intro_s"], data["outro_s"]) == (70.0, 6.92, 5.02)

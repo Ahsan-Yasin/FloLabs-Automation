@@ -26,7 +26,7 @@ class _FakeYDL:
 
     def extract_info(self, url, download=True):
         self.download([url])
-        return {"title": "  Weekly   Tech Sync \n"}
+        return {"title": "  Weekly   Tech Sync \n", "upload_date": "20260802"}
 
 
 class _FailingYDL(_FakeYDL):
@@ -38,10 +38,21 @@ def test_download_youtube_returns_id_path_and_title(monkeypatch):
     fake_module = type("m", (), {"YoutubeDL": _FakeYDL})
     monkeypatch.setitem(__import__("sys").modules, "yt_dlp", fake_module)
 
-    video_id, path, title = download_youtube("https://youtube.com/watch?v=abc123")
+    video_id, path, title, upload_date = download_youtube("https://youtube.com/watch?v=abc123")
     assert path.exists()
     assert path.name == f"{video_id}.mp4"
     assert title == "Weekly Tech Sync"
+    assert upload_date == "2026-08-02"  # the meeting's date in the final video's name
+
+
+def test_download_youtube_without_an_upload_date(monkeypatch):
+    class _NoDateYDL(_FakeYDL):
+        def extract_info(self, url, download=True):
+            self.download([url])
+            return {"title": "x", "upload_date": "not-a-date"}
+
+    monkeypatch.setitem(__import__("sys").modules, "yt_dlp", type("m", (), {"YoutubeDL": _NoDateYDL}))
+    assert download_youtube("https://youtube.com/watch?v=abc123").upload_date == ""
 
 
 def test_download_youtube_prefers_h264_at_most_720p(monkeypatch):

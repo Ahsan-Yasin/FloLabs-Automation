@@ -18,6 +18,7 @@ from core.models import (
     Segment,
     Word,
 )
+from core.naming import final_video_name, meeting_date
 from core.timeline import fade_frames_for
 from decide import build_segments
 from decide.chapters import generate_chapters
@@ -205,6 +206,9 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
         # looked up per job, so a clip the owner swaps in is used by the next job
         clips = find_intro_outro(settings, opts.intro_outro)
         job.warnings.extend(clips.notes)
+        title = job.title or title_from_filename(source_path.name)
+        # stored before rendering, so a re-render names the video the same way
+        job.meeting_date = meeting_date(job, title)
         deliver(job, update, DeliverInputs(
             render=RenderInputs(
                 job_dir=job_dir,
@@ -215,7 +219,8 @@ def run_pipeline(job: JobRecord, update: "callable[[JobRecord], None]") -> None:
                 reel_edl=reel_edl,
                 shorts=shorts,
                 words=words,
-                title=job.title or title_from_filename(source_path.name),
+                title=title,
+                final_name=final_video_name(title, job.meeting_date),
                 intro=clips.intro,
                 outro=clips.outro,
             ),
@@ -561,6 +566,8 @@ def run_youtube_pipeline(job: JobRecord, update: "callable[[JobRecord], None]", 
         # the video's own title goes on the title card and the report, like a
         # Zoom meeting's topic (the storage name is a meaningless hex id)
         job.title = job.title or download.title[:120]
+        # the day it was published names the final video (core/naming.py)
+        job.meeting_date = job.meeting_date or download.upload_date or None
         update(job)
     run_pipeline(job, update)
 

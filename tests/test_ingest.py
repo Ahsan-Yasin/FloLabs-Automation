@@ -65,7 +65,7 @@ def test_download_youtube_into_a_job_folder(monkeypatch, tmp_path):
     job_folder = get_settings().jobs_dir / "yt-job"
     job_folder.mkdir(parents=True)
     (job_folder / "source.vtt").write_text("WEBVTT")
-    _, path, _ = download_youtube("https://youtube.com/watch?v=abc123", dest_dir=job_folder)
+    path = download_youtube("https://youtube.com/watch?v=abc123", dest_dir=job_folder).path
     assert path == job_folder / "source.mp4" and path.read_bytes() == b"fake video"
     assert list(get_settings().videos_dir.iterdir()) == []
 

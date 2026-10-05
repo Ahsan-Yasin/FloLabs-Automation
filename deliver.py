@@ -2,18 +2,20 @@
 chapters and report, then manifest.json + bundle.zip (plan §6.4, D9-D12, D18).
 
 The zip the owner gets for each meeting:
-    final.mp4            intro, highlights reel, title card, the cleaned meeting, outro
-                         (the intro/outro are the owner's clips, when there are any)
+    Final_<Meeting>_<YYYY-MM-DD>_Youtube.mp4
+                         intro, highlights reel, title card, the cleaned meeting, outro
+                         (the intro/outro are the owner's clips, when there are any);
+                         its key in job.artifacts is "final.mp4" (core/naming.py)
     highlights.mp4       the reel on its own
     shorts/short_NN.mp4  vertical shorts (+ .srt captions, shorts.json)
     removed.mp4          every cut of 1 s or more (not pure silences), labelled with time + reason
     report.pdf           what was removed, when and why; highlights; shorts; chapters
     transcript_removed.txt/.json   the removed text with original timestamps
-    transcript_clean.txt/.json     what final.mp4 says, with final.mp4 times
-    chapters.txt         YouTube chapters for final.mp4
+    transcript_clean.txt/.json     what the final video says, with its times
+    chapters.txt         YouTube chapters for the final video
     manifest.json        sizes, sha256, durations, status of every file
 
-Mandatory: final.mp4, both transcripts, manifest, bundle. Anything else that
+Mandatory: the final video, both transcripts, manifest, bundle. Anything else that
 fails is recorded (status + reason + a warning) and the job still succeeds.
 """
 
@@ -82,6 +84,13 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
         out = render_outputs(inp.render, set_status=set_status, on_progress=on_progress)
     job.warnings.extend(out.warnings)
     job.artifacts = dict(out.artifacts)
+    final_name = job.artifacts["final.mp4"].path
+    # a re-render of a job made before the Final_<Meeting>_<date>_Youtube.mp4
+    # names (or whose title changed since) leaves its old video behind: it is
+    # no longer an artifact, so it only costs disk
+    for old in [job_dir / "final.mp4", *job_dir.glob("Final_*_Youtube.mp4")]:
+        if old.name != final_name and old.is_file():
+            old.unlink(missing_ok=True)
     job.output_video_path = str(out.final_path)
     job.final_offset_s = round(out.final_offset_s, 6)
     job.intro_s, job.outro_s = round(out.intro_s, 6), round(out.outro_s, 6)
@@ -117,7 +126,7 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
         write_clean_transcript(job_dir / "transcript_clean.txt", job_dir / "transcript_clean.json",
                                clean_lines(clean_words, out.final_offset_s, reel_words, reel_offset_s=out.intro_s),
                                meeting=meeting, offset_s=out.final_offset_s, final_duration_s=out.final_duration_s,
-                               intro_s=out.intro_s, outro_s=out.outro_s)
+                               intro_s=out.intro_s, outro_s=out.outro_s, final_name=final_name)
         for name in ("transcript_clean.txt", "transcript_clean.json", "transcript_removed.txt",
                      "transcript_removed.json"):
             job.artifacts[name] = ArtifactInfo(path=name, kind="json" if name.endswith(".json") else "text",
@@ -155,13 +164,15 @@ def deliver(job: JobRecord, update: Callable[[JobRecord], None], inp: DeliverInp
                     outro_name=out.outro_name,
                     outro_s=out.outro_s,
                     removed=entries,
+                    final_name=final_name,
                     merged_back_count=inp.render.edl.merged_gap_count,
                     merged_back_s=inp.render.edl.merged_gap_seconds,
                     highlights=highlights,
                     shorts=shorts_rows,
                     chapters=chapters_text,
-                    artifacts=[(name, a.status, a.duration_s, a.bytes, a.reason)
-                               for name, a in _ordered(job.artifacts).items()],
+                    # by the name in the zip (the final video's key "final.mp4" is not its file name)
+                    artifacts=[(a.path, a.status, a.duration_s, a.bytes, a.reason)
+                               for a in _ordered(job.artifacts).values()],
                     warnings=job.warnings,
                     llm_usage=job.llm_usage,
                     llm_model=_llm_model(),
@@ -307,7 +318,8 @@ def _manifest(job: JobRecord, inp: DeliverInputs, out: RenderOutputs, highlights
                    "fps": f"{media.fps.numerator}/{media.fps.denominator}", "width": media.width,
                    "height": media.height, "transcript": job.transcript_source},
         # in order: intro + highlights + title card + cleaned meeting + outro = duration
-        "final": {"duration_s": round(out.final_duration_s, 3), "frames": out.final_frames,
+        "final": {"file": job.artifacts["final.mp4"].path,
+                  "duration_s": round(out.final_duration_s, 3), "frames": out.final_frames,
                   "cleaned_starts_at_s": round(out.final_offset_s, 3),
                   "intro_file": out.intro_name or None, "intro_s": round(out.intro_s, 3),
                   "highlights_s": round(_duration(out.highlights), 3), "title_card_s": round(out.card_s, 3),

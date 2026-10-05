@@ -481,14 +481,20 @@ def _scored_meeting(monkeypatch, render_calls, **render_kw):
 def test_done_job_delivers_the_zip_with_manifest_and_all_outputs(monkeypatch):
     calls = []
     _scored_meeting(monkeypatch, calls)
-    job = _make_job("job-deliver", native_transcript_path="t.vtt", title="Weekly sync")
+    job = _make_job("job-deliver", native_transcript_path="t.vtt", title="Weekly sync | August 2, 2026")
     pipeline_module.run_pipeline(job, lambda j: None)
     assert job.status == JobStatus.DONE, job.error
     job_dir = get_settings().jobs_dir / job.job_id
 
-    # final.mp4 = highlights + title card + cleaned meeting, in that order
-    assert (job_dir / "final.mp4").read_bytes() == b"mp4:highlights+card+cleaned"
-    assert ("card", "Weekly sync") in calls
+    # the owner's name: Final_<Meeting>_<date>_Youtube.mp4, the date taken
+    # from the title (an upload) and kept on the job for re-renders
+    final_name = "Final_WeeklySync_2026-08-02_Youtube.mp4"
+    assert job.meeting_date == "2026-08-02"
+    assert job.artifacts["final.mp4"].path == final_name and job.output_video_path == str(job_dir / final_name)
+    assert not (job_dir / "final.mp4").exists()
+    # the final video = highlights + title card + cleaned meeting, in that order
+    assert (job_dir / final_name).read_bytes() == b"mp4:highlights+card+cleaned"
+    assert ("card", "Weekly sync | August 2, 2026") in calls
     hl_frames = json.loads((job_dir / "edl_highlights.json").read_text(encoding="utf-8"))
     hl_frames = sum(r["end_frame"] - r["start_frame"] for r in hl_frames["ranges"])
     assert job.final_offset_s == (hl_frames + 50) / 25
@@ -505,12 +511,13 @@ def test_done_job_delivers_the_zip_with_manifest_and_all_outputs(monkeypatch):
     with zipfile.ZipFile(job.bundle_path) as zf:
         names = set(zf.namelist())
         manifest = json.loads(zf.read("manifest.json"))
-        assert zf.getinfo("final.mp4").compress_type == zipfile.ZIP_STORED
+        assert zf.getinfo(final_name).compress_type == zipfile.ZIP_STORED and "final.mp4" not in names
         assert zf.getinfo("report.pdf").compress_type == zipfile.ZIP_DEFLATED
         assert zf.read("report.pdf").startswith(b"%PDF")
-    assert {n for n, a in job.artifacts.items() if a.status == "ok"} == names
+    assert {a.path for a in job.artifacts.values() if a.status == "ok"} == names
     assert manifest["artifacts"]["final.mp4"]["sha256"] == job.artifacts["final.mp4"].sha256
     assert manifest["final"]["cleaned_starts_at_s"] == round(job.final_offset_s, 3)
+    assert manifest["final"]["file"] == final_name and manifest["artifacts"]["final.mp4"]["path"] == final_name
     assert manifest["removed"]["cuts"] >= 2
     removed_txt = (job_dir / "transcript_removed.txt").read_text(encoding="utf-8")
     assert "housekeeping" in removed_txt and "sentence 2." in removed_txt
@@ -520,8 +527,37 @@ def test_done_job_delivers_the_zip_with_manifest_and_all_outputs(monkeypatch):
     meeting_lines = [x for x in clean["lines"] if x["section"] == "meeting"]
     assert reel_lines and reel_lines[0]["start"] < 1.0 and reel_lines[-1]["end"] <= job.final_offset_s
     assert meeting_lines[0]["start"] >= job.final_offset_s
-    assert "--- HIGHLIGHTS REEL ---" in (job_dir / "transcript_clean.txt").read_text(encoding="utf-8")
+    clean_txt = (job_dir / "transcript_clean.txt").read_text(encoding="utf-8")
+    assert "--- HIGHLIGHTS REEL ---" in clean_txt and f"Times are positions in {final_name} (" in clean_txt
+    assert clean["video"] == final_name
     assert not (job_dir / "tmp").exists() and not (job_dir / "audio.flac").exists()
+
+
+def test_a_zoom_rerender_of_an_old_job_renames_its_final_video(monkeypatch):
+    """A job made before the Final_..._Youtube.mp4 names (final.mp4 on disk)
+    re-rendered: the new video takes the owner's name and Zoom's date, the
+    old final.mp4 goes, the key stays "final.mp4"."""
+    from core.models import ArtifactInfo
+
+    calls = []
+    _scored_meeting(monkeypatch, calls)
+    job = _make_job("job-old-final", native_transcript_path="t.vtt", title="All Tech Team Meeting | August 2, 2026",
+                    zoom_meeting={"start_time": "2026-08-03T09:00:00Z"},
+                    artifacts={"final.mp4": ArtifactInfo(path="final.mp4", mandatory=True)})
+    job_dir = get_settings().jobs_dir / job.job_id
+    job_dir.mkdir(parents=True, exist_ok=True)
+    (job_dir / "final.mp4").write_bytes(b"old render")
+    pipeline_module.run_pipeline(job, lambda j: None)
+    assert job.status == JobStatus.DONE, job.error
+    name = "Final_AllTechTeamMeeting_2026-08-03_Youtube.mp4"
+    assert job.meeting_date == "2026-08-03" and job.artifacts["final.mp4"].path == name
+    assert (job_dir / name).exists() and not (job_dir / "final.mp4").exists()
+    with zipfile.ZipFile(job.bundle_path) as zf:
+        assert name in zf.namelist() and "final.mp4" not in zf.namelist()
+    # a second re-render keeps the stored date and the same name
+    job.zoom_meeting = None
+    pipeline_module.run_pipeline(job, lambda j: None)
+    assert job.artifacts["final.mp4"].path == name and (job_dir / name).exists()
 
 
 def test_an_optional_output_failing_is_only_a_warning(monkeypatch):
@@ -589,7 +625,7 @@ def test_intro_and_outro_wrap_final_mp4_and_shift_its_timeline(monkeypatch):
     pipeline_module.run_pipeline(job, lambda j: None)
     assert job.status == JobStatus.DONE, job.error
     job_dir = get_settings().jobs_dir / job.job_id
-    assert (job_dir / "final.mp4").read_bytes() == b"mp4:intro+highlights+card+cleaned+outro"
+    assert (job_dir / job.artifacts["final.mp4"].path).read_bytes() == b"mp4:intro+highlights+card+cleaned+outro"
     assert ("clip", "intro", "CTD - Opening.mp4") in calls and ("clip", "outro", "FloLabs - Widescreen outro.mp4") in calls
     # only final.mp4 gets them
     assert (job_dir / "highlights.mp4").read_bytes() == b"mp4:highlights"
@@ -628,7 +664,8 @@ def test_the_job_option_turns_the_intro_and_outro_off(monkeypatch):
     job = _make_job("job-no-intro", native_transcript_path="t.vtt", options=JobOptions(intro_outro=False))
     pipeline_module.run_pipeline(job, lambda j: None)
     assert job.status == JobStatus.DONE
-    assert (get_settings().jobs_dir / job.job_id / "final.mp4").read_bytes() == b"mp4:highlights+card+cleaned"
+    final_path = get_settings().jobs_dir / job.job_id / job.artifacts["final.mp4"].path
+    assert final_path.read_bytes() == b"mp4:highlights+card+cleaned"
     assert not any(c[0] == "clip" for c in calls) and job.intro_s == job.outro_s == 0
 
 
@@ -644,7 +681,7 @@ def test_a_clip_that_fails_or_does_not_match_is_left_out_with_a_warning(monkeypa
     pipeline_module.run_pipeline(job, lambda j: None)
     assert job.status == JobStatus.DONE, job.error
     job_dir = get_settings().jobs_dir / job.job_id
-    assert (job_dir / "final.mp4").read_bytes() == b"mp4:highlights+card+cleaned"
+    assert (job_dir / job.artifacts["final.mp4"].path).read_bytes() == b"mp4:highlights+card+cleaned"
     assert "intro skipped: CTD - Opening.mp4: moov atom not found" in job.warnings
     assert any(w.startswith("outro skipped: FloLabs - Widescreen outro.mp4: concat piece") for w in job.warnings)
     assert job.intro_s == 0 and job.final_offset_s == pytest.approx(
@@ -688,7 +725,7 @@ def test_ec2_mode_keeps_only_the_zip_and_manifest(monkeypatch):
         pipeline_module.run_pipeline(job, lambda j: None)
         job_dir = get_settings().jobs_dir / job.job_id
         assert job.status == JobStatus.DONE
-        assert not (job_dir / "final.mp4").exists() and not (job_dir / "shorts").exists()
+        assert not (job_dir / job.artifacts["final.mp4"].path).exists() and not (job_dir / "shorts").exists()
         assert (job_dir / "manifest.json").exists() and Path(job.bundle_path).exists()
         assert job.artifacts["final.mp4"].on_disk is False and job.artifacts["manifest.json"].on_disk
     finally:

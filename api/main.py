@@ -21,6 +21,7 @@ from core.config import get_settings
 from core.errors import PipelineError
 from core.logging import configure_logging, get_logger
 from core.models import TERMINAL_STATUSES, JobOptions, JobRecord, JobStatus
+from core.naming import FINAL_KEY, download_stem
 from core.proc import run_checked
 from core.version import PIPELINE_VERSION
 from ingest import zoom
@@ -473,21 +474,24 @@ async def get_job_log(job_id: str) -> str:
 
 @app.get("/jobs/{job_id}/video")
 async def get_job_video(job_id: str) -> FileResponse:
-    """final.mp4 (intro, highlights reel, title card, cleaned meeting, outro)."""
+    """The final video (intro, highlights reel, title card, cleaned meeting,
+    outro), played inline but saved as Final_<Meeting>_<date>_Youtube.mp4."""
     job = _require_done(job_id)
     if not job.output_video_path:
         raise HTTPException(status_code=404, detail="output video not available")
-    return _file_or_gone(Path(job.output_video_path), "video/mp4")
+    return _file_or_gone(Path(job.output_video_path), "video/mp4", filename=f"{download_stem(job)}_Youtube.mp4",
+                         inline=True)
 
 
 @app.get("/jobs/{job_id}/bundle")
 async def get_job_bundle(job_id: str) -> FileResponse:
-    """bundle.zip with every deliverable and manifest.json (Range requests
-    are supported, so a dropped download can resume)."""
+    """bundle.zip with every deliverable and manifest.json, downloaded as
+    Final_<Meeting>_<date>.zip (Range requests are supported, so a dropped
+    download can resume)."""
     job = _require_done(job_id)
     if not job.bundle_path:
         raise HTTPException(status_code=404, detail="bundle not available")
-    return _file_or_gone(Path(job.bundle_path), "application/zip", filename=f"{_slug(job)}.zip")
+    return _file_or_gone(Path(job.bundle_path), "application/zip", filename=f"{download_stem(job)}.zip")
 
 
 @app.get("/jobs/{job_id}/artifacts/{name:path}")
@@ -502,7 +506,13 @@ async def get_job_artifact(job_id: str, name: str, download: bool = False) -> Fi
     if not info.on_disk:
         raise HTTPException(status_code=410, detail=f"{name} is only in bundle.zip (individual files were removed)")
     path = get_settings().jobs_dir / job_id / info.path
-    filename = f"{_slug(job)}_{Path(info.path).name}" if download else None
+    if not download:
+        filename = None
+    elif name == FINAL_KEY:
+        # old jobs keep their final.mp4 on disk but download under the new name too
+        filename = f"{download_stem(job)}_Youtube.mp4"
+    else:
+        filename = f"{_slug(job)}_{Path(info.path).name}"
     return _file_or_gone(path, _MEDIA_TYPES.get(Path(info.path).suffix.lower(), "application/octet-stream"),
                          filename=filename)
 
@@ -564,12 +574,13 @@ _MEDIA_TYPES = {
 }
 
 
-def _file_or_gone(path: Path, media_type: str, filename: str | None = None) -> FileResponse:
+def _file_or_gone(path: Path, media_type: str, filename: str | None = None, inline: bool = False) -> FileResponse:
     """A missing file (deleted after bundling on EC2, or by hand) is a clear
     410, not a 500 from inside the response."""
     if not path.is_file():
         raise HTTPException(status_code=410, detail=f"{path.name} is no longer on disk")
-    return FileResponse(path, media_type=media_type, filename=filename)
+    return FileResponse(path, media_type=media_type, filename=filename,
+                        content_disposition_type="inline" if inline else "attachment")
 
 
 def _slug(job: JobRecord) -> str:

@@ -295,12 +295,14 @@ def test_each_segment_gets_its_own_best_view_so_none_is_dropped():
         _file("MP4", "active_speaker", *FIRST, "https://zoom.us/as1"),
         _file("TRANSCRIPT", "audio_transcript", *FIRST, "https://zoom.us/t1"),
     ]
-    meeting = _meeting(files)
+    meeting = _meeting(files, timezone="Asia/Karachi")
     choice = zoom.choose_files(meeting)
     assert [(p.video["download_url"], p.transcript["download_url"]) for p in choice.parts] == [
         ("https://zoom.us/ss1", "https://zoom.us/t1"), ("https://zoom.us/as2", "https://zoom.us/t2")]
     assert choice.verdict is None and zoom.summarize(meeting)["parts"] == 2
     info = zoom.meeting_info(meeting, choice)
+    # kept so the final video's name gets the meeting's own day (core/naming.py)
+    assert info["timezone"] == "Asia/Karachi"
     assert info["recording_type"] == "shared_screen_with_speaker_view+active_speaker"
     assert [p["recording_type"] for p in info["parts"]] == ["shared_screen_with_speaker_view", "active_speaker"]
     assert info["segments_without_video"] == 0

@@ -170,13 +170,14 @@ _SECTION_TITLES = {"highlights": "HIGHLIGHTS REEL", "meeting": "FULL MEETING"}
 
 
 def write_clean_transcript(txt_path: Path, json_path: Path, lines: list[dict], *, meeting: str, offset_s: float,
-                           final_duration_s: float, intro_s: float = 0.0, outro_s: float = 0.0) -> None:
-    notes = [f"Times are positions in final.mp4 ({fmt_clock(final_duration_s)} long)."]
+                           final_duration_s: float, intro_s: float = 0.0, outro_s: float = 0.0,
+                           final_name: str = "final.mp4") -> None:
+    notes = [f"Times are positions in {final_name} ({fmt_clock(final_duration_s)} long)."]
     if offset_s > 0:
         # offset_s = intro + highlights reel + title card
         opening = [part for part, there in ((f"the intro ({intro_s:.0f}s)", intro_s > 0),
                                             ("the highlights reel", offset_s - intro_s > 1e-6)) if there]
-        notes.append(f"final.mp4 opens with {' and '.join(opening)}; the full meeting starts at "
+        notes.append(f"The video opens with {' and '.join(opening)}; the full meeting starts at "
                      f"{fmt_clock(offset_s)}.")
     if outro_s > 0:
         notes.append(f"It ends with the outro ({outro_s:.0f}s) after the meeting.")
@@ -204,6 +205,7 @@ def write_clean_transcript(txt_path: Path, json_path: Path, lines: list[dict], *
         paragraph.append(line["text"])
     flush()
     txt_path.write_text("\n".join(header + body).rstrip() + "\n", encoding="utf-8")
-    json_path.write_text(json.dumps({"timeline": "final", "meeting": meeting, "cleaned_starts_at_s": round(offset_s, 3),
+    json_path.write_text(json.dumps({"timeline": "final", "video": final_name, "meeting": meeting,
+                                     "cleaned_starts_at_s": round(offset_s, 3),
                                      "intro_s": round(intro_s, 3), "outro_s": round(outro_s, 3),
                                      "lines": lines}, indent=2, ensure_ascii=False), encoding="utf-8")

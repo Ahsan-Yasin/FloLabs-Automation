@@ -569,6 +569,9 @@ def meeting_info(meeting: dict, choice: Choice | None = None) -> dict:
         "meeting_id": meeting.get("id"),
         "topic": (meeting.get("topic") or "").strip(),
         "start_time": meeting.get("start_time"),
+        # start_time is UTC; the zone gives the meeting's own day for the
+        # final video's name (core/naming.py)
+        "timezone": meeting.get("timezone"),
         "host_email": meeting.get("host_email"),
         "duration_min": meeting.get("duration"),
         "auto_delete_date": meeting.get("auto_delete_date"),

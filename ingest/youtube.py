@@ -5,6 +5,7 @@ from typing import Any, NamedTuple
 
 from core.config import get_settings
 from core.logging import get_logger
+from core.naming import upload_date_iso
 
 logger = get_logger(__name__)
 
@@ -69,6 +70,9 @@ class YoutubeDownload(NamedTuple):
     # The video's own title (the job's title card / report heading); "" when
     # yt-dlp doesn't report one.
     title: str
+    # The day the video was published, "YYYY-MM-DD" ("" = unknown): the
+    # meeting's date in the final video's name (core/naming.py).
+    upload_date: str = ""
 
 
 # H.264 at <= 720p when YouTube has it: every piece is re-encoded anyway, and
@@ -82,7 +86,7 @@ _FORMAT = (
 
 
 def download_youtube(url: str, dest_dir: Path | None = None) -> YoutubeDownload:
-    """Download a YouTube video. Returns (video_id, path, title).
+    """Download a YouTube video. Returns (video_id, path, title, upload_date).
 
     With `dest_dir` (the job folder) the file is saved as
     `dest_dir/source.<ext>`, like an upload, so deleting the job deletes it.
@@ -118,4 +122,5 @@ def download_youtube(url: str, dest_dir: Path | None = None) -> YoutubeDownload:
     if not matches:
         raise YoutubeDownloadError(f"download reported success but no output file found for {url}")
     title = " ".join(str(info.get("title") or "").split())
-    return YoutubeDownload(video_id, matches[0], title)
+    upload_date = upload_date_iso(str(info.get("upload_date") or "")) or ""
+    return YoutubeDownload(video_id, matches[0], title, upload_date)

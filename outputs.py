@@ -66,6 +66,9 @@ class RenderInputs:
     shorts: list[ShortClip]
     words: list[Word]  # source timeline (captions)
     title: str = ""
+    # the final video's file name (Final_<Meeting>_<date>_Youtube.mp4,
+    # core/naming.py); its key in the artifacts stays "final.mp4"
+    final_name: str = "final.mp4"
     # the owner's clips for the start / end of final.mp4 (slice/intro_outro.py)
     intro: Path | None = None
     outro: Path | None = None
@@ -188,7 +191,7 @@ def render_outputs(inp: RenderInputs, *, set_status: StatusFn, on_progress: Prog
         if inp.intro or inp.outro:
             timings["intro_outro"] = round(time.monotonic() - t0, 2)
         t0 = time.monotonic()
-        final_path = job_dir / "final.mp4"
+        final_path = job_dir / inp.final_name
         parts = [t for t in (intro, highlights, card, cleaned, outro) if t is not None]
         # if the joined file still fails its asserts, drop the generated
         # pieces one at a time and retry: the title card first (the clips
@@ -212,7 +215,7 @@ def render_outputs(inp: RenderInputs, *, set_status: StatusFn, on_progress: Prog
         offset_frames = sum(t.frames for t in parts[:next(i for i, t in enumerate(parts) if t is cleaned)])
         intro_frames = intro.frames if intro is not None else 0
         fps = media.fps
-        artifacts["final.mp4"] = ArtifactInfo(path="final.mp4", mandatory=True,
+        artifacts["final.mp4"] = ArtifactInfo(path=inp.final_name, mandatory=True,
                                               duration_s=float(Fraction(final_frames) / fps))
         timings["final"] = round(time.monotonic() - t0, 2)
         cleaned.manifest.measured_frames = cleaned.frames

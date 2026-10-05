@@ -4,6 +4,7 @@ import logging
 import threading
 import time
 from datetime import UTC, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import pytest
 from fastapi.testclient import TestClient
@@ -382,17 +383,28 @@ def test_bundle_and_artifacts_are_served_by_name_only(monkeypatch):
     created = client.post("/jobs", files={"file": ("Weekly_Sync-2026.mp4", io.BytesIO(b"x"), "video/mp4")}).json()
     assert created["title"] == "Weekly Sync 2026"
     job_id = created["job_id"]
-    assert _wait_until_done(client, job_id).json()["status"] == "done"
+    done = _wait_until_done(client, job_id).json()
+    assert done["status"] == "done"
+    # an old-style job (its video saved as final.mp4) still downloads under
+    # the owner's names: Final_<Meeting>_<date>.zip / ..._Youtube.mp4, the
+    # date being the day the job was created (no date in the title), on the
+    # team's clock (settings.local_timezone), not UTC
+    day = datetime.fromisoformat(done["created_at"].replace("Z", "+00:00")).astimezone(
+        ZoneInfo("Asia/Karachi")).date().isoformat()
 
     bundle = client.get(f"/jobs/{job_id}/bundle")
     assert bundle.status_code == 200 and bundle.content == b"PK zip"
-    assert f'filename="weekly_sync_2026_{job_id[:8]}.zip"' in bundle.headers["content-disposition"]
+    assert bundle.headers["content-disposition"] == f'attachment; filename="Final_WeeklySync2026_{day}.zip"'
     assert client.get(f"/jobs/{job_id}/bundle", headers={"Range": "bytes=3-5"}).content == b"zip"
 
     short = client.get(f"/jobs/{job_id}/artifacts/shorts/short_01.mp4")
     assert short.status_code == 200 and short.headers["content-type"] == "video/mp4"
-    assert "attachment" in client.get(f"/jobs/{job_id}/artifacts/final.mp4?download=true").headers[
-        "content-disposition"]
+    final = client.get(f"/jobs/{job_id}/artifacts/final.mp4?download=true")
+    assert final.content == b"final video"
+    assert final.headers["content-disposition"] == f'attachment; filename="Final_WeeklySync2026_{day}_Youtube.mp4"'
+    video = client.get(f"/jobs/{job_id}/video")
+    # plays in the browser, saves under the owner's name
+    assert video.headers["content-disposition"] == f'inline; filename="Final_WeeklySync2026_{day}_Youtube.mp4"'
     assert client.get(f"/jobs/{job_id}/artifacts/removed.mp4").status_code == 404  # failed artifact
     assert client.get(f"/jobs/{job_id}/artifacts/secret.txt").status_code == 404  # not an artifact
     assert client.get(f"/jobs/{job_id}/artifacts/..%2Fjob.json").status_code == 404

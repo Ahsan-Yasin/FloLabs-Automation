@@ -204,21 +204,34 @@ n8n (or any orchestrator) calls this API over HTTP per section 6 of the spec
 
 ### What a finished job delivers (M4)
 
-One `bundle.zip` per meeting (`GET /jobs/{id}/bundle`, resumable), with:
+One zip per meeting (`GET /jobs/{id}/bundle`, resumable; it downloads as
+`Final_<Meeting>_<YYYY-MM-DD>.zip`), with:
 
 | File | What it is |
 |---|---|
-| `final.mp4` | your intro clip, the highlights reel (mostly things worth learning — at most a third funny), a 2 s "topic / Full meeting" card, the cleaned meeting, then your outro clip |
+| `Final_<Meeting>_<YYYY-MM-DD>_Youtube.mp4` | the final video: your intro clip, the highlights reel (mostly things worth learning — at most a third funny), a 2 s "topic / Full meeting" card, the cleaned meeting, then your outro clip |
 | `highlights.mp4` | the reel on its own (only when the meeting has ≥ 60 s of highlight material) |
 | `shorts/short_NN.mp4` + `.srt`, `shorts/shorts.json` | 1080×1920 shorts with burned-in captions and the moment's title — self-contained moments people can learn from first (concepts, how things work, new architectures/features, insights), a genuinely funny one only to fill a slot |
 | `removed.mp4` | every cut of 1 s or more (except pure silences), each labelled "Removed 01:10–02:30 · reason" (original-recording time) |
 | `report.pdf` | what was removed, when and why (minutes by reason, every cut with its text), highlights, shorts, chapters |
 | `transcript_removed.txt/.json` | the removed text with original-recording timestamps and reasons |
-| `transcript_clean.txt/.json` | what `final.mp4` says, with `final.mp4` timestamps |
-| `chapters.txt` | YouTube chapters for `final.mp4` (`00:00 Highlights` first when there is a reel; the intro is part of the first chapter) |
+| `transcript_clean.txt/.json` | what the final video says, with its timestamps |
+| `chapters.txt` | YouTube chapters for the final video (`00:00 Highlights` first when there is a reel; the intro is part of the first chapter) |
 | `manifest.json` | size, sha256, duration and status of every file, warnings, timings, AI usage |
 
-Only `final.mp4`, the two transcripts and the manifest are mandatory. Any
+**The final video's name.** `<Meeting>` is the meeting's title (the Zoom
+topic, the YouTube title, or the upload's title / file name) in CamelCase with
+any date in it removed, letters and digits only, at most 60 characters
+("All Tech Team Meeting | August 2, 2026" -> `AllTechTeamMeeting`; nothing
+usable -> `Meeting`). `<YYYY-MM-DD>` is the day of the meeting: Zoom's start
+time, the YouTube video's upload date, a date written in an upload's title,
+else the day the job was created. The date is saved on the job
+(`meeting_date`), so a re-render keeps the same name. In `job.artifacts`, the
+API (`/jobs/{id}/artifacts/final.mp4`, `/jobs/{id}/video`) and n8n the video
+is still called `final.mp4`; only its file name changed, and downloads get the
+new name. Jobs made before this keep their `final.mp4` file and still work.
+
+Only the final video, the two transcripts and the manifest are mandatory. Any
 other file that fails is listed in the manifest as `failed` (with the reason)
 and in the job's `warnings`, and the job still finishes. Individual files are
 also served at `GET /jobs/{id}/artifacts/{name}` (e.g. `shorts/short_01.mp4`,

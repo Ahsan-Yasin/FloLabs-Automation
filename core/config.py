@@ -251,6 +251,10 @@ class Settings(BaseSettings):
     # require_native_transcript is False, falling back to WhisperX.
     transcript_wait_max_s: float = 600.0
     transcript_poll_s: float = 60.0
+    # The team's time zone (IANA name). A meeting's day in the final video's
+    # name is counted here when Zoom doesn't send the meeting's own zone, so a
+    # 02:00 PKT meeting (21:00 UTC the day before) gets the Pakistan day.
+    local_timezone: str = "Asia/Karachi"
 
     # --- v2 service / lifecycle (plan D14-D16) -----------------------------
     # X-API-Key for every route except /health and the static UI pages.

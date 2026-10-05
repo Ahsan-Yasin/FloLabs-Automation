@@ -296,6 +296,11 @@ class JobRecord(BaseModel):
     zoom_meeting_uuid: str | None = None
     zoom_options_hash: str | None = None
     zoom_meeting: dict | None = None
+    # The day the meeting happened, "YYYY-MM-DD" (Zoom start_time, YouTube
+    # upload date, a date in an upload's title, else the job's creation day).
+    # Stored once, so the final video's name (Final_<Meeting>_<date>_Youtube.mp4,
+    # core/naming.py) stays the same on a re-render.
+    meeting_date: str | None = None
     source_path: str = ""
     source_url: str | None = None
     native_transcript_path: str | None = None
