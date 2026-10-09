@@ -247,6 +247,8 @@ def index_orphans() -> int:
         admin_id = db.scalar(select(User.id).where(User.role == ROLE_ADMIN, User.is_active.is_(True))
                              .order_by(User.created_at).limit(1))
         known = set(db.scalars(select(JobIndex.job_id)))
+        # an owner from an older database is nobody here (the foreign key would fail)
+        user_ids = set(db.scalars(select(User.id)))
         added = 0
         for path in sorted(jobs_dir.glob("*/job.json")):
             job_id = path.parent.name
@@ -258,7 +260,8 @@ def index_orphans() -> int:
             created = job.created_at or datetime.fromtimestamp(path.stat().st_mtime, UTC)
             if created.tzinfo is None:
                 created = created.replace(tzinfo=UTC)
-            db.add(JobIndex(job_id=job_id, user_id=job.owner_id or admin_id, status=job.status.value,
+            owner_id = job.owner_id if job.owner_id in user_ids else admin_id
+            db.add(JobIndex(job_id=job_id, user_id=owner_id, status=job.status.value,
                             title=(job.title or "")[:200], source_kind=source_kind_of(job), created_via="ops",
                             error_code=job.error_code, bundle_bytes=job.bundle_bytes,
                             source_duration_s=job.source_duration_s, created_at=created, updated_at=created))

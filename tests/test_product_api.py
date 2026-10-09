@@ -501,6 +501,20 @@ def test_job_folders_from_before_accounts_go_to_the_first_admin():
     assert [(i["job_id"], i["title"]) for i in items] == [("old-job", "Before accounts")]
 
 
+def test_job_folders_owned_by_a_user_the_database_no_longer_has_still_index():
+    # a fresh database next to old job folders: their owner ids point at nobody
+    job_dir = get_settings().jobs_dir / "orphan-job"
+    job_dir.mkdir(parents=True)
+    (job_dir / "job.json").write_text(json.dumps({"job_id": "orphan-job", "status": "done", "source_path": "x.mp4",
+                                                  "owner_id": "user-from-an-old-database"}), encoding="utf-8")
+    assert jobs_index.index_orphans() == 1  # no foreign-key failure at startup
+    make_user("root@example.com", role="admin")
+    jobs_index.index_orphans()  # unowned rows go to the first admin
+    admin = new_client()
+    login(admin, "root@example.com")
+    assert [i["job_id"] for i in admin.get("/api/v1/jobs").json()["items"]] == ["orphan-job"]
+
+
 def test_operator_jobs_go_to_the_first_admin(monkeypatch):
     monkeypatch.setenv("HC_API_TOKEN", "ops-secret-value")
     get_settings.cache_clear()
