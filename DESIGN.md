@@ -1,30 +1,37 @@
-# Design: "Ink and proof", second edition
+# Design: "Ink and proof", third edition
 
 The website and app share one stylesheet, `web/static/css/site.css`. This file
 explains the rules behind it so new pages stay consistent.
 
 ## The idea
 
-The product copy-edits meeting transcripts. The interface borrows the two marks
-an editor makes on paper and uses nothing else for colour:
+The product copy-edits meeting transcripts. The layout is the second
+edition's (centred hero with the product window, three steps and the
+timeline, the zip manifest, the dark API band, questions, a centred close).
+The third edition changes only the colours:
 
-- **A highlighter** (`--marker`, yellow) marks what is kept.
-- **A red proofing strike** (`--cut`) marks what is removed.
-
-Everything else is navy ink (`--ink`) on a white page. The second edition keeps
-those tokens and changes where they sit: the public site is white (`--page`)
-with tinted bands (`--paper`), the app sits on the tinted page with white
-panels, and the marks appear only where the product itself makes them. The
-dark theme swaps the page to deep navy and the ink to near-white; the two
-marks stay.
+- **Neutral surfaces.** A white page (`--page`) with tinted bands
+  (`--paper`) in light; near-black `#0a0a0b` in dark. Graphite ink
+  (`--ink`), no navy anywhere.
+- **One blue for the action.** `--accent` (`#0a62d0`) fills the main button
+  of a view and the checked checkboxes, and draws the focus ring and input
+  focus. Links stay ink with an underline.
+- **The product's marks, content only.** A soft yellow wash
+  (`--marker-soft`) behind transcript text that made the highlights reel, and
+  solid yellow (`--marker`) only on small reel shapes. Cut text gets a grey
+  strike (`--strike`) and a grey reason. Timelines are graphite
+  (`--seg-kept`) with a grey hatch (`--hatch`) for cuts.
+- **Signals.** Red (`--cut`) means failure or delete only; green (`--ok`)
+  means done; amber (`--warn`) means attention.
 
 ## Rules
 
 - **The marks are functional, never decoration.** Yellow and the red strike
   appear on transcripts, timelines, status and badges. Headlines carry no
   highlighter and no strike-through.
-- **Buttons are ink.** One filled button per view is the main action. In the
-  dark API band the main button is white. Red is for delete and failure only.
+- **One blue button per view.** The main action is the blue filled button; the
+  rest are outline or ghost. In the dark API band the button is white. Red is
+  for delete and failure only.
 - **Show the product.** The home page hero is the real job view (title,
   status, marked transcript, downloads) built from the app's own components,
   cut by the fold. No illustrations, no bar diagrams standing in for a
@@ -51,19 +58,22 @@ marks stay.
 
 ## Surfaces
 
-| Token | Light | Use |
-|---|---|---|
-| `--page` | white (site), `--paper` (app) | The body background |
-| `--paper` | `#f6f7f9` | Tinted bands, recessed areas inside panels, table heads |
-| `--paper-2` | `#eceef3` | Segmented controls, inline code, skeletons |
-| `--surface` | white | Panels, inputs, menus, dialogs |
-| `--ink`, `--ink-2`, `--ink-3` | `#172033`, `#475166`, `#646d84` | Text: primary, secondary, tertiary |
-| `--on-ink` | white | Text on an ink fill (buttons, toasts, avatar) |
-| `--line`, `--line-2` | `#e4e7ed`, `#cfd4dd` | Hairlines, control borders |
-| `--band`, `--band-2` | `#141c2e`, `#0d1422` | The dark API band and code blocks |
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| `--page` | `#ffffff` | `#0a0a0b` | The body background (the app uses `--paper`) |
+| `--paper` | `#f4f4f5` | `#141416` | Tinted bands, recessed areas, table heads |
+| `--paper-2` | `#ebebed` | `#2a2a2e` | Segmented controls, inline code, skeletons |
+| `--surface` | `#ffffff` | `#1a1a1c` | Panels, inputs, menus, dialogs |
+| `--ink`, `--ink-2`, `--ink-3` | `#17171a`, `#4a4a52`, `#66666e` | `#f2f2f3`, `#b4b4bc`, `#93939b` | Text: primary, secondary, tertiary |
+| `--line`, `--line-2` | `#e4e4e7`, `#d4d4d8` | `#2c2c30`, `#3f3f46` | Hairlines, control borders |
+| `--accent` | `#0a62d0` | `#0a62d0` (text `#5aa2ff`) | The main button, checked boxes, focus |
+| `--marker`, `--marker-soft` | `#ffd43b`, `#fff1b8` | `#f2c63a`, yellow at 22 % | Reel shapes, highlighted text |
+| `--cut`, `--ok`, `--warn` | `#c8102e`, `#1d7a3a`, `#a14f00` | `#ff6b61`, `#3ccf6e`, `#f5a524` | Failure/delete, done, attention |
+| `--band`, `--band-2` | `#111113`, `#0a0a0b` | `#141416`, `#0a0a0b` | The dark API band and code blocks |
 
 Every token has a dark value in `:root[data-theme="dark"]`. Use tokens, not hex
-values, in templates and inline styles.
+values, in templates and inline styles. Emails (`web/templates/email/`) use
+the same palette inline.
 
 ## Motion
 

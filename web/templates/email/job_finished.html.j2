@@ -4,24 +4,24 @@
 {% block content %}
 {% if status == "done" %}
 {{ heading("Your meeting is ready") }}
-<p style="margin:0 0 12px;">Hi {{ name or "there" }}, <strong>{{ title }}</strong> is cut and packed.</p>
+<p style="margin:0 0 12px;">Hi {{ name or "there" }}, <strong style="font-weight:600;">{{ title }}</strong> is cut and packed.</p>
 {% if outputs %}
 <p style="margin:0 0 6px;">In the bundle:</p>
 <ul style="margin:0 0 4px;padding-left:20px;">
-{% for item in outputs %}  <li style="margin:0 0 2px;">{{ item }}</li>
+{% for item in outputs %}  <li style="margin:0 0 2px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:22px;">{{ item }}</li>
 {% endfor %}</ul>
 {% endif %}
 {{ button(link, "Open the results") }}
 {% elif status == "decided" %}
 {{ heading("The picks are ready to review") }}
-<p style="margin:0;">Hi {{ name or "there" }}, the AI has marked up <strong>{{ title }}</strong>. Check its highlight and shorts picks, then render the video when you're happy.</p>
+<p style="margin:0;">Hi {{ name or "there" }}, the AI has marked up <strong style="font-weight:600;">{{ title }}</strong>. Check its highlight and shorts picks, then render the video when you're happy.</p>
 {{ button(link, "Review the picks") }}
 {% else %}
 {{ heading("Processing failed") }}
-<p style="margin:0 0 12px;">Hi {{ name or "there" }}, <strong>{{ title }}</strong> could not be processed.</p>
-{% if error %}<p style="margin:0 0 12px;padding:12px 14px;background:#fbf0ee;border-radius:8px;font-size:14px;color:#6f2a20;">{{ error }}{% if error_code %} <span style="color:#9a6a62;">({{ error_code }})</span>{% endif %}</p>{% endif %}
+<p style="margin:0 0 12px;">Hi {{ name or "there" }}, <strong style="font-weight:600;">{{ title }}</strong> could not be processed.</p>
+{% if error %}<p style="margin:0 0 12px;padding:12px 14px;background:#fcecee;border:1px solid #ecaab4;border-radius:8px;font-size:14px;line-height:1.5;color:#17171a;word-break:break-word;">{{ error }}{% if error_code %} <span style="color:#c8102e;">({{ error_code }})</span>{% endif %}</p>{% endif %}
 <p style="margin:0;">{% if retryable %}This kind of failure is usually temporary: submitting the job again should work.{% else %}Submitting it again as-is will likely fail the same way.{% endif %}</p>
 {{ button(link, "Open the job") }}
 {% endif %}
 {% endblock %}
-{% block footer %}You get these emails for jobs you create. Turn them off in your account settings at <a href="{{ base_url }}/app/account" style="color:#6b6a60;">{{ base_url }}/app/account</a>.{% endblock %}
+{% block footer %}You get these emails for jobs you create. Turn them off in your account settings at <a href="{{ base_url }}/app/account" style="color:#66666e;text-decoration:underline;">{{ base_url }}/app/account</a>.{% endblock %}

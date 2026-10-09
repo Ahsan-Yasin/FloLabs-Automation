@@ -306,7 +306,7 @@
     try { localStorage.setItem("hc-theme", theme); } catch (e) { /* not important */ }
     qsa("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === theme ? "true" : "false"));
     const meta = qs('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "light" ? "#ffffff" : "#0f1524");
+    if (meta) meta.setAttribute("content", theme === "light" ? "#ffffff" : "#0a0a0b");
   }
   qsa("[data-theme-set]").forEach((b) => {
     b.setAttribute("aria-pressed", b.dataset.themeSet === root.getAttribute("data-theme") ? "true" : "false");
@@ -314,7 +314,7 @@
   });
   if (root.getAttribute("data-theme") === "dark") {
     const meta = qs('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", "#0f1524");
+    if (meta) meta.setAttribute("content", "#0a0a0b");
   }
 
   /* ------------------------------------------------------------ header / nav */

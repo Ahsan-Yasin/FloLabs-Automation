@@ -6,6 +6,6 @@
 <p style="margin:0 0 12px;">Hi {{ name or "there" }},</p>
 <p style="margin:0;">Confirm that this is your address and you can start cutting meetings and create API keys for your automations.</p>
 {{ button(link, "Verify my email") }}
-<p style="margin:0 0 18px;font-size:14px;color:#4a4940;">The link works for {{ hours }} hours. If you didn't create an account, you can ignore this email.</p>
+<p style="margin:24px 0 16px;font-size:14px;line-height:1.55;color:#5c5c63;">The link works for {{ hours }} hours. If you didn't create an account, you can ignore this email.</p>
 {{ link_fallback(link) }}
 {% endblock %}

@@ -13,7 +13,7 @@
       {% if current_user.is_admin %}<a href="/app/admin"{% if active == "admin" %} aria-current="page"{% endif %}>{{ icon("shield") }}<span>Admin</span></a>{% endif %}
     </nav>
     <div class="grow"></div>
-    <a class="btn btn-sm btn-primary hide-sm" href="/app#new">{{ icon("plus") }} New job</a>
+    <a class="btn btn-sm btn-outline hide-sm" href="/app#new">{{ icon("plus") }} New job</a>
     <details class="dropdown">
       <summary class="user-btn" aria-label="Account menu"><span class="avatar" aria-hidden="true">{{ current_user.initials }}</span>{{ icon("chevron-down") }}</summary>
       <div class="menu">

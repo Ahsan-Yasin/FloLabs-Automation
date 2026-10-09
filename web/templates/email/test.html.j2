@@ -3,5 +3,5 @@
 {% block preheader %}Email delivery works.{% endblock %}
 {% block content %}
 {{ heading("Email works") }}
-<p style="margin:0;">This is a test message from {{ app_name }}, sent through <code>EMAIL_BACKEND={{ backend }}</code>. If you can read it, verification and password-reset emails will arrive too.</p>
+<p style="margin:0;">This is a test message from {{ app_name }}, sent through <code style="padding:1px 5px;border-radius:4px;background:#ebebed;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;">EMAIL_BACKEND={{ backend }}</code>. If you can read it, verification and password-reset emails will arrive too.</p>
 {% endblock %}

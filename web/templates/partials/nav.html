@@ -19,7 +19,7 @@
     </div>
   </div>
   <div class="mobile-nav" id="mobile-nav" hidden>
-    {% for href, label in links %}<a href="{{ href }}">{{ label }}</a>{% endfor %}
+    {% for href, label in links %}<a href="{{ href }}"{% if path == href %} aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}
     <div class="cluster">
       {% if current_user %}
         <a class="btn btn-primary btn-block" href="/app">Open dashboard</a>
