@@ -18,3 +18,4 @@ tools/prompt_eval/datasets/
 tools/prompt_eval/results/
 tools/prompt_eval/REPORT.md
 tools/prompt_eval/spend_ledger.json
+cookies.txt

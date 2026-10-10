@@ -134,6 +134,12 @@ class Settings(BaseSettings):
 
     ffmpeg_bin: str = "ffmpeg"
     ffprobe_bin: str = "ffprobe"
+
+    # YouTube answers cloud IPs (Codespaces, EC2) with "Sign in to confirm
+    # you're not a bot". A Netscape-format cookies.txt from a signed-in
+    # browser, and/or a residential proxy URL, gets past it. Empty = unused.
+    ytdlp_cookies_file: str = ""
+    ytdlp_proxy: str = ""
     # Guards against a hung ffprobe/ffmpeg process wedging the single
     # background-task worker forever (e.g. a corrupt upload, a stalled network
     # stream, or a process that ends up waiting on stdin/stdout).

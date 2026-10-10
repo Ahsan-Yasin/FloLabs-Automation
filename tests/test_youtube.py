@@ -101,7 +101,7 @@ def test_base_opts_pin_ffmpeg_only_for_a_real_file(monkeypatch, tmp_path):
     # FFMPEG_BIN's folder on os.environ["PATH"], and this fake ffmpeg.exe
     # would then shadow the real one for every later test.
     def use_ffmpeg(path):
-        monkeypatch.setattr(youtube, "get_settings", lambda: SimpleNamespace(ffmpeg_bin=path))
+        monkeypatch.setattr(youtube, "get_settings", lambda: _settings(ffmpeg_bin=path))
 
     use_ffmpeg("ffmpeg")  # a bare name: yt-dlp searches PATH itself
     assert "ffmpeg_location" not in youtube.ydl_base_opts()
@@ -111,6 +111,32 @@ def test_base_opts_pin_ffmpeg_only_for_a_real_file(monkeypatch, tmp_path):
     ffmpeg.write_bytes(b"")
     use_ffmpeg(str(ffmpeg))
     assert youtube.ydl_base_opts()["ffmpeg_location"] == str(ffmpeg.parent)
+
+
+def _settings(**overrides):
+    return SimpleNamespace(**{"ffmpeg_bin": "ffmpeg", "ytdlp_cookies_file": "", "ytdlp_proxy": "", **overrides})
+
+
+def test_base_opts_leave_cookies_and_proxy_off_by_default(monkeypatch):
+    monkeypatch.setattr(youtube, "get_settings", lambda: _settings())
+    opts = youtube.ydl_base_opts()
+    assert "cookiefile" not in opts and "proxy" not in opts
+
+
+def test_base_opts_pass_cookies_and_proxy_for_the_bot_check(monkeypatch, tmp_path):
+    cookies = tmp_path / "cookies.txt"
+    cookies.write_text("# Netscape HTTP Cookie File\n")
+    monkeypatch.setattr(youtube, "get_settings", lambda: _settings(
+        ytdlp_cookies_file=str(cookies), ytdlp_proxy="http://user:pw@proxy.example:8080"))
+    opts = youtube.ydl_base_opts()
+    assert opts["cookiefile"] == str(cookies)
+    assert opts["proxy"] == "http://user:pw@proxy.example:8080"
+
+
+def test_base_opts_ignore_a_missing_cookies_file(monkeypatch, tmp_path):
+    # a typo in the path must not fail every job before yt-dlp even starts
+    monkeypatch.setattr(youtube, "get_settings", lambda: _settings(ytdlp_cookies_file=str(tmp_path / "nope.txt")))
+    assert "cookiefile" not in youtube.ydl_base_opts()
 
 
 def test_download_youtube_uses_the_base_opts(monkeypatch):

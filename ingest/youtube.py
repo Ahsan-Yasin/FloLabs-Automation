@@ -52,9 +52,20 @@ def ydl_base_opts() -> dict[str, Any]:
 
     # Only pin a location when FFMPEG_BIN is an actual path (not just "ffmpeg" on
     # PATH) — otherwise let yt-dlp do its own normal PATH search.
-    ffmpeg_path = Path(get_settings().ffmpeg_bin)
+    settings = get_settings()
+    ffmpeg_path = Path(settings.ffmpeg_bin)
     if ffmpeg_path.is_file():
         opts["ffmpeg_location"] = str(ffmpeg_path.parent)
+
+    # A cookies path that doesn't exist is ignored rather than failing every
+    # job; the bot-check error then says plainly that cookies are needed.
+    cookies = Path(settings.ytdlp_cookies_file) if settings.ytdlp_cookies_file else None
+    if cookies is not None and cookies.is_file():
+        opts["cookiefile"] = str(cookies)
+    elif cookies is not None:
+        logger.warning("YTDLP_COOKIES_FILE %s not found; downloading without cookies", cookies)
+    if settings.ytdlp_proxy:
+        opts["proxy"] = settings.ytdlp_proxy
 
     # Passing js_runtimes replaces yt-dlp's {"deno": {}} default, so list every
     # runtime found; with none found, leave yt-dlp's default (and its warning).
