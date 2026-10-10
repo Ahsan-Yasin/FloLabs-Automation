@@ -16,9 +16,12 @@ def _first_name(name: str) -> str:
     return (name or "").split(" ")[0]
 
 
-def send_verification(to: str, name: str, token: str) -> None:
-    email.send_template(to, "verify_email", f"Verify your {get_settings().app_name} email",
-                        name=_first_name(name), link=_link(f"/verify?token={token}"), hours=24)
+def send_verification(to: str, name: str, token: str, *, now: bool = False) -> str | None:
+    """Queued like every email; with now=True it goes out right away and the
+    answer says why not if it didn't (None when it did)."""
+    send = email.send_template_now if now else email.send_template
+    return send(to, "verify_email", f"Verify your {get_settings().app_name} email",
+                name=_first_name(name), link=_link(f"/verify?token={token}"), hours=24)
 
 
 def send_welcome(to: str, name: str) -> None:

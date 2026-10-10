@@ -1,0 +1,60 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	0	SPEAKER	Actually.	remove	0	0	greet,fill,tang	0	remove	fill	0	none	ok	
+1	1	SPEAKER	Yes .	remove	0	0	greet,fill,tang	0	remove	fill	0	none	ok	
+2	2	SPEAKER	Amazing mind, brilliant mind.	remove	0	0	greet,fill,tang	0	remove	greet	1	none	ok	
+3	3	SPEAKER	Well done, Mordanasan.	remove	0	0	greet,fill,tang	0	remove	greet	1	none	ok	
+4	4	SPEAKER	So, so, Mohammed, I'm not sure who else is in here.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+5	5	SPEAKER	I messaged our Seema.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+6	6	SPEAKER	She's going to join shortly.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+7	7	SPEAKER	I see Indra is here, so maybe we can get started because we're almost half an hour late.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+8	8	SPEAKER	Absolutely, I'm so sorry, Indra.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+9	9	SPEAKER	I'm so sorry.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+10	10	SPEAKER	Please go ahead.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+11	11	SPEAKER	Yeah.	remove	0	0	house,greet,fill,xtalk	0	remove	xtalk	0	none	ok	
+12	12	SPEAKER	Ash.	remove	0	0	house,greet,fill,xtalk	0	remove	xtalk	0	none	ok	
+13	13	SPEAKER	I have no idea.	remove	0	0	house,greet,fill,xtalk	0	remove	xtalk	0	none	ok	
+14	14	SPEAKER	Ash.	remove	0	0	house,greet,fill,xtalk	0	remove	xtalk	0	none	ok	
+15	15	SPEAKER	Everyone, sorry for being late.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+16	16	SPEAKER	I just arrived I'm sorry, Ash, can you… okay, yeah, I'm sorry, it was… No, sir.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+17	17	SPEAKER	Okay.	remove	0	0	house,greet,fill,xtalk	0	remove	fill	0	none	ok	
+18	18	SPEAKER	I I had a work meeting, but Okay, everyone.	remove	0	0	house,greet,fill,xtalk	0	remove	house	0	none	ok	
+19	19	SPEAKER	I think we can definitely start I see that we have At least Two new buddies with us, is that… Right?	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+20	20	SPEAKER	Two new members.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+21	21	SPEAKER	Krishna, and… Caballon or I don't know where… how to pronounce it, but… and I know that Presented yourself, I think In	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+22	22	SPEAKER	multimodal, maybe?	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+23	23	SPEAKER	Because I know you've presented yourself.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+24	24	SPEAKER	I I just don't remember where But I don't think… I think this is your first backend meeting, right?	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+25	25	SPEAKER	Or not Okay.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+26	26	SPEAKER	Right.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+27	27	SPEAKER	Ah, this is my first backend meeting, but I have already attended the technical meetings.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+28	28	SPEAKER	That was it, okay.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+29	29	SPEAKER	So great, you… We're already presented for everyone.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+30	30	SPEAKER	The other two new members, did you guys present yourself to the team already?	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+31	31	SPEAKER	If not, you guys can do it now.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+32	32	SPEAKER	Just tell us where you're from, and if what's your academic and work experience Do you want me to start?	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+33	33	SPEAKER	Sure, you can Sir, you can hear me, right?	remove	0	0	intro,greet,house,fill	0	remove	house	0	none	ok	
+34	34	SPEAKER	Yeah.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+35	35	SPEAKER	Yeah, hello, I'm Muhammad Kabbalan, but To not make Muhammad sad, I will be… I will call myself Mr.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+36	36	SPEAKER	Kavalan Okay.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+37	37	SPEAKER	I recently graduated, I have a bachelor degree Computer science.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+38	38	SPEAKER	I used to be a front-end developer, but This year I began my journey at Backend because I found it also interesting to See, we… the work behind the scenes And M	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+39	39	SPEAKER	current stock, now I'm just using Node Express with MongoDB.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+40	40	SPEAKER	I have familiarity with SQL, Firebase But my current focus now is on Node Express with MongoDB Okay.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+41	41	SPEAKER	Welcome to the team.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+42	42	SPEAKER	Here, we are using for the backend Python with Jungle, and we use multiple kinds of database, so you'll have fun with that.	keep	0	1		1	remove	intro	2	none	removed(amb)	
+43	43	SPEAKER	Yeah.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+44	44	SPEAKER	Great.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+45	45	SPEAKER	Welcome to the team.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+46	46	SPEAKER	Thank you.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+47	47	SPEAKER	Kishna?	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+48	48	SPEAKER	Hi, hello everyone, I'm Krishna, and I'm audible Yeah, I can hear you.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+49	49	SPEAKER	It's a bit low, but I can hear you.	remove	0	0	intro,greet,house,fill	0	remove	house	0	none	ok	
+50	50	SPEAKER	Okay.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+51	51	SPEAKER	I am Krishna, and I'm in my final year of engineering, and I'm doing computer engineering And it's my first internship Awesome.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+52	52	SPEAKER	Welcome to the team, Krishna.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+53	53	SPEAKER	Have you already in the other internships were on Backend as well?	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+54	54	SPEAKER	No, actually.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+55	55	SPEAKER	But I have done projects, like, in space and other things, but it's my first time in Backend.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	
+56	56	SPEAKER	Awesome.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+57	57	SPEAKER	Great.	remove	0	0	intro,greet,house,fill	0	remove	fill	0	none	ok	
+58	58	SPEAKER	I don't know, Devu, if you want to introduce yourself again, just for this lot here.	remove	0	0	intro,greet,house,fill	0	remove	intro	0	none	ok	

@@ -4,7 +4,8 @@
    highlights reel and a grey strike for what was cut. Red means failure or
    delete only. The marks appear only where the product uses them
    (transcripts, timelines, status). Motion only where it explains something:
-   press feedback, menus, dialogs and toasts. */
+   press feedback, menus, dialogs and toasts, and on the public pages the
+   one-time entrances and the marking pass that motion.js runs. */
 
 /* ---------------------------------------------------------------- tokens */
 :root {
@@ -759,6 +760,32 @@ a.artifact:hover .name { text-decoration: underline; }
 .stat-cards .stat-card { background: none; border-width: 0 1px 0 0; border-radius: 0; box-shadow: none; }
 .stat-card b { display: block; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .stat-card span { font-size: var(--text-xs); color: var(--ink-3); }
+
+/* ---------------------------------------------------------------- page motion (motion.js)
+   The head script adds .hc-intro only when motion is allowed; motion.js shows
+   these elements on its first frame, or the head script does after 2s. */
+.hc-intro .hero-copy > *, .hc-intro .hero-shot, .hc-intro .page-hero .container > *,
+.hc-intro .error-page .container > *, .hc-intro .auth-card > *, .hc-intro .auth-aside > * { opacity: 0; }
+/* a headline's lines rise out of a mask; the mask leaves room for descenders */
+.split-line-mask { padding-bottom: 0.14em; margin-bottom: -0.14em; }
+/* the marking pass: the transcript arrives plain and the editor marks it line by line */
+.is-marking .line .t, .is-marking .line .who, .is-marking .line .note { transition: background-size 700ms var(--ease-out), color 300ms var(--ease-out), text-decoration-color 300ms var(--ease-out), opacity 300ms var(--ease-out), transform 300ms var(--ease-out); }
+.is-marking .line.is-kept .said .t { background-repeat: no-repeat; background-size: 100% 100%; -webkit-box-decoration-break: slice; box-decoration-break: slice; }
+.is-marking .line.is-kept:not(.is-marked) .said .t { background-size: 0% 100%; }
+.is-marking .line.is-cut:not(.is-marked) .said .t { color: var(--ink); text-decoration-color: transparent; }
+.is-marking .line.is-cut:not(.is-marked) .who { color: var(--ink-2); }
+.is-marking .line:not(.is-marked) .note { opacity: 0; transform: translateX(6px); }
+/* the timeline in 3D (cutline3d.js): the flat bars stay as the blueprint, the stage draws over them.
+   Rows get the 3D spacing whenever motion is on, so the swap to 3D never moves the page. */
+.hc-motion .cutline .reels { position: relative; gap: 26px; }
+.hc-motion .cutline .reel-row { min-height: 42px; }
+.cutline.is-3d .reel { visibility: hidden; }
+.cutline-stage { position: absolute; display: block; pointer-events: none; }
+/* Lenis smooth scrolling (its lenis.css) */
+html.lenis, html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis [data-lenis-prevent], .lenis [data-lenis-prevent-wheel], .lenis [data-lenis-prevent-touch] { overscroll-behavior: contain; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
 
 /* ---------------------------------------------------------------- press feedback
    Everything tappable answers on press, not on release. */

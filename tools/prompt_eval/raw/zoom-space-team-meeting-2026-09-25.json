@@ -1,0 +1,21 @@
+{
+ "uuid": "pu71qs3vSvuFgAt68QSWWA==",
+ "meeting_id": 81929595102,
+ "topic": "Space Team meeting",
+ "start_time": "2026-09-25T20:02:00Z",
+ "duration_min": 89,
+ "auto_delete_date": null,
+ "recording_type": "shared_screen_with_gallery_view",
+ "transcript": "TRANSCRIPT",
+ "segments_without_video": 0,
+ "parts": [
+  {
+   "recording_type": "shared_screen_with_gallery_view",
+   "recording_start": "2026-09-25T20:02:01Z",
+   "recording_end": "2026-09-25T21:31:03Z",
+   "file_size": 707301149
+  }
+ ],
+ "parts_with_transcript": 1,
+ "used_part": 0
+}

@@ -1,0 +1,63 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	0	Ashiana.Griffith	Hi, Julia.	remove	0	0	greet,house	0	remove	greet	0	none	ok	
+1	1	Julia Matveyev	Hello.	remove	0	0	greet,house	0	remove	greet	0	none	ok	
+2	2	Ashiana.Griffith	Hey, sorry for the late.	remove	0	0	greet,house	0	remove	greet	0	none	ok	
+3	3	Ashiana.Griffith	I just couldn't figure out how to like log in to that link.	remove	0	0	greet,house	0	remove	house	0	none	ok	
+4	4	Julia Matveyev	Oh, no worries.	remove	0	0	greet,house	0	remove	fill	0	none	code?	
+5	5	Ashiana.Griffith	It kept saying… it kept giving me, like, error, like, not now, like, the meeting's not now, or, like, not today.	remove	0	0	greet,house	0	remove	house	0	none	ok	
+6	6	Ashiana.Griffith	And then I just… then I saw it popped up, and then it said it starts in 51 minutes.	remove	0	0	greet,house	0	remove	house	0	none	ok	
+7	7	Julia Matveyev	Yeah, that's kind of what happened for me.	remove	0	0	greet,house	0	remove	house	0	none	ok	
+8	8	Julia Matveyev	I just was idling on it and then it just kind of appeared.	remove	0	0	greet,house	0	remove	house	0	none	ok	
+9	9	Julia Matveyev	Bye.	remove	0	0	greet,house	0	remove	greet	0	none	ok	
+10	10	Ashiana.Griffith	Hi.	remove	0	0	greet,house	0	remove	greet	0	none	ok	
+11	11	Ashiana.Griffith	I thought I was… I thought I was gonna be late, because, on my phone, they have a, like, My time in Texas, and then my computer, because I… My computer's in Eas	remove	0	0	tang,greet,house,fill	0	remove	house	0	none	ok	
+12	12	Ashiana.Griffith	like, 4:40.	remove	0	0	tang,greet,house,fill	0	remove	house	0	none	ok	
+13	13	Ashiana.Griffith	Sorry, at first I'm like, am I early for this meeting?	remove	0	0	tang,greet,house,fill	0	remove	house	0	none	ok	
+14	14	Ashiana.Griffith	Then I looked at the computer, I'm like, oh my god, oh my god.	remove	0	0	tang,greet,house,fill	0	remove	house	0	none	ok	
+15	15	Julia Matveyev	Yeah.	remove	0	0	tang,greet,house,fill	0	remove	fill	0	none	ok	
+16	16	Julia Matveyev	Well… It's… it's fine.	remove	0	0	tang,greet,house,fill	0	remove	fill	0	none	ok	
+17	17	Julia Matveyev	Muhammad isn't even here.	remove	0	0	tang,greet,house,fill	0	remove	house	0	none	ok	
+18	18	Julia Matveyev	I do have a question.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+19	19	Julia Matveyev	I, unfortunately.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+20	20	Julia Matveyev	Do you have to leave by 3?	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+21	21	Julia Matveyev	Like, this is a rarity.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+22	22	Julia Matveyev	That's fine.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+23	23	Ashiana.Griffith	Do you want to go, like, now?	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+24	24	Ashiana.Griffith	Like, I mean, we've… I don't… I don't mind, because I don't have much to talk about.	remove	0	0	house,greet,fill,rep	0	keep	-	2	none	JUNK_KEPT	
+25	25	Ashiana.Griffith	I know that we're supposed to meet later in the week for the rest of what we discussed, and I started on that, so I'm not going to go into detail.	keep	0	1		0	keep	-	3	decision	ok	
+26	26	Ashiana.Griffith	I think the meeting today was mostly for, like, the LLC in terms of the name before we can quite proceed.	keep	0	1		0	keep	-	3	decision	ok	
+27	27	Ashiana.Griffith	So, I mean, if you wanna, like, Leave now, we can both, like.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+28	28	Ashiana.Griffith	Leave now, and then… I'll text in the legal team.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+29	29	Ashiana.Griffith	If it's, like, are we gonna reschedule or not?	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+30	30	Ashiana.Griffith	And if not, I'll just, I'll pop back on.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+31	31	Ashiana.Griffith	If you want to do that.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+32	32	Julia Matveyev	I mean, we could just… I don't think, kind of, sharing too much information is going to be particularly useful, since we haven't really had that much time to wo	keep	0	1		0	keep	-	2	none	ok	
+33	33	Julia Matveyev	I mean, I've started some work on the, what, like, terms and conditions, haven't really… don't have much to say about that.	keep	0	1		0	keep	-	2	none	ok	
+34	34	Julia Matveyev	You mean the same exact spot I was with the LLC?	remove	0	0	house,greet,fill,rep	0	keep	-	1	none	JUNK_KEPT	
+35	35	Ashiana.Griffith	I mean, like, for me, there's nothing to share, because I know that we were gonna go over that, like.	remove	0	0	house,greet,fill,rep	0	keep	-	2	none	JUNK_KEPT	
+36	36	Ashiana.Griffith	During the week next week, and today was basically just for the LLC name.	keep	0	1		0	keep	-	3	decision	ok	
+37	37	Ashiana.Griffith	to quite proceed, so I… besides that, I don't have much to say either.	remove	0	0	house,greet,fill,rep	0	keep	-	2	none	JUNK_KEPT	
+38	38	Julia Matveyev	All right.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+39	39	Ashiana.Griffith	Alright.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+40	40	Ashiana.Griffith	Alright, Ben, I think we're good to go.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+41	41	Julia Matveyev	Probably, yeah.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+42	42	Ashiana.Griffith	If ever, if ever Mohammed says anything, then I'll, I'll just, I'll just join on or something.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+43	43	Julia Matveyev	I mean, I'll be online until roughly 3.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+44	44	Ashiana.Griffith	Yeah.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+45	45	Julia Matveyev	Because that's when I largely have to, like, start getting ready to get out of the house.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+46	46	Julia Matveyev	Yeah.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+47	47	Julia Matveyev	So, like.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+48	48	Julia Matveyev	If I'm necessary, like, if I'm needed.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+49	49	Julia Matveyev	Until then, I should be available, I should be online, so…	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+50	50	Ashiana.Griffith	Right.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+51	51	Ashiana.Griffith	I think… I don't think he's gonna, like… I'm not trying to say, like, annoying, sorry, but, like, I don't think he's gonna…	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+52	52	Julia Matveyev	Yeah, that's okay.	remove	0	0	house,greet,fill,rep	0	remove	fill	0	none	ok	
+53	53	Ashiana.Griffith	Alright, then.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+54	54	Ashiana.Griffith	Alright, yeah, so just let me know for next week when you would like to meet.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+55	55	Ashiana.Griffith	I'm not sure if it was best to meet with Mohammed first, but I'll message her, you can, like, text me or something.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+56	56	Julia Matveyev	Yeah, that sounds good, definitely.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+57	57	Ashiana.Griffith	All right, then.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+58	58	Ashiana.Griffith	All right, Julia.	remove	0	0	house,greet,fill,rep	0	remove	greet	0	none	ok	
+59	59	Julia Matveyev	All right, well, good meeting.	remove	0	0	house,greet,fill,rep	0	remove	greet	0	none	ok	
+60	60	Ashiana.Griffith	Have a great day, bye!	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	
+61	61	Julia Matveyev	Yeah, you too.	remove	0	0	house,greet,fill,rep	0	remove	house	0	none	ok	

@@ -56,6 +56,10 @@ class EmailError(RuntimeError):
     pass
 
 
+class EmailRejected(EmailError):
+    """A refusal that retrying can't fix: a wrong SMTP login, a bad API key."""
+
+
 def mask(address: str) -> str:
     local, _, domain = (address or "").partition("@")
     return f"{local[:1]}***@{domain}" if domain else "***"
@@ -117,8 +121,27 @@ class SmtpBackend:
                 server.starttls(context=context)
                 server.ehlo()
             if settings.smtp_user:
-                server.login(settings.smtp_user, settings.smtp_password)
+                _login(server, settings.smtp_user, settings.smtp_password)
             server.send_message(mime)
+
+
+def _login(server: smtplib.SMTP, user: str, password: str) -> None:
+    """Sign in, with AUTH LOGIN when the server offers it. Gmail answers a
+    wrong password on AUTH PLAIN (smtplib's first choice) by dropping the
+    connection, which reads like a network fault; on AUTH LOGIN it says
+    "Username and Password not accepted"."""
+    try:
+        if "LOGIN" in getattr(server, "esmtp_features", {}).get("auth", "").upper().split():
+            server.user, server.password = user, password
+            server.auth("LOGIN", server.auth_login, initial_response_ok=False)
+        else:
+            server.login(user, password)
+    except smtplib.SMTPAuthenticationError as exc:
+        reply = exc.smtp_error.decode(errors="replace") if isinstance(exc.smtp_error, bytes) else str(exc.smtp_error)
+        raise EmailRejected(
+            f"the mail server refused SMTP_USER/SMTP_PASSWORD ({exc.smtp_code} {' '.join(reply.split())[:140]}). "
+            "For Gmail, SMTP_PASSWORD must be an app password of SMTP_USER: "
+            "https://myaccount.google.com/apppasswords") from exc
 
 
 class ResendBackend:
@@ -134,6 +157,8 @@ class ResendBackend:
             payload["reply_to"] = settings.email_reply_to
         response = httpx.post(RESEND_URL, json=payload, timeout=settings.email_timeout_s,
                               headers={"Authorization": f"Bearer {settings.resend_api_key}"})
+        if response.status_code in (401, 403, 422):  # bad key, unverified sender: retrying won't help
+            raise EmailRejected(f"Resend answered {response.status_code}: {response.text[:200]}")
         if response.status_code >= 300:
             raise EmailError(f"Resend answered {response.status_code}: {response.text[:200]}")
 
@@ -162,25 +187,41 @@ def _pool() -> ThreadPoolExecutor:
         return _executor
 
 
-def _deliver(backend, message: OutgoingEmail, attempts: int) -> bool:
+def _attempt(backend, message: OutgoingEmail, attempts: int) -> Exception | None:
+    """Send with up to `attempts` tries; None when it went out, else the last
+    error (logged). A refusal (EmailRejected) is not tried again."""
     kind = message.tags.get("kind", "email")
+    error: Exception | None = None
     for attempt in range(1, attempts + 1):
         try:
             backend.send(message)
+        except EmailRejected as exc:
+            logger.error("%s to %s not sent: %s", kind, mask(message.to), exc)
+            return exc
         except Exception as exc:  # noqa: BLE001 — logged; mail must never break a request or a job
             logger.warning("%s to %s failed (attempt %d/%d): %s", kind, mask(message.to), attempt, attempts, exc)
+            error = exc
             if attempt < attempts:
                 time.sleep(RETRY_DELAYS_S[min(attempt - 1, len(RETRY_DELAYS_S) - 1)])
             continue
         logger.info("%s sent to %s", kind, mask(message.to))
-        return True
-    return False
+        return None
+    return error
+
+
+def _deliver(backend, message: OutgoingEmail, attempts: int) -> bool:
+    return _attempt(backend, message, attempts) is None
+
+
+def _clean(message: OutgoingEmail) -> OutgoingEmail:
+    message.subject = " ".join(message.subject.split())[:200]  # no header injection, no runaway subjects
+    return message
 
 
 def send(message: OutgoingEmail) -> None:
     """Queue a message (or deliver it now with the console/memory backends).
     Never raises: a mail problem must not fail a sign-up or a job."""
-    message.subject = " ".join(message.subject.split())[:200]  # no header injection, no runaway subjects
+    _clean(message)
     try:
         backend = get_backend()
     except EmailError as exc:
@@ -190,6 +231,24 @@ def send(message: OutgoingEmail) -> None:
         _deliver(backend, message, attempts=1)
     else:
         _pool().submit(_deliver, backend, message, 1 + len(RETRY_DELAYS_S))
+
+
+def send_now(message: OutgoingEmail) -> str | None:
+    """Deliver once, right away, for someone waiting on the answer (the
+    "resend the email" button). None when it went out; otherwise why not, in
+    a sentence for that person (the log line has the details). Never raises."""
+    _clean(message)
+    try:
+        backend = get_backend()
+    except EmailError as exc:
+        logger.error("email not sent: %s", exc)
+        return "this site's email isn't set up correctly"
+    error = _attempt(backend, message, attempts=1)
+    if error is None:
+        return None
+    if isinstance(error, EmailRejected):
+        return "the mail server refused this site's sign-in, so the site's email settings need fixing"
+    return "the mail server didn't answer. Try again in a minute"
 
 
 # ------------------------------------------------------------------ templates
@@ -224,6 +283,16 @@ def send_template(to: str, template: str, subject: str, **context) -> None:
         logger.exception("could not render email template %s", template)
         return
     send(OutgoingEmail(to=to, subject=subject, text=text, html=html, tags={"kind": template}))
+
+
+def send_template_now(to: str, template: str, subject: str, **context) -> str | None:
+    """send_template, delivered right away; see send_now()."""
+    try:
+        text, html = render(template, **context)
+    except Exception:
+        logger.exception("could not render email template %s", template)
+        return "this site's email isn't set up correctly"
+    return send_now(OutgoingEmail(to=to, subject=subject, text=text, html=html, tags={"kind": template}))
 
 
 # ------------------------------------------------------------------ tests / CLI

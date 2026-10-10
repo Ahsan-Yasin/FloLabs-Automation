@@ -1,0 +1,21 @@
+{
+ "uuid": "xtuOPFsVTGWj5PERmQCo2g==",
+ "meeting_id": 89716953476,
+ "topic": "Ethics & Legal Team meeting",
+ "start_time": "2026-10-01T21:36:37Z",
+ "duration_min": 6,
+ "auto_delete_date": null,
+ "recording_type": "shared_screen_with_speaker_view",
+ "transcript": "TRANSCRIPT",
+ "segments_without_video": 0,
+ "parts": [
+  {
+   "recording_type": "shared_screen_with_speaker_view",
+   "recording_start": "2026-10-01T21:36:37Z",
+   "recording_end": "2026-10-01T21:43:20Z",
+   "file_size": 5344205
+  }
+ ],
+ "parts_with_transcript": 1,
+ "used_part": 0
+}

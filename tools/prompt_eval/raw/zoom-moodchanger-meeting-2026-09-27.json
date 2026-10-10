@@ -1,0 +1,21 @@
+{
+ "uuid": "QqMsJ6/lR2iCmMDiJPN8mQ==",
+ "meeting_id": 81450151522,
+ "topic": "Moodchanger Meeting",
+ "start_time": "2026-09-27T18:30:10Z",
+ "duration_min": 84,
+ "auto_delete_date": null,
+ "recording_type": "shared_screen_with_gallery_view",
+ "transcript": "TRANSCRIPT",
+ "segments_without_video": 0,
+ "parts": [
+  {
+   "recording_type": "shared_screen_with_gallery_view",
+   "recording_start": "2026-09-27T18:30:11Z",
+   "recording_end": "2026-09-27T19:54:23Z",
+   "file_size": 384577893
+  }
+ ],
+ "parts_with_transcript": 1,
+ "used_part": 0
+}

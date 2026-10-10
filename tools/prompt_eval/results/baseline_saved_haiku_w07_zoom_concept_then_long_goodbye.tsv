@@ -1,0 +1,60 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	1630	Buddy System	some courses could expand to, like, an entire university degree on philosophy of science.	keep	0	1		2	keep	-	6	concept	ok	k 6 none
+1	1631	Buddy System	But what I'm trying to say is that It's… it's, like… Like,	keep	0	0		2	keep	-	6	concept	ok	k 6 none
+2	1632	Buddy System	only a few principles could help a lot.	keep	0	0		2	keep	-	6	concept	ok	k 6 none
+3	1633	Buddy System	Could help a lot.	keep	0	1		0	keep	-	6	concept	ok	k 6 none
+4	1634	Buddy System	Like, knowing the difference between a primary resource, between a secondary resource, knowing the idea of conflicts of interest.	keep	1	0		3	keep	-	7	concept	ok	k 7 none
+5	1635	Buddy System	Knowing the idea of somebody maybe… somebody doing research may be incentivized to be biased, to… like, knowing these principles isn't gonna… isn't really that…	keep	1	0		3	keep	-	7	concept	ok	k 7 none
+6	1636	Buddy System	problematic.	keep	0	1		0	keep	-	6	concept	ok	k 6 none
+7	1637	Machi 2.0	Just a second.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+8	1638	Buddy System	Yeah, no, it's, it's, it's easy.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+9	1639	Buddy System	Like, So, it's necessary, and the problem is, as I told you, John is is more Like, trying to be… more	keep	0	1		1	keep	-	5	decision	ok	k 5 none
+10	1640	Buddy System	AI dependent, more away from people doing the research.	keep	0	1		1	keep	-	5	decision	ok	k 5 none
+11	1641	Buddy System	And now AI could actually, like, it really comes down, like, you could know the personality of the person you're dealing with.	keep	0	0		2	keep	-	5	concept	ok	k 5 none
+12	1642	Buddy System	Through dealing with their.	keep	0	0		2	keep	-	5	concept	ok	k 5 none
+13	1643	Buddy System	The AI account.	keep	0	0		2	keep	-	5	concept	ok	k 5 none
+14	1644	Buddy System	Because, seriously, some, like… Like, like, what I do with my AI… is in the personalization settings.	keep	1	0		3	keep	-	5	concept	ok	k 5 none
+15	1645	Buddy System	I just like drop a lot of instructions like be rigorous, be academic, use principles of philosophy.	keep	1	0		3	keep	-	6	concept	ok	k 6 none
+16	1646	Machi 2.0	Yeah.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+17	1647	Buddy System	And if you do that, Then you've just optimized the AI to be more and more and more.	keep	1	0		3	keep	-	6	concept	ok	k 6 none
+18	1648	Buddy System	Robust, yeah, robust scientific.	keep	1	0		3	keep	-	6	concept	ok	k 6 none
+19	1649	Buddy System	And it's judgment.	keep	0	1		2	keep	-	5	concept	ok	k 5 none
+20	1650	Buddy System	Like, so… so that's the point.	keep	0	1		0	keep	-	5	concept	ok	k 5 none
+21	1651	Buddy System	we need to address.	keep	0	1		0	keep	-	5	concept	ok	k 5 none
+22	1652	Buddy System	I know I said… I'm sorry, Match, if I'm wasting your time or anything, but I…	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+23	1653	Machi 2.0	No, but it's okay.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+24	1654	Machi 2.0	It's okay.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+25	1655	Machi 2.0	You really expressed yourself and we've covered what we need to cover.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+26	1656	Machi 2.0	So it's okay.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+27	1657	Buddy System	That's.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+28	1658	Buddy System	Okay.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+29	1659	Machi 2.0	I appreciate you for having the meeting, I'll kind of look over what you've discussed a little bit later, because I have The project's task to start.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+30	1660	Machi 2.0	But, let's see how this week goes.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+31	1661	Machi 2.0	We'll probably see next in the projects management meeting.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+32	1662	Machi 2.0	And then… and tomorrow, tomorrow's Sunday as well.	remove	0	0	fill,dead,xtalk,house	0	remove	dead	0	none	ok	r 0 dead_air
+33	1663	Buddy System	but.	remove	0	0	fill,dead,xtalk,house	0	remove	xtalk	0	none	ok	r 0 crosstalk
+34	1664	Machi 2.0	We are on.	remove	0	0	fill,dead,xtalk,house	0	remove	xtalk	0	none	ok	r 0 crosstalk
+35	1665	Buddy System	I don't think I'll be able to attend the project management meeting.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+36	1666	Buddy System	The next one, because…	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+37	1667	Machi 2.0	Go to the next one.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+38	1668	Buddy System	Like, to be honest, like, there's a lot going on.	remove	0	0	tang,fill,house	0	remove	tang	0	none	ok	r 0 tangent
+39	1669	Buddy System	So, so I'm not… I'm most probably not gonna be able to attend that one.	remove	0	0	tang,fill,house	0	remove	tang	0	none	ok	r 0 tangent
+40	1670	Machi 2.0	Okay, okay, that's fine, that's fine.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+41	1671	Machi 2.0	That's fine.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+42	1672	Machi 2.0	I don't know.	remove	0	0	fill,dead,xtalk,house	0	remove	dead	0	none	ok	r 0 dead_air
+43	1673	Machi 2.0	Enjoy the rest of your day, then.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+44	1674	Machi 2.0	We'll see.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+45	1675	Buddy System	Thank you, Machi, and sorry if I wasted your time.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+46	1676	Machi 2.0	No, I wasn't approached.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+47	1677	Buddy System	But I think it's, it was worth it, like… I.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+48	1678	Machi 2.0	Certainly a lot of things off your chest, clearly.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+49	1679	Buddy System	Yeah, yeah, because… Because I know, like, to be honest, the reason I wanted to discuss this with you specifically is because on numerous occasions I saw you mo	remove	0	0	tang,fill,house	0	remove	tang	0	none	ok	r 0 tangent
+50	1680	Buddy System	with what I've… I'm discussing, like, even you yourself, you said, like, you've disputed the idea of the body system before, so… so… I just wanted to… Like.	remove	0	0	tang,fill,house	0	remove	fill	0	none	ok	r 0 filler
+51	1681	Buddy System	Have you on the same page as I am, like…	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+52	1682	Machi 2.0	I understand.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+53	1683	Machi 2.0	I understand.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+54	1684	Machi 2.0	Alright.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	r 0 housekeeping
+55	1685	Buddy System	Okay.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+56	1686	Machi 2.0	Take care.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+57	1687	Buddy System	Goodbye.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+58	1688	Buddy System	Goodbye.	remove	0	0	greet,fill	0	remove	greet	0	none	ok	r 0 greeting_small_talk

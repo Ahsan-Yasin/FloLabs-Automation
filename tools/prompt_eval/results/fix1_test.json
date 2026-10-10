@@ -1,0 +1,283 @@
+{
+ "tag": "fix1_test",
+ "split": "test",
+ "rerank": true,
+ "fake": false,
+ "model": "claude-sonnet-5-5",
+ "when": "2026-10-06T00:17:23",
+ "status": "done",
+ "score": 92.64,
+ "metrics": {
+  "keep_safety": 1.0,
+  "removal_f1": 0.9257,
+  "junk_clean": 0.9186,
+  "code_agree": 0.9518,
+  "hl_concord": 0.8852,
+  "top_f1": 0.7273,
+  "short_f1": 1.0
+ },
+ "removal_precision": 0.9759,
+ "removal_recall": 0.8804,
+ "must_keep_removed": 0,
+ "must_keep_total": 32,
+ "must_keep_removed_list": [],
+ "junk_kept": 7,
+ "junk_total": 86,
+ "junk_kept_list": [
+  "w07_zoom_concept_then_long_goodbye[8] Yeah, no, it's, it's, it's easy.",
+  "w07_zoom_concept_then_long_goodbye[49] Yeah, yeah, because… Because I know, like, to be honest, the reason I wanted to discuss th",
+  "w07_zoom_concept_then_long_goodbye[50] with what I've… I'm discussing, like, even you yourself, you said, like, you've disputed t",
+  "w07_zoom_concept_then_long_goodbye[51] Have you on the same page as I am, like…",
+  "w09_zoom_question_unitree_leads[32] And I hope to start working on this.",
+  "w09_zoom_question_unitree_leads[33] very, closely.",
+  "w09_zoom_question_unitree_leads[42] Let's say, maybe that might be interesting."
+ ],
+ "top_moments": {
+  "gold": 5,
+  "found": 4,
+  "strong_predicted": 3,
+  "strong_on_gold": 2
+ },
+ "format_problems": 0,
+ "weights": {
+  "keep_safety": 0.3,
+  "removal_f1": 0.25,
+  "junk_clean": 0.1,
+  "code_agree": 0.05,
+  "hl_concord": 0.15,
+  "top_f1": 0.1,
+  "short_f1": 0.05
+ },
+ "format_problem_details": [],
+ "calls": 7,
+ "usage": {
+  "calls": 7,
+  "prompt_tokens": 19038,
+  "output_tokens": 2113,
+  "cache_read_tokens": 8047,
+  "cache_write_tokens": 2994,
+  "rate_limit_wait_s": 0.0,
+  "retries": 0
+ },
+ "cost_usd": 0.0462,
+ "estimate_usd": 0.0876,
+ "ledger_spent_usd": 0.5788,
+ "windows": {
+  "w05_yt_roundrobin_mic_schedule": {
+   "sentences": 55,
+   "tp": 32.5,
+   "fp": 0.5,
+   "fn": 4.0,
+   "must_keep_total": 7,
+   "must_keep_removed": [],
+   "junk_total": 31,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 34,
+   "code_n": 34,
+   "hl_pairs": 336.0,
+   "hl_concordant": 281.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 1,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 5,
+   "kept_pred": 20,
+   "moments": [
+    {
+     "first": 0,
+     "last": 4,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Humanoid team roll call"
+    },
+    {
+     "first": 10,
+     "last": 13,
+     "score": 7.5,
+     "raw": 3.0,
+     "short": false,
+     "title": "Router and camera arrive for lab work"
+    },
+    {
+     "first": 21,
+     "last": 36,
+     "score": 10.0,
+     "raw": 5.0,
+     "short": false,
+     "title": "Team lead plans recap meeting and schedule shift"
+    },
+    {
+     "first": 47,
+     "last": 50,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Saturday meetings continue for now"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 5626,
+    "output_tokens": 700,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 2994,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w06_zoom_nearly_empty": {
+   "sentences": 1,
+   "tp": 1.0,
+   "fp": 0.0,
+   "fn": 0.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 1,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 1,
+   "code_n": 1,
+   "hl_pairs": 0.0,
+   "hl_concordant": 0.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 0,
+   "kept_pred": 0,
+   "moments": [],
+   "usage": {
+    "calls": 1,
+    "prompt_tokens": 2090,
+    "output_tokens": 11,
+    "cache_read_tokens": 2059,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w07_zoom_concept_then_long_goodbye": {
+   "sentences": 59,
+   "tp": 36.0,
+   "fp": 0.0,
+   "fn": 4.0,
+   "must_keep_total": 6,
+   "must_keep_removed": [],
+   "junk_total": 40,
+   "junk_kept": [
+    "w07_zoom_concept_then_long_goodbye[8] Yeah, no, it's, it's, it's easy.",
+    "w07_zoom_concept_then_long_goodbye[49] Yeah, yeah, because… Because I know, like, to be honest, the reason I wanted to discuss th",
+    "w07_zoom_concept_then_long_goodbye[50] with what I've… I'm discussing, like, even you yourself, you said, like, you've disputed t",
+    "w07_zoom_concept_then_long_goodbye[51] Have you on the same page as I am, like…"
+   ],
+   "wrong_removed": [],
+   "code_ok": 33,
+   "code_n": 36,
+   "hl_pairs": 728.0,
+   "hl_concordant": 711.0,
+   "top_gold": 2,
+   "top_hit": 2,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 6,
+   "kept_pred": 23,
+   "moments": [
+    {
+     "first": 3,
+     "last": 21,
+     "score": 10.0,
+     "raw": 6.0,
+     "short": true,
+     "title": "Teach a few principles, then tune your AI for rigor"
+    },
+    {
+     "first": 49,
+     "last": 52,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Why he brought this topic to this person"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 5237,
+    "output_tokens": 708,
+    "cache_read_tokens": 2994,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w09_zoom_question_unitree_leads": {
+   "sentences": 52,
+   "tp": 11.5,
+   "fp": 1.5,
+   "fn": 3.0,
+   "must_keep_total": 19,
+   "must_keep_removed": [],
+   "junk_total": 14,
+   "junk_kept": [
+    "w09_zoom_question_unitree_leads[32] And I hope to start working on this.",
+    "w09_zoom_question_unitree_leads[33] very, closely.",
+    "w09_zoom_question_unitree_leads[42] Let's say, maybe that might be interesting."
+   ],
+   "wrong_removed": [],
+   "code_ok": 11,
+   "code_n": 12,
+   "hl_pairs": 927.0,
+   "hl_concordant": 770.5,
+   "top_gold": 3,
+   "top_hit": 2,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 7,
+   "kept_pred": 37,
+   "moments": [
+    {
+     "first": 2,
+     "last": 27,
+     "score": 10.0,
+     "raw": 6.0,
+     "short": true,
+     "title": "Custom dances for humanoid robots via Unitree EDU"
+    },
+    {
+     "first": 31,
+     "last": 51,
+     "score": 5.0,
+     "raw": 4.0,
+     "short": false,
+     "title": "Web pages first, then leads, then specialist team"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 6085,
+    "output_tokens": 694,
+    "cache_read_tokens": 2994,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  }
+ }
+}

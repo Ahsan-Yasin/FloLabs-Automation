@@ -1,0 +1,1145 @@
+{
+ "id": "w09_zoom_question_unitree_leads",
+ "source": "raw:zoom-humanoid-team-meeting-2026-10-02",
+ "source_range": [
+  450,
+  501
+ ],
+ "split": "test",
+ "minutes": 4.89,
+ "hard": "A newcomer's real question (are dancing robots pre-programmed or trained?) next to one-word Zoom lines (\"The.\", \"you.\", \"open.\"); a long answer with real insight (OTA updates, EDU version is programmable and twice the price), a playful idea (regional dances), thanks/welcome talk, then a go-to-market decision with reasons.",
+ "sentences": [
+  {
+   "i": 0,
+   "src": 450,
+   "start": 3012.33,
+   "end": 3013.78,
+   "speaker": "John Hazlewood",
+   "text": "You were gonna say, because what?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 1,
+   "src": 451,
+   "start": 3014.93,
+   "end": 3016.18,
+   "speaker": "Hasnae",
+   "text": "The.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 2,
+   "src": 452,
+   "start": 3016.41,
+   "end": 3022.109,
+   "speaker": "Hasnae",
+   "text": "I saw a video of robots dancing.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 3,
+   "src": 453,
+   "start": 3022.38,
+   "end": 3026.04,
+   "speaker": "Hasnae",
+   "text": "As part of the entertainment industry.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 4,
+   "src": 454,
+   "start": 3026.43,
+   "end": 3041.5726,
+   "speaker": "Hasnae",
+   "text": "So, I don't know if the robot dogs or the robots in general, humanoid robots, are originally programmed to do so, or if it's easy or doable to… To",
+   "overlap_candidate": false
+  },
+  {
+   "i": 5,
+   "src": 455,
+   "start": 3041.5726,
+   "end": 3049.029,
+   "speaker": "Hasnae",
+   "text": "in train them to do some movements personalized one because I believe if we.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 6,
+   "src": 456,
+   "start": 3049.17,
+   "end": 3055.139,
+   "speaker": "Hasnae",
+   "text": "Succeed to do, to program the robots and make them do some.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 7,
+   "src": 457,
+   "start": 3055.36,
+   "end": 3063.33,
+   "speaker": "Hasnae",
+   "text": "Something different from others, it's maybe a good factor for them to be still.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 8,
+   "src": 458,
+   "start": 3064.1,
+   "end": 3066.69,
+   "speaker": "Hasnae",
+   "text": "Rapidly, more than being rapid.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 9,
+   "src": 459,
+   "start": 3067.5,
+   "end": 3068.31,
+   "speaker": "Hasnae",
+   "text": "I don't know.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 10,
+   "src": 460,
+   "start": 3068.31,
+   "end": 3077.98,
+   "speaker": "John Hazlewood",
+   "text": "So Unitree right now on their humanoids and on their robodogs, they already have, you know, pre-programmed.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 11,
+   "src": 461,
+   "start": 3077.98,
+   "end": 3083.239782608696,
+   "speaker": "John Hazlewood",
+   "text": "moves, and dances, and stand up on two legs, and a bunch of different things.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 12,
+   "src": 462,
+   "start": 3083.239782608696,
+   "end": 3093.759347826087,
+   "speaker": "John Hazlewood",
+   "text": "Even flipping, they have on their new version, they can jump up and flip, although they… sometimes they have accidents, and the robot, you know, ends up breaking and stuff.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 13,
+   "src": 463,
+   "start": 3093.759347826087,
+   "end": 3095.2408333333333,
+   "speaker": "John Hazlewood",
+   "text": "But, But…",
+   "overlap_candidate": false
+  },
+  {
+   "i": 14,
+   "src": 464,
+   "start": 3095.2408333333333,
+   "end": 3099.32,
+   "speaker": "John Hazlewood",
+   "text": "and then when they have new releases, they have over-the-air updates.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 15,
+   "src": 465,
+   "start": 3099.32,
+   "end": 3102.739785714286,
+   "speaker": "John Hazlewood",
+   "text": "For new functionality, new movements, and stuff like that.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 16,
+   "src": 466,
+   "start": 3102.739785714286,
+   "end": 3111.099261904762,
+   "speaker": "John Hazlewood",
+   "text": "They were even talking about having, like, an open source where people develop, because on their EDU version, they have two versions.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 17,
+   "src": 467,
+   "start": 3111.099261904762,
+   "end": 3115.279,
+   "speaker": "John Hazlewood",
+   "text": "One is an EDU version, and one is the non-EDU version.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 18,
+   "src": 468,
+   "start": 3115.47,
+   "end": 3116.18,
+   "speaker": "Hasnae",
+   "text": "you.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 19,
+   "src": 469,
+   "start": 3116.18,
+   "end": 3122.521818181818,
+   "speaker": "John Hazlewood",
+   "text": "EDU version is, like, twice as expensive, where you can actually program on the EDU version.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 20,
+   "src": 470,
+   "start": 3122.521818181818,
+   "end": 3131.6694444444447,
+   "speaker": "John Hazlewood",
+   "text": "So, you know, I'm not sure… I mean, if we have a customer that wants to have Let's say, because that will… You",
+   "overlap_candidate": false
+  },
+  {
+   "i": 21,
+   "src": 471,
+   "start": 3131.6694444444447,
+   "end": 3144.2748387096776,
+   "speaker": "John Hazlewood",
+   "text": "know, if you're in Greece, you know, if you're in Texas, like, have a humanoid that does the Cotton Eye Joe or the Texas Two-Step, you know, like, for weddings and stuff like that, they… you",
+   "overlap_candidate": false
+  },
+  {
+   "i": 22,
+   "src": 472,
+   "start": 3144.2748387096776,
+   "end": 3153.2709677419357,
+   "speaker": "John Hazlewood",
+   "text": "know, it would be very entertaining, and in Greece, they have Greek dances, and, you know, Morocco, they have the Moroccan dances, and etc.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 23,
+   "src": 473,
+   "start": 3153.2709677419357,
+   "end": 3159.34,
+   "speaker": "John Hazlewood",
+   "text": "So, you could program for specific Things like that, that would be interesting to some customers.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 24,
+   "src": 474,
+   "start": 3159.65,
+   "end": 3160.0,
+   "speaker": "Hasnae",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 25,
+   "src": 475,
+   "start": 3160.72,
+   "end": 3163.412682926829,
+   "speaker": "John Hazlewood",
+   "text": "Yeah, and so we will have that capability.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 26,
+   "src": 476,
+   "start": 3163.412682926829,
+   "end": 3174.938708333333,
+   "speaker": "John Hazlewood",
+   "text": "If the customer wants us to do that, you know, we'd have to buy the EDU version, we'd have to… we could program it for them, and then we could sell it with whatever",
+   "overlap_candidate": false
+  },
+  {
+   "i": 27,
+   "src": 477,
+   "start": 3174.938708333333,
+   "end": 3184.569,
+   "speaker": "John Hazlewood",
+   "text": "you know, dances or movements that that they want, that are not already included in in the version of you that unitary provides.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 28,
+   "src": 478,
+   "start": 3186.66,
+   "end": 3188.4864,
+   "speaker": "Hasnae",
+   "text": "Okay, that sounds interesting.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 29,
+   "src": 479,
+   "start": 3188.4864,
+   "end": 3193.509,
+   "speaker": "Hasnae",
+   "text": "And maybe we could go further with more technical details later.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 30,
+   "src": 480,
+   "start": 3194.12,
+   "end": 3196.5879999999997,
+   "speaker": "Hasnae",
+   "text": "But thanks for all the explanations.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 31,
+   "src": 481,
+   "start": 3196.5879999999997,
+   "end": 3200.29,
+   "speaker": "Hasnae",
+   "text": "It's more clear right now, the vision of yours.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 32,
+   "src": 482,
+   "start": 3200.68,
+   "end": 3204.349,
+   "speaker": "Hasnae",
+   "text": "And I hope to start working on this.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 33,
+   "src": 483,
+   "start": 3204.8,
+   "end": 3208.506,
+   "speaker": "Hasnae",
+   "text": "very, closely.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 34,
+   "src": 484,
+   "start": 3208.506,
+   "end": 3210.359,
+   "speaker": "Hasnae",
+   "text": "So…",
+   "overlap_candidate": false
+  },
+  {
+   "i": 35,
+   "src": 485,
+   "start": 3210.36,
+   "end": 3211.6816363636362,
+   "speaker": "John Hazlewood",
+   "text": "Yeah, well, feel welcome.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 36,
+   "src": 486,
+   "start": 3211.6816363636362,
+   "end": 3217.629,
+   "speaker": "John Hazlewood",
+   "text": "Maybe you can be on the team with Spencer to… I don't know who's working on the website.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 37,
+   "src": 487,
+   "start": 3217.63,
+   "end": 3218.25,
+   "speaker": "Hasnae",
+   "text": "Sorry.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 38,
+   "src": 488,
+   "start": 3220.05,
+   "end": 3221.94475,
+   "speaker": "John Hazlewood",
+   "text": "you know, for, like, the robo-dogs.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 39,
+   "src": 489,
+   "start": 3221.94475,
+   "end": 3231.026552631579,
+   "speaker": "John Hazlewood",
+   "text": "I mean, right now, we wanted to just… the robo-dogs, but maybe we could also take the Humanoid And… I",
+   "overlap_candidate": false
+  },
+  {
+   "i": 40,
+   "src": 490,
+   "start": 3231.026552631579,
+   "end": 3243.479,
+   "speaker": "John Hazlewood",
+   "text": "don't know, like, maybe on the Humanoid, you could put a 3D printable and make it look like Incredible Hulk, you know, or some, you know, like a fighter or something, like Hercules with a big chest.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 41,
+   "src": 491,
+   "start": 3243.48,
+   "end": 3244.02,
+   "speaker": "Hasnae",
+   "text": "open.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 42,
+   "src": 492,
+   "start": 3244.02,
+   "end": 3247.69,
+   "speaker": "John Hazlewood",
+   "text": "Let's say, maybe that might be interesting.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 43,
+   "src": 493,
+   "start": 3248.96,
+   "end": 3262.2635714285716,
+   "speaker": "John Hazlewood",
+   "text": "You know, but right now, the thing is, we need to have the web pages And say, this is what we can provide, you know, and so when we're marketing it, we can say, oh, okay, wow, yeah, you can",
+   "overlap_candidate": false
+  },
+  {
+   "i": 44,
+   "src": 494,
+   "start": 3262.2635714285716,
+   "end": 3262.792657142857,
+   "speaker": "John Hazlewood",
+   "text": "do this?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 45,
+   "src": 495,
+   "start": 3262.792657142857,
+   "end": 3267.19,
+   "speaker": "John Hazlewood",
+   "text": "Okay, yeah, we're interested in this, and then… We need to start generating leads.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 46,
+   "src": 496,
+   "start": 3267.32,
+   "end": 3279.04,
+   "speaker": "John Hazlewood",
+   "text": "Of course, when we have a lead, you and others here will be in the meeting with… if it's a professor, if it's a coach, you know, we'll have a team of our specialists.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 47,
+   "src": 497,
+   "start": 3279.04,
+   "end": 3284.9998529411764,
+   "speaker": "John Hazlewood",
+   "text": "We're talking to the prospect and seeing what their interests are, what we can provide.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 48,
+   "src": 498,
+   "start": 3284.9998529411764,
+   "end": 3292.549,
+   "speaker": "John Hazlewood",
+   "text": "Hopefully, with all the talent that we have, we'll come across very credible, that we know what we're doing.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 49,
+   "src": 499,
+   "start": 3292.61,
+   "end": 3303.055581395349,
+   "speaker": "John Hazlewood",
+   "text": "We have to do the first one is going to be the most difficult, and the second one, it's always the most difficult, but once we do one or two, we know what we're doing, and we have some customers",
+   "overlap_candidate": false
+  },
+  {
+   "i": 50,
+   "src": 500,
+   "start": 3303.055581395349,
+   "end": 3303.839,
+   "speaker": "John Hazlewood",
+   "text": "under our belt.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 51,
+   "src": 501,
+   "start": 3303.93,
+   "end": 3305.639,
+   "speaker": "John Hazlewood",
+   "text": "I think that could be huge.",
+   "overlap_candidate": false
+  }
+ ],
+ "gold": [
+  {
+   "i": 0,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 1,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 2,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 3,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 4,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 5,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 6,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 7,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 8,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 9,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 10,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 11,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 12,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 13,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 14,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 15,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 16,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 17,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 18,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 19,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 20,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 21,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 22,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 23,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "ins",
+    "feat",
+    "idea"
+   ]
+  },
+  {
+   "i": 24,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 25,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 26,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 27,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 28,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 29,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 30,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 31,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 32,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 33,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 34,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 35,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 36,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 37,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 38,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "fun",
+    "idea"
+   ]
+  },
+  {
+   "i": 39,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "fun",
+    "idea"
+   ]
+  },
+  {
+   "i": 40,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "fun",
+    "idea"
+   ]
+  },
+  {
+   "i": 41,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 42,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 43,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 44,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 45,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 46,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 47,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 48,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 49,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "dec",
+    "ins"
+   ]
+  },
+  {
+   "i": 50,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 51,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  }
+ ],
+ "top_moments": [
+  [
+   10,
+   19
+  ],
+  [
+   20,
+   27
+  ],
+  [
+   43,
+   51
+  ]
+ ],
+ "short_worthy": [
+  [
+   20,
+   23
+  ]
+ ]
+}

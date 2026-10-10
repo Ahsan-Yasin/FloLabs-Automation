@@ -1,0 +1,1682 @@
+{
+ "id": "w02_zoom_silent_start_onboarding",
+ "source": "job:9ff29089",
+ "source_range": [
+  0,
+  57
+ ],
+ "split": "train",
+ "minutes": 3.54,
+ "hard": "Recording is silent for the first 3.5 minutes, then a 1:1 starts with apologies, an expired link and screen-share checks; the real agenda (fixing the Toggl timesheet, a status update on master classes, a 30-hour estimate) is plain admin talk that must still be kept, with 4-9 s silences and one-word lines.",
+ "sentences": [
+  {
+   "i": 0,
+   "src": 0,
+   "start": 213.6,
+   "end": 214.3,
+   "speaker": "kevani minott",
+   "text": "Hello?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 1,
+   "src": 1,
+   "start": 217.58,
+   "end": 219.51,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Look, Vani, how are you doing, my friend?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 2,
+   "src": 2,
+   "start": 220.26,
+   "end": 222.629,
+   "speaker": "kevani minott",
+   "text": "I'm okay, Mohammed.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 3,
+   "src": 3,
+   "start": 223.18,
+   "end": 224.02,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Yes.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 4,
+   "src": 4,
+   "start": 224.32,
+   "end": 235.45384210526316,
+   "speaker": "mohamed abdelmohsen",
+   "text": "I'm so sorry, I just don't… I saw your message late, and I was not actually here, and after I attended the IT meeting, so… Anyway, I'm so sorry for my latency.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 5,
+   "src": 5,
+   "start": 235.45384210526316,
+   "end": 239.129,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Would you please share your screen to let me see your table?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 6,
+   "src": 6,
+   "start": 240.41,
+   "end": 244.1,
+   "speaker": "kevani minott",
+   "text": "Wait, the link that you sent me, it was expired, sir.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 7,
+   "src": 7,
+   "start": 245.4,
+   "end": 246.37,
+   "speaker": "mohamed abdelmohsen",
+   "text": "for what?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 8,
+   "src": 8,
+   "start": 246.48,
+   "end": 247.53,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Which link?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 9,
+   "src": 9,
+   "start": 248.5,
+   "end": 251.23,
+   "speaker": "kevani minott",
+   "text": "For the toggle that you sent to my email.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 10,
+   "src": 10,
+   "start": 252.1,
+   "end": 253.409,
+   "speaker": "kevani minott",
+   "text": "I got a link to my email.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 11,
+   "src": 11,
+   "start": 253.41,
+   "end": 255.67181818181817,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Don't bother don't bother yourself with the link.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 12,
+   "src": 12,
+   "start": 255.67181818181817,
+   "end": 257.65090909090907,
+   "speaker": "mohamed abdelmohsen",
+   "text": "I just told you to log in.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 13,
+   "src": 13,
+   "start": 257.65090909090907,
+   "end": 259.63,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Log in with the same credential again.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 14,
+   "src": 14,
+   "start": 260.98,
+   "end": 261.93,
+   "speaker": "kevani minott",
+   "text": "Oh.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 15,
+   "src": 15,
+   "start": 264.92,
+   "end": 268.689,
+   "speaker": "kevani minott",
+   "text": "or Hula I'm gonna try to log in right now.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 16,
+   "src": 16,
+   "start": 268.88,
+   "end": 270.58,
+   "speaker": "mohamed abdelmohsen",
+   "text": "That's okay, don't worry.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 17,
+   "src": 17,
+   "start": 270.8,
+   "end": 275.82666666666665,
+   "speaker": "mohamed abdelmohsen",
+   "text": "We're gonna try to make even the time that you have before to be fixed there.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 18,
+   "src": 18,
+   "start": 275.82666666666665,
+   "end": 276.1408333333333,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Sorry.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 19,
+   "src": 19,
+   "start": 276.1408333333333,
+   "end": 278.34,
+   "speaker": "mohamed abdelmohsen",
+   "text": "We're gonna fix your struggle situation today.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 20,
+   "src": 20,
+   "start": 278.77,
+   "end": 282.409,
+   "speaker": "mohamed abdelmohsen",
+   "text": "And then we're gonna take, let's see,",
+   "overlap_candidate": false
+  },
+  {
+   "i": 21,
+   "src": 21,
+   "start": 283.89,
+   "end": 284.51,
+   "speaker": "kevani minott",
+   "text": "5.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 22,
+   "src": 22,
+   "start": 284.51,
+   "end": 293.20153846153846,
+   "speaker": "mohamed abdelmohsen",
+   "text": "minutes or so on reviewing your onboarding and check if you have any issues like what is going on, and all this stuff.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 23,
+   "src": 23,
+   "start": 293.20153846153846,
+   "end": 300.149,
+   "speaker": "mohamed abdelmohsen",
+   "text": "But we will start with, So please open your Toggle using the same credential and open it.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 24,
+   "src": 24,
+   "start": 300.36,
+   "end": 301.09,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Choose to…",
+   "overlap_candidate": false
+  },
+  {
+   "i": 25,
+   "src": 25,
+   "start": 304.91,
+   "end": 308.59,
+   "speaker": "kevani minott",
+   "text": "Oh, by the way, for the masterclasses, I'm basically finished.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 26,
+   "src": 26,
+   "start": 308.91,
+   "end": 311.48,
+   "speaker": "kevani minott",
+   "text": "Only of, like, one Christian remaining.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 27,
+   "src": 27,
+   "start": 312.17,
+   "end": 314.069,
+   "speaker": "kevani minott",
+   "text": "You know, then with the Master Classes.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 28,
+   "src": 28,
+   "start": 321.1,
+   "end": 322.54,
+   "speaker": "kevani minott",
+   "text": "Are you seeing the screen?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 29,
+   "src": 29,
+   "start": 323.63,
+   "end": 325.41,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Yes, now I can see your screen.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 30,
+   "src": 30,
+   "start": 325.99,
+   "end": 329.64,
+   "speaker": "kevani minott",
+   "text": "This was all… you do.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 31,
+   "src": 31,
+   "start": 338.39,
+   "end": 339.28,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Just a second.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 32,
+   "src": 32,
+   "start": 343.6,
+   "end": 346.779,
+   "speaker": "kevani minott",
+   "text": "Did you hear what I said about the Master Classes?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 33,
+   "src": 33,
+   "start": 347.66,
+   "end": 348.849,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Come again, please.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 34,
+   "src": 34,
+   "start": 349.19,
+   "end": 352.099,
+   "speaker": "kevani minott",
+   "text": "Oh, I see the only of the one question remaining.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 35,
+   "src": 35,
+   "start": 352.29,
+   "end": 353.76,
+   "speaker": "kevani minott",
+   "text": "And then I'm finished.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 36,
+   "src": 36,
+   "start": 356.69,
+   "end": 357.7319,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Oh, it's okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 37,
+   "src": 37,
+   "start": 357.7319,
+   "end": 358.4265,
+   "speaker": "mohamed abdelmohsen",
+   "text": "It's okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 38,
+   "src": 38,
+   "start": 358.4265,
+   "end": 361.2049,
+   "speaker": "mohamed abdelmohsen",
+   "text": "You need to done with your muscle classes.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 39,
+   "src": 39,
+   "start": 361.2049,
+   "end": 362.2468,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Take the time.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 40,
+   "src": 40,
+   "start": 362.2468,
+   "end": 363.9833,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Maybe today, maybe tomorrow, whatever.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 41,
+   "src": 41,
+   "start": 363.9833,
+   "end": 367.109,
+   "speaker": "mohamed abdelmohsen",
+   "text": "But the issue that I'm trying to help you.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 42,
+   "src": 42,
+   "start": 367.11,
+   "end": 370.05,
+   "speaker": "kevani minott",
+   "text": "It's like, only like, literally one Christian.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 43,
+   "src": 43,
+   "start": 370.51,
+   "end": 374.259,
+   "speaker": "kevani minott",
+   "text": "So, I'm gonna finish it when we're finished with this meeting.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 44,
+   "src": 44,
+   "start": 374.89,
+   "end": 376.64125,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Oh my gosh.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 45,
+   "src": 45,
+   "start": 376.64125,
+   "end": 379.56,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Okay, great, my friend, great.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 46,
+   "src": 46,
+   "start": 380.0,
+   "end": 381.0,
+   "speaker": "mohamed abdelmohsen",
+   "text": "So.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 47,
+   "src": 47,
+   "start": 381.39,
+   "end": 385.029,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Do you remember the time that you do your work?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 48,
+   "src": 48,
+   "start": 387.46,
+   "end": 390.32,
+   "speaker": "kevani minott",
+   "text": "like the week that I was doing it.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 49,
+   "src": 49,
+   "start": 391.42,
+   "end": 393.4197222222222,
+   "speaker": "mohamed abdelmohsen",
+   "text": "If you remember, it's okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 50,
+   "src": 50,
+   "start": 393.4197222222222,
+   "end": 398.619,
+   "speaker": "mohamed abdelmohsen",
+   "text": "If not, if not, you can have the link for your master classes.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 51,
+   "src": 51,
+   "start": 399.29,
+   "end": 404.079,
+   "speaker": "mohamed abdelmohsen",
+   "text": "And we have estimate for the master classes for 20 hours, 25.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 52,
+   "src": 52,
+   "start": 404.29,
+   "end": 408.63,
+   "speaker": "mohamed abdelmohsen",
+   "text": "But yes, we can say it like… And.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 53,
+   "src": 53,
+   "start": 409.13,
+   "end": 411.64,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Let's say, 30 hour.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 54,
+   "src": 54,
+   "start": 411.95,
+   "end": 413.91462962962964,
+   "speaker": "mohamed abdelmohsen",
+   "text": "I'm gonna go with that.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 55,
+   "src": 55,
+   "start": 413.91462962962964,
+   "end": 417.058037037037,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Let's say 30 hours for your master classes.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 56,
+   "src": 56,
+   "start": 417.058037037037,
+   "end": 422.559,
+   "speaker": "mohamed abdelmohsen",
+   "text": "So please, the same that was what you were doing with your master classes.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 57,
+   "src": 57,
+   "start": 422.76,
+   "end": 426.199,
+   "speaker": "mohamed abdelmohsen",
+   "text": "Like, you have the name of the master classes, and you have the link.",
+   "overlap_candidate": false
+  }
+ ],
+ "gold": [
+  {
+   "i": 0,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 1,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 2,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 3,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 4,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 5,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 6,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 3,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 7,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 8,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 9,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 3,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 10,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 11,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 12,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 13,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 3,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 14,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 15,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 1,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 16,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 17,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 18,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 19,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 20,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 21,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 22,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 23,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 24,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 25,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 3,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 26,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 3,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 27,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 28,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 29,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 30,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 31,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 32,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 33,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 34,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 35,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 36,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 37,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 38,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 39,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 40,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 41,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 42,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 43,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 44,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 45,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 46,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 47,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 48,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 49,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 50,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 51,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 3,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 52,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 53,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 54,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "fill",
+    "xtalk",
+    "greet",
+    "dead",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 55,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 56,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 57,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  }
+ ],
+ "top_moments": [],
+ "short_worthy": []
+}

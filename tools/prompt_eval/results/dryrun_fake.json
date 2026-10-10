@@ -1,0 +1,672 @@
+{
+ "tag": "dryrun_fake",
+ "split": "all",
+ "rerank": true,
+ "fake": true,
+ "model": "claude-sonnet-5-5",
+ "when": "2026-10-05T23:54:05",
+ "status": "done",
+ "score": 89.41,
+ "metrics": {
+  "keep_safety": 0.8514,
+  "removal_f1": 0.9162,
+  "junk_clean": 0.8879,
+  "code_agree": 0.8167,
+  "hl_concord": 1.0,
+  "top_f1": 1.0,
+  "short_f1": 1.0
+ },
+ "removal_precision": 0.9475,
+ "removal_recall": 0.8869,
+ "must_keep_removed": 11,
+ "must_keep_total": 74,
+ "must_keep_removed_list": [
+  "w02_zoom_silent_start_onboarding[22] minutes or so on reviewing your onboarding and check if you have any issues like what is g",
+  "w04_yt_status_by_name_jetson[4] U did come across some ideas that I wanted to um talk about.",
+  "w04_yt_status_by_name_jetson[22] Because if it can, we could move to a more enterprise type remote control software, host i",
+  "w04_yt_status_by_name_jetson[31] we can host stronger and more enterprise type versions of remote access software which wou",
+  "w04_yt_status_by_name_jetson[49] I don't know if that would be the way we go.",
+  "w10_zoom_wrapup_tools[4] So I first grant you the AI tool access that we have.",
+  "w10_zoom_wrapup_tools[40] Cloud and Cursor, they are the one top niche, let's say, software development right now wh",
+  "w05_yt_roundrobin_mic_schedule[13] it's going.",
+  "w07_zoom_concept_then_long_goodbye[4] Like, knowing the difference between a primary resource, between a secondary resource, kno",
+  "w09_zoom_question_unitree_leads[4] So, I don't know if the robot dogs or the robots in general, humanoid robots, are original",
+  "w09_zoom_question_unitree_leads[13] But, But…"
+ ],
+ "junk_kept": 36,
+ "junk_total": 321,
+ "junk_kept_list": [
+  "w01_zoom_join_toggl_bpmn[4] I don't know.",
+  "w01_zoom_join_toggl_bpmn[13] This is a very important meeting.",
+  "w01_zoom_join_toggl_bpmn[22] And the…",
+  "w01_zoom_join_toggl_bpmn[40] Okay.",
+  "w01_zoom_join_toggl_bpmn[49] Can you see my screen?",
+  "w02_zoom_silent_start_onboarding[4] I'm so sorry, I just don't… I saw your message late, and I was not actually here, and afte",
+  "w02_zoom_silent_start_onboarding[31] Just a second.",
+  "w02_zoom_silent_start_onboarding[49] If you remember, it's okay.",
+  "w03_zoom_cancelled_meeting[4] Oh, no worries.",
+  "w03_zoom_cancelled_meeting[13] Sorry, at first I'm like, am I early for this meeting?",
+  "w03_zoom_cancelled_meeting[22] That's fine.",
+  "w03_zoom_cancelled_meeting[31] If you want to do that.",
+  "w03_zoom_cancelled_meeting[40] Alright, Ben, I think we're good to go.",
+  "w03_zoom_cancelled_meeting[49] Until then, I should be available, I should be online, so…",
+  "w03_zoom_cancelled_meeting[58] All right, Julia.",
+  "w04_yt_status_by_name_jetson[13] I didn't why I thought about it sooner.",
+  "w04_yt_status_by_name_jetson[40] >> Yeah.",
+  "w04_yt_status_by_name_jetson[58] So, responsible.",
+  "w08_zoom_late_start_intros[4] So, so, Mohammed, I'm not sure who else is in here.",
+  "w08_zoom_late_start_intros[13] I have no idea.",
+  "w08_zoom_late_start_intros[22] multimodal, maybe?",
+  "w08_zoom_late_start_intros[31] If not, you guys can do it now.",
+  "w08_zoom_late_start_intros[40] I have familiarity with SQL, Firebase But my current focus now is on Node Express with Mon",
+  "w08_zoom_late_start_intros[49] It's a bit low, but I can hear you.",
+  "w08_zoom_late_start_intros[58] I don't know, Devu, if you want to introduce yourself again, just for this lot here.",
+  "w10_zoom_wrapup_tools[22] I'm gonna… Initially, like, right now, after this meeting.",
+  "w10_zoom_wrapup_tools[31] Yeah?",
+  "w05_yt_roundrobin_mic_schedule[4] I don't know if this list is updated, but I have Machi as the other member.",
+  "w05_yt_roundrobin_mic_schedule[22] Uh so that's fun.",
+  "w05_yt_roundrobin_mic_schedule[40] >> Okay.",
+  "w07_zoom_concept_then_long_goodbye[22] I know I said… I'm sorry, Match, if I'm wasting your time or anything, but I…",
+  "w07_zoom_concept_then_long_goodbye[31] We'll probably see next in the projects management meeting.",
+  "w07_zoom_concept_then_long_goodbye[40] Okay, okay, that's fine, that's fine.",
+  "w07_zoom_concept_then_long_goodbye[49] Yeah, yeah, because… Because I know, like, to be honest, the reason I wanted to discuss th",
+  "w07_zoom_concept_then_long_goodbye[58] Goodbye.",
+  "w09_zoom_question_unitree_leads[31] It's more clear right now, the vision of yours."
+ ],
+ "top_moments": {
+  "gold": 11,
+  "found": 11,
+  "strong_predicted": 8,
+  "strong_on_gold": 8
+ },
+ "format_problems": 1,
+ "weights": {
+  "keep_safety": 0.3,
+  "removal_f1": 0.25,
+  "junk_clean": 0.1,
+  "code_agree": 0.05,
+  "hl_concord": 0.15,
+  "top_f1": 0.1,
+  "short_f1": 0.05
+ },
+ "format_problem_details": [
+  "judge: unparsable judgment line 'Sure! Here are the judgments:'"
+ ],
+ "calls": 22,
+ "usage": {
+  "calls": 22,
+  "prompt_tokens": 33833,
+  "output_tokens": 2165,
+  "cache_read_tokens": 0,
+  "cache_write_tokens": 0,
+  "rate_limit_wait_s": 0.0,
+  "retries": 0
+ },
+ "cost_usd": 0.0893,
+ "estimate_usd": 0.2486,
+ "ledger_spent_usd": 0,
+ "windows": {
+  "w01_zoom_join_toggl_bpmn": {
+   "sentences": 73,
+   "tp": 45.0,
+   "fp": 1.5,
+   "fn": 5.5,
+   "must_keep_total": 10,
+   "must_keep_removed": [],
+   "junk_total": 48,
+   "junk_kept": [
+    "w01_zoom_join_toggl_bpmn[4] I don't know.",
+    "w01_zoom_join_toggl_bpmn[13] This is a very important meeting.",
+    "w01_zoom_join_toggl_bpmn[22] And the…",
+    "w01_zoom_join_toggl_bpmn[40] Okay.",
+    "w01_zoom_join_toggl_bpmn[49] Can you see my screen?"
+   ],
+   "wrong_removed": [
+    "w01_zoom_join_toggl_bpmn[67] little plus sign."
+   ],
+   "code_ok": 41,
+   "code_n": 47,
+   "hl_pairs": 830.0,
+   "hl_concordant": 830.0,
+   "top_gold": 1,
+   "top_hit": 1,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 10,
+   "kept_pred": 24,
+   "moments": [
+    {
+     "first": 39,
+     "last": 41,
+     "score": 5.0,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 0"
+    },
+    {
+     "first": 55,
+     "last": 69,
+     "score": 10.0,
+     "raw": 9.0,
+     "short": true,
+     "title": "Fake title 1"
+    }
+   ],
+   "usage": {
+    "calls": 4,
+    "prompt_tokens": 5806,
+    "output_tokens": 480,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w02_zoom_silent_start_onboarding": {
+   "sentences": 58,
+   "tp": 25.0,
+   "fp": 1.5,
+   "fn": 3.5,
+   "must_keep_total": 4,
+   "must_keep_removed": [
+    "w02_zoom_silent_start_onboarding[22] minutes or so on reviewing your onboarding and check if you have any issues like what is g"
+   ],
+   "junk_total": 24,
+   "junk_kept": [
+    "w02_zoom_silent_start_onboarding[4] I'm so sorry, I just don't… I saw your message late, and I was not actually here, and afte",
+    "w02_zoom_silent_start_onboarding[31] Just a second.",
+    "w02_zoom_silent_start_onboarding[49] If you remember, it's okay."
+   ],
+   "wrong_removed": [],
+   "code_ok": 23,
+   "code_n": 29,
+   "hl_pairs": 112.0,
+   "hl_concordant": 112.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 4,
+   "kept_pred": 27,
+   "moments": [
+    {
+     "first": 50,
+     "last": 55,
+     "score": 10.0,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 0"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 2626,
+    "output_tokens": 195,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w03_zoom_cancelled_meeting": {
+   "sentences": 62,
+   "tp": 50.0,
+   "fp": 0.0,
+   "fn": 7.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 57,
+   "junk_kept": [
+    "w03_zoom_cancelled_meeting[4] Oh, no worries.",
+    "w03_zoom_cancelled_meeting[13] Sorry, at first I'm like, am I early for this meeting?",
+    "w03_zoom_cancelled_meeting[22] That's fine.",
+    "w03_zoom_cancelled_meeting[31] If you want to do that.",
+    "w03_zoom_cancelled_meeting[40] Alright, Ben, I think we're good to go.",
+    "w03_zoom_cancelled_meeting[49] Until then, I should be available, I should be online, so…",
+    "w03_zoom_cancelled_meeting[58] All right, Julia."
+   ],
+   "wrong_removed": [],
+   "code_ok": 40,
+   "code_n": 50,
+   "hl_pairs": 0.0,
+   "hl_concordant": 0.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 1,
+   "kept_pred": 12,
+   "moments": [],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 3258,
+    "output_tokens": 213,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w04_yt_status_by_name_jetson": {
+   "sentences": 61,
+   "tp": 17.5,
+   "fp": 4.0,
+   "fn": 3.0,
+   "must_keep_total": 20,
+   "must_keep_removed": [
+    "w04_yt_status_by_name_jetson[4] U did come across some ideas that I wanted to um talk about.",
+    "w04_yt_status_by_name_jetson[22] Because if it can, we could move to a more enterprise type remote control software, host i",
+    "w04_yt_status_by_name_jetson[31] we can host stronger and more enterprise type versions of remote access software which wou",
+    "w04_yt_status_by_name_jetson[49] I don't know if that would be the way we go."
+   ],
+   "junk_total": 19,
+   "junk_kept": [
+    "w04_yt_status_by_name_jetson[13] I didn't why I thought about it sooner.",
+    "w04_yt_status_by_name_jetson[40] >> Yeah.",
+    "w04_yt_status_by_name_jetson[58] So, responsible."
+   ],
+   "wrong_removed": [],
+   "code_ok": 16,
+   "code_n": 19,
+   "hl_pairs": 1182.0,
+   "hl_concordant": 1182.0,
+   "top_gold": 3,
+   "top_hit": 3,
+   "strong_pred": 2,
+   "strong_pred_hit": 2,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 10,
+   "kept_pred": 38,
+   "moments": [
+    {
+     "first": 13,
+     "last": 34,
+     "score": 10.0,
+     "raw": 9.0,
+     "short": true,
+     "title": "Fake title 0"
+    },
+    {
+     "first": 38,
+     "last": 55,
+     "score": 5.0,
+     "raw": 6.0,
+     "short": false,
+     "title": "Fake title 1"
+    }
+   ],
+   "usage": {
+    "calls": 3,
+    "prompt_tokens": 5423,
+    "output_tokens": 225,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w08_zoom_late_start_intros": {
+   "sentences": 59,
+   "tp": 51.0,
+   "fp": 0.0,
+   "fn": 7.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 58,
+   "junk_kept": [
+    "w08_zoom_late_start_intros[4] So, so, Mohammed, I'm not sure who else is in here.",
+    "w08_zoom_late_start_intros[13] I have no idea.",
+    "w08_zoom_late_start_intros[22] multimodal, maybe?",
+    "w08_zoom_late_start_intros[31] If not, you guys can do it now.",
+    "w08_zoom_late_start_intros[40] I have familiarity with SQL, Firebase But my current focus now is on Node Express with Mon",
+    "w08_zoom_late_start_intros[49] It's a bit low, but I can hear you.",
+    "w08_zoom_late_start_intros[58] I don't know, Devu, if you want to introduce yourself again, just for this lot here."
+   ],
+   "wrong_removed": [],
+   "code_ok": 41,
+   "code_n": 51,
+   "hl_pairs": 58.0,
+   "hl_concordant": 58.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 3,
+   "kept_pred": 8,
+   "moments": [
+    {
+     "first": 42,
+     "last": 42,
+     "score": 10.0,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 0"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 2578,
+    "output_tokens": 217,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w10_zoom_wrapup_tools": {
+   "sentences": 48,
+   "tp": 28.0,
+   "fp": 2.5,
+   "fn": 2.0,
+   "must_keep_total": 6,
+   "must_keep_removed": [
+    "w10_zoom_wrapup_tools[4] So I first grant you the AI tool access that we have.",
+    "w10_zoom_wrapup_tools[40] Cloud and Cursor, they are the one top niche, let's say, software development right now wh"
+   ],
+   "junk_total": 29,
+   "junk_kept": [
+    "w10_zoom_wrapup_tools[22] I'm gonna… Initially, like, right now, after this meeting.",
+    "w10_zoom_wrapup_tools[31] Yeah?"
+   ],
+   "wrong_removed": [],
+   "code_ok": 22,
+   "code_n": 29,
+   "hl_pairs": 335.0,
+   "hl_concordant": 335.0,
+   "top_gold": 2,
+   "top_hit": 2,
+   "strong_pred": 2,
+   "strong_pred_hit": 2,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 7,
+   "kept_pred": 16,
+   "moments": [
+    {
+     "first": 3,
+     "last": 4,
+     "score": 2.0,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 0"
+    },
+    {
+     "first": 11,
+     "last": 12,
+     "score": 8.0,
+     "raw": 6.0,
+     "short": false,
+     "title": "Fake title 1"
+    },
+    {
+     "first": 25,
+     "last": 27,
+     "score": 6.0,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 2"
+    },
+    {
+     "first": 34,
+     "last": 34,
+     "score": 4.0,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 3"
+    },
+    {
+     "first": 40,
+     "last": 42,
+     "score": 10.0,
+     "raw": 6.0,
+     "short": false,
+     "title": "Fake title 4"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 3043,
+    "output_tokens": 209,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w05_yt_roundrobin_mic_schedule": {
+   "sentences": 55,
+   "tp": 32.5,
+   "fp": 1.0,
+   "fn": 4.0,
+   "must_keep_total": 8,
+   "must_keep_removed": [
+    "w05_yt_roundrobin_mic_schedule[13] it's going."
+   ],
+   "junk_total": 31,
+   "junk_kept": [
+    "w05_yt_roundrobin_mic_schedule[4] I don't know if this list is updated, but I have Machi as the other member.",
+    "w05_yt_roundrobin_mic_schedule[22] Uh so that's fun.",
+    "w05_yt_roundrobin_mic_schedule[40] >> Okay."
+   ],
+   "wrong_removed": [],
+   "code_ok": 30,
+   "code_n": 37,
+   "hl_pairs": 336.0,
+   "hl_concordant": 336.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 4,
+   "kept_pred": 17,
+   "moments": [
+    {
+     "first": 0,
+     "last": 2,
+     "score": 3.33,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 0"
+    },
+    {
+     "first": 10,
+     "last": 13,
+     "score": 10.0,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 1"
+    },
+    {
+     "first": 21,
+     "last": 24,
+     "score": 6.67,
+     "raw": 3.0,
+     "short": false,
+     "title": "Fake title 2"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 3141,
+    "output_tokens": 217,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w06_zoom_nearly_empty": {
+   "sentences": 1,
+   "tp": 1.0,
+   "fp": 0.0,
+   "fn": 0.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 1,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 0,
+   "code_n": 1,
+   "hl_pairs": 0.0,
+   "hl_concordant": 0.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 0,
+   "kept_pred": 0,
+   "moments": [],
+   "usage": {
+    "calls": 1,
+    "prompt_tokens": 1135,
+    "output_tokens": 3,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w07_zoom_concept_then_long_goodbye": {
+   "sentences": 59,
+   "tp": 35.0,
+   "fp": 2.0,
+   "fn": 5.0,
+   "must_keep_total": 6,
+   "must_keep_removed": [
+    "w07_zoom_concept_then_long_goodbye[4] Like, knowing the difference between a primary resource, between a secondary resource, kno"
+   ],
+   "junk_total": 40,
+   "junk_kept": [
+    "w07_zoom_concept_then_long_goodbye[22] I know I said… I'm sorry, Match, if I'm wasting your time or anything, but I…",
+    "w07_zoom_concept_then_long_goodbye[31] We'll probably see next in the projects management meeting.",
+    "w07_zoom_concept_then_long_goodbye[40] Okay, okay, that's fine, that's fine.",
+    "w07_zoom_concept_then_long_goodbye[49] Yeah, yeah, because… Because I know, like, to be honest, the reason I wanted to discuss th",
+    "w07_zoom_concept_then_long_goodbye[58] Goodbye."
+   ],
+   "wrong_removed": [
+    "w07_zoom_concept_then_long_goodbye[13] The AI account."
+   ],
+   "code_ok": 30,
+   "code_n": 35,
+   "hl_pairs": 728.0,
+   "hl_concordant": 728.0,
+   "top_gold": 2,
+   "top_hit": 2,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 10,
+   "kept_pred": 22,
+   "moments": [
+    {
+     "first": 0,
+     "last": 19,
+     "score": 10.0,
+     "raw": 9.0,
+     "short": true,
+     "title": "Fake title 0"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 2979,
+    "output_tokens": 211,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w09_zoom_question_unitree_leads": {
+   "sentences": 52,
+   "tp": 13.0,
+   "fp": 4.0,
+   "fn": 1.0,
+   "must_keep_total": 20,
+   "must_keep_removed": [
+    "w09_zoom_question_unitree_leads[4] So, I don't know if the robot dogs or the robots in general, humanoid robots, are original",
+    "w09_zoom_question_unitree_leads[13] But, But…"
+   ],
+   "junk_total": 14,
+   "junk_kept": [
+    "w09_zoom_question_unitree_leads[31] It's more clear right now, the vision of yours."
+   ],
+   "wrong_removed": [
+    "w09_zoom_question_unitree_leads[22] know, it would be very entertaining, and in Greece, they have Greek dances, and, you know,"
+   ],
+   "code_ok": 11,
+   "code_n": 13,
+   "hl_pairs": 935.0,
+   "hl_concordant": 935.0,
+   "top_gold": 3,
+   "top_hit": 3,
+   "strong_pred": 2,
+   "strong_pred_hit": 2,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 10,
+   "kept_pred": 34,
+   "moments": [
+    {
+     "first": 2,
+     "last": 27,
+     "score": 10.0,
+     "raw": 9.0,
+     "short": true,
+     "title": "Fake title 0"
+    },
+    {
+     "first": 37,
+     "last": 50,
+     "score": 5.0,
+     "raw": 6.0,
+     "short": false,
+     "title": "Fake title 1"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 3844,
+    "output_tokens": 195,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  }
+ }
+}

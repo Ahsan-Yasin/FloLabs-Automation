@@ -19,7 +19,7 @@
       "name": "ui-preview",
       "runtimeExecutable": ".venv/Scripts/python.exe",
       "runtimeArgs": [
-        "C:/Users/Ahsan/AppData/Local/Temp/claude/D--Coding-Python-FloLabs-Automation/ed3aafc2-fa67-4d1c-8a77-fef4c3ba982c/scratchpad/preview_server.py"
+        "C:/Users/Ahsan/AppData/Local/Temp/claude/D--Coding-Python-FloLabs-Automation/253cbd09-84f9-4831-a2b6-e16826b1085b/scratchpad/preview_server.py"
       ],
       "port": 8137
     },

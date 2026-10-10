@@ -1,0 +1,21 @@
+{
+ "uuid": "z+X3yJ8uS8akW02q5KuKTA==",
+ "meeting_id": 87633045920,
+ "topic": "Humanoid Team Meeting",
+ "start_time": "2026-10-02T15:31:03Z",
+ "duration_min": 79,
+ "auto_delete_date": null,
+ "recording_type": "shared_screen_with_gallery_view",
+ "transcript": "TRANSCRIPT",
+ "segments_without_video": 0,
+ "parts": [
+  {
+   "recording_type": "shared_screen_with_gallery_view",
+   "recording_start": "2026-10-02T15:31:04Z",
+   "recording_end": "2026-10-02T16:50:05Z",
+   "file_size": 181190415
+  }
+ ],
+ "parts_with_transcript": 1,
+ "used_part": 0
+}

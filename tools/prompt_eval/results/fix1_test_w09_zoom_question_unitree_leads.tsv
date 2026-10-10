@@ -1,0 +1,53 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	450	John Hazlewood	You were gonna say, because what?	keep	0	1		0	remove	fill	0	none	removed(amb)	
+1	451	Hasnae	The.	remove	0	0	fill,xtalk	0	remove	fill	0	none	ok	
+2	452	Hasnae	I saw a video of robots dancing.	keep	1	0		2	keep	-	3	concept	ok	
+3	453	Hasnae	As part of the entertainment industry.	keep	1	0		2	keep	-	2	none	ok	
+4	454	Hasnae	So, I don't know if the robot dogs or the robots in general, humanoid robots, are originally programmed to do so, or if it's easy or doable to… To	keep	1	0		2	keep	-	3	concept	ok	
+5	455	Hasnae	in train them to do some movements personalized one because I believe if we.	keep	0	0		2	keep	-	3	concept	ok	
+6	456	Hasnae	Succeed to do, to program the robots and make them do some.	keep	0	0		2	keep	-	3	concept	ok	
+7	457	Hasnae	Something different from others, it's maybe a good factor for them to be still.	keep	0	0		2	keep	-	3	concept	ok	
+8	458	Hasnae	Rapidly, more than being rapid.	keep	0	1		0	remove	fill	0	none	removed(amb)	
+9	459	Hasnae	I don't know.	remove	0	0	fill,xtalk	0	remove	fill	0	none	ok	
+10	460	John Hazlewood	So Unitree right now on their humanoids and on their robodogs, they already have, you know, pre-programmed.	keep	1	0		3	keep	-	6	new_feature	ok	
+11	461	John Hazlewood	moves, and dances, and stand up on two legs, and a bunch of different things.	keep	1	0		3	keep	-	6	new_feature	ok	
+12	462	John Hazlewood	Even flipping, they have on their new version, they can jump up and flip, although they… sometimes they have accidents, and the robot, you know, ends up breakin	keep	1	0		3	keep	-	7	new_feature	ok	
+13	463	John Hazlewood	But, But…	remove	0	1	fill,xtalk	0	remove	fill	0	none	ok	
+14	464	John Hazlewood	and then when they have new releases, they have over-the-air updates.	keep	1	0		3	keep	-	6	new_feature	ok	
+15	465	John Hazlewood	For new functionality, new movements, and stuff like that.	keep	1	0		3	keep	-	6	new_feature	ok	
+16	466	John Hazlewood	They were even talking about having, like, an open source where people develop, because on their EDU version, they have two versions.	keep	1	0		3	keep	-	5	new_feature	ok	
+17	467	John Hazlewood	One is an EDU version, and one is the non-EDU version.	keep	1	0		3	keep	-	5	new_feature	ok	
+18	468	Hasnae	you.	remove	0	0	fill,xtalk	0	remove	xtalk	0	none	ok	
+19	469	John Hazlewood	EDU version is, like, twice as expensive, where you can actually program on the EDU version.	keep	1	0		3	keep	-	6	insight	ok	
+20	470	John Hazlewood	So, you know, I'm not sure… I mean, if we have a customer that wants to have Let's say, because that will… You	keep	0	0		3	keep	-	5	concept	ok	
+21	471	John Hazlewood	know, if you're in Greece, you know, if you're in Texas, like, have a humanoid that does the Cotton Eye Joe or the Texas Two-Step, you know, like, for weddings 	keep	0	0		3	keep	-	6	funny	ok	
+22	472	John Hazlewood	know, it would be very entertaining, and in Greece, they have Greek dances, and, you know, Morocco, they have the Moroccan dances, and etc.	keep	0	0		3	keep	-	6	funny	ok	
+23	473	John Hazlewood	So, you could program for specific Things like that, that would be interesting to some customers.	keep	0	0		3	keep	-	5	concept	ok	
+24	474	Hasnae	Yeah.	remove	0	0	fill,xtalk	0	remove	fill	0	none	ok	
+25	475	John Hazlewood	Yeah, and so we will have that capability.	keep	1	0		2	keep	-	5	decision	ok	
+26	476	John Hazlewood	If the customer wants us to do that, you know, we'd have to buy the EDU version, we'd have to… we could program it for them, and then we could sell it with what	keep	1	0		2	keep	-	6	decision	ok	
+27	477	John Hazlewood	you know, dances or movements that that they want, that are not already included in in the version of you that unitary provides.	keep	1	0		2	keep	-	6	decision	ok	
+28	478	Hasnae	Okay, that sounds interesting.	keep	0	1		0	remove	fill	0	none	removed(amb)	
+29	479	Hasnae	And maybe we could go further with more technical details later.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	
+30	480	Hasnae	But thanks for all the explanations.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	
+31	481	Hasnae	It's more clear right now, the vision of yours.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	
+32	482	Hasnae	And I hope to start working on this.	remove	0	0	house,greet,fill	0	keep	-	3	decision	JUNK_KEPT	
+33	483	Hasnae	very, closely.	remove	0	0	house,greet,fill	0	keep	-	3	decision	JUNK_KEPT	
+34	484	Hasnae	So…	remove	0	0	house,greet,fill	0	remove	fill	0	none	ok	
+35	485	John Hazlewood	Yeah, well, feel welcome.	remove	0	0	house,greet,fill	0	remove	house	0	none	ok	
+36	486	John Hazlewood	Maybe you can be on the team with Spencer to… I don't know who's working on the website.	keep	0	1		0	keep	-	4	decision	ok	
+37	487	Hasnae	Sorry.	remove	0	0	house,greet,fill	0	remove	xtalk	0	none	code?	
+38	488	John Hazlewood	you know, for, like, the robo-dogs.	keep	0	1		1	keep	-	4	decision	ok	
+39	489	John Hazlewood	I mean, right now, we wanted to just… the robo-dogs, but maybe we could also take the Humanoid And… I	keep	0	1		1	keep	-	4	concept	ok	
+40	490	John Hazlewood	don't know, like, maybe on the Humanoid, you could put a 3D printable and make it look like Incredible Hulk, you know, or some, you know, like a fighter or some	keep	0	1		1	keep	-	6	funny	ok	
+41	491	Hasnae	open.	remove	0	0	fill,xtalk	0	remove	xtalk	0	none	ok	
+42	492	John Hazlewood	Let's say, maybe that might be interesting.	remove	0	0	fill,xtalk	0	keep	-	4	concept	JUNK_KEPT	
+43	493	John Hazlewood	You know, but right now, the thing is, we need to have the web pages And say, this is what we can provide, you know, and so when we're marketing it, we can say,	keep	1	0		2	keep	-	6	decision	ok	
+44	494	John Hazlewood	do this?	keep	1	0		2	keep	-	6	decision	ok	
+45	495	John Hazlewood	Okay, yeah, we're interested in this, and then… We need to start generating leads.	keep	1	0		2	keep	-	6	decision	ok	
+46	496	John Hazlewood	Of course, when we have a lead, you and others here will be in the meeting with… if it's a professor, if it's a coach, you know, we'll have a team of our specia	keep	1	0		2	keep	-	6	decision	ok	
+47	497	John Hazlewood	We're talking to the prospect and seeing what their interests are, what we can provide.	keep	1	0		2	keep	-	5	decision	ok	
+48	498	John Hazlewood	Hopefully, with all the talent that we have, we'll come across very credible, that we know what we're doing.	keep	0	1		2	keep	-	5	decision	ok	
+49	499	John Hazlewood	We have to do the first one is going to be the most difficult, and the second one, it's always the most difficult, but once we do one or two, we know what we're	keep	0	1		2	keep	-	6	insight	ok	
+50	500	John Hazlewood	under our belt.	keep	0	1		0	keep	-	6	insight	ok	
+51	501	John Hazlewood	I think that could be huge.	keep	0	1		0	keep	-	6	insight	ok	

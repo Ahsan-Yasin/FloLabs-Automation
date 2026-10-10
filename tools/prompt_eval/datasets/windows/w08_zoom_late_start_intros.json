@@ -1,0 +1,1367 @@
+{
+ "id": "w08_zoom_late_start_intros",
+ "source": "raw:zoom-flobrain-weekly-backend-meeting-2026-10-05",
+ "source_range": [
+  0,
+  58
+ ],
+ "split": "train",
+ "minutes": 4.9,
+ "hard": "No diarization (every line is \"SPEAKER\"), half an hour late, waiting for people, one-word lines, then a welcome ceremony where new members introduce themselves (remove), with one line that sounds technical (\"we use Python with Django and multiple databases\").",
+ "sentences": [
+  {
+   "i": 0,
+   "src": 0,
+   "start": 1445.0,
+   "end": 1448.0,
+   "speaker": "SPEAKER",
+   "text": "Actually.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 1,
+   "src": 1,
+   "start": 1448.0,
+   "end": 1452.0,
+   "speaker": "SPEAKER",
+   "text": "Yes .",
+   "overlap_candidate": false
+  },
+  {
+   "i": 2,
+   "src": 2,
+   "start": 1452.0,
+   "end": 1452.5714285714287,
+   "speaker": "SPEAKER",
+   "text": "Amazing mind, brilliant mind.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 3,
+   "src": 3,
+   "start": 1452.5714285714287,
+   "end": 1453.0,
+   "speaker": "SPEAKER",
+   "text": "Well done, Mordanasan.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 4,
+   "src": 4,
+   "start": 1453.0,
+   "end": 1457.0526315789473,
+   "speaker": "SPEAKER",
+   "text": "So, so, Mohammed, I'm not sure who else is in here.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 5,
+   "src": 5,
+   "start": 1457.0526315789473,
+   "end": 1458.5263157894738,
+   "speaker": "SPEAKER",
+   "text": "I messaged our Seema.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 6,
+   "src": 6,
+   "start": 1458.5263157894738,
+   "end": 1460.3684210526317,
+   "speaker": "SPEAKER",
+   "text": "She's going to join shortly.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 7,
+   "src": 7,
+   "start": 1460.3684210526317,
+   "end": 1467.0,
+   "speaker": "SPEAKER",
+   "text": "I see Indra is here, so maybe we can get started because we're almost half an hour late.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 8,
+   "src": 8,
+   "start": 1467.0,
+   "end": 1468.3636363636363,
+   "speaker": "SPEAKER",
+   "text": "Absolutely, I'm so sorry, Indra.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 9,
+   "src": 9,
+   "start": 1468.3636363636363,
+   "end": 1469.1818181818182,
+   "speaker": "SPEAKER",
+   "text": "I'm so sorry.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 10,
+   "src": 10,
+   "start": 1469.1818181818182,
+   "end": 1470.0,
+   "speaker": "SPEAKER",
+   "text": "Please go ahead.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 11,
+   "src": 11,
+   "start": 1470.0,
+   "end": 1480.0,
+   "speaker": "SPEAKER",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 12,
+   "src": 12,
+   "start": 1480.0,
+   "end": 1481.0,
+   "speaker": "SPEAKER",
+   "text": "Ash.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 13,
+   "src": 13,
+   "start": 1481.0,
+   "end": 1482.0,
+   "speaker": "SPEAKER",
+   "text": "I have no idea.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 14,
+   "src": 14,
+   "start": 1482.0,
+   "end": 1483.0,
+   "speaker": "SPEAKER",
+   "text": "Ash.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 15,
+   "src": 15,
+   "start": 1483.0,
+   "end": 1483.625,
+   "speaker": "SPEAKER",
+   "text": "Everyone, sorry for being late.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 16,
+   "src": 16,
+   "start": 1483.625,
+   "end": 1496.0,
+   "speaker": "SPEAKER",
+   "text": "I just arrived I'm sorry, Ash, can you… okay, yeah, I'm sorry, it was… No, sir.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 17,
+   "src": 17,
+   "start": 1496.0,
+   "end": 1498.0,
+   "speaker": "SPEAKER",
+   "text": "Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 18,
+   "src": 18,
+   "start": 1498.0,
+   "end": 1504.0,
+   "speaker": "SPEAKER",
+   "text": "I I had a work meeting, but Okay, everyone.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 19,
+   "src": 19,
+   "start": 1504.0,
+   "end": 1520.5,
+   "speaker": "SPEAKER",
+   "text": "I think we can definitely start I see that we have At least Two new buddies with us, is that… Right?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 20,
+   "src": 20,
+   "start": 1520.5,
+   "end": 1525.0,
+   "speaker": "SPEAKER",
+   "text": "Two new members.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 21,
+   "src": 21,
+   "start": 1525.0,
+   "end": 1543.0,
+   "speaker": "SPEAKER",
+   "text": "Krishna, and… Caballon or I don't know where… how to pronounce it, but… and I know that Presented yourself, I think In",
+   "overlap_candidate": false
+  },
+  {
+   "i": 22,
+   "src": 22,
+   "start": 1543.0,
+   "end": 1545.0,
+   "speaker": "SPEAKER",
+   "text": "multimodal, maybe?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 23,
+   "src": 23,
+   "start": 1545.0,
+   "end": 1547.5714285714287,
+   "speaker": "SPEAKER",
+   "text": "Because I know you've presented yourself.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 24,
+   "src": 24,
+   "start": 1547.5714285714287,
+   "end": 1558.0,
+   "speaker": "SPEAKER",
+   "text": "I I just don't remember where But I don't think… I think this is your first backend meeting, right?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 25,
+   "src": 25,
+   "start": 1558.0,
+   "end": 1563.0,
+   "speaker": "SPEAKER",
+   "text": "Or not Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 26,
+   "src": 26,
+   "start": 1563.0,
+   "end": 1564.0,
+   "speaker": "SPEAKER",
+   "text": "Right.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 27,
+   "src": 27,
+   "start": 1564.0,
+   "end": 1566.0,
+   "speaker": "SPEAKER",
+   "text": "Ah, this is my first backend meeting, but I have already attended the technical meetings.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 28,
+   "src": 28,
+   "start": 1566.0,
+   "end": 1568.857142857143,
+   "speaker": "SPEAKER",
+   "text": "That was it, okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 29,
+   "src": 29,
+   "start": 1568.857142857143,
+   "end": 1573.3684210526317,
+   "speaker": "SPEAKER",
+   "text": "So great, you… We're already presented for everyone.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 30,
+   "src": 30,
+   "start": 1573.3684210526317,
+   "end": 1580.0,
+   "speaker": "SPEAKER",
+   "text": "The other two new members, did you guys present yourself to the team already?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 31,
+   "src": 31,
+   "start": 1580.0,
+   "end": 1585.090909090909,
+   "speaker": "SPEAKER",
+   "text": "If not, you guys can do it now.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 32,
+   "src": 32,
+   "start": 1585.090909090909,
+   "end": 1599.0,
+   "speaker": "SPEAKER",
+   "text": "Just tell us where you're from, and if what's your academic and work experience Do you want me to start?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 33,
+   "src": 33,
+   "start": 1599.0,
+   "end": 1602.0,
+   "speaker": "SPEAKER",
+   "text": "Sure, you can Sir, you can hear me, right?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 34,
+   "src": 34,
+   "start": 1602.0,
+   "end": 1603.0,
+   "speaker": "SPEAKER",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 35,
+   "src": 35,
+   "start": 1603.0,
+   "end": 1613.642857142857,
+   "speaker": "SPEAKER",
+   "text": "Yeah, hello, I'm Muhammad Kabbalan, but To not make Muhammad sad, I will be… I will call myself Mr.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 36,
+   "src": 36,
+   "start": 1613.642857142857,
+   "end": 1615.0,
+   "speaker": "SPEAKER",
+   "text": "Kavalan Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 37,
+   "src": 37,
+   "start": 1615.0,
+   "end": 1624.0,
+   "speaker": "SPEAKER",
+   "text": "I recently graduated, I have a bachelor degree Computer science.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 38,
+   "src": 38,
+   "start": 1624.0,
+   "end": 1639.5882352941176,
+   "speaker": "SPEAKER",
+   "text": "I used to be a front-end developer, but This year I began my journey at Backend because I found it also interesting to See, we… the work behind the scenes And My",
+   "overlap_candidate": false
+  },
+  {
+   "i": 39,
+   "src": 39,
+   "start": 1639.5882352941176,
+   "end": 1645.4705882352941,
+   "speaker": "SPEAKER",
+   "text": "current stock, now I'm just using Node Express with MongoDB.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 40,
+   "src": 40,
+   "start": 1645.4705882352941,
+   "end": 1658.0,
+   "speaker": "SPEAKER",
+   "text": "I have familiarity with SQL, Firebase But my current focus now is on Node Express with MongoDB Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 41,
+   "src": 41,
+   "start": 1658.0,
+   "end": 1660.1538461538462,
+   "speaker": "SPEAKER",
+   "text": "Welcome to the team.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 42,
+   "src": 42,
+   "start": 1660.1538461538462,
+   "end": 1675.0,
+   "speaker": "SPEAKER",
+   "text": "Here, we are using for the backend Python with Jungle, and we use multiple kinds of database, so you'll have fun with that.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 43,
+   "src": 43,
+   "start": 1675.0,
+   "end": 1677.0,
+   "speaker": "SPEAKER",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 44,
+   "src": 44,
+   "start": 1677.0,
+   "end": 1677.4,
+   "speaker": "SPEAKER",
+   "text": "Great.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 45,
+   "src": 45,
+   "start": 1677.4,
+   "end": 1679.0,
+   "speaker": "SPEAKER",
+   "text": "Welcome to the team.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 46,
+   "src": 46,
+   "start": 1679.0,
+   "end": 1681.0,
+   "speaker": "SPEAKER",
+   "text": "Thank you.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 47,
+   "src": 47,
+   "start": 1681.0,
+   "end": 1684.0,
+   "speaker": "SPEAKER",
+   "text": "Kishna?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 48,
+   "src": 48,
+   "start": 1684.0,
+   "end": 1691.4285714285713,
+   "speaker": "SPEAKER",
+   "text": "Hi, hello everyone, I'm Krishna, and I'm audible Yeah, I can hear you.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 49,
+   "src": 49,
+   "start": 1691.4285714285713,
+   "end": 1694.0,
+   "speaker": "SPEAKER",
+   "text": "It's a bit low, but I can hear you.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 50,
+   "src": 50,
+   "start": 1694.0,
+   "end": 1695.0,
+   "speaker": "SPEAKER",
+   "text": "Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 51,
+   "src": 51,
+   "start": 1695.0,
+   "end": 1706.0,
+   "speaker": "SPEAKER",
+   "text": "I am Krishna, and I'm in my final year of engineering, and I'm doing computer engineering And it's my first internship Awesome.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 52,
+   "src": 52,
+   "start": 1706.0,
+   "end": 1708.0588235294117,
+   "speaker": "SPEAKER",
+   "text": "Welcome to the team, Krishna.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 53,
+   "src": 53,
+   "start": 1708.0588235294117,
+   "end": 1713.0,
+   "speaker": "SPEAKER",
+   "text": "Have you already in the other internships were on Backend as well?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 54,
+   "src": 54,
+   "start": 1713.0,
+   "end": 1716.0,
+   "speaker": "SPEAKER",
+   "text": "No, actually.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 55,
+   "src": 55,
+   "start": 1716.0,
+   "end": 1724.0,
+   "speaker": "SPEAKER",
+   "text": "But I have done projects, like, in space and other things, but it's my first time in Backend.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 56,
+   "src": 56,
+   "start": 1724.0,
+   "end": 1726.0,
+   "speaker": "SPEAKER",
+   "text": "Awesome.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 57,
+   "src": 57,
+   "start": 1726.0,
+   "end": 1730.0,
+   "speaker": "SPEAKER",
+   "text": "Great.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 58,
+   "src": 58,
+   "start": 1730.0,
+   "end": 1739.0,
+   "speaker": "SPEAKER",
+   "text": "I don't know, Devu, if you want to introduce yourself again, just for this lot here.",
+   "overlap_candidate": false
+  }
+ ],
+ "gold": [
+  {
+   "i": 0,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill",
+    "tang"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 1,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill",
+    "tang"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 2,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill",
+    "tang"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 3,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill",
+    "tang"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 4,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 5,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 6,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 7,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 8,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 9,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 10,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 11,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 12,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 13,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 14,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 15,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 16,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 17,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 18,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 19,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 20,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 21,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 22,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 23,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 24,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 25,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 26,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 27,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 28,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 29,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 30,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 31,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 32,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 33,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 34,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 35,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 36,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 37,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 38,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 39,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 40,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 41,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 42,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "ins"
+   ]
+  },
+  {
+   "i": 43,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 44,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 45,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 46,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 47,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 48,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 49,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 50,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 51,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 52,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 53,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 54,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 55,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 56,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 57,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 58,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "intro",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  }
+ ],
+ "top_moments": [],
+ "short_worthy": []
+}

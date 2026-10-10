@@ -1,0 +1,1717 @@
+{
+ "id": "w07_zoom_concept_then_long_goodbye",
+ "source": "job:794aa22c",
+ "source_range": [
+  1630,
+  1688
+ ],
+ "split": "test",
+ "minutes": 4.03,
+ "hard": "A real concept (research principles: primary vs secondary sources, conflicts of interest; personalising an AI to be rigorous) followed by two minutes of apologies, \"sorry if I wasted your time\", scheduling and goodbyes that keep re-opening the topic.",
+ "sentences": [
+  {
+   "i": 0,
+   "src": 1630,
+   "start": 7438.272173913044,
+   "end": 7444.742608695652,
+   "speaker": "Buddy System",
+   "text": "some courses could expand to, like, an entire university degree on philosophy of science.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 1,
+   "src": 1631,
+   "start": 7444.742608695652,
+   "end": 7451.6878125,
+   "speaker": "Buddy System",
+   "text": "But what I'm trying to say is that It's… it's, like… Like,",
+   "overlap_candidate": false
+  },
+  {
+   "i": 2,
+   "src": 1632,
+   "start": 7451.6878125,
+   "end": 7454.8703125,
+   "speaker": "Buddy System",
+   "text": "only a few principles could help a lot.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 3,
+   "src": 1633,
+   "start": 7454.8703125,
+   "end": 7456.461562500001,
+   "speaker": "Buddy System",
+   "text": "Could help a lot.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 4,
+   "src": 1634,
+   "start": 7456.461562500001,
+   "end": 7464.02,
+   "speaker": "Buddy System",
+   "text": "Like, knowing the difference between a primary resource, between a secondary resource, knowing the idea of conflicts of interest.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 5,
+   "src": 1635,
+   "start": 7464.37,
+   "end": 7477.0,
+   "speaker": "Buddy System",
+   "text": "Knowing the idea of somebody maybe… somebody doing research may be incentivized to be biased, to… like, knowing these principles isn't gonna… isn't really that… Like.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 6,
+   "src": 1636,
+   "start": 7478.09,
+   "end": 7478.78,
+   "speaker": "Buddy System",
+   "text": "problematic.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 7,
+   "src": 1637,
+   "start": 7478.78,
+   "end": 7479.859,
+   "speaker": "Machi 2.0",
+   "text": "Just a second.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 8,
+   "src": 1638,
+   "start": 7480.17,
+   "end": 7483.589142857142,
+   "speaker": "Buddy System",
+   "text": "Yeah, no, it's, it's, it's easy.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 9,
+   "src": 1639,
+   "start": 7483.589142857142,
+   "end": 7495.69653125,
+   "speaker": "Buddy System",
+   "text": "Like, So, it's necessary, and the problem is, as I told you, John is is more Like, trying to be… more",
+   "overlap_candidate": false
+  },
+  {
+   "i": 10,
+   "src": 1640,
+   "start": 7495.69653125,
+   "end": 7499.4453125,
+   "speaker": "Buddy System",
+   "text": "AI dependent, more away from people doing the research.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 11,
+   "src": 1641,
+   "start": 7499.4453125,
+   "end": 7508.609,
+   "speaker": "Buddy System",
+   "text": "And now AI could actually, like, it really comes down, like, you could know the personality of the person you're dealing with.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 12,
+   "src": 1642,
+   "start": 7508.72,
+   "end": 7510.709,
+   "speaker": "Buddy System",
+   "text": "Through dealing with their.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 13,
+   "src": 1643,
+   "start": 7511.1,
+   "end": 7512.92,
+   "speaker": "Buddy System",
+   "text": "The AI account.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 14,
+   "src": 1644,
+   "start": 7513.6,
+   "end": 7523.067954545455,
+   "speaker": "Buddy System",
+   "text": "Because, seriously, some, like… Like, like, what I do with my AI… is in the personalization settings.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 15,
+   "src": 1645,
+   "start": 7523.067954545455,
+   "end": 7531.459,
+   "speaker": "Buddy System",
+   "text": "I just like drop a lot of instructions like be rigorous, be academic, use principles of philosophy.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 16,
+   "src": 1646,
+   "start": 7531.46,
+   "end": 7531.79,
+   "speaker": "Machi 2.0",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 17,
+   "src": 1647,
+   "start": 7531.79,
+   "end": 7539.069,
+   "speaker": "Buddy System",
+   "text": "And if you do that, Then you've just optimized the AI to be more and more and more.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 18,
+   "src": 1648,
+   "start": 7541.79,
+   "end": 7546.26,
+   "speaker": "Buddy System",
+   "text": "Robust, yeah, robust scientific.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 19,
+   "src": 1649,
+   "start": 7546.4,
+   "end": 7547.86,
+   "speaker": "Buddy System",
+   "text": "And it's judgment.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 20,
+   "src": 1650,
+   "start": 7549.29,
+   "end": 7552.389,
+   "speaker": "Buddy System",
+   "text": "Like, so… so that's the point.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 21,
+   "src": 1651,
+   "start": 7553.27,
+   "end": 7554.571800000001,
+   "speaker": "Buddy System",
+   "text": "we need to address.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 22,
+   "src": 1652,
+   "start": 7554.571800000001,
+   "end": 7559.779,
+   "speaker": "Buddy System",
+   "text": "I know I said… I'm sorry, Match, if I'm wasting your time or anything, but I…",
+   "overlap_candidate": false
+  },
+  {
+   "i": 23,
+   "src": 1653,
+   "start": 7559.78,
+   "end": 7561.230888888888,
+   "speaker": "Machi 2.0",
+   "text": "No, but it's okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 24,
+   "src": 1654,
+   "start": 7561.230888888888,
+   "end": 7561.9563333333335,
+   "speaker": "Machi 2.0",
+   "text": "It's okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 25,
+   "src": 1655,
+   "start": 7561.9563333333335,
+   "end": 7566.309,
+   "speaker": "Machi 2.0",
+   "text": "You really expressed yourself and we've covered what we need to cover.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 26,
+   "src": 1656,
+   "start": 7566.72,
+   "end": 7567.959,
+   "speaker": "Machi 2.0",
+   "text": "So it's okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 27,
+   "src": 1657,
+   "start": 7568.29,
+   "end": 7569.36,
+   "speaker": "Buddy System",
+   "text": "That's.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 28,
+   "src": 1658,
+   "start": 7570.17,
+   "end": 7571.33,
+   "speaker": "Buddy System",
+   "text": "Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 29,
+   "src": 1659,
+   "start": 7571.33,
+   "end": 7582.34,
+   "speaker": "Machi 2.0",
+   "text": "I appreciate you for having the meeting, I'll kind of look over what you've discussed a little bit later, because I have The project's task to start.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 30,
+   "src": 1660,
+   "start": 7582.65,
+   "end": 7586.44,
+   "speaker": "Machi 2.0",
+   "text": "But, let's see how this week goes.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 31,
+   "src": 1661,
+   "start": 7586.69,
+   "end": 7590.979,
+   "speaker": "Machi 2.0",
+   "text": "We'll probably see next in the projects management meeting.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 32,
+   "src": 1662,
+   "start": 7592.14,
+   "end": 7594.93,
+   "speaker": "Machi 2.0",
+   "text": "And then… and tomorrow, tomorrow's Sunday as well.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 33,
+   "src": 1663,
+   "start": 7594.93,
+   "end": 7595.67,
+   "speaker": "Buddy System",
+   "text": "but.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 34,
+   "src": 1664,
+   "start": 7595.67,
+   "end": 7596.56,
+   "speaker": "Machi 2.0",
+   "text": "We are on.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 35,
+   "src": 1665,
+   "start": 7596.56,
+   "end": 7600.299,
+   "speaker": "Buddy System",
+   "text": "I don't think I'll be able to attend the project management meeting.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 36,
+   "src": 1666,
+   "start": 7600.91,
+   "end": 7602.72,
+   "speaker": "Buddy System",
+   "text": "The next one, because…",
+   "overlap_candidate": false
+  },
+  {
+   "i": 37,
+   "src": 1667,
+   "start": 7602.72,
+   "end": 7603.649,
+   "speaker": "Machi 2.0",
+   "text": "Go to the next one.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 38,
+   "src": 1668,
+   "start": 7605.12,
+   "end": 7611.099,
+   "speaker": "Buddy System",
+   "text": "Like, to be honest, like, there's a lot going on.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 39,
+   "src": 1669,
+   "start": 7611.31,
+   "end": 7616.33,
+   "speaker": "Buddy System",
+   "text": "So, so I'm not… I'm most probably not gonna be able to attend that one.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 40,
+   "src": 1670,
+   "start": 7617.18,
+   "end": 7619.209,
+   "speaker": "Machi 2.0",
+   "text": "Okay, okay, that's fine, that's fine.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 41,
+   "src": 1671,
+   "start": 7619.36,
+   "end": 7620.003333333333,
+   "speaker": "Machi 2.0",
+   "text": "That's fine.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 42,
+   "src": 1672,
+   "start": 7620.003333333333,
+   "end": 7620.968333333333,
+   "speaker": "Machi 2.0",
+   "text": "I don't know.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 43,
+   "src": 1673,
+   "start": 7620.968333333333,
+   "end": 7623.22,
+   "speaker": "Machi 2.0",
+   "text": "Enjoy the rest of your day, then.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 44,
+   "src": 1674,
+   "start": 7623.37,
+   "end": 7624.34,
+   "speaker": "Machi 2.0",
+   "text": "We'll see.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 45,
+   "src": 1675,
+   "start": 7624.57,
+   "end": 7628.979,
+   "speaker": "Buddy System",
+   "text": "Thank you, Machi, and sorry if I wasted your time.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 46,
+   "src": 1676,
+   "start": 7629.52,
+   "end": 7630.74,
+   "speaker": "Machi 2.0",
+   "text": "No, I wasn't approached.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 47,
+   "src": 1677,
+   "start": 7631.41,
+   "end": 7637.53,
+   "speaker": "Buddy System",
+   "text": "But I think it's, it was worth it, like… I.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 48,
+   "src": 1678,
+   "start": 7637.53,
+   "end": 7639.54,
+   "speaker": "Machi 2.0",
+   "text": "Certainly a lot of things off your chest, clearly.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 49,
+   "src": 1679,
+   "start": 7639.54,
+   "end": 7655.850321428572,
+   "speaker": "Buddy System",
+   "text": "Yeah, yeah, because… Because I know, like, to be honest, the reason I wanted to discuss this with you specifically is because on numerous occasions I saw you more in line with what I'm… like,",
+   "overlap_candidate": false
+  },
+  {
+   "i": 50,
+   "src": 1680,
+   "start": 7655.850321428572,
+   "end": 7667.8,
+   "speaker": "Buddy System",
+   "text": "with what I've… I'm discussing, like, even you yourself, you said, like, you've disputed the idea of the body system before, so… so… I just wanted to… Like.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 51,
+   "src": 1681,
+   "start": 7668.68,
+   "end": 7671.609,
+   "speaker": "Buddy System",
+   "text": "Have you on the same page as I am, like…",
+   "overlap_candidate": false
+  },
+  {
+   "i": 52,
+   "src": 1682,
+   "start": 7671.61,
+   "end": 7672.51,
+   "speaker": "Machi 2.0",
+   "text": "I understand.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 53,
+   "src": 1683,
+   "start": 7672.7,
+   "end": 7673.88,
+   "speaker": "Machi 2.0",
+   "text": "I understand.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 54,
+   "src": 1684,
+   "start": 7674.18,
+   "end": 7674.79,
+   "speaker": "Machi 2.0",
+   "text": "Alright.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 55,
+   "src": 1685,
+   "start": 7674.79,
+   "end": 7675.66,
+   "speaker": "Buddy System",
+   "text": "Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 56,
+   "src": 1686,
+   "start": 7676.95,
+   "end": 7677.33,
+   "speaker": "Machi 2.0",
+   "text": "Take care.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 57,
+   "src": 1687,
+   "start": 7677.33,
+   "end": 7678.77,
+   "speaker": "Buddy System",
+   "text": "Goodbye.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 58,
+   "src": 1688,
+   "start": 7678.77,
+   "end": 7680.21,
+   "speaker": "Buddy System",
+   "text": "Goodbye.",
+   "overlap_candidate": false
+  }
+ ],
+ "gold": [
+  {
+   "i": 0,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 1,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 2,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 3,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 4,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 5,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 6,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 7,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 8,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 9,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "dec",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "decision"
+   }
+  },
+  {
+   "i": 10,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "dec",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "decision"
+   }
+  },
+  {
+   "i": 11,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 12,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 13,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 14,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 15,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 16,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 17,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 18,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 19,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 20,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 21,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 22,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 23,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 24,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 25,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 26,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 27,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 28,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 29,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 30,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 31,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 32,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "dead_air",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 33,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 34,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 35,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 36,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 37,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 38,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "fill",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "tangent",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 39,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "fill",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "tangent",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 40,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 41,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 42,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "dead_air",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 43,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 44,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 45,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 46,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 47,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 48,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 49,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "fill",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "tangent",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 50,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "fill",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 51,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 52,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 53,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 54,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 55,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 56,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 57,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 58,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "greeting_small_talk",
+    "highlight": "none"
+   }
+  }
+ ],
+ "top_moments": [
+  [
+   0,
+   6
+  ],
+  [
+   14,
+   20
+  ]
+ ],
+ "short_worthy": [
+  [
+   14,
+   20
+  ]
+ ]
+}

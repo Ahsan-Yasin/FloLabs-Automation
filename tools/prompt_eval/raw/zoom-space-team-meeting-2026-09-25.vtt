@@ -1,0 +1,3418 @@
+WEBVTT
+
+1
+00:00:41.550 --> 00:00:43.250
+Yassin El-Ghatrify: Hello, Mr. John.
+
+2
+00:00:45.170 --> 00:00:46.869
+John Hazlewood: Hey, how's you doing?
+
+3
+00:00:47.360 --> 00:00:50.369
+Yassin El-Ghatrify: I'm doing fine, thank you.
+
+4
+00:00:52.290 --> 00:00:56.389
+Yassin El-Ghatrify: Just give me one second, I'm gonna open the camera.
+
+5
+00:00:59.960 --> 00:01:04.360
+John Hazlewood: Do you know, is Pranad gonna join?
+
+6
+00:01:06.460 --> 00:01:08.930
+Yassin El-Ghatrify: I'm gonna send him a message now.
+
+7
+00:01:25.210 --> 00:01:27.430
+Yassin El-Ghatrify: That's one second…
+
+8
+00:02:23.270 --> 00:02:26.129
+Yassin El-Ghatrify: I don't know if he's aware of the meeting.
+
+9
+00:02:29.450 --> 00:02:39.910
+Yassin El-Ghatrify: Even though we… We mentioned him on the general chat when we were setting up the meeting.
+
+10
+00:02:41.510 --> 00:02:47.699
+Yassin El-Ghatrify: So I don't know if he… You saw it, or not.
+
+11
+00:02:52.950 --> 00:03:01.070
+mohamed abdelmohsen: Listen, hello, Mr. John. I think I sent a message into a North Team Group channel about this meeting, actually.
+
+12
+00:03:03.470 --> 00:03:04.940
+mohamed abdelmohsen: I think he knows.
+
+13
+00:03:17.380 --> 00:03:22.860
+mohamed abdelmohsen: Yes, I sent a message into his team group channel, 3 days ago.
+
+14
+00:03:23.310 --> 00:03:25.390
+mohamed abdelmohsen: And tagged him and Mr. John.
+
+15
+00:03:25.520 --> 00:03:27.940
+mohamed abdelmohsen: About changing the meeting to now.
+
+16
+00:03:31.810 --> 00:03:33.000
+Yassin El-Ghatrify: And did they see it?
+
+17
+00:03:35.530 --> 00:03:36.889
+mohamed abdelmohsen: I'm not sure.
+
+18
+00:03:50.920 --> 00:03:52.370
+mohamed abdelmohsen: Where is Rebecca?
+
+19
+00:04:21.519 --> 00:04:29.169
+mohamed abdelmohsen: I'm on the table, version 5 is on GitHub, ready to upload the response from… Ready to publish.
+
+20
+00:07:31.200 --> 00:07:31.870
+Yassin El-Ghatrify: Huh.
+
+21
+00:07:36.230 --> 00:07:38.270
+Yassin El-Ghatrify: I think Pranadan.
+
+22
+00:07:39.380 --> 00:07:42.039
+Yassin El-Ghatrify: Rebecca aren't aware of the meeting.
+
+23
+00:07:45.580 --> 00:07:50.520
+John Hazlewood: Yeah, mohamed, we actually need to meet with Rebecca, because she had sent us that message about.
+
+24
+00:07:52.150 --> 00:07:53.780
+mohamed abdelmohsen: Yeah. Interesting.
+
+25
+00:07:53.780 --> 00:07:54.270
+John Hazlewood: in the middle.
+
+26
+00:07:54.890 --> 00:07:57.569
+mohamed abdelmohsen: Hold on, I, I, I chose this method.
+
+27
+00:07:57.910 --> 00:08:03.220
+mohamed abdelmohsen: She actually sent me a message half an hour ago about the last version of Kaibu.
+
+28
+00:08:03.810 --> 00:08:05.180
+mohamed abdelmohsen: Version 5.
+
+29
+00:08:06.100 --> 00:08:10.190
+mohamed abdelmohsen: So… Oh…
+
+30
+00:08:15.500 --> 00:08:16.849
+John Hazlewood: You looked at her toggle.
+
+31
+00:08:19.220 --> 00:08:23.909
+mohamed abdelmohsen: I didn't check her toggle, but I believe she did not done with them yet.
+
+32
+00:08:24.090 --> 00:08:26.959
+mohamed abdelmohsen: But let me see first, and then we can decide.
+
+33
+00:08:28.210 --> 00:08:29.010
+John Hazlewood: Okay.
+
+34
+00:08:36.559 --> 00:08:43.100
+mohamed abdelmohsen: I think Rebecca will join us, let me… Yeah. What's your job?
+
+35
+00:09:10.340 --> 00:09:13.869
+John Hazlewood: So, Yassin, what's on the agenda for today?
+
+36
+00:09:16.420 --> 00:09:26.690
+Yassin El-Ghatrify: Well, today is more about discussing… the… the actual… They,
+
+37
+00:09:27.420 --> 00:09:31.390
+Yassin El-Ghatrify: acquisition, because I did some research about the…
+
+38
+00:09:31.610 --> 00:09:37.299
+Yassin El-Ghatrify: Like, how are we going to actually pull together all of the data?
+
+39
+00:09:38.330 --> 00:09:49.549
+Yassin El-Ghatrify: And… Like, have the… basically create our 3D model. And the problem is, it's…
+
+40
+00:09:49.690 --> 00:10:06.510
+Yassin El-Ghatrify: it's not about the data. Like, the open source material is endless. It's billions and billions of objects. But the problem is the… how would you say it? The synthesis of all the data
+
+41
+00:10:07.340 --> 00:10:20.210
+Yassin El-Ghatrify: In one… In one master… Document, or one master… like…
+
+42
+00:10:21.290 --> 00:10:27.159
+Yassin El-Ghatrify: Like, a combination of all of the data, while removing all of the duplicates.
+
+43
+00:10:28.270 --> 00:10:34.920
+Yassin El-Ghatrify: So… that's the… main… problem.
+
+44
+00:10:36.040 --> 00:10:48.280
+Yassin El-Ghatrify: like… like, if we, for example, look at Gaia Sky, They only used… The data from… Gaia's,
+
+45
+00:10:48.410 --> 00:10:49.500
+Yassin El-Ghatrify: Datasets.
+
+46
+00:10:51.680 --> 00:10:53.350
+Yassin El-Ghatrify: So…
+
+47
+00:10:54.700 --> 00:11:11.590
+Yassin El-Ghatrify: like, it's… and that's why when… if you use Gaiuskaya, you're gonna find patches… patches in the universe that are basically black, like, you can't see any stars in these areas, because they're basically…
+
+48
+00:11:11.930 --> 00:11:13.669
+Yassin El-Ghatrify: Not in the dataset.
+
+49
+00:11:14.660 --> 00:11:18.829
+Yassin El-Ghatrify: So… So I'm trying to tackle that.
+
+50
+00:11:19.390 --> 00:11:23.430
+Yassin El-Ghatrify: Like, how we're going to… Emm…
+
+51
+00:11:23.890 --> 00:11:32.010
+Yassin El-Ghatrify: Like, again, synthesize all of the material into one… Big…
+
+52
+00:11:32.730 --> 00:11:36.619
+Yassin El-Ghatrify: the database. And I also looked into Ruben.
+
+53
+00:11:40.290 --> 00:11:55.909
+Yassin El-Ghatrify: But it's, like, something Ruben has is that it tracks the universe over time, so over the last 10 years, how the universe is changing over time, so that's, useful.
+
+54
+00:11:56.230 --> 00:12:00.149
+Yassin El-Ghatrify: But to be honest, the research is still, like…
+
+55
+00:12:01.210 --> 00:12:07.529
+Yassin El-Ghatrify: In its early stages, because, like, you know that quote from…
+
+56
+00:12:08.930 --> 00:12:15.819
+Yassin El-Ghatrify: from Van Gogh, like, the more I know, the more I realize I don't know, so it's,
+
+57
+00:12:16.340 --> 00:12:22.760
+Yassin El-Ghatrify: I think it's Van Gogh who said this. So the more I go into the idea of data.
+
+58
+00:12:22.960 --> 00:12:32.060
+Yassin El-Ghatrify: the more I realize it's, it's, the scientific element to it is, very big.
+
+59
+00:12:32.430 --> 00:12:37.720
+Yassin El-Ghatrify: So… And, like… It's a big frozen.
+
+60
+00:12:37.720 --> 00:12:42.889
+mohamed abdelmohsen: Yeah. This is… Big word from…
+
+61
+00:12:43.910 --> 00:12:45.790
+mohamed abdelmohsen: scholarly answer.
+
+62
+00:12:47.480 --> 00:12:51.660
+Yassin El-Ghatrify: It's, like, because there are billions of space objects.
+
+63
+00:12:52.450 --> 00:13:02.190
+Yassin El-Ghatrify: and many, many repos… like, I asked ChatGPT to give me a list of open source datasets, and he gave me, like.
+
+64
+00:13:03.260 --> 00:13:17.219
+Yassin El-Ghatrify: I don't know, maybe 50 data sets with millions of data… data entries, so the quantity of data isn't a problem at all, but the problem is synthesizing all of that data into one…
+
+65
+00:13:17.680 --> 00:13:19.060
+Yassin El-Ghatrify: Core dataset?
+
+66
+00:13:20.360 --> 00:13:28.930
+Yassin El-Ghatrify: And, I'm moving all the duplicates, so I'm looking into how to actually… like…
+
+67
+00:13:29.400 --> 00:13:34.500
+Yassin El-Ghatrify: How to do that, how to automate that process.
+
+68
+00:13:34.930 --> 00:13:35.580
+Yassin El-Ghatrify: So…
+
+69
+00:13:35.580 --> 00:13:38.159
+John Hazlewood: Did you ask, did you ask ChatGPT?
+
+70
+00:13:39.060 --> 00:13:42.830
+Yassin El-Ghatrify: Yeah, I'm still looking into how it's done.
+
+71
+00:13:43.000 --> 00:13:47.949
+Yassin El-Ghatrify: Like, how is… like, Space Engine, what Space Engine did, you remember Space Engine?
+
+72
+00:13:48.280 --> 00:13:50.120
+Yassin El-Ghatrify: the video I showed?
+
+73
+00:13:52.260 --> 00:13:52.970
+John Hazlewood: Yeah.
+
+74
+00:13:53.630 --> 00:14:03.000
+Yassin El-Ghatrify: Yeah, what Space Engine did is they, rather than… What'd you say?
+
+75
+00:14:03.460 --> 00:14:07.480
+Yassin El-Ghatrify: Like, for the unexplored parts of the universe.
+
+76
+00:14:08.230 --> 00:14:14.819
+Yassin El-Ghatrify: Or, not the unexplored, but the parts of the universe that aren't in the dataset they used.
+
+77
+00:14:15.100 --> 00:14:27.060
+Yassin El-Ghatrify: They generated, like, more of a… an artificial, or a… Like, more… like, basically fake…
+
+78
+00:14:27.760 --> 00:14:38.680
+Yassin El-Ghatrify: aesthetics, just to complete the picture of how the universe looks, but… but the stars or galaxies, the objects they generated aren't actual, genuinely…
+
+79
+00:14:39.030 --> 00:14:53.390
+Yassin El-Ghatrify: like, scientific. So… so what Space Engine… what Space Engine did is that they have real objects, and for places of the universe where they don't… where their data sets don't cover
+
+80
+00:14:53.700 --> 00:15:04.130
+Yassin El-Ghatrify: Don't cover that area, they just generated… generated stars… Like, just to keep the…
+
+81
+00:15:05.610 --> 00:15:08.640
+Yassin El-Ghatrify: Like, the aesthetic of it all.
+
+82
+00:15:08.870 --> 00:15:14.359
+Yassin El-Ghatrify: As for Gaia Sky, as I said, they only use Gaia's datasets.
+
+83
+00:15:15.060 --> 00:15:23.070
+Yassin El-Ghatrify: So… well, the question is, like, for an MVP, we could just… have…
+
+84
+00:15:24.030 --> 00:15:28.389
+Yassin El-Ghatrify: A select few datasets as a start, but…
+
+85
+00:15:28.850 --> 00:15:33.919
+Yassin El-Ghatrify: The more we want to develop our product, the more we're going to want to integrate
+
+86
+00:15:34.310 --> 00:15:35.900
+Yassin El-Ghatrify: More and more datasets.
+
+87
+00:15:36.820 --> 00:15:37.840
+Yassin El-Ghatrify: So…
+
+88
+00:15:37.840 --> 00:15:45.100
+John Hazlewood: Well, I was thinking for our MVP, it was just gonna be… a link to NASA Eyes.
+
+89
+00:15:47.120 --> 00:15:54.260
+Yassin El-Ghatrify: Doing that size… Well, the thing is, NASA Eyes isn't… like,
+
+90
+00:15:55.010 --> 00:16:01.360
+Yassin El-Ghatrify: Well, NASA Eyes for Exoplanets is… is good.
+
+91
+00:16:01.860 --> 00:16:11.669
+Yassin El-Ghatrify: But the rest of NASA's eyes, like the NASA eyes for asteroids, NASA eyes for spacecraft, NASA eyes for the solar system, it's… it's small.
+
+92
+00:16:11.880 --> 00:16:17.110
+Yassin El-Ghatrify: Like, it's not really that… rich in… Information.
+
+93
+00:16:18.400 --> 00:16:20.979
+John Hazlewood: Well, I mean, whatever they have, we would use.
+
+94
+00:16:22.560 --> 00:16:25.859
+John Hazlewood: That could be our MVP. I mean, it's just a link.
+
+95
+00:16:26.000 --> 00:16:34.690
+John Hazlewood: And then, you know, then we need to have a… at least we have a visual. And then, you know, we see how we could use that
+
+96
+00:16:34.810 --> 00:16:36.900
+John Hazlewood: with, with AI.
+
+97
+00:16:38.530 --> 00:16:47.979
+John Hazlewood: And then we can start to integrate others by API, or however other… however the others integrate. But, I mean, this is, like.
+
+98
+00:16:48.240 --> 00:16:49.210
+John Hazlewood: Should be, like.
+
+99
+00:16:49.510 --> 00:16:56.199
+John Hazlewood: really easy for us to do. We could, you know, it's just a link, basically, a white-label link. We could probably do it in a day.
+
+100
+00:16:58.290 --> 00:16:59.220
+Yassin El-Ghatrify: Whoa.
+
+101
+00:16:59.820 --> 00:17:06.119
+Yassin El-Ghatrify: Okay, like, if you want to have that first product as a link…
+
+102
+00:17:07.589 --> 00:17:14.219
+Yassin El-Ghatrify: I see no problem in that, like, again, we could start with maybe Gaia?
+
+103
+00:17:14.780 --> 00:17:21.189
+Yassin El-Ghatrify: Because we're… Gaia Sky is also open source, and we could also have NASA eyes.
+
+104
+00:17:21.730 --> 00:17:30.160
+Yassin El-Ghatrify: As a start. But the thing, like, my main concern is for the long term, Oh, Pranad.
+
+105
+00:17:32.010 --> 00:17:35.640
+John Hazlewood: Yeah, well, I'm more concerned on the short-term
+
+106
+00:17:38.920 --> 00:17:41.609
+John Hazlewood: Because the short term is gonna be…
+
+107
+00:17:42.290 --> 00:17:45.759
+John Hazlewood: Like, the hardest thing for us to launch right now.
+
+108
+00:17:45.870 --> 00:17:54.580
+John Hazlewood: I mean, you can have… the long term might change, I mean, it's going to require resources, Bye.
+
+109
+00:17:54.910 --> 00:18:02.010
+John Hazlewood: I mean, we need to, like, what can we do, like, as soon as possible? What's the near-term…
+
+110
+00:18:02.640 --> 00:18:07.620
+John Hazlewood: And I think NASA eyes, if it can be implemented in a couple days.
+
+111
+00:18:07.780 --> 00:18:10.809
+John Hazlewood: You know, we implement that, and then we come back and…
+
+112
+00:18:10.920 --> 00:18:18.210
+John Hazlewood: You know, use the other one that you showed us, you know, the… that's open source, but that's gonna take longer, because
+
+113
+00:18:18.430 --> 00:18:24.140
+John Hazlewood: We still have technical work to do on that, and it's not just a, you know, like, NASA eyes.
+
+114
+00:18:25.180 --> 00:18:25.850
+Yassin El-Ghatrify: Yeah.
+
+115
+00:18:26.270 --> 00:18:27.070
+Yassin El-Ghatrify: No.
+
+116
+00:18:27.870 --> 00:18:30.300
+John Hazlewood: I mean, do it in stages, because…
+
+117
+00:18:31.200 --> 00:18:34.140
+John Hazlewood: I mean, we could have something tomorrow with NASA eyes.
+
+118
+00:18:35.180 --> 00:18:38.969
+John Hazlewood: We could show people, and it would be fairly impressive.
+
+119
+00:18:39.180 --> 00:18:46.779
+John Hazlewood: You know, better than not having anything. It would also help recruit potential interns to join, you know, the space team.
+
+120
+00:18:47.560 --> 00:18:53.540
+John Hazlewood: if we market that, you know, on the Cosmos Intelligence website and stuff,
+
+121
+00:18:53.640 --> 00:18:56.580
+John Hazlewood: Even if it's not, say, a usable…
+
+122
+00:18:58.510 --> 00:19:13.270
+John Hazlewood: Still not sure. I mean, you saw the ChatGVT link that I sent about the research that I did. NASA was NASA Eyes, and it actually… ChatGBT said that we could have that, even NASA Eyes as a layer, and have our AI as a layer
+
+123
+00:19:13.300 --> 00:19:19.950
+John Hazlewood: There's another layer that integrates with chatting with NASA Eyes, so…
+
+124
+00:19:20.470 --> 00:19:24.490
+John Hazlewood: So I guess, you know, that's… You know, that's doable.
+
+125
+00:19:25.270 --> 00:19:26.060
+John Hazlewood: Right.
+
+126
+00:19:27.370 --> 00:19:32.260
+John Hazlewood: Like, we should take it one at a time, do one… Get that launched.
+
+127
+00:19:32.480 --> 00:19:39.319
+John Hazlewood: Do another one, get that launched, you know, integrate it, and then do another one, and, you know, one at a time.
+
+128
+00:19:41.130 --> 00:19:41.930
+Yassin El-Ghatrify: No.
+
+129
+00:19:42.590 --> 00:19:45.959
+Yassin El-Ghatrify: Okay, I think that's a good idea.
+
+130
+00:19:46.730 --> 00:19:55.450
+Yassin El-Ghatrify: But the thing is, like… like, I know mohamed is… Very busy.
+
+131
+00:19:55.640 --> 00:19:58.030
+Yassin El-Ghatrify: Very, very busy.
+
+132
+00:19:58.140 --> 00:20:06.689
+Yassin El-Ghatrify: So, like, who do we… because me and Pranad were not… Developers are not… Like, who do we…
+
+133
+00:20:08.240 --> 00:20:15.330
+Yassin El-Ghatrify: Contact in the company who's available and capable of integrating what?
+
+134
+00:20:15.430 --> 00:20:18.370
+Yassin El-Ghatrify: We want to integrate, like…
+
+135
+00:20:19.980 --> 00:20:26.660
+John Hazlewood: Probably… I mean, we should… Probably take everything through the software team.
+
+136
+00:20:26.850 --> 00:20:28.230
+John Hazlewood: Through Indra.
+
+137
+00:20:29.050 --> 00:20:38.510
+John Hazlewood: I think Diego He's a front-end developer, and he could… He's also a designer.
+
+138
+00:20:40.310 --> 00:20:42.299
+John Hazlewood: He would probably be a good one to…
+
+139
+00:20:46.480 --> 00:20:47.660
+John Hazlewood: to do that.
+
+140
+00:20:48.880 --> 00:20:52.180
+John Hazlewood: I don't know who else… Bye.
+
+141
+00:20:54.340 --> 00:20:59.319
+John Hazlewood: Yeah, we could talk about it on Sunday, talk about it with Andra, and just assign it to…
+
+142
+00:20:59.900 --> 00:21:01.029
+John Hazlewood: the team, and…
+
+143
+00:21:02.690 --> 00:21:06.990
+John Hazlewood: You know, or assign it to a couple people in the… during that meeting, you know, whatever.
+
+144
+00:21:09.920 --> 00:21:10.850
+Yassin El-Ghatrify: No.
+
+145
+00:21:11.470 --> 00:21:18.940
+Yassin El-Ghatrify: Because, yeah, like, that's… these are the next steps, so… Like, having…
+
+146
+00:21:20.070 --> 00:21:31.880
+Yassin El-Ghatrify: Because I think the scientific side, I think, Pranad has got that covered, like… Knowing the…
+
+147
+00:21:33.240 --> 00:21:36.490
+Yassin El-Ghatrify: He was with us Pranada? Yeah.
+
+148
+00:21:36.950 --> 00:21:40.839
+Yassin El-Ghatrify: So, I think he has that covered.
+
+149
+00:21:41.240 --> 00:21:43.740
+Yassin El-Ghatrify: Like, the, the actual…
+
+150
+00:21:45.910 --> 00:21:58.060
+Yassin El-Ghatrify: data… like, the planet, the size of the planet, the heat temperature, the wavelengths, all of that that comes from these space objects, I think…
+
+151
+00:21:58.690 --> 00:22:02.470
+Yassin El-Ghatrify: That could be what the space team could handle.
+
+152
+00:22:02.670 --> 00:22:04.680
+Yassin El-Ghatrify: Sorry, the camera…
+
+153
+00:22:08.430 --> 00:22:14.219
+Yassin El-Ghatrify: And, the software team… Could, integrate that.
+
+154
+00:22:14.500 --> 00:22:22.720
+Yassin El-Ghatrify: with… Because, like, the… The method, or how…
+
+155
+00:22:24.010 --> 00:22:32.400
+Yassin El-Ghatrify: the product is going to basically operate is you're gonna have, like, for every… data entry.
+
+156
+00:22:33.050 --> 00:22:43.210
+Yassin El-Ghatrify: or for every space object, you have basically lots of information on the space object. You have its temperature, you have, again, its… the wavelengths.
+
+157
+00:22:43.270 --> 00:22:53.320
+Yassin El-Ghatrify: It emits, we have the distance, we have the observation, like, the parallax of the…
+
+158
+00:22:54.140 --> 00:22:58.470
+Yassin El-Ghatrify: of the observator. We have all of that.
+
+159
+00:22:58.610 --> 00:23:03.979
+Yassin El-Ghatrify: And all of that translates to how the… the…
+
+160
+00:23:04.680 --> 00:23:06.859
+Yassin El-Ghatrify: Space object is going to look like.
+
+161
+00:23:07.670 --> 00:23:13.840
+Yassin El-Ghatrify: So, of course, with NASA, it's… that's already covered, but… The step after that?
+
+162
+00:23:14.040 --> 00:23:21.819
+Yassin El-Ghatrify: You're gonna have… every space object that basically has all of this information, and this information is going to govern how it's going to look like.
+
+163
+00:23:22.170 --> 00:23:32.130
+Yassin El-Ghatrify: in the… In the… In the universe, we're trying to… Model.
+
+164
+00:23:34.410 --> 00:23:42.480
+Yassin El-Ghatrify: So… So, yeah, yeah, if you have any comments on that.
+
+165
+00:23:47.110 --> 00:23:48.620
+John Hazlewood: Asking me, or Prad?
+
+166
+00:23:49.950 --> 00:23:51.220
+Yassin El-Ghatrify: No, to you, Mr.
+
+167
+00:23:51.810 --> 00:23:52.370
+John Hazlewood: Oh.
+
+168
+00:23:59.890 --> 00:24:03.309
+John Hazlewood: You know, all I can think about right now is, like.
+
+169
+00:24:05.840 --> 00:24:13.170
+John Hazlewood: You know, integrating one, and then integrating the second one, and seeing… trying to figure it out as we develop it.
+
+170
+00:24:19.870 --> 00:24:24.770
+John Hazlewood: And we'll figure it out as we develop it, so I don't know what else to…
+
+171
+00:24:31.060 --> 00:24:35.740
+Yassin El-Ghatrify: No… Because…
+
+172
+00:24:40.480 --> 00:24:48.939
+Yassin El-Ghatrify: Like, the thing is, we're going to have to go through, like… because, yeah, we're gonna have to figure it out as… sorry.
+
+173
+00:24:49.200 --> 00:24:55.050
+Yassin El-Ghatrify: As we develop it, but… As we go through the…
+
+174
+00:24:55.590 --> 00:25:05.990
+Yassin El-Ghatrify: development process. Every database, or every dataset we're going to deal with has different, different…
+
+175
+00:25:06.460 --> 00:25:07.760
+Yassin El-Ghatrify: How would you say it?
+
+176
+00:25:08.010 --> 00:25:11.470
+Yassin El-Ghatrify: data labeling mechanisms.
+
+177
+00:25:12.160 --> 00:25:17.330
+Yassin El-Ghatrify: So you're gonna have, for example, multiple datasets talking about the Andromeda Galaxy.
+
+178
+00:25:17.510 --> 00:25:18.540
+Yassin El-Ghatrify: Okay?
+
+179
+00:25:19.250 --> 00:25:27.160
+Yassin El-Ghatrify: So, with every dataset, You're going to have the Andromeda Galaxy labeled as a different name.
+
+180
+00:25:27.500 --> 00:25:39.770
+Yassin El-Ghatrify: with potentially different observation times, observation locations, observation errors, for example, all of that is gonna be different, so…
+
+181
+00:25:40.490 --> 00:25:49.179
+Yassin El-Ghatrify: Figuring that… like, figuring… how… Figuring it out as we go through it.
+
+182
+00:25:49.370 --> 00:25:53.310
+Yassin El-Ghatrify: It's going to be, basically… like…
+
+183
+00:25:53.660 --> 00:26:01.710
+Yassin El-Ghatrify: a necessary consequence of the development process itself. So… but the figure, like…
+
+184
+00:26:02.900 --> 00:26:07.230
+Yassin El-Ghatrify: Like, we have to separate the… scientific data?
+
+185
+00:26:07.970 --> 00:26:11.989
+Yassin El-Ghatrify: Like, the actual science behind the data?
+
+186
+00:26:12.870 --> 00:26:21.630
+Yassin El-Ghatrify: has to be con… like, it has to map out onto… it has to map onto… one… And prod.
+
+187
+00:26:25.000 --> 00:26:33.040
+Yassin El-Ghatrify: And the development process has to orient itself to… accommodate… the scientific data.
+
+188
+00:26:35.520 --> 00:26:44.550
+Yassin El-Ghatrify: So, we're going to have, like, what I'm trying to say, basically, is we're going to have… we're going to need somebody from the technical team in…
+
+189
+00:26:45.160 --> 00:26:53.300
+Yassin El-Ghatrify: The space team, like… Formally, like, it's going to be…
+
+190
+00:26:53.410 --> 00:26:59.350
+Yassin El-Ghatrify: Somebody from the technical team has to be… To represent the space team.
+
+191
+00:26:59.620 --> 00:27:02.359
+Yassin El-Ghatrify: To be a part of the space team.
+
+192
+00:27:03.490 --> 00:27:05.939
+Yassin El-Ghatrify: That's my point, basically.
+
+193
+00:27:07.930 --> 00:27:09.590
+John Hazlewood: Okay, well…
+
+194
+00:27:19.670 --> 00:27:32.280
+John Hazlewood: Yeah, well, we can see, we can ask… I mean, the Sunday meetings is where they would give us an update. We could ask them to come to these meetings occasionally, and give us an update.
+
+195
+00:27:34.850 --> 00:27:39.560
+John Hazlewood: You know, but here's where we create the requirements documentation.
+
+196
+00:27:40.310 --> 00:27:47.579
+John Hazlewood: And… you know, hand it off to the developers. We don't necessarily need a developer in this meeting.
+
+197
+00:27:47.780 --> 00:27:49.980
+John Hazlewood: We do need to…
+
+198
+00:27:51.250 --> 00:27:59.060
+John Hazlewood: I need to have a meeting with the development team to talk about, once they review it, And… Wow.
+
+199
+00:28:00.320 --> 00:28:02.820
+Yassin El-Ghatrify: I already sent the PRD to…
+
+200
+00:28:03.780 --> 00:28:06.980
+Yassin El-Ghatrify: to Indra, but I didn't get a reply.
+
+201
+00:28:07.590 --> 00:28:08.190
+Yassin El-Ghatrify: Okay, huh?
+
+202
+00:28:08.190 --> 00:28:12.389
+John Hazlewood: Why don't you… why don't you tag her and see if she's had a chance to look at it?
+
+203
+00:28:13.820 --> 00:28:14.900
+Yassin El-Ghatrify: Okay.
+
+204
+00:28:15.370 --> 00:28:18.900
+John Hazlewood: We just had a meeting, a multimodal perception meeting.
+
+205
+00:28:19.300 --> 00:28:20.220
+John Hazlewood: I shoot.
+
+206
+00:28:20.940 --> 00:28:26.639
+John Hazlewood: Spent some time reading through a PRD that we had for… for that, that Manny put together.
+
+207
+00:28:27.530 --> 00:28:30.160
+John Hazlewood: Monty, I guess. Monty?
+
+208
+00:28:30.480 --> 00:28:34.300
+John Hazlewood: Instead of Manny calling him Manny calling. So, I think his name was Manny.
+
+209
+00:28:34.770 --> 00:28:35.620
+John Hazlewood: Money.
+
+210
+00:28:36.750 --> 00:28:39.580
+John Hazlewood: but…
+
+211
+00:28:43.180 --> 00:28:49.779
+John Hazlewood: Yeah, I… On Sunday, you should have a demo of NASA Eyes.
+
+212
+00:28:50.510 --> 00:28:51.360
+John Hazlewood: What?
+
+213
+00:28:51.790 --> 00:28:55.029
+John Hazlewood: If they… if you can find one of their customers.
+
+214
+00:28:55.570 --> 00:29:00.019
+John Hazlewood: someone that's using it, when I read through their information, they said that, like,
+
+215
+00:29:01.450 --> 00:29:09.559
+John Hazlewood: Oh, who's using it? Like, some space museums, I guess.
+
+216
+00:29:10.920 --> 00:29:16.820
+John Hazlewood: And so, at a space museum, they can have it for people that are at the Space Museum, and they can look at
+
+217
+00:29:17.190 --> 00:29:19.459
+John Hazlewood: An app, or a screen.
+
+218
+00:29:19.660 --> 00:29:25.720
+John Hazlewood: While they're there in the Space Museum, And has used NASA Eyes.
+
+219
+00:29:26.170 --> 00:29:26.880
+John Hazlewood: Right.
+
+220
+00:29:29.480 --> 00:29:35.670
+John Hazlewood: Yeah, cause we've got to take this in baby steps.
+
+221
+00:29:36.040 --> 00:29:39.820
+John Hazlewood: We gotta try and get something launched as quickly as possible, and then…
+
+222
+00:29:43.020 --> 00:29:50.549
+John Hazlewood: having a PRD with, like, bunch of different providers, and something long-term, I mean…
+
+223
+00:29:54.780 --> 00:29:59.880
+John Hazlewood: And it's… Good for them to kind of understand what we want to do.
+
+224
+00:30:03.380 --> 00:30:04.080
+John Hazlewood: Right.
+
+225
+00:30:09.780 --> 00:30:10.660
+John Hazlewood: Yeah.
+
+226
+00:30:11.390 --> 00:30:19.790
+mohamed abdelmohsen: Oh, my gosh, why you guys… I feel like you're confused about that, like, just done with the VRT?
+
+227
+00:30:19.990 --> 00:30:27.950
+mohamed abdelmohsen: not a big issue. I know Yassin and Leonard, you have all… what you need with that, and as soon as you're done with that.
+
+228
+00:30:28.000 --> 00:30:44.549
+mohamed abdelmohsen: As you did, Yassin right now, you send it to Indra. Yes, it's okay, tag her again, and let me send her a message also, and try to send that, to… to Mr. John, so he can forward that to Diego, let's say Maria, let's say anyone of the foreign team.
+
+229
+00:30:44.550 --> 00:30:49.780
+mohamed abdelmohsen: To check about what they're missing, what they need to know more about that, like…
+
+230
+00:30:50.000 --> 00:31:02.940
+mohamed abdelmohsen: Because they're gonna have some questions. And then, within the Sunday meeting, we can talk about that, like, everyone prepared, you know? Okay, see, okay, Bernard, we check the BRD, and there is a gap in this place.
+
+231
+00:31:03.080 --> 00:31:05.429
+mohamed abdelmohsen: So… That's it.
+
+232
+00:31:06.330 --> 00:31:07.380
+mohamed abdelmohsen: So…
+
+233
+00:31:07.660 --> 00:31:22.470
+mohamed abdelmohsen: Yep, not a big deal. Guys, why you make a small thing a big thing? Like, I don't know the word in English, aggregate? Make a small thing to be a big thing. I don't recall the word, but…
+
+234
+00:31:22.470 --> 00:31:23.790
+Yassin El-Ghatrify: Elgerate.
+
+235
+00:31:23.790 --> 00:31:26.169
+mohamed abdelmohsen: Executive… egg… whatever.
+
+236
+00:31:28.300 --> 00:31:29.270
+mohamed abdelmohsen: Yeah.
+
+237
+00:31:29.600 --> 00:31:33.259
+John Hazlewood: Okay, we'll move forward on the PRD and, you know, we'll…
+
+238
+00:31:36.130 --> 00:31:38.300
+Yassin El-Ghatrify: No, fucking dragon…
+
+239
+00:31:40.690 --> 00:31:48.770
+mohamed abdelmohsen: You know, send it to me and send it to Mr. John. I will send it to each front-end developer. Don't worry. I will bother all of them.
+
+240
+00:31:49.240 --> 00:31:50.180
+mohamed abdelmohsen: Don't worry.
+
+241
+00:31:51.050 --> 00:31:53.920
+John Hazlewood: Well, well, I mean… The…
+
+242
+00:31:54.440 --> 00:31:59.560
+John Hazlewood: The developers don't need to see the PRD at this point. I mean, Indra needs to review it.
+
+243
+00:31:59.890 --> 00:32:08.170
+John Hazlewood: What I wanted Diego… what I thought Diego would be good at working on is just…
+
+244
+00:32:08.930 --> 00:32:16.600
+John Hazlewood: To make a white label, Our first version of Space Buddy would be a white label of NASA eyes.
+
+245
+00:32:17.540 --> 00:32:24.889
+John Hazlewood: And… That's what they do. That's just a link, basically, and they white-label. And…
+
+246
+00:32:25.590 --> 00:32:33.539
+John Hazlewood: We don't even have to working with… I mean, right now, we can just, like, launch it without AI, and then add AI, and then…
+
+247
+00:32:33.680 --> 00:32:36.879
+John Hazlewood: You know, then add the next one, the open source one.
+
+248
+00:32:37.870 --> 00:32:43.960
+John Hazlewood: And… That's what… what we're gonna…
+
+249
+00:32:44.600 --> 00:32:46.939
+John Hazlewood: Have to do, one at a time.
+
+250
+00:32:50.420 --> 00:32:52.180
+mohamed abdelmohsen: As you can see.
+
+251
+00:32:53.770 --> 00:32:58.050
+mohamed abdelmohsen: But I think if we take it the steps, yeah, it will be a good thing, but…
+
+252
+00:33:00.540 --> 00:33:03.740
+mohamed abdelmohsen: Let us try and see, yeah, step by step.
+
+253
+00:33:08.560 --> 00:33:09.290
+Yassin El-Ghatrify: Hmm.
+
+254
+00:33:09.580 --> 00:33:11.150
+John Hazlewood: Pranada, how are you doing?
+
+255
+00:33:13.300 --> 00:33:15.169
+Pranad Muttoju: Hey, I'm doing good.
+
+256
+00:33:15.380 --> 00:33:25.019
+Pranad Muttoju: Yeah, I've been… I didn't know, I didn't realize I was logged off of Discord, because… I mean, first off, my laptop, like, died, like, SSD card got fired.
+
+257
+00:33:25.200 --> 00:33:27.689
+Pranad Muttoju: Completely last, Wednesday.
+
+258
+00:33:27.970 --> 00:33:31.939
+Pranad Muttoju: So, I was without a laptop for the back half of last week.
+
+259
+00:33:32.990 --> 00:33:35.619
+Pranad Muttoju: And yeah, I finally got this fixed.
+
+260
+00:33:36.540 --> 00:33:37.460
+Pranad Muttoju: Monday.
+
+261
+00:33:38.220 --> 00:33:43.549
+Pranad Muttoju: So I got, like, a new SSD card and everything, but because of that, I'd, like, put in a new…
+
+262
+00:33:43.870 --> 00:33:48.250
+Pranad Muttoju: like, Windows 11 installation, so, like, everything, like, reset.
+
+263
+00:33:48.830 --> 00:33:59.299
+Pranad Muttoju: So, like, I'm, like, putting all my passwords and everything again into everything. So I didn't realize, like, I didn't see the messages on this quote until, like, I saw your phone call, and I was like, oh, okay.
+
+264
+00:33:59.420 --> 00:34:01.770
+Pranad Muttoju: I was like, that's why I'm not getting anything.
+
+265
+00:34:02.720 --> 00:34:04.279
+John Hazlewood: Okay, well, I'm glad I called you.
+
+266
+00:34:04.580 --> 00:34:05.420
+Pranad Muttoju: Yeah.
+
+267
+00:34:09.780 --> 00:34:17.100
+Pranad Muttoju: Yeah, but yeah, I'm… whatever, like, Yassin was saying, I was like, Pretty much verbatim.
+
+268
+00:34:17.310 --> 00:34:20.880
+Pranad Muttoju: Like… Science-wise side?
+
+269
+00:34:21.630 --> 00:34:25.590
+Pranad Muttoju: Of course, if more people are on it, too, it'd be great for my, like.
+
+270
+00:34:26.020 --> 00:34:30.969
+Pranad Muttoju: Like, what I'm… I would, like, suggest is if more people aren't, like, doing the research for the science part, it'd be cool.
+
+271
+00:34:31.679 --> 00:34:33.210
+Pranad Muttoju: It'd be much faster.
+
+272
+00:34:34.800 --> 00:34:39.429
+Pranad Muttoju: But yeah, it's like, we're not developers. We don't know, like, the ideas that we're talking about, if it's, like, even…
+
+273
+00:34:39.530 --> 00:34:40.520
+Pranad Muttoju: feasible.
+
+274
+00:34:44.929 --> 00:34:48.539
+John Hazlewood: Well, whatever someone else is doing out there is feasible.
+
+275
+00:34:49.459 --> 00:34:55.599
+John Hazlewood: Alright, I mean, if there's… if there's… We're gonna… replicate and merge
+
+276
+00:34:56.009 --> 00:34:58.579
+John Hazlewood: Some solutions that are already out there.
+
+277
+00:35:00.099 --> 00:35:02.059
+John Hazlewood: You know, so, I mean, they've done it…
+
+278
+00:35:02.189 --> 00:35:06.309
+John Hazlewood: How do we merge the… margin might be a different thing.
+
+279
+00:35:08.579 --> 00:35:09.309
+John Hazlewood: Right.
+
+280
+00:35:14.699 --> 00:35:17.159
+John Hazlewood: So, okay, well, I think that's…
+
+281
+00:35:17.999 --> 00:35:20.449
+John Hazlewood: You see, I had posted something…
+
+282
+00:36:09.109 --> 00:36:10.049
+John Hazlewood: What could happen?
+
+283
+00:36:14.189 --> 00:36:15.399
+John Hazlewood: What we…
+
+284
+00:36:24.579 --> 00:36:26.759
+John Hazlewood: I don't know if you guys had a chance to see this.
+
+285
+00:36:32.439 --> 00:36:35.459
+John Hazlewood: Do we have comments.
+
+286
+00:36:39.490 --> 00:36:42.479
+Audio shared by John Hazlewood: find that reason. It turns out that it is possible.
+
+287
+00:36:49.240 --> 00:36:51.200
+Audio shared by John Hazlewood: At the heart of it, Project Sun…
+
+288
+00:36:51.590 --> 00:36:52.759
+John Hazlewood: See my screen?
+
+289
+00:36:53.480 --> 00:36:54.120
+Pranad Muttoju: Yep.
+
+290
+00:36:54.350 --> 00:36:54.970
+mohamed abdelmohsen: Man.
+
+291
+00:36:54.970 --> 00:37:04.889
+Audio shared by John Hazlewood: catcher is a simple idea. How can we efficiently scale AI infrastructure through orbital data centers by leveraging the abundant energy that we can get from the sun?
+
+292
+00:37:05.090 --> 00:37:16.239
+Audio shared by John Hazlewood: One question people ask is, why not just do solar on Earth? But if you put a solar panel in the right orbit, it generates 5 to 8 times more power than that same panel down on Earth.
+
+293
+00:37:16.700 --> 00:37:24.140
+Audio shared by John Hazlewood: When we first thought about this idea, we had looked at a variety of orbits, even geosynchronous orbit. But the dawn-dusk orbit.
+
+294
+00:37:24.140 --> 00:37:24.540
+John Hazlewood: Correct.
+
+295
+00:37:24.540 --> 00:37:42.120
+Audio shared by John Hazlewood: It's really optimal for what we're wanting to do, because the solar panels in that orbit will get almost 24-7 sun. At its smallest level, you'll have an individual satellite that will have dozens of TPU chips, and then to scale to solve larger problems, we'll have many…
+
+296
+00:38:11.120 --> 00:38:12.089
+John Hazlewood: How are you?
+
+297
+00:38:24.500 --> 00:38:28.259
+Audio shared by John Hazlewood: Many such satellites linked together and flying in clusters.
+
+298
+00:38:28.740 --> 00:38:33.280
+Audio shared by John Hazlewood: So as you can imagine, these clusters, they're pretty big satellites, and they have to fly pretty close together.
+
+299
+00:38:33.280 --> 00:38:33.700
+John Hazlewood: Okay.
+
+300
+00:38:33.700 --> 00:38:41.440
+Audio shared by John Hazlewood: And there's a lot of magic that happens inside of what we call navigation and control. You have to know your absolute location as…
+
+301
+00:38:41.580 --> 00:38:50.790
+Audio shared by John Hazlewood: As well as your relative position within that constellation, so that you can maintain that, and all be in synchronous motion together. From the frame of reference…
+
+302
+00:38:51.490 --> 00:39:02.979
+Audio shared by John Hazlewood: of one satellite, say, in the center of that formation, it actually looks almost like a dance, like a Viennese waltz, as the satellites move in this pattern around the center of the cluster.
+
+303
+00:39:05.220 --> 00:39:07.589
+Audio shared by John Hazlewood: Google has a long history of…
+
+304
+00:39:08.040 --> 00:39:11.779
+Audio shared by John Hazlewood: tackling moonshots. I think one of the really exciting things about Project…
+
+305
+00:39:53.570 --> 00:39:56.839
+John Hazlewood: It's nothing to do with that, I don't know why I put it in this.
+
+306
+00:40:10.800 --> 00:40:14.629
+Audio shared by John Hazlewood: There's a lot of magic that happens inside of what we call guidance navigation.
+
+307
+00:40:14.840 --> 00:40:23.010
+Audio shared by John Hazlewood: control. You have to know your absolute location, as well as your relative position within that constellation, so that you can maintain that and
+
+308
+00:40:23.010 --> 00:40:38.019
+Audio shared by John Hazlewood: all be in synchronous motion together. From the frame of reference of one satellite, say, in the center of that formation, it actually looks almost like a dance, like a Vietnamese waltz, as the satellites move in this pattern around the center of the cluster.
+
+309
+00:40:39.860 --> 00:40:50.109
+Audio shared by John Hazlewood: Google has a long history of tackling moonshots. I think one of the really exciting things about Project SunCatcher, it's a new way to support what AI can bring to humanity.
+
+310
+00:40:50.710 --> 00:41:03.949
+Audio shared by John Hazlewood: The sun is the ultimate energy source in our solar system. Once you start looking at solar power and think, how can I scale that? How can I make that as simple and efficient as possible? Doing it in space, in the right orbit, becomes the natural answer.
+
+311
+00:41:10.110 --> 00:41:10.780
+John Hazlewood: Yeah.
+
+312
+00:41:14.420 --> 00:41:15.130
+John Hazlewood: Sweet.
+
+313
+00:41:15.280 --> 00:41:16.340
+John Hazlewood: Also…
+
+314
+00:41:55.470 --> 00:42:02.030
+mohamed abdelmohsen: I'm so sorry, there is, something, irrelevant to what are we talking about, so…
+
+315
+00:42:02.520 --> 00:42:09.090
+mohamed abdelmohsen: You got your message in the spam folder. Any message come from the company, too. Am I correct? Not in the inbox.
+
+316
+00:42:13.040 --> 00:42:14.069
+Yassin El-Ghatrify: You're asking me?
+
+317
+00:42:15.010 --> 00:42:16.060
+Pranad Muttoju: Anyone?
+
+318
+00:42:16.450 --> 00:42:18.189
+mohamed abdelmohsen: Yeah, Bernard, and Yassin.
+
+319
+00:42:18.520 --> 00:42:26.030
+mohamed abdelmohsen: you get a message from Flo Labs Innovations within your, spam folder. Am I correct or not?
+
+320
+00:42:26.800 --> 00:42:28.279
+Yassin El-Ghatrify: When exactly?
+
+321
+00:42:28.480 --> 00:42:28.950
+Pranad Muttoju: Yeah.
+
+322
+00:42:29.300 --> 00:42:31.649
+mohamed abdelmohsen: By usual, like usual, not now.
+
+323
+00:42:32.590 --> 00:42:37.119
+Pranad Muttoju: Wait, so say it again, so we get a message from the Flo… like, Flo Labs, and we're on Discord?
+
+324
+00:42:37.690 --> 00:42:39.989
+mohamed abdelmohsen: I will send you guys a message right now.
+
+325
+00:42:40.090 --> 00:42:46.500
+mohamed abdelmohsen: From the company account, please check if you're gonna receive it in the inbox or the spam folder, because
+
+326
+00:42:46.910 --> 00:42:47.889
+mohamed abdelmohsen: I think at this…
+
+327
+00:42:47.890 --> 00:42:48.789
+Pranad Muttoju: Oh, no, male, okay.
+
+328
+00:42:48.790 --> 00:42:53.279
+mohamed abdelmohsen: within the server, hopefully it's gonna work. So, I'm so sorry, yeah?
+
+329
+00:42:54.070 --> 00:42:54.770
+Pranad Muttoju: Okay, I'll send it.
+
+330
+00:42:54.770 --> 00:43:00.220
+John Hazlewood: You guys went through this, because I had posted this some time ago, I guess it was on…
+
+331
+00:43:00.500 --> 00:43:02.180
+John Hazlewood: Like, 10 days ago?
+
+332
+00:43:02.180 --> 00:43:04.040
+Yassin El-Ghatrify: Yes, I didn't, so…
+
+333
+00:43:04.420 --> 00:43:10.240
+John Hazlewood: You did. You went through it, and you merged whatever here with whatever you were working on with the PRD?
+
+334
+00:43:11.450 --> 00:43:13.169
+Yassin El-Ghatrify: You already merged…
+
+335
+00:43:14.570 --> 00:43:15.330
+John Hazlewood: Okay.
+
+336
+00:43:20.790 --> 00:43:32.550
+John Hazlewood: Okay… Yeah, so… Anyways… Harvesting energy in space, next frontier.
+
+337
+00:43:35.370 --> 00:43:45.530
+John Hazlewood: Yeah, a lot of those satellites, of course, showing those satellites. Starlink also, doesn't Starlink have
+
+338
+00:43:47.640 --> 00:43:51.820
+John Hazlewood: way to pull their data, so someone can see where Starlink satellites are.
+
+339
+00:43:53.870 --> 00:43:55.230
+Pranad Muttoju: Yeah, there should be.
+
+340
+00:43:59.070 --> 00:44:01.249
+John Hazlewood: Yeah, because I know they have that with their app.
+
+341
+00:44:01.510 --> 00:44:04.330
+John Hazlewood: And I think I did some research that they have
+
+342
+00:44:04.930 --> 00:44:10.470
+John Hazlewood: I don't know, there might be a use case for people wanting to know Like, where Starlinks.
+
+343
+00:44:10.850 --> 00:44:12.809
+John Hazlewood: Satellites are located.
+
+344
+00:44:14.580 --> 00:44:17.889
+Pranad Muttoju: I think there's a live map… yeah, you have a live map.
+
+345
+00:44:21.210 --> 00:44:22.780
+Pranad Muttoju: Let me put this in the…
+
+346
+00:44:24.360 --> 00:44:30.050
+Pranad Muttoju: Because they have two store links, right? Pretty much, because it's two satellite pathways that are going around.
+
+347
+00:44:32.130 --> 00:44:33.029
+Pranad Muttoju: some chat.
+
+348
+00:44:39.060 --> 00:44:42.449
+John Hazlewood: Yeah, so, I don't know, Yassin is that in the PRD?
+
+349
+00:44:45.570 --> 00:44:50.050
+Yassin El-Ghatrify: This is actually the first time to talk about it.
+
+350
+00:44:50.760 --> 00:44:51.870
+John Hazlewood: What is a K?
+
+351
+00:44:52.550 --> 00:44:55.579
+John Hazlewood: I just… we discussed it with Pranad before.
+
+352
+00:44:56.150 --> 00:44:57.860
+John Hazlewood: There we go.
+
+353
+00:44:58.200 --> 00:44:59.080
+John Hazlewood: Right.
+
+354
+00:45:01.880 --> 00:45:04.569
+John Hazlewood: Yeah, so I don't know how we can…
+
+355
+00:45:05.490 --> 00:45:08.610
+John Hazlewood: Merge that, but research that and see
+
+356
+00:45:10.180 --> 00:45:20.400
+John Hazlewood: you know, in research with ChatGBT, what use cases there might be for, people using Space Buddy, Oh.
+
+357
+00:45:21.400 --> 00:45:22.720
+John Hazlewood: you know, taxes.
+
+358
+00:45:24.570 --> 00:45:27.180
+John Hazlewood: Those satellites, Starlink satellites.
+
+359
+00:45:29.830 --> 00:45:31.149
+Yassin El-Ghatrify: Okay, oh…
+
+360
+00:45:31.700 --> 00:45:35.430
+Pranad Muttoju: I got… Mohammed, I got an email…
+
+361
+00:45:36.450 --> 00:45:39.360
+Pranad Muttoju: It came to my inbox… nope.
+
+362
+00:45:39.790 --> 00:45:42.130
+Pranad Muttoju: Actually, wait. Yeah, it came to my inbox.
+
+363
+00:45:42.730 --> 00:45:45.400
+mohamed abdelmohsen: Okay… what about you, Yassin?
+
+364
+00:45:45.400 --> 00:45:47.130
+Yassin El-Ghatrify: It came to my inbox, too.
+
+365
+00:45:49.850 --> 00:45:51.849
+Pranad Muttoju: But it didn't come to my, like, Flo Lab…
+
+366
+00:45:52.200 --> 00:45:54.369
+Pranad Muttoju: mail one, it came to my Gmail.
+
+367
+00:45:54.960 --> 00:46:03.939
+mohamed abdelmohsen: Yes… this is more powerful. I think Mr. John gonna give me a gift by the end of this today, I think, but, yeah.
+
+368
+00:46:04.360 --> 00:46:06.850
+mohamed abdelmohsen: No, just kidding.
+
+369
+00:46:07.630 --> 00:46:09.640
+mohamed abdelmohsen: Oh my gosh, finally.
+
+370
+00:46:11.770 --> 00:46:12.910
+mohamed abdelmohsen: Thank you, guys.
+
+371
+00:46:14.910 --> 00:46:15.600
+Pranad Muttoju: Yep.
+
+372
+00:46:15.600 --> 00:46:16.860
+Yassin El-Ghatrify: Gobble.
+
+373
+00:46:20.380 --> 00:46:23.669
+Yassin El-Ghatrify: What were we saying? Starlink?
+
+374
+00:46:24.990 --> 00:46:26.550
+Yassin El-Ghatrify: Sorry, link use cases?
+
+375
+00:46:30.300 --> 00:46:31.099
+Pranad Muttoju: Excuse me.
+
+376
+00:46:34.700 --> 00:46:36.599
+Yassin El-Ghatrify: Oh, I couldn't research.
+
+377
+00:46:36.820 --> 00:46:37.710
+Yassin El-Ghatrify: Sorry.
+
+378
+00:46:38.080 --> 00:46:43.450
+Yassin El-Ghatrify: I could research that, for,
+
+379
+00:46:45.110 --> 00:46:53.560
+Yassin El-Ghatrify: for the space, but I… but I do believe that NASA always had, like, There is NASA ICE spacecraft.
+
+380
+00:46:54.340 --> 00:47:00.699
+Yassin El-Ghatrify: Which basically shows all of the spacecraft… spacecraft in the solar system.
+
+381
+00:47:00.810 --> 00:47:07.250
+Yassin El-Ghatrify: I don't know if they integrated the spacecraft of Starlink.
+
+382
+00:47:08.050 --> 00:47:15.110
+Yassin El-Ghatrify: But I think NASA spacecraft already covers… Covers that.
+
+383
+00:47:21.720 --> 00:47:24.040
+John Hazlewood: So AIC spacecraft already covers what?
+
+384
+00:47:25.040 --> 00:47:28.790
+Yassin El-Ghatrify: covers, Starlink, saturday.
+
+385
+00:47:28.790 --> 00:47:31.249
+John Hazlewood: or… Okay, they're integrated in there?
+
+386
+00:47:32.410 --> 00:47:41.840
+Yassin El-Ghatrify: I don't know, but… I don't know yet, but I… Like, it's… it's… Because NASA Ice spacecraft… Main purposes.
+
+387
+00:47:42.260 --> 00:47:44.789
+Yassin El-Ghatrify: Doing all of the spacecraft in the solar system.
+
+388
+00:47:45.630 --> 00:47:47.010
+Yassin El-Ghatrify: So…
+
+389
+00:47:47.570 --> 00:47:54.980
+Yassin El-Ghatrify: I don't know if that includes Starlink or not, but I don't see why not, like, I think it's,
+
+390
+00:47:58.200 --> 00:48:00.290
+Yassin El-Ghatrify: Sadly, bro, I could check now.
+
+391
+00:48:46.880 --> 00:48:51.010
+Pranad Muttoju: We're having to bike to a number of meetings, but I'll still be online.
+
+392
+00:48:52.840 --> 00:48:54.930
+John Hazlewood: You said, well, I'm sorry, Pranada, what'd you say?
+
+393
+00:48:55.750 --> 00:48:58.540
+Pranad Muttoju: I have to, like, bike to another meeting right now.
+
+394
+00:48:58.540 --> 00:48:59.140
+John Hazlewood: Oh.
+
+395
+00:48:59.140 --> 00:49:00.689
+Pranad Muttoju: Like, going on campus.
+
+396
+00:49:01.760 --> 00:49:02.969
+John Hazlewood: You're on your bicycle?
+
+397
+00:49:03.500 --> 00:49:06.119
+Pranad Muttoju: Yeah, but I'll still be connected.
+
+398
+00:49:08.290 --> 00:49:09.110
+John Hazlewood: Okay.
+
+399
+00:49:09.430 --> 00:49:13.100
+Pranad Muttoju: Yeah. Next week on, it shouldn't collide like this.
+
+400
+00:49:14.090 --> 00:49:15.279
+Pranad Muttoju: But yeah.
+
+401
+00:49:17.190 --> 00:49:21.830
+John Hazlewood: Okay, well, I'm not sure what else I was going to do, wanted to go through the
+
+402
+00:49:22.080 --> 00:49:24.080
+John Hazlewood: Website, maybe we could do that.
+
+403
+00:49:24.240 --> 00:49:32.419
+John Hazlewood: I'm just… Do we… We have the latest version of Cosmos Intelligence.
+
+404
+00:49:32.980 --> 00:49:41.770
+John Hazlewood: And… do we have anything, like, with, Space Ventures Institute? Is there a version that hasn't been released yet that someone's working on?
+
+405
+00:49:42.120 --> 00:49:46.500
+Pranad Muttoju: I think we need… yeah, there is, right?
+
+406
+00:49:46.500 --> 00:49:47.569
+Yassin El-Ghatrify: Yeah, probably.
+
+407
+00:49:47.810 --> 00:49:49.500
+Pranad Muttoju: We updated the jobs…
+
+408
+00:49:49.500 --> 00:49:49.910
+John Hazlewood: So…
+
+409
+00:49:49.910 --> 00:49:50.780
+Pranad Muttoju: site.
+
+410
+00:49:53.040 --> 00:49:54.619
+Yassin El-Ghatrify: Yeah, there is the newer…
+
+411
+00:49:54.620 --> 00:49:55.480
+John Hazlewood: website.
+
+412
+00:49:57.870 --> 00:50:04.700
+Yassin El-Ghatrify: We had, like, we created… We made the internships as a separate page, so you don't…
+
+413
+00:50:04.930 --> 00:50:12.290
+Yassin El-Ghatrify: have to press apply now to see the internships, you could see the internships, then apply?
+
+414
+00:50:13.430 --> 00:50:15.370
+Yassin El-Ghatrify: Because that way…
+
+415
+00:50:15.810 --> 00:50:27.600
+Yassin El-Ghatrify: Because after the apply now button, you don't know what's theirs, so people on the website don't know the amount or the…
+
+416
+00:50:27.760 --> 00:50:29.219
+Yassin El-Ghatrify: the variety.
+
+417
+00:50:29.380 --> 00:50:30.870
+Yassin El-Ghatrify: of internships.
+
+418
+00:50:31.580 --> 00:50:34.069
+Yassin El-Ghatrify: On our website.
+
+419
+00:50:34.250 --> 00:50:38.830
+Yassin El-Ghatrify: So, we did that, and we also have the citizen science page.
+
+420
+00:50:39.370 --> 00:50:42.939
+Yassin El-Ghatrify: But I asked Rebecca to make some changes to it.
+
+421
+00:50:45.030 --> 00:50:52.990
+Yassin El-Ghatrify: I don't know if she applied them, but they were very… miniscule changes.
+
+422
+00:50:53.380 --> 00:50:53.960
+John Hazlewood: So…
+
+423
+00:50:53.960 --> 00:51:02.680
+Yassin El-Ghatrify: So… But… Since then, Mohammed has sent on the design team General chat.
+
+424
+00:51:03.420 --> 00:51:07.769
+Yassin El-Ghatrify: That, if anybody has a website that's not published yet.
+
+425
+00:51:08.440 --> 00:51:11.490
+Yassin El-Ghatrify: They should reach out to him.
+
+426
+00:51:11.850 --> 00:51:13.700
+Yassin El-Ghatrify: And he did that 2 times.
+
+427
+00:51:13.930 --> 00:51:16.790
+Yassin El-Ghatrify: And the website is still not launched, so…
+
+428
+00:51:17.830 --> 00:51:22.300
+Yassin El-Ghatrify: I don't know if Rebecca's inactive, or… busy this.
+
+429
+00:51:22.300 --> 00:51:31.410
+mohamed abdelmohsen: One hour ago, so sorry, interrupting, one hour ago, Rebecca actually did send me a message about a couple of websites. She updated them.
+
+430
+00:51:31.540 --> 00:51:35.730
+mohamed abdelmohsen: One of them is Skype, and one of them, I think, Space Fincher, so…
+
+431
+00:51:35.960 --> 00:51:39.299
+mohamed abdelmohsen: I need to check that on Pablita, so… She said…
+
+432
+00:51:39.440 --> 00:51:43.860
+mohamed abdelmohsen: They have the latest version, so… And publish them.
+
+433
+00:51:46.370 --> 00:51:47.200
+Yassin El-Ghatrify: Nothing.
+
+434
+00:51:50.610 --> 00:51:54.210
+John Hazlewood: Okay, well, is there something that we can see right now?
+
+435
+00:51:55.080 --> 00:51:57.020
+John Hazlewood: From Space Ventures Institute.
+
+436
+00:51:57.120 --> 00:52:02.880
+mohamed abdelmohsen: I think… let me try to download that, because she had them in Google Drive.
+
+437
+00:52:03.360 --> 00:52:06.549
+mohamed abdelmohsen: Not in the GitHub, so just give me a second.
+
+438
+00:52:07.570 --> 00:52:16.880
+John Hazlewood: Okay, maybe, Yassin, do you want to go through Cosmos Intelligence, the new site that's launched? And then you… you said that,
+
+439
+00:52:17.690 --> 00:52:25.950
+John Hazlewood: You… had some… Suggestions about… some of it was double content, duplicates.
+
+440
+00:52:26.280 --> 00:52:30.990
+John Hazlewood: And I said, well, let's just launch it, and then we can come back and change it.
+
+441
+00:52:31.310 --> 00:52:33.999
+John Hazlewood: Because it would be easier for me to see it on the web.
+
+442
+00:52:35.220 --> 00:52:45.449
+Yassin El-Ghatrify: Okay, I'll share my screen. But, Serena… Serena is able to… How would you say, too?
+
+443
+00:52:46.280 --> 00:52:53.149
+Yassin El-Ghatrify: Rectify that, so… To be honest, Serena… Serena, has…
+
+444
+00:52:53.620 --> 00:52:55.990
+Yassin El-Ghatrify: Done some, good work on it.
+
+445
+00:53:04.650 --> 00:53:05.960
+Yassin El-Ghatrify: Can you see my screen?
+
+446
+00:53:07.260 --> 00:53:07.850
+John Hazlewood: Yeah.
+
+447
+00:53:11.800 --> 00:53:12.570
+Yassin El-Ghatrify: Yeah, so…
+
+448
+00:53:12.570 --> 00:53:15.069
+John Hazlewood: What does it say… why does it say Flo Labs Carl?
+
+449
+00:53:15.770 --> 00:53:17.960
+John Hazlewood: Above Cosmos intelligence.
+
+450
+00:53:20.310 --> 00:53:35.520
+Yassin El-Ghatrify: Whoa… I don't know… I think it's… it was in the… the document… from, chatGPT. The zip file.
+
+451
+00:53:37.530 --> 00:53:39.730
+John Hazlewood: Yeah, it should probably come off, because…
+
+452
+00:53:40.000 --> 00:53:42.619
+John Hazlewood: It doesn't make sense for it to be there, really, does it?
+
+453
+00:53:45.040 --> 00:53:46.230
+mohamed abdelmohsen: I can't delete it.
+
+454
+00:53:49.000 --> 00:53:51.569
+mohamed abdelmohsen: Serena should work on that?
+
+455
+00:53:54.140 --> 00:53:55.040
+Yassin El-Ghatrify: Okay.
+
+456
+00:53:56.370 --> 00:53:57.390
+Yassin El-Ghatrify: Yeah, yeah.
+
+457
+00:53:57.390 --> 00:53:58.250
+John Hazlewood: prominent.
+
+458
+00:53:59.380 --> 00:54:05.550
+John Hazlewood: And up into the world, those other boxes, you can't click on them. They look like they're clickable, but they're… they're not.
+
+459
+00:54:06.700 --> 00:54:13.349
+Yassin El-Ghatrify: Wait, I actually think the website has changed, because… The first time I,
+
+460
+00:54:15.360 --> 00:54:18.229
+Yassin El-Ghatrify: The first time she gave me the website.
+
+461
+00:54:18.980 --> 00:54:21.719
+Yassin El-Ghatrify: Something has changed, but I don't know what.
+
+462
+00:54:26.810 --> 00:54:32.439
+mohamed abdelmohsen: We have V1… We have V1.cosmos, and provisions, which is…
+
+463
+00:54:32.550 --> 00:54:35.980
+mohamed abdelmohsen: The post one, and this is the most…
+
+464
+00:54:36.190 --> 00:54:38.310
+mohamed abdelmohsen: Adva- let's say, updated one.
+
+465
+00:54:38.820 --> 00:54:41.300
+mohamed abdelmohsen: So you can know the difference between that and that.
+
+466
+00:54:43.570 --> 00:54:47.269
+John Hazlewood: This is the latest version, right, that we're looking at.
+
+467
+00:54:47.580 --> 00:54:49.129
+mohamed abdelmohsen: This is the latest version, yeah.
+
+468
+00:54:51.700 --> 00:54:54.440
+John Hazlewood: Yeah, and why when you scroll down, it has…
+
+469
+00:54:54.770 --> 00:55:00.919
+John Hazlewood: cross the RAM building and it changes. Can… can we remove that from… from there?
+
+470
+00:55:02.140 --> 00:55:03.459
+Yassin El-Ghatrify: You mean this line?
+
+471
+00:55:04.500 --> 00:55:06.279
+John Hazlewood: the top where the URL is.
+
+472
+00:55:08.380 --> 00:55:08.980
+Yassin El-Ghatrify: Oh.
+
+473
+00:55:08.980 --> 00:55:16.390
+John Hazlewood: When you come to Cosmos Intelligence, there's something there, there's… it doesn't… it's not just .org, there's a slash something when you get there.
+
+474
+00:55:16.750 --> 00:55:18.059
+John Hazlewood: Like, refresh it.
+
+475
+00:55:21.820 --> 00:55:26.290
+John Hazlewood: Yeah, top. Why does it say that? Slash top? That shouldn't be there.
+
+476
+00:55:26.500 --> 00:55:31.359
+John Hazlewood: And when you… and when you scroll down, it shouldn't, like, show you which part that you're on.
+
+477
+00:55:34.370 --> 00:55:36.310
+mohamed abdelmohsen: Yes, but,
+
+478
+00:55:37.010 --> 00:55:44.830
+mohamed abdelmohsen: Because they just use, let's say, plain HTML to create website, HTML CSS, without a framework.
+
+479
+00:55:45.870 --> 00:55:50.170
+mohamed abdelmohsen: But… They can update that even with HTML.
+
+480
+00:55:53.320 --> 00:55:55.299
+Yassin El-Ghatrify: Yes, let me write it down.
+
+481
+00:56:00.930 --> 00:56:05.280
+John Hazlewood: Okay, so, I mean, that's another… thing in…
+
+482
+00:56:05.540 --> 00:56:08.529
+John Hazlewood: And Muhammad, do we check the tags?
+
+483
+00:56:08.800 --> 00:56:17.239
+John Hazlewood: We talked about the weight that was… the weight was heavy, right? Do you see… Yassin, did you check the speed of the site?
+
+484
+00:56:20.180 --> 00:56:21.540
+Yassin El-Ghatrify: No, I did not.
+
+485
+00:56:23.480 --> 00:56:25.210
+Yassin El-Ghatrify: How do… with that.
+
+486
+00:56:25.610 --> 00:56:28.440
+mohamed abdelmohsen: I believe Serena also did not do that.
+
+487
+00:56:34.210 --> 00:56:34.760
+Yassin El-Ghatrify: How'd,
+
+488
+00:56:34.760 --> 00:56:35.220
+mohamed abdelmohsen: Italy.
+
+489
+00:56:35.220 --> 00:56:36.109
+Yassin El-Ghatrify: the speed of the screen.
+
+490
+00:56:36.110 --> 00:56:42.530
+mohamed abdelmohsen: You can go, you can go for a website called Lighthouse, dash MD?
+
+491
+00:56:43.480 --> 00:56:46.349
+mohamed abdelmohsen: Search Probset called Lighthouse-md.
+
+492
+00:56:48.040 --> 00:56:48.980
+mohamed abdelmohsen: Right.
+
+493
+00:56:49.190 --> 00:56:51.010
+mohamed abdelmohsen: Just search for the lighthouse.
+
+494
+00:56:52.660 --> 00:56:53.849
+mohamed abdelmohsen: Bless you, indeed.
+
+495
+00:56:55.850 --> 00:56:57.310
+mohamed abdelmohsen: Morse, MD?
+
+496
+00:57:02.030 --> 00:57:04.099
+mohamed abdelmohsen: Yeah, choose this one, yeah.
+
+497
+00:57:06.950 --> 00:57:09.139
+mohamed abdelmohsen: Could be the link of Cosmos Intelligence.
+
+498
+00:57:09.840 --> 00:57:11.280
+mohamed abdelmohsen: The link of the website.
+
+499
+00:57:15.490 --> 00:57:17.680
+mohamed abdelmohsen: Come back… buzz going.
+
+500
+00:57:17.680 --> 00:57:19.680
+John Hazlewood: Top, without the top, yeah.
+
+501
+00:57:20.230 --> 00:57:21.290
+mohamed abdelmohsen: So what the…
+
+502
+00:57:21.370 --> 00:57:22.250
+Yassin El-Ghatrify: And then those…
+
+503
+00:57:22.930 --> 00:57:23.930
+mohamed abdelmohsen: Yeah.
+
+504
+00:57:26.100 --> 00:57:31.719
+mohamed abdelmohsen: And you choose the mobile version? Wait, we can make the test, the second test with the desktop version.
+
+505
+00:57:35.540 --> 00:57:40.059
+mohamed abdelmohsen: And let us see the result. So, actually, this… to test the speed of the outside…
+
+506
+00:57:40.470 --> 00:57:46.429
+mohamed abdelmohsen: Yeah, we have the worst performance ever.
+
+507
+00:57:51.300 --> 00:57:52.110
+mohamed abdelmohsen: Yeah.
+
+508
+00:57:54.170 --> 00:57:55.520
+Yassin El-Ghatrify: I cannot do it.
+
+509
+00:57:57.090 --> 00:58:00.090
+mohamed abdelmohsen: Can you, can you change from the mobile to desktop?
+
+510
+00:58:01.890 --> 00:58:04.580
+mohamed abdelmohsen: You have a drop-down, click on the button, check the script.
+
+511
+00:58:51.010 --> 00:58:52.769
+Yassin El-Ghatrify: Does it usually take that long?
+
+512
+00:58:54.150 --> 00:58:54.940
+mohamed abdelmohsen: Yes.
+
+513
+00:58:57.600 --> 00:58:59.410
+John Hazlewood: Especially for a slow sight.
+
+514
+00:59:03.380 --> 00:59:05.020
+mohamed abdelmohsen: Oh my gosh.
+
+515
+00:59:05.360 --> 00:59:05.980
+Pranad Muttoju: Oh, good.
+
+516
+00:59:05.980 --> 00:59:07.660
+John Hazlewood: It was 82, 82.
+
+517
+00:59:08.680 --> 00:59:14.719
+mohamed abdelmohsen: Yes, it is the worst also. Anything beneath, 95?
+
+518
+00:59:15.880 --> 00:59:17.179
+mohamed abdelmohsen: You're dead.
+
+519
+00:59:20.570 --> 00:59:21.090
+John Hazlewood: Now…
+
+520
+00:59:21.090 --> 00:59:22.110
+mohamed abdelmohsen: That's okay.
+
+521
+00:59:22.280 --> 00:59:23.020
+mohamed abdelmohsen: We.
+
+522
+00:59:23.020 --> 00:59:23.630
+John Hazlewood: So…
+
+523
+00:59:23.870 --> 00:59:31.720
+John Hazlewood: Yeah, let Serena fix that, Muhamed. She needs to fix that. She needs to learn how to do that. All these fixes, let her do it.
+
+524
+00:59:33.560 --> 00:59:48.009
+mohamed abdelmohsen: I showed them before, actually, Mr. John, I showed them before how to do that. Even I had a meeting also. Even Whitney wanted to know that, and Whitney know right now, actually, how to fix this. So I showed him, actually, it was RoboCollected.
+
+525
+00:59:48.190 --> 00:59:51.329
+mohamed abdelmohsen: With RoboCollective, we have the same issue. We fix it.
+
+526
+00:59:51.330 --> 00:59:52.060
+Yassin El-Ghatrify: Both of you.
+
+527
+00:59:52.430 --> 00:59:58.859
+Yassin El-Ghatrify: To be honest, Serena only had 2 days to do the entire website.
+
+528
+00:59:59.510 --> 01:00:08.170
+Yassin El-Ghatrify: So… maybe she didn't have that. I don't know how long it takes to create a website like hers, but…
+
+529
+01:00:09.640 --> 01:00:11.320
+Yassin El-Ghatrify: Like this, but…
+
+530
+01:00:12.430 --> 01:00:26.350
+mohamed abdelmohsen: She's doing a great job, Yassin. We don't say, like, she did a bad thing, but we have a policy with the design team right now, actually. If the reviews make upside, test the speed of the upside. It's not only about the eye.
+
+531
+01:00:26.650 --> 01:00:34.099
+mohamed abdelmohsen: we need to check the speed, the performance, the accessibility, all of this stuff, because we are not just making UI.
+
+532
+01:00:34.430 --> 01:00:36.110
+mohamed abdelmohsen: We should have a good rank.
+
+533
+01:00:36.500 --> 01:00:39.000
+mohamed abdelmohsen: on, the servers.
+
+534
+01:00:39.500 --> 01:00:42.900
+John Hazlewood: Why don't you feed the website into Claude?
+
+535
+01:00:43.030 --> 01:00:45.750
+John Hazlewood: And ask it to do an SEO audit.
+
+536
+01:00:48.580 --> 01:00:54.060
+John Hazlewood: Because, like, the title tag, the H tag, the H1 tag, you know, like…
+
+537
+01:00:54.270 --> 01:01:03.650
+John Hazlewood: all that stuff needs to be done, because it's great we have all this content, and I saw on there it said SEO, like, it gave us a good score for SEO.
+
+538
+01:01:03.950 --> 01:01:04.780
+John Hazlewood: Right.
+
+539
+01:01:05.910 --> 01:01:12.179
+John Hazlewood: But, you know, the tags need to be right. There's lots of things that need to…
+
+540
+01:01:13.920 --> 01:01:17.209
+Yassin El-Ghatrify: Alright, my keyboard is just… one second…
+
+541
+01:01:21.020 --> 01:01:23.549
+mohamed abdelmohsen: Third, you see, you need to do a lot.
+
+542
+01:01:24.300 --> 01:01:27.670
+mohamed abdelmohsen: You need to go again for, Lighthouse MD.
+
+543
+01:01:30.090 --> 01:01:35.099
+mohamed abdelmohsen: Yes. Beneath the numbers, you have downloadcloud.md.
+
+544
+01:01:35.310 --> 01:01:36.639
+mohamed abdelmohsen: Yeah, no loaded.
+
+545
+01:01:38.140 --> 01:01:43.599
+mohamed abdelmohsen: Actually, Claude has a prompt, a full prompt about the issue, and how to fix that.
+
+546
+01:01:44.260 --> 01:01:56.350
+mohamed abdelmohsen: So, basically, yeah, don't open it, don't open it. Just have it with Claudia eye. Like, you need to open the project… oh my god, you don't have the project locally, so you can't make updates.
+
+547
+01:01:57.350 --> 01:02:02.150
+mohamed abdelmohsen: So… Yeah.
+
+548
+01:02:02.320 --> 01:02:14.529
+mohamed abdelmohsen: If you want to make updates, if you want to make some change, you need to have this file within the project locally, and after Claudia or Cursor, for example, make the updates.
+
+549
+01:02:14.630 --> 01:02:22.929
+mohamed abdelmohsen: you wash your code to GitHub, and after that, it will be on Vercel, and after that, you're gonna see on the cloud, so…
+
+550
+01:02:24.190 --> 01:02:24.990
+mohamed abdelmohsen: Yep.
+
+551
+01:02:26.740 --> 01:02:29.440
+Yassin El-Ghatrify: Thank God I'm not, you know, under difficulty.
+
+552
+01:02:32.520 --> 01:02:42.580
+mohamed abdelmohsen: But addressing the point that Mr. John took about using this file, you can have the file that we downloaded from Cloud AI and ask Cloud AI
+
+553
+01:02:43.040 --> 01:02:47.710
+mohamed abdelmohsen: Don't do anything, just let us know what is the issue.
+
+554
+01:02:49.600 --> 01:02:53.150
+John Hazlewood: No, I was talking about… I was talking about an SEO audit.
+
+555
+01:02:53.430 --> 01:03:01.669
+John Hazlewood: like, what's in the H1 tag? The title tag? You know, is… are all the… is everything tagged correctly? And…
+
+556
+01:03:01.820 --> 01:03:10.500
+John Hazlewood: whatever else, whatever other suggestions to improve the SEO visibility and SEO and LLMO and AIs.
+
+557
+01:03:10.990 --> 01:03:13.520
+John Hazlewood: That's different than Lighthouse.
+
+558
+01:03:15.510 --> 01:03:27.230
+mohamed abdelmohsen: A little bit, yes. A little bit, but it's not different, let's say, in a general way, because Lighthouse, actually, is the CEO of the site itself, from the tags.
+
+559
+01:03:27.350 --> 01:03:41.290
+mohamed abdelmohsen: from, let's say, the accessibility itself from, let's say, H1, H2, the title, the differentiation between, the forms. So, I think Lighthouse actually testing everything.
+
+560
+01:03:42.260 --> 01:03:45.800
+mohamed abdelmohsen: Like, the accessibility, They feel 100%.
+
+561
+01:03:45.800 --> 01:03:49.680
+John Hazlewood: Where does it say it? I don't see it. You wanna scroll down?
+
+562
+01:03:50.150 --> 01:03:53.179
+mohamed abdelmohsen: Yes, Mr. John, we have 100% for ECO, yeah.
+
+563
+01:03:56.140 --> 01:03:57.719
+mohamed abdelmohsen: At the top, the numbers.
+
+564
+01:03:59.910 --> 01:04:00.690
+mohamed abdelmohsen: Yeah.
+
+565
+01:04:00.800 --> 01:04:03.020
+mohamed abdelmohsen: SEO100.
+
+566
+01:04:07.240 --> 01:04:10.690
+John Hazlewood: Scroll down, please, so I can see that whole list of failing audits.
+
+567
+01:04:11.390 --> 01:04:12.140
+John Hazlewood: Okay.
+
+568
+01:04:32.300 --> 01:04:37.100
+John Hazlewood: Okay, so all those points should be addressed, right? There shouldn't be any failing audits there.
+
+569
+01:04:38.540 --> 01:04:39.889
+mohamed abdelmohsen: Yes, Mr. Sergen.
+
+570
+01:04:41.120 --> 01:04:42.610
+John Hazlewood: Okay, scroll down.
+
+571
+01:04:46.580 --> 01:04:52.899
+John Hazlewood: What's that? Chrome extension, Shopify? You know, we don't need those.
+
+572
+01:04:53.860 --> 01:05:02.500
+John Hazlewood: What, what you get… Repo, brief, abstract… No fixes… stop.
+
+573
+01:05:02.650 --> 01:05:04.210
+John Hazlewood: Vendors ranked…
+
+574
+01:05:07.510 --> 01:05:12.369
+John Hazlewood: One click handoff… How it works…
+
+575
+01:05:17.920 --> 01:05:23.670
+John Hazlewood: Okay, I guess there's… Is there any other suggestions there?
+
+576
+01:05:28.190 --> 01:05:31.040
+John Hazlewood: Is all that related to our site?
+
+577
+01:05:32.260 --> 01:05:35.020
+mohamed abdelmohsen: No, Mr. John, you're talking about… Awesome.
+
+578
+01:05:35.020 --> 01:05:39.969
+John Hazlewood: Okay, okay, so now that is…
+
+579
+01:05:40.230 --> 01:05:45.030
+John Hazlewood: So where is the stuff that says the H1 tag, and the title tag, and the…
+
+580
+01:05:46.930 --> 01:05:56.550
+mohamed abdelmohsen: These points, Mr. John, they are not, in a similar way, they are connected with the ACO, but the main purpose of that is the accessibility.
+
+581
+01:05:56.750 --> 01:06:03.410
+mohamed abdelmohsen: And, yeah, and some points within the SEO. So, if you want to have a full report about the testing.
+
+582
+01:06:03.710 --> 01:06:08.429
+mohamed abdelmohsen: You can use the file that is seen downloaded right now. Use it.
+
+583
+01:06:08.580 --> 01:06:11.380
+mohamed abdelmohsen: with ChatGPT, ask him about…
+
+584
+01:06:11.560 --> 01:06:20.939
+mohamed abdelmohsen: where is the issues that we have? Do we have issues with the tags, let's say the fonts, and all of this stuff. So actually.
+
+585
+01:06:21.300 --> 01:06:28.329
+mohamed abdelmohsen: The fight that… Yeah, can you click on View, or Full Lighthouse Reward?
+
+586
+01:06:28.870 --> 01:06:29.590
+mohamed abdelmohsen: Yep.
+
+587
+01:06:33.490 --> 01:06:34.530
+mohamed abdelmohsen: I'm just wait.
+
+588
+01:06:41.800 --> 01:06:43.730
+Yassin El-Ghatrify: Yeah, I pressed analyze.
+
+589
+01:06:45.310 --> 01:06:46.180
+Yassin El-Ghatrify: Cursive…
+
+590
+01:06:46.180 --> 01:06:47.460
+mohamed abdelmohsen: Export in this way.
+
+591
+01:06:55.190 --> 01:06:56.519
+mohamed abdelmohsen: Yeah, scroll down.
+
+592
+01:07:00.220 --> 01:07:02.420
+mohamed abdelmohsen: So, basically here, Mr. Zhong.
+
+593
+01:07:02.600 --> 01:07:14.289
+mohamed abdelmohsen: Lighthouse take kind of screenshots about the time that… how the website load, and after they're talking about that, the chicken, actually, line by line,
+
+594
+01:07:14.580 --> 01:07:16.530
+mohamed abdelmohsen: Everything actually was indoctite.
+
+595
+01:07:16.680 --> 01:07:17.890
+mohamed abdelmohsen: the words…
+
+596
+01:07:18.100 --> 01:07:26.950
+mohamed abdelmohsen: Is it title in a jurisdiction? What is the difference between a title and, let's say,
+
+597
+01:07:27.870 --> 01:07:29.849
+mohamed abdelmohsen: The intercooled… progress, yeah.
+
+598
+01:07:30.340 --> 01:07:35.509
+mohamed abdelmohsen: Like, this should be… has a high size than that, and all this stuff.
+
+599
+01:07:39.740 --> 01:07:41.219
+mohamed abdelmohsen: And more than that.
+
+600
+01:07:51.160 --> 01:08:02.580
+mohamed abdelmohsen: If you want to spend more time on that, Mr. John, actually, you can do that. Just go for Lighthouse-m, and choose in the link of any of our domains, and just make the test.
+
+601
+01:08:02.850 --> 01:08:04.160
+mohamed abdelmohsen: So you can see them.
+
+602
+01:08:07.190 --> 01:08:09.570
+mohamed abdelmohsen: Can you, can you do OT Yassin for RoboCollective?
+
+603
+01:08:09.970 --> 01:08:13.080
+mohamed abdelmohsen: Have… have the link for RoboCollective.ai.
+
+604
+01:08:14.380 --> 01:08:15.939
+mohamed abdelmohsen: We had the same issue.
+
+605
+01:08:17.490 --> 01:08:18.799
+mohamed abdelmohsen: Let me send you the link.
+
+606
+01:08:18.800 --> 01:08:19.660
+Yassin El-Ghatrify: One second.
+
+607
+01:08:19.660 --> 01:08:22.020
+John Hazlewood: Did we fix it on RoboCollective?
+
+608
+01:08:22.029 --> 01:08:23.089
+mohamed abdelmohsen: Yes.
+
+609
+01:08:25.269 --> 01:08:28.279
+mohamed abdelmohsen: Let me send you the link, Yassin…
+
+610
+01:08:30.870 --> 01:08:31.430
+John Hazlewood: Okay.
+
+611
+01:08:31.439 --> 01:08:35.919
+Yassin El-Ghatrify: Sorry, Muhammad, but can you do it, because I'm facing troubles with my keyboard?
+
+612
+01:08:37.069 --> 01:08:42.359
+mohamed abdelmohsen: Okay… Let me have it.
+
+613
+01:08:49.270 --> 01:08:54.939
+John Hazlewood: Yeah, well, and on Cosmos Intelligence, guys, I'm gonna have to go in about 10 minutes or so.
+
+614
+01:08:56.540 --> 01:09:03.700
+mohamed abdelmohsen: Mr. John, so… Anyway, this is the way. It's not already designed as it should be built before.
+
+615
+01:09:04.729 --> 01:09:10.279
+John Hazlewood: Well, all of our sites need to go through Lighthouse. If they're not, maybe you can assign
+
+616
+01:09:10.469 --> 01:09:12.979
+John Hazlewood: Someone to do that.
+
+617
+01:09:13.159 --> 01:09:16.209
+John Hazlewood: You know, like, the new versions are launched.
+
+618
+01:09:16.329 --> 01:09:28.639
+John Hazlewood: Then, I mean, like, just, we've got 16 sites, someone goes through, plugs those into Lighthouse, then they go to an SEO audit, do the SEO audit. I think we had asked Whitney to do that.
+
+619
+01:09:29.489 --> 01:09:36.809
+John Hazlewood: So we can start working on… Whatever the current sites are, Mmm…
+
+620
+01:09:37.399 --> 01:09:38.989
+John Hazlewood: You know, kind of tweak them.
+
+621
+01:09:40.819 --> 01:09:47.069
+John Hazlewood: I mean, whatever… whatever we're gonna need to update, unless we have a whole new version, Right.
+
+622
+01:09:50.129 --> 01:10:04.209
+John Hazlewood: Yeah, because, I mean, the worst thing that we need is to have all these sites, and then they're not helping us, SEO, because they're not indexed, because they're too slow, or whatever. I mean, we need… once we get them fixed, then we need to have,
+
+623
+01:10:05.349 --> 01:10:08.389
+John Hazlewood: we need to index them in Google Console.
+
+624
+01:10:08.609 --> 01:10:18.259
+John Hazlewood: Right, we need to index the pages, and then any new pages, we need to index the new pages whenever we have new pages, and then they'll start getting SEO within a few weeks.
+
+625
+01:10:19.769 --> 01:10:22.499
+John Hazlewood: But it takes a few weeks to get crawled, and then
+
+626
+01:10:22.929 --> 01:10:27.969
+John Hazlewood: And then I don't know with… with AIs, they're coming out.
+
+627
+01:10:28.129 --> 01:10:37.929
+John Hazlewood: maybe, like, once a month, they're coming out with a new version. Claude and ChatGBT. Claude, ChatGBT, and Gemini now…
+
+628
+01:10:38.039 --> 01:10:40.219
+John Hazlewood: Are, like, the 3 top ones.
+
+629
+01:10:40.429 --> 01:10:41.319
+John Hazlewood: Right.
+
+630
+01:10:44.559 --> 01:10:48.789
+John Hazlewood: you know, DeepSeek and the other ones also are used quite a bit.
+
+631
+01:10:51.329 --> 01:10:53.289
+John Hazlewood: Perplexity, of course.
+
+632
+01:10:53.869 --> 01:10:54.619
+John Hazlewood: Right.
+
+633
+01:10:57.499 --> 01:10:58.589
+John Hazlewood: So…
+
+634
+01:11:01.580 --> 01:11:09.420
+mohamed abdelmohsen: Yes, Mr. John, it will not be a big issue for job sites. Actually, I can, ask Jerryne to assign homework on job sites.
+
+635
+01:11:09.910 --> 01:11:12.630
+mohamed abdelmohsen: Flo observation, or whatever, to make the test.
+
+636
+01:11:13.030 --> 01:11:16.480
+mohamed abdelmohsen: For it, because they do have a local one.
+
+637
+01:11:16.620 --> 01:11:23.280
+mohamed abdelmohsen: Let's say, extension to make the test even before to have it in the cloud, and…
+
+638
+01:11:23.500 --> 01:11:30.659
+mohamed abdelmohsen: We also can have it within the cloud, so it's not a big deal. But I think each team working off-site should have it as a final one.
+
+639
+01:11:30.980 --> 01:11:38.779
+mohamed abdelmohsen: And for Rebecca, I'm gonna ask her to have this for Space Venture Institute, let's say, the version that she's gonna send to me.
+
+640
+01:11:39.120 --> 01:11:42.599
+mohamed abdelmohsen: Serena should work on the Cosmos Intelligence one, so…
+
+641
+01:11:42.800 --> 01:11:46.100
+mohamed abdelmohsen: I'll let Jireen know that, and I'm gonna ask them also to work on that.
+
+642
+01:11:46.800 --> 01:11:54.249
+John Hazlewood: Okay, okay. Yin, can you share Cosmos intelligence again? Because there's still some points that I want to make.
+
+643
+01:11:54.800 --> 01:11:57.300
+John Hazlewood: that Serena should fix some…
+
+644
+01:11:57.620 --> 01:12:03.490
+John Hazlewood: Probably… well, you can send her the message and ask her if she can have them updated by
+
+645
+01:12:05.010 --> 01:12:12.280
+John Hazlewood: you know, Sunday or Monday. She can work on it over the weekend. Snashes back in school.
+
+646
+01:12:12.970 --> 01:12:14.510
+John Hazlewood: So she's kind of busy.
+
+647
+01:12:21.300 --> 01:12:25.480
+John Hazlewood: Pranad, did you look at the new version of Cosmos Intelligence?
+
+648
+01:12:26.870 --> 01:12:28.520
+Pranad Muttoju: Yeah, I'm looking at it right now.
+
+649
+01:12:30.790 --> 01:12:37.729
+John Hazlewood: Do you see how the top left and then the top right? To me, it's kind of confusing, because there's all those tabs.
+
+650
+01:12:38.580 --> 01:12:40.960
+John Hazlewood: M… It's like…
+
+651
+01:12:46.030 --> 01:12:47.690
+John Hazlewood: tab, if you click…
+
+652
+01:12:47.690 --> 01:12:48.150
+mohamed abdelmohsen: we have.
+
+653
+01:12:48.150 --> 01:12:49.170
+John Hazlewood: Click on this.
+
+654
+01:12:51.730 --> 01:12:53.729
+John Hazlewood: Yeah, it says two homes, right.
+
+655
+01:12:54.160 --> 01:12:55.710
+John Hazlewood: Why is there two homes?
+
+656
+01:12:55.830 --> 01:12:57.419
+John Hazlewood: Doesn't make sense.
+
+657
+01:12:57.620 --> 01:13:00.919
+John Hazlewood: Each… I think each one of those pages is different.
+
+658
+01:13:05.040 --> 01:13:06.760
+Pranad Muttoju: Yeah, I was looking at it on my laptop.
+
+659
+01:13:06.970 --> 01:13:09.630
+Pranad Muttoju: It is slow, first of all, I think.
+
+660
+01:13:09.740 --> 01:13:10.880
+Pranad Muttoju: Overall.
+
+661
+01:13:11.210 --> 01:13:15.440
+Pranad Muttoju: Even on my laptop, it's… Hello, can you hear me well?
+
+662
+01:13:16.460 --> 01:13:18.660
+John Hazlewood: Yeah, what'd you say? Yeah, we can hear you. You said it's…
+
+663
+01:13:18.660 --> 01:13:24.470
+Pranad Muttoju: Like, oh, yeah, it's definitely slow, like, loading up, and I think… two things.
+
+664
+01:13:24.840 --> 01:13:31.390
+Pranad Muttoju: Aesthetically, it looks great pictures-wise. I think it's very visually appealing, there's no doubt about that.
+
+665
+01:13:31.590 --> 01:13:41.380
+Pranad Muttoju: But I will say the main issue is definitely font and text. Sorry, font size, and just, like, the text. I agree with you, there's too many tabs, and they're just too small.
+
+666
+01:13:41.970 --> 01:13:49.240
+Pranad Muttoju: To begin with, like, for a website, like, you just look at any website, you just can't have tabs that are… like, at least if it's, like.
+
+667
+01:13:49.610 --> 01:13:52.530
+Pranad Muttoju: One big thing, and you know how, like, many websites, it's like.
+
+668
+01:13:52.660 --> 01:13:57.879
+Pranad Muttoju: one big brain, like, tab, and then when you, like, hover over it, it's like a drop-down menu.
+
+669
+01:13:58.030 --> 01:13:59.890
+Pranad Muttoju: Either that could be okay.
+
+670
+01:13:59.890 --> 01:14:00.919
+John Hazlewood: Or it could just…
+
+671
+01:14:00.920 --> 01:14:05.770
+Pranad Muttoju: like, reduce your number of tabs, right? But having all the tabs visible like that, and
+
+672
+01:14:05.950 --> 01:14:09.370
+Pranad Muttoju: Because of that, it's just shrunken so much in size, it just doesn't look good.
+
+673
+01:14:09.930 --> 01:14:14.550
+John Hazlewood: Yeah, well, see, here… here, she put the tabs, you see? Go ahead and do that again.
+
+674
+01:14:15.790 --> 01:14:17.310
+Pranad Muttoju: Yeah, she's fine.
+
+675
+01:14:18.380 --> 01:14:22.379
+John Hazlewood: Yeah, on those, there are… there are tabs when you click on.
+
+676
+01:14:22.380 --> 01:14:23.220
+Pranad Muttoju: Yeah.
+
+677
+01:14:23.220 --> 01:14:26.099
+John Hazlewood: It should hover, that should just have it hover and pop up.
+
+678
+01:14:26.100 --> 01:14:34.070
+Pranad Muttoju: Yeah, that's fine, I'm talking about the main page, like this over here. Like, that… this is just too much that's going on. There's way too many tabs, way too many articles and sites.
+
+679
+01:14:35.270 --> 01:14:37.190
+Pranad Muttoju: Going on. Like, I think…
+
+680
+01:14:37.590 --> 01:14:47.659
+mohamed abdelmohsen: We should delete that. Like, the board that we have to delete side, home, question, operation, till join, because this is actually a section of the home page, so I think we should delete them.
+
+681
+01:14:48.600 --> 01:14:49.370
+Pranad Muttoju: Yeah.
+
+682
+01:14:50.600 --> 01:14:57.599
+John Hazlewood: Well, I mean, if they're separate pages, you need to have them up there in the menu. You just need to have them where it's a drop-down.
+
+683
+01:14:57.600 --> 01:15:04.440
+Pranad Muttoju: Yeah, have it… either have it as a drop-down over there, like, where it is right now, or have it over there on the top right.
+
+684
+01:15:04.620 --> 01:15:10.479
+Pranad Muttoju: Having both is just… Like, there's just too much that's happening when it comes to articles and links.
+
+685
+01:15:10.480 --> 01:15:14.119
+John Hazlewood: There's Space Buddy on the left and the right. You know, that doesn't.
+
+686
+01:15:14.120 --> 01:15:21.199
+Pranad Muttoju: Yeah, yeah, yeah, yeah, stuff like that. Like, that's something we should definitely, like, not do. But visually, it's a great set. I think this is…
+
+687
+01:15:21.770 --> 01:15:24.410
+Pranad Muttoju: one of the… pretty looking sites.
+
+688
+01:15:26.090 --> 01:15:27.000
+Pranad Muttoju: For sure.
+
+689
+01:15:27.000 --> 01:15:28.130
+Yassin El-Ghatrify: Aren't they?
+
+690
+01:15:28.130 --> 01:15:39.509
+Pranad Muttoju: And it looks, like, really official, like, you know, it looks like the real deal, which is obviously what you want, right? So, this site definitely looks very professional, or, like, visually, it's just…
+
+691
+01:15:39.870 --> 01:15:44.849
+Pranad Muttoju: I like… wait, an open remote research… I think I had… no, no, that one was fine for me.
+
+692
+01:15:45.080 --> 01:15:51.820
+Pranad Muttoju: Yeah, I think it's just, like, the aesthetic of the fonts and accessibility to websites.
+
+693
+01:15:53.260 --> 01:15:58.880
+John Hazlewood: Yeah, how do you bundle those together? Which… which one's on the left? Where should they go? I would.
+
+694
+01:15:58.880 --> 01:15:59.220
+Yassin El-Ghatrify: I…
+
+695
+01:15:59.220 --> 01:16:00.460
+John Hazlewood: or whatever.
+
+696
+01:16:00.460 --> 01:16:04.289
+Yassin El-Ghatrify: All of the ones on the left are basically the homepage.
+
+697
+01:16:04.460 --> 01:16:11.220
+Yassin El-Ghatrify: like, as you see, as I scroll down, you're going through the… No one knows.
+
+698
+01:16:11.480 --> 01:16:14.039
+Pranad Muttoju: Oh, did those lead you to the homepage?
+
+699
+01:16:14.450 --> 01:16:15.340
+Pranad Muttoju: Okay.
+
+700
+01:16:15.340 --> 01:16:16.210
+Yassin El-Ghatrify: They are basically.
+
+701
+01:16:16.210 --> 01:16:17.980
+Pranad Muttoju: Like, like, within the homepage, like.
+
+702
+01:16:17.980 --> 01:16:18.550
+Yassin El-Ghatrify: Yeah.
+
+703
+01:16:18.550 --> 01:16:20.360
+Pranad Muttoju: Let's say, for example, you click the…
+
+704
+01:16:20.530 --> 01:16:23.380
+Pranad Muttoju: Notes and… you click Notes and Demos?
+
+705
+01:16:23.520 --> 01:16:27.910
+Pranad Muttoju: So it just takes you from home pages folds all the way down to notes and demos? Okay.
+
+706
+01:16:28.700 --> 01:16:32.560
+John Hazlewood: Yeah, well, that whole thing should just go. We don't even need that.
+
+707
+01:16:32.560 --> 01:16:33.659
+Pranad Muttoju: You can scroll through.
+
+708
+01:16:33.660 --> 01:16:34.600
+John Hazlewood: what else?
+
+709
+01:16:34.600 --> 01:16:35.680
+Pranad Muttoju: Yeah.
+
+710
+01:16:36.450 --> 01:16:37.970
+Yassin El-Ghatrify: Yeah, and…
+
+711
+01:16:37.970 --> 01:16:41.630
+Pranad Muttoju: If you honestly reduce it? I don't think you need it for each, every single tab.
+
+712
+01:16:41.910 --> 01:16:43.529
+Pranad Muttoju: I mean, every single,
+
+713
+01:16:44.200 --> 01:16:49.639
+Pranad Muttoju: point in the website, you know, like how, like, John said, they should definitely just scroll and go through it.
+
+714
+01:16:49.830 --> 01:16:53.770
+Pranad Muttoju: But if you want, like, certain… If you want.
+
+715
+01:16:53.930 --> 01:17:12.519
+Pranad Muttoju: certain parts of the website to be highlighted, but that's what that top is for, is you're highlighting specific parts in the home page that you can click and you can just go straight to. So if you want to highlight a few things, like Space Buddy is definitely something you would want to highlight. So I don't mind it being, like, a home and, like, a space buddy, so it scrolls all the way down to a space buddy.
+
+716
+01:17:12.810 --> 01:17:14.560
+Pranad Muttoju: Like, part of the page.
+
+717
+01:17:14.560 --> 01:17:17.040
+John Hazlewood: Well, the problem is, is…
+
+718
+01:17:17.250 --> 01:17:29.609
+John Hazlewood: you know, it's going to be weird to have some that link down below, and some that link to new pa- new pages, because SpaceBuddy here, on the right, click on Space Buddy.
+
+719
+01:17:30.220 --> 01:17:40.570
+John Hazlewood: you know, all of these… look at all those pages. I mean, you know, when I went through, like, I think I added over 30 pages of new content.
+
+720
+01:17:41.340 --> 01:17:47.809
+Pranad Muttoju: Yeah, we have to consolidate that. Actually, wait, maybe we don't… well, what's the space buddy overview, if you click it?
+
+721
+01:17:49.570 --> 01:17:51.909
+Pranad Muttoju: Okay, it just goes to the same spot.
+
+722
+01:17:52.500 --> 01:17:52.989
+John Hazlewood: No, it doesn't.
+
+723
+01:17:52.990 --> 01:17:53.370
+Pranad Muttoju: Okay.
+
+724
+01:17:53.370 --> 01:17:56.380
+John Hazlewood: It's a new page. It's a brand new page, it just talks…
+
+725
+01:17:57.470 --> 01:18:00.090
+John Hazlewood: And it only talks about the space buddy.
+
+726
+01:18:01.100 --> 01:18:01.860
+Pranad Muttoju: Oh.
+
+727
+01:18:02.740 --> 01:18:03.500
+Pranad Muttoju: That's true.
+
+728
+01:18:03.500 --> 01:18:05.949
+Yassin El-Ghatrify: Or the universe is another page.
+
+729
+01:18:06.760 --> 01:18:09.010
+Yassin El-Ghatrify: AIC is another page.
+
+730
+01:18:10.100 --> 01:18:11.369
+Pranad Muttoju: I don't think it should be.
+
+731
+01:18:13.030 --> 01:18:14.420
+Pranad Muttoju: Wow, okay.
+
+732
+01:18:15.000 --> 01:18:16.250
+Pranad Muttoju: Interesting.
+
+733
+01:18:17.030 --> 01:18:21.649
+John Hazlewood: Yeah, it probably is… how much data is on each one of those pages?
+
+734
+01:18:23.350 --> 01:18:25.139
+John Hazlewood: That's not very much, is it?
+
+735
+01:18:25.240 --> 01:18:26.549
+Yassin El-Ghatrify: Needs to be…
+
+736
+01:18:27.130 --> 01:18:34.160
+Pranad Muttoju: I don't think there is, I think it's just name and title so far. Like, scroll up, like, there's really nothing, and then two links. This one does two links.
+
+737
+01:18:34.780 --> 01:18:39.790
+John Hazlewood: Yeah, that doesn't make sense. We should have more content, just not just, like, one paragraph on each page.
+
+738
+01:18:41.980 --> 01:18:49.229
+Pranad Muttoju: If that's the case, you can consolidate these pages and then combine them to whichever ones are in a similar category. Maybe change the title.
+
+739
+01:18:49.960 --> 01:18:52.450
+Pranad Muttoju: So it represents both of them, not just one.
+
+740
+01:18:52.620 --> 01:18:56.379
+Pranad Muttoju: If it's just gonna be, like, A paragraph type of information.
+
+741
+01:18:56.630 --> 01:18:57.869
+Pranad Muttoju: Or, like, even just a…
+
+742
+01:18:58.380 --> 01:19:01.579
+Pranad Muttoju: Half a page of content, you could put two of these topics on one page.
+
+743
+01:19:05.110 --> 01:19:07.489
+Pranad Muttoju: Citizen science definitely needs to be its own.
+
+744
+01:19:08.160 --> 01:19:10.260
+Pranad Muttoju: SpaceBuddy should be its own…
+
+745
+01:19:15.010 --> 01:19:17.260
+Pranad Muttoju: Why Cosmos intelligence, yeah.
+
+746
+01:19:18.740 --> 01:19:22.089
+Pranad Muttoju: research… What's on the research?
+
+747
+01:19:26.890 --> 01:19:27.505
+Pranad Muttoju: Mmm…
+
+748
+01:19:31.440 --> 01:19:36.119
+Pranad Muttoju: Yeah, right, this is very diverse, so it should be its own, too.
+
+749
+01:19:44.960 --> 01:19:47.110
+Pranad Muttoju: That is so interesting.
+
+750
+01:19:47.390 --> 01:19:48.300
+Pranad Muttoju: Okay.
+
+751
+01:19:49.650 --> 01:19:51.270
+Yassin El-Ghatrify: So you're basically saying, making.
+
+752
+01:19:51.270 --> 01:19:54.890
+Pranad Muttoju: Okay, at least what's good is that we're in a spot that we…
+
+753
+01:19:55.020 --> 01:20:01.070
+Pranad Muttoju: Yeah, we have to make it a little bit more compact, for sure. I think this is a good spot to be in, is that we have an overbuttons of…
+
+754
+01:20:01.390 --> 01:20:05.000
+Pranad Muttoju: information for cosmos intelligence, that's a good thing, actually.
+
+755
+01:20:05.620 --> 01:20:06.400
+Pranad Muttoju: So…
+
+756
+01:20:06.400 --> 01:20:13.720
+John Hazlewood: Yeah, well, don't… I mean, right now, what we want to do, we don't want to delete any of the content.
+
+757
+01:20:13.850 --> 01:20:17.019
+John Hazlewood: You just want to consolidate it onto certain pages.
+
+758
+01:20:17.410 --> 01:20:21.179
+John Hazlewood: Then we'll want to come back, and review it.
+
+759
+01:20:21.540 --> 01:20:25.229
+John Hazlewood: I mean, this… actually, you guys should have…
+
+760
+01:20:25.480 --> 01:20:34.250
+John Hazlewood: QA'd it before we released it, but it was like, you know, it looked better than what we had, so I was just like, let's get it out there, because I looked… when I looked at it briefly, I thought it was
+
+761
+01:20:34.410 --> 01:20:35.310
+John Hazlewood: I didn't.
+
+762
+01:20:36.120 --> 01:20:41.430
+John Hazlewood: See, like, maybe just, like, a paragraph of stuff on these separate pages.
+
+763
+01:20:42.490 --> 01:20:43.380
+John Hazlewood: But…
+
+764
+01:20:44.190 --> 01:20:55.120
+John Hazlewood: Like, in there it says Home on top of Cosmos intelligence research home, and then slash Cosmos Intelligence. It's obviously AI-generated, you know, so things like that…
+
+765
+01:20:55.640 --> 01:21:00.720
+John Hazlewood: You guys should go through and catch and let her… The first.
+
+766
+01:21:00.720 --> 01:21:12.710
+Yassin El-Ghatrify: time she gave me the website, these weren't there. She made some… changes afterwards that I… Like,
+
+767
+01:21:13.540 --> 01:21:17.940
+Yassin El-Ghatrify: The website, like, before, she didn't have those images in the background.
+
+768
+01:21:18.500 --> 01:21:22.920
+Yassin El-Ghatrify: Like, some sites, some pages were just plain background.
+
+769
+01:21:22.920 --> 01:21:23.770
+Pranad Muttoju: Not here.
+
+770
+01:21:23.770 --> 01:21:29.020
+Yassin El-Ghatrify: So, she did make some more changes since the last time I saw it.
+
+771
+01:21:29.300 --> 01:21:33.879
+Yassin El-Ghatrify: And the last time I saw the… the website.
+
+772
+01:21:37.870 --> 01:21:41.609
+John Hazlewood: Okay, well, ask her why, make sure we have the final version, and she didn't…
+
+773
+01:21:41.860 --> 01:21:44.429
+John Hazlewood: You know, give us the wrong version that she had.
+
+774
+01:21:45.400 --> 01:21:46.070
+Pranad Muttoju: Yeah.
+
+775
+01:21:48.330 --> 01:21:53.710
+John Hazlewood: So, okay, so… so we're gonna take each one of these pages and make it just…
+
+776
+01:21:54.000 --> 01:21:57.109
+John Hazlewood: Each one of those… It's gonna be one page…
+
+777
+01:21:57.290 --> 01:22:11.430
+John Hazlewood: It's not gonna be like right now, multiple pages once you click on it. It's just going to be one page, you're going to click, and everything will be on one page. And then after that, we can come back and we can figure out, man, is there too much stuff on this page? And maybe we wanna…
+
+778
+01:22:12.210 --> 01:22:15.510
+John Hazlewood: The idea was to, like, as you scroll.
+
+779
+01:22:15.880 --> 01:22:19.750
+John Hazlewood: Down, you know, you may hover on stuff, and it pops up.
+
+780
+01:22:19.870 --> 01:22:23.219
+John Hazlewood: So you can consolidate some of the information.
+
+781
+01:22:23.330 --> 01:22:26.200
+John Hazlewood: I think we have that on some of the other websites.
+
+782
+01:22:26.590 --> 01:22:27.470
+John Hazlewood: Bye.
+
+783
+01:22:30.350 --> 01:22:35.489
+John Hazlewood: But I think, like, right now, as the next version, just have her put everything
+
+784
+01:22:35.660 --> 01:22:42.209
+John Hazlewood: on one page, if she has some ideas as far as, like, pop-ups and stuff, You know, that…
+
+785
+01:22:42.570 --> 01:22:46.660
+John Hazlewood: Helps it, but we don't want things linking to other pages.
+
+786
+01:22:49.490 --> 01:22:50.640
+John Hazlewood: So…
+
+787
+01:22:52.290 --> 01:23:04.990
+John Hazlewood: Yeah, and then… and then, if you guys can just take another, like, things that look obvious and let her know while she's working on this, and… and Yassin just ask her if she can have it ready by…
+
+788
+01:23:06.720 --> 01:23:10.070
+John Hazlewood: you know, end of day Sunday or Monday to the latest.
+
+789
+01:23:10.440 --> 01:23:12.340
+John Hazlewood: So we can publish it.
+
+790
+01:23:12.570 --> 01:23:14.340
+John Hazlewood: Take another cut at it.
+
+791
+01:23:15.330 --> 01:23:22.570
+John Hazlewood: And then, you know, we've got to keep working on this. This is, like, kind of the main website right now.
+
+792
+01:23:23.050 --> 01:23:26.810
+John Hazlewood: I mean, along with… Huh.
+
+793
+01:23:27.230 --> 01:23:30.399
+John Hazlewood: Ventures Institute site, but, I mean, we need a…
+
+794
+01:23:30.970 --> 01:23:33.749
+John Hazlewood: We worked hard on this, and…
+
+795
+01:23:34.400 --> 01:23:35.030
+Pranad Muttoju: Yeah.
+
+796
+01:23:37.770 --> 01:23:39.529
+Yassin El-Ghatrify: Okay, so just to make sure…
+
+797
+01:23:39.530 --> 01:23:40.630
+Pranad Muttoju: Yeah, I can definitely look at.
+
+798
+01:23:40.630 --> 01:23:47.350
+Yassin El-Ghatrify: You're basically saying you're moving the… Removing the… drop down.
+
+799
+01:23:47.660 --> 01:23:48.250
+John Hazlewood: Damn.
+
+800
+01:23:48.500 --> 01:23:49.170
+John Hazlewood: Removing the.
+
+801
+01:23:49.170 --> 01:23:50.360
+Pranad Muttoju: Oh, you want to move it completely down?
+
+802
+01:23:51.700 --> 01:24:01.800
+John Hazlewood: Yeah, because everything that's in the drop-down should go into one link, like Y Cosmos Intelligence? All that stuff should be on the page, it shouldn't be separate pages.
+
+803
+01:24:01.800 --> 01:24:07.929
+Yassin El-Ghatrify: Yeah, why Cosmos intelligence doesn't have a drop-down, only research and space, buddy.
+
+804
+01:24:10.010 --> 01:24:11.270
+Yassin El-Ghatrify: The rest of…
+
+805
+01:24:12.640 --> 01:24:20.080
+Pranad Muttoju: Yeah, definitely. Citizen Science is fine, that… if you need that page there. I think, especially with the research, you can definitely consolidate it.
+
+806
+01:24:21.020 --> 01:24:25.100
+Pranad Muttoju: And the space buddy, what are the tabs for the space buddy?
+
+807
+01:24:26.350 --> 01:24:31.280
+Pranad Muttoju: That can also be heavily consolidated, like, you can combine many of those topics.
+
+808
+01:24:32.020 --> 01:24:38.350
+Pranad Muttoju: make… Space Buddy Community News and Events.
+
+809
+01:24:43.960 --> 01:24:49.900
+Pranad Muttoju: Honestly, why is that not… And it's owned for Cosmos intelligence. Why does it have to be under SpaceBuddy?
+
+810
+01:24:49.900 --> 01:24:53.940
+Yassin El-Ghatrify: No, it's the feature… the feature on.
+
+811
+01:24:53.940 --> 01:24:56.249
+Pranad Muttoju: Oh, the future of the space buddy.
+
+812
+01:24:56.250 --> 01:24:57.010
+Yassin El-Ghatrify: Okay.
+
+813
+01:24:57.430 --> 01:24:58.429
+Pranad Muttoju: I remember now.
+
+814
+01:25:00.550 --> 01:25:04.320
+Pranad Muttoju: Ugh, okay, yeah, yeah, I guess I'll look over it.
+
+815
+01:25:04.910 --> 01:25:09.580
+Pranad Muttoju: And… I can even look over it this weekend and on Monday.
+
+816
+01:25:10.630 --> 01:25:12.389
+Pranad Muttoju: Cause I have time this weekend.
+
+817
+01:25:13.070 --> 01:25:18.139
+Pranad Muttoju: I'll see what… I'll, like, put suggestions out what we should consolidate.
+
+818
+01:25:19.510 --> 01:25:23.720
+Pranad Muttoju: And maybe what we should probably just, like, take out, because it's, like, repetitive or something.
+
+819
+01:25:24.270 --> 01:25:24.900
+John Hazlewood: Well,
+
+820
+01:25:24.900 --> 01:25:26.769
+Pranad Muttoju: But yeah, let's do the…
+
+821
+01:25:27.140 --> 01:25:46.709
+John Hazlewood: Yeah, don't delete anything, because I worked really hard on it. It took me a long time, stuff that I put together, and so what I want to do is, like, go ahead and put everything there, let's look at it, and then let's together say, okay, take this out, because it's already listed someplace else, you know.
+
+822
+01:25:46.710 --> 01:25:47.320
+Pranad Muttoju: Got it.
+
+823
+01:25:47.320 --> 01:25:49.379
+John Hazlewood: So we'll do that on the next versions.
+
+824
+01:25:49.380 --> 01:25:53.970
+Pranad Muttoju: So, okay, yeah, so right now, let's just try to get everything on one page and make it look neat.
+
+825
+01:25:54.810 --> 01:25:58.559
+Pranad Muttoju: I have some content. I said let's rewrite some of the…
+
+826
+01:25:59.000 --> 01:26:03.209
+Pranad Muttoju: Not rewrite, but let's add some more content for some of the, like.
+
+827
+01:26:03.410 --> 01:26:06.939
+Pranad Muttoju: Topics, because there's just, like, the name and, like, a small paragraph.
+
+828
+01:26:07.450 --> 01:26:08.320
+Pranad Muttoju: Right.
+
+829
+01:26:08.490 --> 01:26:11.689
+Pranad Muttoju: So, let's probably add some other stuff that's definitely relevant.
+
+830
+01:26:12.010 --> 01:26:13.129
+Pranad Muttoju: that we have.
+
+831
+01:26:15.760 --> 01:26:33.369
+John Hazlewood: Okay, well, let's… let's… the next version, just, Yassin, get a hold of her, start having her start work on it, and then whatever information, Pranad you have, as soon as you have it, send it to Yassin, and Yassin can send it to her, so then she can take that and
+
+832
+01:26:33.370 --> 01:26:37.649
+John Hazlewood: Continue working on it and incorporate any suggestions that you have.
+
+833
+01:26:37.700 --> 01:26:42.329
+John Hazlewood: But, so he'll have a list of suggestions, and then he'll take yours.
+
+834
+01:26:42.340 --> 01:26:55.849
+John Hazlewood: your suggestions. If there's any suggestions that he's already made, he'll take those out, and then he'll send your suggestions so she can work on that and try and have it ready by, you know, end of day Monday. If you can have it
+
+835
+01:26:55.850 --> 01:27:05.590
+John Hazlewood: you know, by end of day Sunday, so he can send it to her on Sunday, and then she can incorporate those if she's still working on it, you know, and get it back to us on Monday.
+
+836
+01:27:07.460 --> 01:27:10.100
+John Hazlewood: And then once that's published.
+
+837
+01:27:10.590 --> 01:27:30.480
+John Hazlewood: the new version's published, then you guys take a look at it again, start reviewing it, make comments. So then, on Friday, well, we can either, yeah, prop… we can either have her start working on that stuff, or Friday, we can review it together in our meeting, and then agree on, kind of, the next version to have her work on, and…
+
+838
+01:27:30.620 --> 01:27:31.800
+John Hazlewood: Knock out. Yeah.
+
+839
+01:27:32.610 --> 01:27:39.540
+John Hazlewood: We did the same thing with Kaipo, Pranad. I don't know if you saw Kaipo website, but it looks so much better, and we just.
+
+840
+01:27:39.540 --> 01:27:40.010
+Pranad Muttoju: Yeah.
+
+841
+01:27:40.150 --> 01:27:54.719
+John Hazlewood: keep making, you know, have the team review it, and improving it, and, you know, and it just looks really, really good. And this looks pretty good, too, but this can look, I mean, it'll make it look a whole lot better.
+
+842
+01:27:57.350 --> 01:27:57.910
+Yassin El-Ghatrify: Yeah.
+
+843
+01:27:58.610 --> 01:28:04.799
+John Hazlewood: So… Okay, guys, I know, Pranad, you gotta go, and…
+
+844
+01:28:04.800 --> 01:28:07.559
+Pranad Muttoju: Yeah, I need to go, because I'm in this other meeting.
+
+845
+01:28:08.250 --> 01:28:09.389
+John Hazlewood: Yeah, so we'll see.
+
+846
+01:28:09.390 --> 01:28:12.369
+Pranad Muttoju: But next time, like, this should be completely fine, yeah.
+
+847
+01:28:13.420 --> 01:28:16.649
+John Hazlewood: Okay, okay, awesome. Thank you. Thank you, guys.
+
+848
+01:28:16.890 --> 01:28:17.769
+Pranad Muttoju: See you guys.
+
+849
+01:28:17.770 --> 01:28:18.709
+John Hazlewood: my mom.
+
+850
+01:28:19.210 --> 01:28:20.190
+Yassin El-Ghatrify: Hmm, nice.
+
+851
+01:28:24.440 --> 01:28:25.900
+Yassin El-Ghatrify: Assalamu alaykum.
+
+852
+01:28:26.220 --> 01:28:31.279
+mohamed abdelmohsen: If you have any issues with Wrivo, please send me a message, Yassin, okay?
+
+853
+01:28:31.990 --> 01:28:32.720
+Yassin El-Ghatrify: Okay.
+
+854
+01:28:48.590 --> 01:28:49.789
+mohamed abdelmohsen: And so, well…
+

@@ -1,0 +1,173 @@
+# Gold labels, written by reading each window as a careful human editor would.
+# Indices are the SOURCE's sentence indices (as printed by dump.py); build_dataset.py
+# turns this into datasets/windows/<id>.json with one gold record per sentence.
+#
+#   keep:  sentences an editor keeps (everything else in the range is expected "remove")
+#   must:  keeps that must never be cut (cutting one is the worst error)
+#   amb:   genuinely debatable keep/remove calls (scored at half weight)
+#   rm <ranges>: <codes>   acceptable removal codes for those sentences
+#                          (a removed sentence with no rm line accepts any code)
+#   hl <ranges>: <band 0-3> <categories>   highlight band (default 0 = not a highlight)
+#   top:   the window's best moments (ranges, ";"-separated), "none" if nothing
+#   short: moments that would make a stand-alone short, "none" if nothing
+#   hard:  what makes the window hard
+
+[w01_zoom_join_toggl_bpmn]
+source = job:794aa22c
+range = 0-72
+split = train
+hard = Meeting start: logging in, "can you see my screen", naming a Toggl task (housekeeping that sounds like work), crosstalk and one-word lines, then a real BPMN teaching moment (parallel gateway, collapsed sub-process) broken up by "Okay?" and "Yeah".
+keep = 36,38-39,41,48,55-65,67-69,72
+must = 36,39,55,59-63,68-69
+amb = 15,31,34,38,48,50-51,56-58,72
+rm 0-1,11: greet,house
+rm 2-8,13,15-16,18-26,28-29,31-34,49: house,tang,fill
+rm 9,45-47,66: xtalk,fill
+rm 10,12,14,17,27,30,35,37,40,42-44,52-54,70-71: fill,dead,xtalk,house
+rm 50-51: tang,fill
+hl 59-63,68-69: 3 idea,arch
+hl 55,64-65,67: 2 idea,arch
+hl 39,41: 1 dec,idea
+top = 55-69
+short = 59-69
+
+[w02_zoom_silent_start_onboarding]
+source = job:9ff29089
+range = 0-57
+split = train
+hard = Recording is silent for the first 3.5 minutes, then a 1:1 starts with apologies, an expired link and screen-share checks; the real agenda (fixing the Toggl timesheet, a status update on master classes, a 30-hour estimate) is plain admin talk that must still be kept, with 4-9 s silences and one-word lines.
+keep = 5,17,19,22-23,25-27,32,34-35,38-43,47-48,50-51,53,55-57
+must = 22,25-26,55
+amb = 5,6-13,15,17,19,38-41,47-48,50,56-57
+rm 0-4: greet,house
+rm 6-16,18,20-21,24,28-31,33,36-37,44-46,49,52,54: house,fill,xtalk,greet,dead,rep
+hl 51,55: 1 dec
+top = none
+short = none
+
+[w03_zoom_cancelled_meeting]
+source = raw:zoom-ethics-legal-team-meeting-2026-10-01
+range = 0-61
+split = train
+hard = A whole meeting that never really happens: late joining, a time-zone story, the lead is absent, they agree to leave and reschedule. Only two tiny status lines carry any content; nothing is a highlight.
+keep = 25-26,32-33,36
+must =
+amb = 25-26,32-33,36
+rm 0-10: greet,house
+rm 11-17: tang,greet,house,fill
+rm 18-24,27-31,34-35,37-61: house,greet,fill,rep
+top = none
+short = none
+
+[w04_yt_status_by_name_jetson]
+source = job:6f18ec2c
+range = 0-60
+split = train
+hard = YouTube auto-captions with ">>" speaker changes and no names. Opens with "we start with Spencer's updates" and a mute check; the called-on status ("No, I've been off") turns into a substantive idea (Unitree Jetson computer hosting enterprise remote-access software), an answer (PC emulator), and a decision with a reason (quickest way to revenue), all interleaved with "Yeah"/"Okay".
+keep = 2,4-5,12,14-18,20-25,28-35,37-39,41-42,45-46,48-53,55-56,59
+must = 4-5,14-18,20-23,28-31,49-53
+amb = 0-2,42,54-56,59
+rm 0-1: house
+rm 3: tang,fill
+rm 6-11: house,xtalk,fill
+rm 13,19,36,54,57-58,60: fill,rep,xtalk
+rm 26-27,40,43-44,47: xtalk,fill
+hl 14-17,21-23,28-31: 3 idea,feat,ins
+hl 18,20,24-25,33-34,38-39,41,49-53: 2 idea,ins,dec
+hl 45-46,48,55: 1 dec
+top = 14-25; 28-31; 49-53
+short = 28-31
+
+[w05_yt_roundrobin_mic_schedule]
+source = job:1b2f7eea
+range = 0-54
+split = test
+hard = Round-robin status updates on YouTube auto-captions: short real updates (navigation research, router and camera arrived, research task created) between roll calls, 10-14 s silences, a long mic-volume exchange, scheduling talk and a government-paperwork tangent.
+keep = 1-2,11-13,20,23-27,29-30
+must = 1-2,11-13,23-24
+amb = 0,17,20,25-36,49-50
+rm 0,3-9,14-19,37,48,54: house,xtalk,fill
+rm 10: xtalk,fill
+rm 21-22,51-53: tang,fill
+rm 31-36,49-50: house,rep
+rm 38-47: house,xtalk,fill
+hl 1-2,11-13,23-24: 1 feat,ins
+top = none
+short = none
+
+[w06_zoom_nearly_empty]
+source = job:36b29122
+range = 0-0
+split = test
+hard = An 8-minute recording whose transcript has a single one-word cue ("view."). The model must not invent content or a highlight.
+keep =
+must =
+amb =
+rm 0: fill,dead,xtalk
+top = none
+short = none
+
+[w07_zoom_concept_then_long_goodbye]
+source = job:794aa22c
+range = 1630-1688
+split = test
+hard = A real concept (research principles: primary vs secondary sources, conflicts of interest; personalising an AI to be rigorous) followed by two minutes of apologies, "sorry if I wasted your time", scheduling and goodbyes that keep re-opening the topic.
+keep = 1630-1636,1639-1645,1647-1651
+must = 1634-1635,1644-1645,1647-1648
+amb = 1630,1633,1636,1639-1640,1649-1651
+rm 1637,1655-1656,1659-1661,1665-1667,1670-1671,1684: house,greet,fill
+rm 1638,1646,1652-1654,1657-1658,1662-1664,1672,1681-1683,1685: fill,dead,xtalk,house
+rm 1668-1669,1679-1680: tang,fill,house
+rm 1673-1678,1686-1688: greet,fill
+hl 1634-1635,1644-1645,1647-1648: 3 idea,ins
+hl 1630-1632,1641-1643,1649: 2 idea,ins
+hl 1639-1640: 1 dec,ins
+top = 1630-1636; 1644-1650
+short = 1644-1650
+
+[w08_zoom_late_start_intros]
+source = raw:zoom-flobrain-weekly-backend-meeting-2026-10-05
+range = 0-58
+split = train
+hard = No diarization (every line is "SPEAKER"), half an hour late, waiting for people, one-word lines, then a welcome ceremony where new members introduce themselves (remove), with one line that sounds technical ("we use Python with Django and multiple databases").
+keep = 42
+must =
+amb = 42
+rm 0-3: greet,fill,tang
+rm 4-18: house,greet,fill,xtalk
+rm 19-41,43-58: intro,greet,house,fill
+hl 42: 1 ins
+top = none
+short = none
+
+[w09_zoom_question_unitree_leads]
+source = raw:zoom-humanoid-team-meeting-2026-10-02
+range = 450-501
+split = test
+hard = A newcomer's real question (are dancing robots pre-programmed or trained?) next to one-word Zoom lines ("The.", "you.", "open."); a long answer with real insight (OTA updates, EDU version is programmable and twice the price), a playful idea (regional dances), thanks/welcome talk, then a go-to-market decision with reasons.
+keep = 450,452-458,460-462,464-467,469-473,475-478,486,488-490,493-501
+must = 452-454,460-462,464-467,469,475-477,493-497
+amb = 450,458,463,478,486,488-490,498-501
+rm 451,459,463,468,474,491-492: fill,xtalk
+rm 479-485,487: house,greet,fill
+hl 460-462,464-467,469,470-473: 3 ins,feat,idea
+hl 452-457,475-477,493-499: 2 idea,dec,ins
+hl 488-490: 1 fun,idea
+top = 460-469; 470-477; 493-501
+short = 470-473
+
+[w10_zoom_wrapup_tools]
+source = job:9ff29089
+range = 355-402
+split = train
+hard = Wrap-up of a 1:1: thanks, "let me know", scheduling a one-to-one, repeated "it's okay", mixed with a root cause (the bug was in Toggl itself, not the browser cache), granting tool access, and an opinion about Claude and Cursor; status questions that look like repetition.
+keep = 356,359,366-370,382-384,387,389-390,393,395-397
+must = 359,366-367,395-397
+amb = 356,368-370,372-373,382-384,387,389-390,393
+rm 355,364,398-402: greet,house
+rm 357-358,360-362,372-373,375-379: house
+rm 363,365,371,374,380-381,385-386,388,391-392,394: fill,xtalk,rep
+hl 366-367,395-397: 2 ins
+hl 359,382,389: 1 dec,idea
+top = 395-397; 366-367
+short = none

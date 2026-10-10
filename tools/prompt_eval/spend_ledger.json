@@ -1,0 +1,249 @@
+{
+ "limit_usd": 3.0,
+ "note": "every real Claude call made by run_eval.py",
+ "runs": [
+  {
+   "tag": "dryrun_fake",
+   "split": "all",
+   "rerank": true,
+   "fake": true,
+   "started": "2026-10-05T23:54:05",
+   "estimate_usd": 0.2486,
+   "max_cost_usd": 0.3,
+   "actual_usd": 0.0,
+   "status": "done",
+   "usage": {
+    "calls": 22,
+    "prompt_tokens": 33833,
+    "output_tokens": 2165,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "simulated_usd": 0.0893,
+   "seconds": 0.0
+  },
+  {
+   "tag": "baseline_saved_haiku",
+   "split": "all",
+   "rerank": false,
+   "fake": true,
+   "started": "2026-10-05T23:54:46",
+   "estimate_usd": 0.0946,
+   "max_cost_usd": 0.3,
+   "actual_usd": 0.0,
+   "status": "done",
+   "usage": {
+    "calls": 9,
+    "prompt_tokens": 15527,
+    "output_tokens": 1191,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "simulated_usd": 0.043,
+   "seconds": 0.0
+  },
+  {
+   "tag": "baseline",
+   "split": "all",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-05T23:55:50",
+   "estimate_usd": 0.2486,
+   "max_cost_usd": 0.3,
+   "actual_usd": 0.1422,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 24,
+    "prompt_tokens": 55396,
+    "output_tokens": 8129,
+    "cache_read_tokens": 28368,
+    "cache_write_tokens": 2394,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 76.0
+  },
+  {
+   "tag": "tune1",
+   "split": "train",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-06T00:00:55",
+   "estimate_usd": 0.1721,
+   "max_cost_usd": 0.25,
+   "actual_usd": 0.0893,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 15,
+    "prompt_tokens": 37342,
+    "output_tokens": 5093,
+    "cache_read_tokens": 20661,
+    "cache_write_tokens": 1819,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 58.4
+  },
+  {
+   "tag": "tune2",
+   "split": "train",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-06T00:02:31",
+   "estimate_usd": 0.1738,
+   "max_cost_usd": 0.25,
+   "actual_usd": 0.078,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 34822,
+    "output_tokens": 4255,
+    "cache_read_tokens": 19530,
+    "cache_write_tokens": 1905,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 52.7
+  },
+  {
+   "tag": "tune3",
+   "split": "train",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-06T00:04:19",
+   "estimate_usd": 0.1759,
+   "max_cost_usd": 0.25,
+   "actual_usd": 0.0828,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 15,
+    "prompt_tokens": 36664,
+    "output_tokens": 4461,
+    "cache_read_tokens": 20315,
+    "cache_write_tokens": 2890,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 48.9
+  },
+  {
+   "tag": "tune4",
+   "split": "train",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-06T00:05:44",
+   "estimate_usd": 0.1762,
+   "max_cost_usd": 0.25,
+   "actual_usd": 0.077,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 15,
+    "prompt_tokens": 36787,
+    "output_tokens": 4322,
+    "cache_read_tokens": 22395,
+    "cache_write_tokens": 960,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 45.1
+  },
+  {
+   "tag": "final_test",
+   "split": "test",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-06T00:07:57",
+   "estimate_usd": 0.0866,
+   "max_cost_usd": 0.3,
+   "actual_usd": 0.0376,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 18206,
+    "output_tokens": 2032,
+    "cache_read_tokens": 10625,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 21.9
+  },
+  {
+   "tag": "final_test_repeat_w05_w07",
+   "split": "test",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-06T00:09:57",
+   "estimate_usd": 0.0527,
+   "max_cost_usd": 0.1,
+   "actual_usd": 0.0257,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 4,
+    "prompt_tokens": 10520,
+    "output_tokens": 1503,
+    "cache_read_tokens": 5780,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 14.9
+  },
+  {
+   "tag": "fix1_test",
+   "split": "test",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-06T00:17:23",
+   "estimate_usd": 0.0876,
+   "max_cost_usd": 0.12,
+   "actual_usd": 0.0462,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 19038,
+    "output_tokens": 2113,
+    "cache_read_tokens": 8047,
+    "cache_write_tokens": 2994,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 21.2
+  },
+  {
+   "tag": "fix1_train",
+   "split": "train",
+   "rerank": true,
+   "fake": false,
+   "started": "2026-10-06T00:18:09",
+   "estimate_usd": 0.1781,
+   "max_cost_usd": 0.2,
+   "actual_usd": 0.0767,
+   "status": "done",
+   "model": "claude-sonnet-5-5",
+   "usage": {
+    "calls": 15,
+    "prompt_tokens": 38061,
+    "output_tokens": 4401,
+    "cache_read_tokens": 24141,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   },
+   "seconds": 42.8
+  }
+ ],
+ "spent_usd": 0.6555
+}

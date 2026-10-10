@@ -1,0 +1,49 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	355	mohamed abdelmohsen	Great, my friend.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+1	356	kevani minott	Alright, so I'm gonna finish the masterclass.	keep	0	1		0	remove	house	1	none	removed(amb)	k 2 none
+2	357	kevani minott	And… Let me know, so I can…	remove	0	0	house	0	remove	xtalk	0	none	code?	r 0 housekeeping
+3	358	mohamed abdelmohsen	Yeah, yeah, let me know.	remove	0	0	house	0	remove	fill	0	none	code?	r 0 housekeeping
+4	359	mohamed abdelmohsen	So I first grant you the AI tool access that we have.	keep	1	0		1	keep	-	3	decision	ok	k 3 none
+5	360	mohamed abdelmohsen	Then… To find the time that we can make the one-to-one meeting with Mr.	remove	0	0	house	0	remove	house	1	none	ok	r 0 housekeeping
+6	361	mohamed abdelmohsen	John.	remove	0	0	house	0	remove	house	1	none	ok	r 0 housekeeping
+7	362	mohamed abdelmohsen	And this meeting actually is… Just a friendly meeting, just to know you more, like… Just know you more, so don't worry about this meeting.	remove	0	0	house	0	remove	house	1	none	ok	r 0 greeting_small_talk
+8	363	kevani minott	Yeah.	remove	0	0	fill,xtalk,rep	0	remove	fill	0	none	ok	r 0 filler
+9	364	kevani minott	Alright, so thank you for fixing my toggle.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 housekeeping
+10	365	mohamed abdelmohsen	It's okay, my friend, it's okay.	remove	0	0	fill,xtalk,rep	0	remove	fill	0	none	ok	r 0 filler
+11	366	mohamed abdelmohsen	The issue actually, it was something from Togo itself.	keep	1	0		2	keep	-	4	insight	ok	k 3 none
+12	367	mohamed abdelmohsen	It's not from your caching, from your browser, nor my browser.	keep	1	0		2	keep	-	4	insight	ok	k 3 none
+13	368	mohamed abdelmohsen	But we did fix it.	keep	0	1		0	keep	-	3	insight	ok	k 2 none
+14	369	mohamed abdelmohsen	And yeah, don't worry, it will not happen again.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+15	370	mohamed abdelmohsen	We find a way to fix it, and hopefully it will not happen again.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+16	371	kevani minott	Yep.	remove	0	0	fill,xtalk,rep	0	remove	fill	0	none	ok	r 0 filler
+17	372	mohamed abdelmohsen	Anyway, if you have any issue, keep in touch with me, just send me a message.	remove	0	1	house	0	remove	house	1	none	ok	k 1 none
+18	373	mohamed abdelmohsen	Maybe I will not reply at the same time, but I will reply, so just send me a message when you have any issues, and	remove	0	1	house	0	remove	house	1	none	ok	k 1 none
+19	374	kevani minott	when.	remove	0	0	fill,xtalk,rep	0	remove	xtalk	0	none	ok	r 0 crosstalk
+20	375	mohamed abdelmohsen	When do you think you're gonna done with your master classes?	remove	0	0	house	0	keep	-	2	none	JUNK_KEPT	r 0 housekeeping
+21	376	mohamed abdelmohsen	Like how much hours?	remove	0	0	house	0	keep	-	2	none	JUNK_KEPT	r 0 housekeeping
+22	377	kevani minott	I'm gonna… Initially, like, right now, after this meeting.	remove	0	0	house	0	keep	-	2	none	JUNK_KEPT	r 1 housekeeping
+23	378	mohamed abdelmohsen	Okay.	remove	0	0	house	0	remove	fill	0	none	code?	r 0 filler
+24	379	mohamed abdelmohsen	So just send me a message after you're done.	remove	0	0	house	0	remove	house	1	none	ok	r 0 housekeeping
+25	380	mohamed abdelmohsen	Hopefully I'm still awake.	remove	0	0	fill,xtalk,rep	0	remove	greet	0	none	code?	r 0 filler
+26	381	mohamed abdelmohsen	And, yeah.	remove	0	0	fill,xtalk,rep	0	remove	fill	0	none	ok	r 0 filler
+27	382	mohamed abdelmohsen	So, basically, I will grant you GlowDI access, ChatGPT access, Cursor access, Do you use cursor?	keep	0	1		1	keep	-	3	decision	ok	k 2 none
+28	383	kevani minott	no I only use Claude Get…	keep	0	1		0	keep	-	3	none	ok	k 2 none
+29	384	mohamed abdelmohsen	Are you done with your developer masterclasses?	keep	0	1		0	keep	-	2	none	ok	r 0 repetition
+30	385	kevani minott	developer.	remove	0	0	fill,xtalk,rep	0	remove	fill	0	none	ok	r 0 crosstalk
+31	386	mohamed abdelmohsen	Yeah?	remove	0	0	fill,xtalk,rep	0	remove	fill	0	none	ok	r 0 filler
+32	387	kevani minott	Yeah, I'm finished with it.	keep	0	1		0	keep	-	2	none	ok	r 0 repetition
+33	388	kevani minott	I finish it, like… An overview, or something?	remove	0	0	fill,xtalk,rep	0	remove	xtalk	1	none	ok	r 0 filler
+34	389	mohamed abdelmohsen	We do have, It's kind of, let's say, video there talking about cursor itself and how to use it.	keep	0	1		1	keep	-	3	none	ok	k 3 none
+35	390	kevani minott	Yeah, yeah, I was just telling you what… I use, I'm gonna use Cursicle.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+36	391	kevani minott	If it's…	remove	0	0	fill,xtalk,rep	0	remove	xtalk	0	none	ok	r 0 filler
+37	392	mohamed abdelmohsen	It's okay, it's okay, you should, man.	remove	0	0	fill,xtalk,rep	0	remove	fill	0	none	ok	r 0 filler
+38	393	kevani minott	I'm just saying that when I'm coding, I only use Claude.	keep	0	1		0	keep	-	3	none	ok	k 2 none
+39	394	mohamed abdelmohsen	It's okay.	remove	0	0	fill,xtalk,rep	0	remove	fill	0	none	ok	r 0 filler
+40	395	mohamed abdelmohsen	Cloud and Cursor, they are the one top niche, let's say, software development right now when it comes to the front end.	keep	1	0		2	keep	-	5	insight	ok	k 4 none
+41	396	mohamed abdelmohsen	or the backend, or whatever.	keep	1	0		2	keep	-	5	insight	ok	k 4 none
+42	397	mohamed abdelmohsen	So you should master those if you want to have a job in the future.	keep	1	0		2	keep	-	5	insight	ok	k 3 none
+43	398	mohamed abdelmohsen	Okay, my friend, if you have any issues, just let me know and send me a message and let us get in touch.	remove	0	0	greet,house	0	remove	house	1	none	ok	r 0 housekeeping
+44	399	kevani minott	Thank you for…	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+45	400	mohamed abdelmohsen	Time to run it, and… See you soon, my friend.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+46	401	kevani minott	Yeah, see you, sir.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+47	402	mohamed abdelmohsen	Bye, bye.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk

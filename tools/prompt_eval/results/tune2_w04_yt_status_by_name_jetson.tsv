@@ -1,0 +1,62 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	0	SPEAKER	So guys let us uh start this meeting today as usual and we as usual start with uh Spencer amoid uh updates.	remove	0	1	house	0	remove	house	0	none	ok	r 0 housekeeping
+1	1	SPEAKER	So Spencers do we have any updates from theite team?	remove	0	1	house	0	remove	house	0	none	ok	r 0 housekeeping
+2	2	SPEAKER	No, because again I've been off.	keep	0	1		0	remove	fill	1	none	removed(amb)	r 0 filler
+3	3	SPEAKER	But I do want to sitting here putting together my apartment again.	remove	0	0	tang,fill	0	remove	tang	0	none	ok	r 0 tangent
+4	4	SPEAKER	U did come across some ideas that I wanted to um talk about.	keep	1	0		0	keep	-	2	none	ok	k 5 none
+5	5	SPEAKER	Um specifically because I've been not because we've been talking about for such a long time that's specifically remote access.	keep	1	0		0	keep	-	4	concept	ok	k 6 none
+6	6	SPEAKER	>> Spencer, you're Spencer, you're a little muted.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+7	7	SPEAKER	>> Okay.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 housekeeping
+8	8	SPEAKER	Maybe you can talk into the f into the mic or something.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+9	9	SPEAKER	>> Am I better now?	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+10	10	SPEAKER	>> Yeah.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+11	11	SPEAKER	>> Okay.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+12	12	SPEAKER	So, putting together my apartment, I came a little I was thinking about, you know, just just thinking about things and it came across my mind.	keep	0	0		0	remove	tang	1	none	WRONG_REMOVE	k 5 none
+13	13	SPEAKER	I didn't why I thought about it sooner.	remove	0	0	fill,rep,xtalk	0	remove	tang	1	none	code?	r 0 filler
+14	14	SPEAKER	And as we have been talking about remote access for the kind of longest of times, probably about remote access into robot dogs and even eventually robot access 	keep	1	0		3	keep	-	5	concept	ok	k 7 none
+15	15	SPEAKER	Um, Unitry provides a thing called a JSON computer accessory.	keep	1	0		3	keep	-	5	new_feature	ok	k 7 none
+16	16	SPEAKER	Um, it's JSo N.	keep	1	0		3	keep	-	3	new_feature	ok	k 7 none
+17	17	SPEAKER	It's a small little tiny uh Nvidia computer that uh Unitry provides that is attached to their robot dogs.	keep	1	0		3	keep	-	6	new_feature	ok	k 7 none
+18	18	SPEAKER	Um, it allows for them to plug in other devices.	keep	1	0		2	keep	-	5	new_feature	ok	k 6 none
+19	19	SPEAKER	Yes, that is salary.	remove	0	0	fill,rep,xtalk	0	remove	xtalk	0	none	ok	r 0 filler
+20	20	SPEAKER	Um, and what I was kind of curious about, and if uh anyone on the humanoid team wants to kind of run this type of research, uh, run this research just to fulfil	keep	1	0		2	keep	-	4	concept	ok	k 6 none
+21	21	SPEAKER	is can that computer host and automatically open some?	keep	1	0		3	keep	-	4	concept	ok	k 6 none
+22	22	SPEAKER	Because if it can, we could move to a more enterprise type remote control software, host it on the robot dog so that when it turns on, it automatically turns it	keep	1	0		3	keep	-	7	concept	ok	k 7 none
+23	23	SPEAKER	Essentially, I'm c I'm I'm curious if the savary if the computer can host soft if that computer if we could take that computer put some software on it and host 	keep	1	0		3	keep	-	6	concept	ok	k 6 none
+24	24	SPEAKER	remote access whether that's one from someone else or one that god forbid we have to make um that is my question and that's what I would want someone to researc	keep	0	0		2	keep	-	6	concept	ok	k 6 none
+25	25	SPEAKER	don't have to rely on the computing power of a phone uh to do the remote access that me and um Antoine thing where I remote accessed his phone via my computer.	keep	0	0		2	keep	-	6	insight	ok	k 6 none
+26	26	SPEAKER	Yeah.	remove	0	0	xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+27	27	SPEAKER	Yeah.	remove	0	0	xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+28	28	SPEAKER	So, Sabry, how me and Antoine did it, we did um a software called Team Viewer.	keep	1	0		3	keep	-	5	insight	ok	k 6 none
+29	29	SPEAKER	Team Beer has two apps on it, which is just Team Beer and Team Viewer requisition potentially that if someone has the Team Viewer app, they can access someone e	keep	1	0		3	keep	-	4	insight	ok	k 7 none
+30	30	SPEAKER	My thing would be with the computer now a stronger computer attacks directly to the robot dome and hosting remote access software.	keep	1	0		3	keep	-	7	new_architecture	ok	k 7 none
+31	31	SPEAKER	we can host stronger and more enterprise type versions of remote access software which would cut down on input lag would um kind of cut down on problems that we	keep	1	0		3	keep	-	7	insight	ok	k 7 none
+32	32	SPEAKER	Um and that is something I would want someone to research specifically that computer.	keep	0	0		0	keep	-	5	concept	ok	k 6 none
+33	33	SPEAKER	What can we do with it?	keep	0	0		2	keep	-	4	concept	ok	k 5 none
+34	34	SPEAKER	what does unitry offer in terms of software in it?	keep	0	0		2	keep	-	4	concept	ok	k 5 none
+35	35	SPEAKER	Um, but do research into that computer module because I don't know why I didn't think of it sooner, but when you're putting a computer desk together with no ins	keep	0	0		0	keep	-	3	concept	ok	k 5 none
+36	36	SPEAKER	Uh, but that was that's my was my notes for uh healing.	remove	0	0	fill,rep,xtalk	0	remove	house	0	none	code?	r 0 filler
+37	37	SPEAKER	I just if someone wants to do that research that would interest >> uh I can tell something about it.	keep	0	0		0	keep	-	3	concept	ok	k 5 none
+38	38	SPEAKER	The idea would be to because I just checked and there's no unitary app for PC.	keep	0	0		2	keep	-	5	insight	ok	k 6 none
+39	39	SPEAKER	So what you can do is install on the PC uh a mobile emulator.	keep	0	0		2	keep	-	6	concept	ok	k 7 none
+40	40	SPEAKER	>> Yeah.	remove	0	0	xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+41	41	SPEAKER	and you you u you uh ramp up the RAM that it uses to simulate like a very powerful mobile phone >> basically.	keep	0	0		2	keep	-	6	concept	ok	k 6 none
+42	42	SPEAKER	>> And you use a unit on it.	keep	0	1		0	keep	-	4	concept	ok	r 0 crosstalk
+43	43	SPEAKER	Yeah.	remove	0	0	xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+44	44	SPEAKER	>> Yeah.	remove	0	0	xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+45	45	SPEAKER	So that that would be my question.	keep	0	0		1	keep	-	3	none	ok	k 5 none
+46	46	SPEAKER	I would I would want that kind of research put into writing.	keep	0	0		1	keep	-	3	none	ok	k 4 none
+47	47	SPEAKER	>> Okay.	remove	0	0	xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+48	48	SPEAKER	um in a class just so then I'm able to look at it and kind of think a little more about it.	keep	0	0		1	keep	-	3	none	ok	k 4 none
+49	49	SPEAKER	I don't know if that would be the way we go.	keep	1	0		2	keep	-	4	decision	ok	k 5 none
+50	50	SPEAKER	I know we probably won't use the software that me and you uh me and you use because that was just a test case.	keep	1	0		2	keep	-	5	decision	ok	k 5 none
+51	51	SPEAKER	We wanted to see if even a software like that could even handle that type of load and it can.	keep	1	0		2	keep	-	5	insight	ok	k 6 none
+52	52	SPEAKER	Um, but we would definitely want to start progressing, especially as I as I as me and John see a robo collective being our quickest way to revenue.	keep	1	0		2	keep	-	6	decision	ok	k 6 none
+53	53	SPEAKER	I would want to start progressing down the enterprise tree of remote access to start looking a little farther and sure that that would maybe be we need to do re	keep	1	0		2	keep	-	5	decision	ok	k 6 none
+54	54	SPEAKER	So, that's another thing, but I wanted to put that idea out there.	remove	0	1	fill,rep,xtalk	0	remove	house	1	none	code?	r 0 filler
+55	55	SPEAKER	Um, I don't know if Antoine, if you want to take that or if um, Sabry, if you're interested in that side of things, uh, you can look into that as well.	keep	0	1		1	keep	-	3	none	ok	k 3 none
+56	56	SPEAKER	You and Antoine both.	keep	0	1		0	keep	-	3	none	ok	r 0 housekeeping
+57	57	SPEAKER	But that is the idea that came to my mind and I wanted I put it out here.	remove	0	0	fill,rep,xtalk	0	remove	house	1	none	code?	r 0 filler
+58	58	SPEAKER	So, responsible.	remove	0	0	fill,rep,xtalk	0	remove	house	0	none	code?	r 0 filler
+59	59	SPEAKER	>> Uh, I can do some research about it.	keep	0	1		0	keep	-	3	decision	ok	k 2 none
+60	60	SPEAKER	uh in the background.	remove	0	0	fill,rep,xtalk	0	remove	fill	0	none	ok	r 0 filler

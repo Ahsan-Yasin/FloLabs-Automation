@@ -77,11 +77,36 @@ the same palette inline.
 
 ## Motion
 
-- Only press feedback (buttons scale to 0.98), menus (150ms), dialogs (200ms),
-  toasts (Motion, 200ms in and 150ms out) and colour changes on hover.
-- Exits are faster than entrances. Nothing runs longer than 300ms, nothing
-  animates on scroll, and nothing animates on page load.
-- `prefers-reduced-motion: reduce` switches every animation and transition off.
+- **Controls, every page:** press feedback (buttons scale to 0.98), menus
+  (150ms), dialogs (200ms), toasts (Motion, 200ms in and 150ms out) and colour
+  changes on hover. Exits are faster than entrances; none runs past 300ms.
+- **Pages, public site and sign-in only** (`web/static/js/motion.js`: GSAP,
+  ScrollTrigger, SplitText, Lenis). The motion shows the product at work,
+  plays once and ends on the page's normal styles:
+  - On load the first screen rises in: the headline's lines out of a mask,
+    then the sentence and the form, then the product window tilting up flat.
+    About a second.
+  - The transcript excerpts (home hero, sign-in aside) arrive plain and are
+    marked line by line once in view. The hero's status reads "AI editing"
+    until the last mark, then "Done", and the downloads appear.
+  - Further down, content rises 24px into place the first time it scrolls
+    into view, and lists arrive item by item.
+  - The timeline ("before and after") is a small 3D stage (three.js,
+    `web/static/js/cutline3d.js`, fetched as it nears the screen): the
+    recording's blocks build up, the cuts fade back, copies of the kept parts
+    lift off, travel into the final video and close up, and the highlights
+    reel drops in first, while both timecodes count up. Each block takes its
+    place and width from the flat bars, which stay in the page as the
+    blueprint and the fallback (reduced motion, no WebGL), and its colours from
+    the same tokens. It renders only while it changes. This is the one 3D
+    element; the hero window's tilt is a plain CSS transform.
+  - Lenis smooths wheel scrolling; in-page links glide (a keyboard press keeps
+    the browser's own jump and focus move).
+- **The app stays still:** no page motion and no smooth scrolling
+  (`app/layout.html` empties the `motion` block).
+- Nothing loops, follows the pointer, parallaxes or scrubs with the scroll.
+- `prefers-reduced-motion: reduce` switches every animation, transition and
+  the smooth scrolling off; the page is simply there.
 
 ## Components worth knowing
 
@@ -90,7 +115,7 @@ the same palette inline.
 | `.hero-shot > .shot` | The job window on the home page (`.shot-bar`, `.shot-head`, `.shot-grid`, `.shot-panel`) |
 | `.sheet`, `.line.is-kept`, `.line.is-cut` | A marked-up transcript excerpt (home and sign-in pages) |
 | `.steps` | A numbered sequence; use only for real sequences |
-| `.cutline`, `.reel` with `.x` and `.hl` spans, `.legend` | A timeline: hatched red for cuts, yellow for highlights |
+| `.cutline`, `.reel` with `.x` and `.hl` spans, `.legend` | A timeline: hatched grey for cuts, yellow for highlights; with `data-scene` it is drawn in 3D over the bars (`.is-3d`, `.cutline-stage`) |
 | `.files` | The zip's file manifest (icon, mono name, description) |
 | `.section-head` | A section's heading and the sentence under it |
 | `.split`, `.two-col` | Heading on the left, content on the right; one column below 960px |
@@ -120,6 +145,9 @@ the same palette inline.
 ## Where things live
 
 - Templates: `web/templates/` (`base.html`, `partials/`, `pages/`, `auth/`, `app/`).
-- Browser code: `web/static/js/core.js` (shared helpers, `window.HC`) and one
-  small script per app page. The public pages need no page script.
-- Vendored library: Motion only, for toasts (`web/static/vendor/README.md`).
+- Browser code: `web/static/js/core.js` (shared helpers, `window.HC`), one
+  small script per app page, `motion.js` for the page motion of the public
+  and sign-in pages, and `cutline3d.js` (an ES module) for the 3D timeline.
+- Vendored libraries: Motion for toasts; GSAP (with ScrollTrigger and
+  SplitText) and Lenis for page motion; three.js for the 3D timeline
+  (`web/static/vendor/README.md`).

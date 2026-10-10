@@ -1,0 +1,16 @@
+{
+ "train": [
+  "w01_zoom_join_toggl_bpmn",
+  "w02_zoom_silent_start_onboarding",
+  "w03_zoom_cancelled_meeting",
+  "w04_yt_status_by_name_jetson",
+  "w08_zoom_late_start_intros",
+  "w10_zoom_wrapup_tools"
+ ],
+ "test": [
+  "w05_yt_roundrobin_mic_schedule",
+  "w06_zoom_nearly_empty",
+  "w07_zoom_concept_then_long_goodbye",
+  "w09_zoom_question_unitree_leads"
+ ]
+}

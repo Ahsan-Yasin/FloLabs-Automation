@@ -1,0 +1,413 @@
+{
+ "tag": "tune2",
+ "split": "train",
+ "rerank": true,
+ "fake": false,
+ "model": "claude-sonnet-5-5",
+ "when": "2026-10-06T00:02:31",
+ "status": "done",
+ "score": 93.78,
+ "metrics": {
+  "keep_safety": 1.0,
+  "removal_f1": 0.9617,
+  "junk_clean": 0.9489,
+  "code_agree": 0.9463,
+  "hl_concord": 0.9233,
+  "top_f1": 0.6667,
+  "short_f1": 1.0
+ },
+ "removal_precision": 0.9728,
+ "removal_recall": 0.9509,
+ "must_keep_removed": 0,
+ "must_keep_total": 40,
+ "must_keep_removed_list": [],
+ "junk_kept": 12,
+ "junk_total": 235,
+ "junk_kept_list": [
+  "w02_zoom_silent_start_onboarding[20] And then we're gonna take, let's see,",
+  "w02_zoom_silent_start_onboarding[21] 5.",
+  "w02_zoom_silent_start_onboarding[52] But yes, we can say it like… And.",
+  "w02_zoom_silent_start_onboarding[54] I'm gonna go with that.",
+  "w03_zoom_cancelled_meeting[24] Like, I mean, we've… I don't… I don't mind, because I don't have much to talk about.",
+  "w03_zoom_cancelled_meeting[35] I mean, like, for me, there's nothing to share, because I know that we were gonna go over ",
+  "w03_zoom_cancelled_meeting[37] to quite proceed, so I… besides that, I don't have much to say either.",
+  "w10_zoom_wrapup_tools[20] When do you think you're gonna done with your master classes?",
+  "w10_zoom_wrapup_tools[21] Like how much hours?",
+  "w10_zoom_wrapup_tools[22] I'm gonna… Initially, like, right now, after this meeting.",
+  "w10_zoom_wrapup_tools[33] I finish it, like… An overview, or something?",
+  "w10_zoom_wrapup_tools[36] If it's…"
+ ],
+ "top_moments": {
+  "gold": 6,
+  "found": 3,
+  "strong_predicted": 2,
+  "strong_on_gold": 2
+ },
+ "format_problems": 0,
+ "weights": {
+  "keep_safety": 0.3,
+  "removal_f1": 0.25,
+  "junk_clean": 0.1,
+  "code_agree": 0.05,
+  "hl_concord": 0.15,
+  "top_f1": 0.1,
+  "short_f1": 0.05
+ },
+ "format_problem_details": [],
+ "calls": 14,
+ "usage": {
+  "calls": 14,
+  "prompt_tokens": 34822,
+  "output_tokens": 4255,
+  "cache_read_tokens": 19530,
+  "cache_write_tokens": 1905,
+  "rate_limit_wait_s": 0.0,
+  "retries": 0
+ },
+ "cost_usd": 0.078,
+ "estimate_usd": 0.1738,
+ "ledger_spent_usd": 0.3095,
+ "windows": {
+  "w01_zoom_join_toggl_bpmn": {
+   "sentences": 73,
+   "tp": 50.5,
+   "fp": 1.0,
+   "fn": 0.0,
+   "must_keep_total": 10,
+   "must_keep_removed": [],
+   "junk_total": 48,
+   "junk_kept": [],
+   "wrong_removed": [
+    "w01_zoom_join_toggl_bpmn[64] And, these… you see this?"
+   ],
+   "code_ok": 52,
+   "code_n": 53,
+   "hl_pairs": 830.0,
+   "hl_concordant": 783.5,
+   "top_gold": 1,
+   "top_hit": 1,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 6,
+   "kept_pred": 19,
+   "moments": [
+    {
+     "first": 38,
+     "last": 48,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Drafting points on the coordination system"
+    },
+    {
+     "first": 55,
+     "last": 72,
+     "score": 10.0,
+     "raw": 7.0,
+     "short": true,
+     "title": "BPMN basics: gateways, sub-processes, nodes"
+    }
+   ],
+   "usage": {
+    "calls": 3,
+    "prompt_tokens": 6836,
+    "output_tokens": 823,
+    "cache_read_tokens": 2763,
+    "cache_write_tokens": 1905,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w02_zoom_silent_start_onboarding": {
+   "sentences": 58,
+   "tp": 24.5,
+   "fp": 2.5,
+   "fn": 4.0,
+   "must_keep_total": 4,
+   "must_keep_removed": [],
+   "junk_total": 24,
+   "junk_kept": [
+    "w02_zoom_silent_start_onboarding[20] And then we're gonna take, let's see,",
+    "w02_zoom_silent_start_onboarding[21] 5.",
+    "w02_zoom_silent_start_onboarding[52] But yes, we can say it like… And.",
+    "w02_zoom_silent_start_onboarding[54] I'm gonna go with that."
+   ],
+   "wrong_removed": [
+    "w02_zoom_silent_start_onboarding[23] But we will start with, So please open your Toggle using the same credential and open it.",
+    "w02_zoom_silent_start_onboarding[32] Did you hear what I said about the Master Classes?"
+   ],
+   "code_ok": 27,
+   "code_n": 29,
+   "hl_pairs": 112.0,
+   "hl_concordant": 109.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 5,
+   "kept_pred": 26,
+   "moments": [
+    {
+     "first": 19,
+     "last": 26,
+     "score": 6.67,
+     "raw": 2.0,
+     "short": false,
+     "title": "Setting up the onboarding and Toggl review"
+    },
+    {
+     "first": 32,
+     "last": 35,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Masterclasses nearly done"
+    },
+    {
+     "first": 44,
+     "last": 57,
+     "score": 10.0,
+     "raw": 4.0,
+     "short": false,
+     "title": "Estimating 30 hours for the masterclasses"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 4816,
+    "output_tokens": 723,
+    "cache_read_tokens": 2763,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w03_zoom_cancelled_meeting": {
+   "sentences": 62,
+   "tp": 54.0,
+   "fp": 0.0,
+   "fn": 3.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 57,
+   "junk_kept": [
+    "w03_zoom_cancelled_meeting[24] Like, I mean, we've… I don't… I don't mind, because I don't have much to talk about.",
+    "w03_zoom_cancelled_meeting[35] I mean, like, for me, there's nothing to share, because I know that we were gonna go over ",
+    "w03_zoom_cancelled_meeting[37] to quite proceed, so I… besides that, I don't have much to say either."
+   ],
+   "wrong_removed": [],
+   "code_ok": 52,
+   "code_n": 54,
+   "hl_pairs": 0.0,
+   "hl_concordant": 0.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 4,
+   "kept_pred": 8,
+   "moments": [
+    {
+     "first": 23,
+     "last": 29,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Skipping the meeting until the LLC name is settled"
+    },
+    {
+     "first": 33,
+     "last": 39,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Nothing to share until the LLC name is decided"
+    }
+   ],
+   "usage": {
+    "calls": 3,
+    "prompt_tokens": 6872,
+    "output_tokens": 697,
+    "cache_read_tokens": 4668,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w04_yt_status_by_name_jetson": {
+   "sentences": 61,
+   "tp": 20.5,
+   "fp": 1.5,
+   "fn": 0.0,
+   "must_keep_total": 20,
+   "must_keep_removed": [],
+   "junk_total": 19,
+   "junk_kept": [],
+   "wrong_removed": [
+    "w04_yt_status_by_name_jetson[12] So, putting together my apartment, I came a little I was thinking about, you know, just ju"
+   ],
+   "code_ok": 17,
+   "code_n": 22,
+   "hl_pairs": 1182.0,
+   "hl_concordant": 1073.5,
+   "top_gold": 3,
+   "top_hit": 2,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 7,
+   "kept_pred": 37,
+   "moments": [
+    {
+     "first": 2,
+     "last": 8,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Remote access ideas, setup chatter"
+    },
+    {
+     "first": 11,
+     "last": 36,
+     "score": 10.0,
+     "raw": 7.0,
+     "short": true,
+     "title": "Hosting remote access on the robot dog's Jetson"
+    }
+   ],
+   "usage": {
+    "calls": 3,
+    "prompt_tokens": 8182,
+    "output_tokens": 739,
+    "cache_read_tokens": 4668,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w08_zoom_late_start_intros": {
+   "sentences": 59,
+   "tp": 58.0,
+   "fp": 0.5,
+   "fn": 0.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 58,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 58,
+   "code_n": 58,
+   "hl_pairs": 58.0,
+   "hl_concordant": 29.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 0,
+   "kept_pred": 0,
+   "moments": [],
+   "usage": {
+    "calls": 1,
+    "prompt_tokens": 3103,
+    "output_tokens": 585,
+    "cache_read_tokens": 1905,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w10_zoom_wrapup_tools": {
+   "sentences": 48,
+   "tp": 25.0,
+   "fp": 1.0,
+   "fn": 5.0,
+   "must_keep_total": 6,
+   "must_keep_removed": [],
+   "junk_total": 29,
+   "junk_kept": [
+    "w10_zoom_wrapup_tools[20] When do you think you're gonna done with your master classes?",
+    "w10_zoom_wrapup_tools[21] Like how much hours?",
+    "w10_zoom_wrapup_tools[22] I'm gonna… Initially, like, right now, after this meeting.",
+    "w10_zoom_wrapup_tools[33] I finish it, like… An overview, or something?",
+    "w10_zoom_wrapup_tools[36] If it's…"
+   ],
+   "wrong_removed": [],
+   "code_ok": 23,
+   "code_n": 26,
+   "hl_pairs": 335.0,
+   "hl_concordant": 329.0,
+   "top_gold": 2,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 5,
+   "kept_pred": 20,
+   "moments": [
+    {
+     "first": 3,
+     "last": 7,
+     "score": 2.5,
+     "raw": 2.0,
+     "short": false,
+     "title": "Onboarding steps and a friendly intro call"
+    },
+    {
+     "first": 11,
+     "last": 15,
+     "score": 7.5,
+     "raw": 3.0,
+     "short": false,
+     "title": "Toggle bug traced to the tool itself"
+    },
+    {
+     "first": 25,
+     "last": 29,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Granting access to AI tools"
+    },
+    {
+     "first": 34,
+     "last": 42,
+     "score": 10.0,
+     "raw": 4.0,
+     "short": false,
+     "title": "Claude and Cursor as top dev tools"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 5013,
+    "output_tokens": 688,
+    "cache_read_tokens": 2763,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  }
+ }
+}

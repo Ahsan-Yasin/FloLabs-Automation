@@ -49,6 +49,8 @@
 </div>
 {% endif %}
 {% endblock %}
+{# the app stays still: no page motion, no smooth scrolling #}
+{% block motion %}{% endblock %}
 {% block footer %}
 <footer class="container-wide app-footer">
   <span>&copy; {{ year }} FloLabs. {{ app_name }} {{ version }}</span>

@@ -1,0 +1,46 @@
+{
+ "id": "w06_zoom_nearly_empty",
+ "source": "job:36b29122",
+ "source_range": [
+  0,
+  0
+ ],
+ "split": "test",
+ "minutes": 0.01,
+ "hard": "An 8-minute recording whose transcript has a single one-word cue (\"view.\"). The model must not invent content or a highlight.",
+ "sentences": [
+  {
+   "i": 0,
+   "src": 0,
+   "start": 11.44,
+   "end": 12.29,
+   "speaker": "SPEAKER",
+   "text": "kevani minott: view.",
+   "overlap_candidate": false
+  }
+ ],
+ "gold": [
+  {
+   "i": 0,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "dead",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-sonnet-5-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  }
+ ],
+ "top_moments": [],
+ "short_worthy": []
+}

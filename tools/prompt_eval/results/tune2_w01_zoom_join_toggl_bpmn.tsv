@@ -1,0 +1,74 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	0	Buddy System	Hello.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+1	1	Machi 2.0	Hello.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+2	2	Machi 2.0	How come you can log into the body system?	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 2 none
+3	3	Machi 2.0	I couldn't.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 2 none
+4	4	Buddy System	I don't know.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 1 none
+5	5	Buddy System	We have…	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+6	6	Machi 2.0	It was from this email.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 1 none
+7	7	Machi 2.0	Anyway, that's fine.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+8	8	Buddy System	Can you see my… Wait… Give me one second… Now you can see.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+9	9	Buddy System	Match.	remove	0	0	xtalk,fill	0	remove	house	0	none	code?	r 0 crosstalk
+10	10	Buddy System	Oh my god.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+11	11	Machi 2.0	Hello.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+12	12	Machi 2.0	That talks…	remove	0	0	fill,dead,xtalk,house	0	remove	xtalk	0	none	ok	r 0 filler
+13	13	Buddy System	This is a very important meeting.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+14	14	Machi 2.0	Yes.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+15	15	Buddy System	Untoggle, do I… Enter, like, do I do the entry on toggle as a buddy meeting or as the task itself?	remove	0	1	house,tang,fill	0	remove	house	0	none	ok	k 2 none
+16	16	Buddy System	Proceeding.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+17	17	Machi 2.0	Oh.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+18	18	Machi 2.0	Oh, I was supposed to create a task.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 1 none
+19	19	Machi 2.0	Okay, What… what do we even call it?	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 1 none
+20	20	Machi 2.0	This task is supposed to be…	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 1 none
+21	21	Buddy System	Coordination between the marketing team.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 2 none
+22	22	Buddy System	And the…	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+23	23	Machi 2.0	Okay, so that will name it.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+24	24	Machi 2.0	Name it.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+25	25	Machi 2.0	So I'll I just named it Machi and Yasi's Yasin meeting.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 1 none
+26	26	Machi 2.0	That's right, I'll add that extra title.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 1 none
+27	27	Machi 2.0	Where is it?	remove	0	0	fill,dead,xtalk,house	0	remove	house	0	none	ok	r 0 filler
+28	28	Machi 2.0	I'll add the title, so I'll just say Machi Aniasen.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	k 1 none
+29	29	Machi 2.0	Meeting, and then,	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+30	30	Buddy System	Okay.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+31	31	Machi 2.0	This is… I'll just say, is it… So I put a program task, and then I'll call it… Coordination… Because that's what I'll name, that's what I'll name the task after	remove	0	1	house,tang,fill	0	remove	house	0	none	ok	k 2 none
+32	32	Machi 2.0	Between.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+33	33	Machi 2.0	marketing… And… See ya.	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+34	34	Buddy System	So I just entered the meeting as the task itself.	remove	0	1	house,tang,fill	0	remove	house	0	none	ok	k 2 none
+35	35	Machi 2.0	Yeah, yeah, sure.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+36	36	Machi 2.0	Okay, you said you drafted the points.	keep	1	0		0	keep	-	2	none	ok	k 3 none
+37	37	Buddy System	Yep.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+38	38	Buddy System	It's the… And I'm gonna be honest, some points… Our.	keep	0	1		0	keep	-	3	none	ok	k 2 none
+39	39	Buddy System	Aren't we related to the… the… The coordination system itself, but these points are very important to address.	keep	1	0		1	keep	-	4	none	ok	k 3 none
+40	40	Buddy System	Okay.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+41	41	Buddy System	like… How would you say they affect the entire company?	keep	0	0		1	keep	-	3	none	ok	k 3 none
+42	42	Buddy System	So…	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 dead_air
+43	43	Machi 2.0	Interesting.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+44	44	Buddy System	So, it's good.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+45	45	Machi 2.0	maybe…	remove	0	0	xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+46	46	Buddy System	You're very…	remove	0	0	xtalk,fill	0	remove	xtalk	0	none	ok	r 0 crosstalk
+47	47	Machi 2.0	Long.	remove	0	0	xtalk,fill	0	remove	xtalk	0	none	ok	r 0 crosstalk
+48	48	Buddy System	Not necessarily long, but it's gonna be very deep.	keep	0	1		0	keep	-	3	none	ok	k 2 none
+49	49	Buddy System	Can you see my screen?	remove	0	0	house,tang,fill	0	remove	house	0	none	ok	r 0 housekeeping
+50	50	Machi 2.0	Let's see… And then I thought you built that in MATLAB.	remove	0	1	tang,fill	0	remove	tang	0	none	ok	k 1 none
+51	51	Machi 2.0	I thought it was MATLAB for like, for a second here.	remove	0	1	tang,fill	0	remove	tang	0	none	ok	k 1 none
+52	52	Machi 2.0	Okay.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+53	53	Buddy System	Good.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+54	54	Buddy System	Come on.	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+55	55	Buddy System	Firstly, do you have experience with BPMNs?	keep	1	0		2	keep	-	3	none	ok	k 4 none
+56	56	Machi 2.0	With what?	keep	0	1		0	keep	-	2	none	ok	k 2 none
+57	57	Buddy System	With BPMNs.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+58	58	Machi 2.0	No, no.	keep	0	1		0	keep	-	2	none	ok	k 1 none
+59	59	Buddy System	Okay, so… Just as a quick explanation.	keep	1	0		3	keep	-	3	none	ok	k 6 none
+60	60	Buddy System	The… this node… Means parallel gateway.	keep	1	0		3	keep	-	6	concept	ok	k 6 none
+61	61	Buddy System	Okay, so any tasks stemming from this node?	keep	1	0		3	keep	-	6	concept	ok	k 3 none
+62	62	Buddy System	Means that the tasks are done in parallel, okay?	keep	1	0		3	keep	-	6	concept	ok	k 6 none
+63	63	Buddy System	This is the start node, this is the end node, and this is the conditional node.	keep	1	0		3	keep	-	5	concept	ok	k 6 none
+64	64	Buddy System	And, these… you see this?	keep	0	0		2	remove	fill	0	none	WRONG_REMOVE	k 3 none
+65	65	Buddy System	box, it has.	keep	0	0		2	keep	-	4	concept	ok	k 3 none
+66	66	Machi 2.0	Yeah.	remove	0	0	xtalk,fill	0	remove	fill	0	none	ok	r 0 crosstalk
+67	67	Buddy System	little plus sign.	keep	0	0		2	keep	-	4	concept	ok	k 3 none
+68	68	Buddy System	This is a collapsed sub-process.	keep	1	0		3	keep	-	6	concept	ok	k 6 none
+69	69	Buddy System	Okay, so if you go in here, you have a process within the… process.	keep	1	0		3	keep	-	6	concept	ok	k 6 none
+70	70	Buddy System	Okay?	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+71	71	Buddy System	So… So that's…	remove	0	0	fill,dead,xtalk,house	0	remove	fill	0	none	ok	r 0 filler
+72	72	Machi 2.0	It's more complicated than I thought.	keep	0	1		0	keep	-	3	insight	ok	r 0 filler

@@ -1,0 +1,1745 @@
+{
+ "id": "w04_yt_status_by_name_jetson",
+ "source": "job:6f18ec2c",
+ "source_range": [
+  0,
+  60
+ ],
+ "split": "train",
+ "minutes": 7.06,
+ "hard": "YouTube auto-captions with \">>\" speaker changes and no names. Opens with \"we start with Spencer's updates\" and a mute check; the called-on status (\"No, I've been off\") turns into a substantive idea (Unitree Jetson computer hosting enterprise remote-access software), an answer (PC emulator), and a decision with a reason (quickest way to revenue), all interleaved with \"Yeah\"/\"Okay\".",
+ "sentences": [
+  {
+   "i": 0,
+   "src": 0,
+   "start": 6.96,
+   "end": 19.299999999999997,
+   "speaker": "SPEAKER",
+   "text": "So guys let us uh start this meeting today as usual and we as usual start with uh Spencer amoid uh updates.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 1,
+   "src": 1,
+   "start": 19.299999999999997,
+   "end": 24.88,
+   "speaker": "SPEAKER",
+   "text": "So Spencers do we have any updates from theite team?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 2,
+   "src": 2,
+   "start": 24.88,
+   "end": 27.1,
+   "speaker": "SPEAKER",
+   "text": "No, because again I've been off.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 3,
+   "src": 3,
+   "start": 27.1,
+   "end": 32.537142857142854,
+   "speaker": "SPEAKER",
+   "text": "But I do want to sitting here putting together my apartment again.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 4,
+   "src": 4,
+   "start": 32.537142857142854,
+   "end": 39.38666666666666,
+   "speaker": "SPEAKER",
+   "text": "U did come across some ideas that I wanted to um talk about.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 5,
+   "src": 5,
+   "start": 39.38666666666666,
+   "end": 48.559,
+   "speaker": "SPEAKER",
+   "text": "Um specifically because I've been not because we've been talking about for such a long time that's specifically remote access.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 6,
+   "src": 6,
+   "start": 48.559,
+   "end": 52.399,
+   "speaker": "SPEAKER",
+   "text": ">> Spencer, you're Spencer, you're a little muted.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 7,
+   "src": 7,
+   "start": 52.399,
+   "end": 52.8152,
+   "speaker": "SPEAKER",
+   "text": ">> Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 8,
+   "src": 8,
+   "start": 52.8152,
+   "end": 56.239,
+   "speaker": "SPEAKER",
+   "text": "Maybe you can talk into the f into the mic or something.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 9,
+   "src": 9,
+   "start": 56.239,
+   "end": 57.76,
+   "speaker": "SPEAKER",
+   "text": ">> Am I better now?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 10,
+   "src": 10,
+   "start": 57.76,
+   "end": 59.039,
+   "speaker": "SPEAKER",
+   "text": ">> Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 11,
+   "src": 11,
+   "start": 59.039,
+   "end": 60.74633333333333,
+   "speaker": "SPEAKER",
+   "text": ">> Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 12,
+   "src": 12,
+   "start": 60.74633333333333,
+   "end": 69.64,
+   "speaker": "SPEAKER",
+   "text": "So, putting together my apartment, I came a little I was thinking about, you know, just just thinking about things and it came across my mind.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 13,
+   "src": 13,
+   "start": 69.64,
+   "end": 72.32,
+   "speaker": "SPEAKER",
+   "text": "I didn't why I thought about it sooner.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 14,
+   "src": 14,
+   "start": 72.32,
+   "end": 85.68,
+   "speaker": "SPEAKER",
+   "text": "And as we have been talking about remote access for the kind of longest of times, probably about remote access into robot dogs and even eventually robot access into humanoids.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 15,
+   "src": 15,
+   "start": 85.68,
+   "end": 90.84542857142857,
+   "speaker": "SPEAKER",
+   "text": "Um, Unitry provides a thing called a JSON computer accessory.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 16,
+   "src": 16,
+   "start": 90.84542857142857,
+   "end": 93.17628571428571,
+   "speaker": "SPEAKER",
+   "text": "Um, it's JSo N.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 17,
+   "src": 17,
+   "start": 93.17628571428571,
+   "end": 104.12962499999999,
+   "speaker": "SPEAKER",
+   "text": "It's a small little tiny uh Nvidia computer that uh Unitry provides that is attached to their robot dogs.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 18,
+   "src": 18,
+   "start": 104.12962499999999,
+   "end": 108.629,
+   "speaker": "SPEAKER",
+   "text": "Um, it allows for them to plug in other devices.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 19,
+   "src": 19,
+   "start": 108.629,
+   "end": 111.47900000000001,
+   "speaker": "SPEAKER",
+   "text": "Yes, that is salary.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 20,
+   "src": 20,
+   "start": 111.47900000000001,
+   "end": 126.68,
+   "speaker": "SPEAKER",
+   "text": "Um, and what I was kind of curious about, and if uh anyone on the humanoid team wants to kind of run this type of research, uh, run this research just to fulfill my curiosity,",
+   "overlap_candidate": false
+  },
+  {
+   "i": 21,
+   "src": 21,
+   "start": 126.68,
+   "end": 135.28,
+   "speaker": "SPEAKER",
+   "text": "is can that computer host and automatically open some?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 22,
+   "src": 22,
+   "start": 135.28,
+   "end": 154.64,
+   "speaker": "SPEAKER",
+   "text": "Because if it can, we could move to a more enterprise type remote control software, host it on the robot dog so that when it turns on, it automatically turns its own computer on.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 23,
+   "src": 23,
+   "start": 154.64,
+   "end": 173.75933333333333,
+   "speaker": "SPEAKER",
+   "text": "Essentially, I'm c I'm I'm curious if the savary if the computer can host soft if that computer if we could take that computer put some software on it and host a um",
+   "overlap_candidate": false
+  },
+  {
+   "i": 24,
+   "src": 24,
+   "start": 173.75933333333333,
+   "end": 189.92,
+   "speaker": "SPEAKER",
+   "text": "remote access whether that's one from someone else or one that god forbid we have to make um that is my question and that's what I would want someone to research them because if that is possible then then we",
+   "overlap_candidate": false
+  },
+  {
+   "i": 25,
+   "src": 25,
+   "start": 189.92,
+   "end": 205.08,
+   "speaker": "SPEAKER",
+   "text": "don't have to rely on the computing power of a phone uh to do the remote access that me and um Antoine thing where I remote accessed his phone via my computer.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 26,
+   "src": 26,
+   "start": 205.2,
+   "end": 205.8742857142857,
+   "speaker": "SPEAKER",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 27,
+   "src": 27,
+   "start": 205.8742857142857,
+   "end": 206.54857142857142,
+   "speaker": "SPEAKER",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 28,
+   "src": 28,
+   "start": 206.54857142857142,
+   "end": 214.68471428571428,
+   "speaker": "SPEAKER",
+   "text": "So, Sabry, how me and Antoine did it, we did um a software called Team Viewer.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 29,
+   "src": 29,
+   "start": 214.68471428571428,
+   "end": 230.72,
+   "speaker": "SPEAKER",
+   "text": "Team Beer has two apps on it, which is just Team Beer and Team Viewer requisition potentially that if someone has the Team Viewer app, they can access someone else's computer remotely and manipulate it.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 30,
+   "src": 30,
+   "start": 230.72,
+   "end": 245.04,
+   "speaker": "SPEAKER",
+   "text": "My thing would be with the computer now a stronger computer attacks directly to the robot dome and hosting remote access software.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 31,
+   "src": 31,
+   "start": 245.04,
+   "end": 262.77000000000004,
+   "speaker": "SPEAKER",
+   "text": "we can host stronger and more enterprise type versions of remote access software which would cut down on input lag would um kind of cut down on problems that we saw with doing how me and Antoine did it.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 32,
+   "src": 32,
+   "start": 262.77000000000004,
+   "end": 270.21999999999997,
+   "speaker": "SPEAKER",
+   "text": "Um and that is something I would want someone to research specifically that computer.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 33,
+   "src": 33,
+   "start": 270.21999999999997,
+   "end": 273.04,
+   "speaker": "SPEAKER",
+   "text": "What can we do with it?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 34,
+   "src": 34,
+   "start": 273.04,
+   "end": 277.76,
+   "speaker": "SPEAKER",
+   "text": "what does unitry offer in terms of software in it?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 35,
+   "src": 35,
+   "start": 277.76,
+   "end": 290.8,
+   "speaker": "SPEAKER",
+   "text": "Um, but do research into that computer module because I don't know why I didn't think of it sooner, but when you're putting a computer desk together with no instructions, you kind of think of whatever.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 36,
+   "src": 36,
+   "start": 290.8,
+   "end": 295.299625,
+   "speaker": "SPEAKER",
+   "text": "Uh, but that was that's my was my notes for uh healing.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 37,
+   "src": 37,
+   "start": 295.299625,
+   "end": 307.28000000000003,
+   "speaker": "SPEAKER",
+   "text": "I just if someone wants to do that research that would interest >> uh I can tell something about it.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 38,
+   "src": 38,
+   "start": 307.28000000000003,
+   "end": 314.56,
+   "speaker": "SPEAKER",
+   "text": "The idea would be to because I just checked and there's no unitary app for PC.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 39,
+   "src": 39,
+   "start": 314.56,
+   "end": 322.32,
+   "speaker": "SPEAKER",
+   "text": "So what you can do is install on the PC uh a mobile emulator.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 40,
+   "src": 40,
+   "start": 322.32,
+   "end": 323.7866666666667,
+   "speaker": "SPEAKER",
+   "text": ">> Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 41,
+   "src": 41,
+   "start": 323.7866666666667,
+   "end": 336.0,
+   "speaker": "SPEAKER",
+   "text": "and you you u you uh ramp up the RAM that it uses to simulate like a very powerful mobile phone >> basically.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 42,
+   "src": 42,
+   "start": 336.0,
+   "end": 338.84355555555555,
+   "speaker": "SPEAKER",
+   "text": ">> And you use a unit on it.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 43,
+   "src": 43,
+   "start": 338.84355555555555,
+   "end": 339.199,
+   "speaker": "SPEAKER",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 44,
+   "src": 44,
+   "start": 339.199,
+   "end": 339.80344444444444,
+   "speaker": "SPEAKER",
+   "text": ">> Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 45,
+   "src": 45,
+   "start": 339.80344444444444,
+   "end": 341.919,
+   "speaker": "SPEAKER",
+   "text": "So that that would be my question.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 46,
+   "src": 46,
+   "start": 341.919,
+   "end": 345.52,
+   "speaker": "SPEAKER",
+   "text": "I would I would want that kind of research put into writing.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 47,
+   "src": 47,
+   "start": 345.52,
+   "end": 346.11179999999996,
+   "speaker": "SPEAKER",
+   "text": ">> Okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 48,
+   "src": 48,
+   "start": 346.11179999999996,
+   "end": 353.5195,
+   "speaker": "SPEAKER",
+   "text": "um in a class just so then I'm able to look at it and kind of think a little more about it.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 49,
+   "src": 49,
+   "start": 353.5195,
+   "end": 357.77570000000003,
+   "speaker": "SPEAKER",
+   "text": "I don't know if that would be the way we go.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 50,
+   "src": 50,
+   "start": 357.77570000000003,
+   "end": 364.65777777777777,
+   "speaker": "SPEAKER",
+   "text": "I know we probably won't use the software that me and you uh me and you use because that was just a test case.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 51,
+   "src": 51,
+   "start": 364.65777777777777,
+   "end": 371.6,
+   "speaker": "SPEAKER",
+   "text": "We wanted to see if even a software like that could even handle that type of load and it can.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 52,
+   "src": 52,
+   "start": 371.6,
+   "end": 382.0,
+   "speaker": "SPEAKER",
+   "text": "Um, but we would definitely want to start progressing, especially as I as I as me and John see a robo collective being our quickest way to revenue.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 53,
+   "src": 53,
+   "start": 382.0,
+   "end": 398.655,
+   "speaker": "SPEAKER",
+   "text": "I would want to start progressing down the enterprise tree of remote access to start looking a little farther and sure that that would maybe be we need to do re more research into remote access software.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 54,
+   "src": 54,
+   "start": 398.655,
+   "end": 403.64,
+   "speaker": "SPEAKER",
+   "text": "So, that's another thing, but I wanted to put that idea out there.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 55,
+   "src": 55,
+   "start": 403.64,
+   "end": 414.18987500000003,
+   "speaker": "SPEAKER",
+   "text": "Um, I don't know if Antoine, if you want to take that or if um, Sabry, if you're interested in that side of things, uh, you can look into that as well.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 56,
+   "src": 56,
+   "start": 414.18987500000003,
+   "end": 416.229375,
+   "speaker": "SPEAKER",
+   "text": "You and Antoine both.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 57,
+   "src": 57,
+   "start": 416.229375,
+   "end": 421.942,
+   "speaker": "SPEAKER",
+   "text": "But that is the idea that came to my mind and I wanted I put it out here.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 58,
+   "src": 58,
+   "start": 421.942,
+   "end": 425.319,
+   "speaker": "SPEAKER",
+   "text": "So, responsible.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 59,
+   "src": 59,
+   "start": 426.16,
+   "end": 428.3911,
+   "speaker": "SPEAKER",
+   "text": ">> Uh, I can do some research about it.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 60,
+   "src": 60,
+   "start": 428.3911,
+   "end": 430.61974999999995,
+   "speaker": "SPEAKER",
+   "text": "uh in the background.",
+   "overlap_candidate": false
+  }
+ ],
+ "gold": [
+  {
+   "i": 0,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 1,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 2,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 3,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "tangent",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 4,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 5,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 6,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 7,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 8,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 9,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 10,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 11,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 12,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 13,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "rep",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 14,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 15,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 16,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 17,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 18,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 19,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "rep",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 20,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 21,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 22,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 23,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 24,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 25,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 26,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 27,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 28,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 29,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 30,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 31,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 3,
+   "highlight_codes": [
+    "idea",
+    "feat",
+    "ins"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 32,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 33,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 34,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 35,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 36,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "rep",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 37,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 38,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 39,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 7,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 40,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 41,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 42,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 43,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 44,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 45,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 46,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 4,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 47,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "xtalk",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "crosstalk",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 48,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 4,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 49,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 50,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 5,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 51,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "concept"
+   }
+  },
+  {
+   "i": 52,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "decision"
+   }
+  },
+  {
+   "i": 53,
+   "expect": "keep",
+   "must_keep": true,
+   "ambiguous": false,
+   "ok_removal_codes": [],
+   "highlight_band": 2,
+   "highlight_codes": [
+    "idea",
+    "ins",
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 6,
+    "removal": "none",
+    "highlight": "decision"
+   }
+  },
+  {
+   "i": 54,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [
+    "fill",
+    "rep",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 55,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 1,
+   "highlight_codes": [
+    "dec"
+   ],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 3,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 56,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "housekeeping",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 57,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "rep",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 58,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "rep",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 59,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "keep",
+    "score": 2,
+    "removal": "none",
+    "highlight": "none"
+   }
+  },
+  {
+   "i": 60,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "fill",
+    "rep",
+    "xtalk"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": [],
+   "prior": {
+    "model": "claude-haiku-4-5",
+    "decision": "remove",
+    "score": 0,
+    "removal": "filler",
+    "highlight": "none"
+   }
+  }
+ ],
+ "top_moments": [
+  [
+   14,
+   25
+  ],
+  [
+   28,
+   31
+  ],
+  [
+   49,
+   53
+  ]
+ ],
+ "short_worthy": [
+  [
+   28,
+   31
+  ]
+ ]
+}

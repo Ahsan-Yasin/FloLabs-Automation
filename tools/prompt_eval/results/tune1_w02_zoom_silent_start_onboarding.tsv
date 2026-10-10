@@ -1,0 +1,59 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	0	kevani minott	Hello?	remove	0	0	greet,house	0	remove	fill	0	none	code?	r 0 greeting_small_talk
+1	1	mohamed abdelmohsen	Look, Vani, how are you doing, my friend?	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+2	2	kevani minott	I'm okay, Mohammed.	remove	0	0	greet,house	0	remove	greet	0	none	ok	r 0 greeting_small_talk
+3	3	mohamed abdelmohsen	Yes.	remove	0	0	greet,house	0	remove	fill	0	none	code?	r 0 crosstalk
+4	4	mohamed abdelmohsen	I'm so sorry, I just don't… I saw your message late, and I was not actually here, and after I attended the IT meeting, so… Anyway, I'm so sorry for my latency.	remove	0	0	greet,house	0	remove	house	0	none	ok	r 0 greeting_small_talk
+5	5	mohamed abdelmohsen	Would you please share your screen to let me see your table?	keep	0	1		0	remove	house	0	none	removed(amb)	k 2 none
+6	6	kevani minott	Wait, the link that you sent me, it was expired, sir.	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	k 3 none
+7	7	mohamed abdelmohsen	for what?	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 housekeeping
+8	8	mohamed abdelmohsen	Which link?	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 housekeeping
+9	9	kevani minott	For the toggle that you sent to my email.	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	k 3 none
+10	10	kevani minott	I got a link to my email.	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	k 2 none
+11	11	mohamed abdelmohsen	Don't bother don't bother yourself with the link.	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	k 2 none
+12	12	mohamed abdelmohsen	I just told you to log in.	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	k 2 none
+13	13	mohamed abdelmohsen	Log in with the same credential again.	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	k 3 none
+14	14	kevani minott	Oh.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 crosstalk
+15	15	kevani minott	or Hula I'm gonna try to log in right now.	remove	0	1	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	k 1 none
+16	16	mohamed abdelmohsen	That's okay, don't worry.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 filler
+17	17	mohamed abdelmohsen	We're gonna try to make even the time that you have before to be fixed there.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+18	18	mohamed abdelmohsen	Sorry.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 filler
+19	19	mohamed abdelmohsen	We're gonna fix your struggle situation today.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+20	20	mohamed abdelmohsen	And then we're gonna take, let's see,	remove	0	0	house,fill,xtalk,greet,dead,rep	0	keep	-	2	none	JUNK_KEPT	r 0 housekeeping
+21	21	kevani minott	5.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	keep	-	1	none	JUNK_KEPT	r 0 crosstalk
+22	22	mohamed abdelmohsen	minutes or so on reviewing your onboarding and check if you have any issues like what is going on, and all this stuff.	keep	1	0		0	keep	-	2	none	ok	k 2 none
+23	23	mohamed abdelmohsen	But we will start with, So please open your Toggle using the same credential and open it.	keep	0	0		0	keep	-	2	none	ok	k 2 none
+24	24	mohamed abdelmohsen	Choose to…	remove	0	0	house,fill,xtalk,greet,dead,rep	0	keep	-	1	none	JUNK_KEPT	r 0 housekeeping
+25	25	kevani minott	Oh, by the way, for the masterclasses, I'm basically finished.	keep	1	0		0	keep	-	3	decision	ok	k 3 none
+26	26	kevani minott	Only of, like, one Christian remaining.	keep	1	0		0	keep	-	3	decision	ok	k 3 none
+27	27	kevani minott	You know, then with the Master Classes.	keep	0	0		0	keep	-	2	none	ok	k 2 none
+28	28	kevani minott	Are you seeing the screen?	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	r 0 housekeeping
+29	29	mohamed abdelmohsen	Yes, now I can see your screen.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	r 0 housekeeping
+30	30	kevani minott	This was all… you do.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 crosstalk
+31	31	mohamed abdelmohsen	Just a second.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	r 0 crosstalk
+32	32	kevani minott	Did you hear what I said about the Master Classes?	keep	0	0		0	remove	house	0	none	WRONG_REMOVE	k 2 none
+33	33	mohamed abdelmohsen	Come again, please.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	house	0	none	ok	r 0 housekeeping
+34	34	kevani minott	Oh, I see the only of the one question remaining.	keep	0	0		0	keep	-	3	decision	ok	k 2 none
+35	35	kevani minott	And then I'm finished.	keep	0	0		0	keep	-	3	decision	ok	k 2 none
+36	36	mohamed abdelmohsen	Oh, it's okay.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 filler
+37	37	mohamed abdelmohsen	It's okay.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 filler
+38	38	mohamed abdelmohsen	You need to done with your muscle classes.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+39	39	mohamed abdelmohsen	Take the time.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+40	40	mohamed abdelmohsen	Maybe today, maybe tomorrow, whatever.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+41	41	mohamed abdelmohsen	But the issue that I'm trying to help you.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+42	42	kevani minott	It's like, only like, literally one Christian.	keep	0	0		0	keep	-	3	decision	ok	k 2 none
+43	43	kevani minott	So, I'm gonna finish it when we're finished with this meeting.	keep	0	0		0	keep	-	3	decision	ok	k 2 none
+44	44	mohamed abdelmohsen	Oh my gosh.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 filler
+45	45	mohamed abdelmohsen	Okay, great, my friend, great.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 filler
+46	46	mohamed abdelmohsen	So.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	remove	fill	0	none	ok	r 0 housekeeping
+47	47	mohamed abdelmohsen	Do you remember the time that you do your work?	keep	0	1		0	keep	-	2	none	ok	k 2 none
+48	48	kevani minott	like the week that I was doing it.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+49	49	mohamed abdelmohsen	If you remember, it's okay.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	keep	-	2	none	JUNK_KEPT	r 0 housekeeping
+50	50	mohamed abdelmohsen	If not, if not, you can have the link for your master classes.	keep	0	1		0	keep	-	3	none	ok	k 2 none
+51	51	mohamed abdelmohsen	And we have estimate for the master classes for 20 hours, 25.	keep	0	0		1	keep	-	4	decision	ok	k 3 none
+52	52	mohamed abdelmohsen	But yes, we can say it like… And.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	keep	-	3	decision	JUNK_KEPT	r 0 filler
+53	53	mohamed abdelmohsen	Let's say, 30 hour.	keep	0	0		0	keep	-	4	decision	ok	k 2 none
+54	54	mohamed abdelmohsen	I'm gonna go with that.	remove	0	0	house,fill,xtalk,greet,dead,rep	0	keep	-	4	decision	JUNK_KEPT	r 0 housekeeping
+55	55	mohamed abdelmohsen	Let's say 30 hours for your master classes.	keep	1	0		1	keep	-	4	decision	ok	k 2 none
+56	56	mohamed abdelmohsen	So please, the same that was what you were doing with your master classes.	keep	0	1		0	keep	-	2	none	ok	k 2 none
+57	57	mohamed abdelmohsen	Like, you have the name of the master classes, and you have the link.	keep	0	1		0	keep	-	2	none	ok	k 2 none

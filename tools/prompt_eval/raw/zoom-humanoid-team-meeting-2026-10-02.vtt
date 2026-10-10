@@ -1,0 +1,2402 @@
+WEBVTT
+
+1
+00:10:32.630 --> 00:10:38.150
+John Hazlewood: Hey everybody, let me just send Spencer a, text message.
+
+2
+00:10:38.360 --> 00:10:41.009
+John Hazlewood: I saw that he logged in earlier.
+
+3
+00:10:44.530 --> 00:10:47.229
+John Hazlewood: I'm not sure why, but hang on tight.
+
+4
+00:13:27.270 --> 00:13:28.200
+Spencer: Hey, John.
+
+5
+00:13:29.910 --> 00:13:31.100
+Spencer: Cool.
+
+6
+00:13:32.530 --> 00:13:33.560
+John Hazlewood: Hey, Spencer.
+
+7
+00:13:34.140 --> 00:13:34.670
+Spencer: Right.
+
+8
+00:13:34.670 --> 00:13:35.310
+John Hazlewood: Thank you.
+
+9
+00:13:36.780 --> 00:13:39.969
+Spencer: Yeah, sorry, I woke up sick this morning, so…
+
+10
+00:13:40.780 --> 00:13:47.349
+John Hazlewood: You did? Okay. I saw that you had logged in earlier, so I wasn't sure whether you You would…
+
+11
+00:13:47.500 --> 00:13:50.009
+John Hazlewood: There's some time issue or something, but…
+
+12
+00:13:53.810 --> 00:13:59.440
+Spencer: Yeah, I woke up this morning very sick, so I'm not doing very well right now.
+
+13
+00:14:01.280 --> 00:14:03.120
+Spencer: Alright.
+
+14
+00:14:04.180 --> 00:14:08.539
+Spencer: There are so many people are here. Is it just you that's here, John?
+
+15
+00:14:09.830 --> 00:14:12.720
+Spencer: Oh, we got a couple more people, okay.
+
+16
+00:14:13.650 --> 00:14:18.130
+Spencer: My… my phone can't show all of you, so… Okay.
+
+17
+00:14:18.130 --> 00:14:24.100
+John Hazlewood: Yeah, if you swipe right, I think you can see everybody if you swipe right on your phone.
+
+18
+00:14:25.680 --> 00:14:26.770
+John Hazlewood: On the app.
+
+19
+00:14:27.590 --> 00:14:28.660
+John Hazlewood: Zoom app.
+
+20
+00:14:30.090 --> 00:14:30.810
+John Hazlewood: Good.
+
+21
+00:14:31.580 --> 00:14:32.240
+John Hazlewood: Yeah, so…
+
+22
+00:14:32.240 --> 00:14:33.040
+Spencer: There we go.
+
+23
+00:14:33.720 --> 00:14:34.800
+John Hazlewood: Yeah, okay.
+
+24
+00:14:35.320 --> 00:14:36.630
+Spencer: Okay, perfect.
+
+25
+00:14:38.210 --> 00:14:43.080
+Spencer: Good. Okay, since I'm on my phone,
+
+26
+00:14:44.280 --> 00:14:50.489
+Spencer: Antoine There's the agenda for this meeting.
+
+27
+00:14:51.680 --> 00:14:57.890
+Spencer: Notion, if you wanna bring that up, and then, essentially, we can go down the list.
+
+28
+00:14:59.080 --> 00:15:00.980
+Antoine Beaugas: Okay, wait a bit.
+
+29
+00:15:01.790 --> 00:15:02.360
+Spencer: Yep.
+
+30
+00:15:03.580 --> 00:15:04.670
+Spencer: You're coming?
+
+31
+00:15:36.660 --> 00:15:37.530
+Antoine Beaugas: Okay.
+
+32
+00:15:41.040 --> 00:15:41.870
+Spencer: Okay.
+
+33
+00:15:42.540 --> 00:15:43.490
+Antoine Beaugas: Yes.
+
+34
+00:15:45.220 --> 00:15:47.220
+Antoine Beaugas: So you want me to read and go over it?
+
+35
+00:15:48.710 --> 00:15:58.159
+Spencer: Yeah, so you can read out the agenda, and then once we… or the last meeting, and then once you get through the agenda, you can, just read out the sections.
+
+36
+00:15:58.670 --> 00:15:59.100
+Antoine Beaugas: Thank you.
+
+37
+00:15:59.100 --> 00:16:00.670
+Spencer: But, okay.
+
+38
+00:16:01.490 --> 00:16:03.859
+Antoine Beaugas: So for the summary of last meeting.
+
+39
+00:16:04.210 --> 00:16:15.729
+Antoine Beaugas: So, it was about remote control. We talked about… Setting up John's phone, connecting it to the dog, test run the application.
+
+40
+00:16:16.280 --> 00:16:18.460
+Antoine Beaugas: And also, use a phone.
+
+41
+00:16:18.800 --> 00:16:26.120
+Antoine Beaugas: the phone to control the dog. I think it's about controlling John's phone remotely, basically.
+
+42
+00:16:28.110 --> 00:16:39.739
+Antoine Beaugas: So, I installed the app, both apps on the phone, so, Unity… Unitry Go for the robot.
+
+43
+00:16:40.040 --> 00:16:48.549
+Antoine Beaugas: And, the other one that I always forget the name… TeamViewer, TeamViewer Quick Support for the remote access.
+
+44
+00:16:49.740 --> 00:16:50.380
+Spencer: Okay.
+
+45
+00:16:50.910 --> 00:16:52.350
+Antoine Beaugas: So I've done that.
+
+46
+00:16:52.960 --> 00:16:54.540
+Antoine Beaugas: I tested it, it works.
+
+47
+00:16:55.710 --> 00:16:56.280
+Spencer: Cool.
+
+48
+00:16:57.360 --> 00:17:01.760
+Antoine Beaugas: Then there's been talk about RoboCollective.
+
+49
+00:17:02.670 --> 00:17:07.880
+Antoine Beaugas: For more custom robot visualizations, like images and video.
+
+50
+00:17:08.619 --> 00:17:10.970
+Antoine Beaugas: Specifically, animals?
+
+51
+00:17:11.930 --> 00:17:16.270
+Antoine Beaugas: More wraps, also, more complex wraps.
+
+52
+00:17:16.700 --> 00:17:18.859
+Antoine Beaugas: Le Notre Dame Colors.
+
+53
+00:17:21.849 --> 00:17:25.780
+Antoine Beaugas: And I think it was also,
+
+54
+00:17:27.569 --> 00:17:33.919
+Antoine Beaugas: Reach out to colleges for entertainment and industry research.
+
+55
+00:17:35.090 --> 00:17:38.790
+Spencer: Oh, that's not… Yep, that's correct.
+
+56
+00:17:40.770 --> 00:17:44.689
+Antoine Beaugas: So, that was the last meeting, and so for this one…
+
+57
+00:17:45.260 --> 00:17:51.199
+Antoine Beaugas: The agenda is so no new team members, it seems.
+
+58
+00:17:52.770 --> 00:17:55.590
+Antoine Beaugas: So there's some research tasks.
+
+59
+00:17:57.030 --> 00:18:00.860
+Antoine Beaugas: So, basically, we want to research new things.
+
+60
+00:18:01.260 --> 00:18:06.720
+Antoine Beaugas: To allow us to continue our goals with the lab, so remote access and
+
+61
+00:18:07.340 --> 00:18:15.060
+Antoine Beaugas: Like, so, research the RoboDog harness, wireless charging, also.
+
+62
+00:18:16.150 --> 00:18:20.050
+Antoine Beaugas: Talk or do about pricing, and how to use?
+
+63
+00:18:20.380 --> 00:18:22.040
+Antoine Beaugas: At the lab?
+
+64
+00:18:25.320 --> 00:18:27.250
+Spencer: Okay, let me, say this.
+
+65
+00:18:28.810 --> 00:18:36.949
+Spencer: So yeah, I'm gonna try to create this task today if my, body decides to be cooperative.
+
+66
+00:18:37.510 --> 00:18:39.309
+Spencer: With how sick I am right now.
+
+67
+00:18:39.620 --> 00:18:40.350
+Spencer: Umm.
+
+68
+00:18:40.570 --> 00:18:43.640
+Spencer: So, I'll assign this task,
+
+69
+00:18:43.850 --> 00:18:47.860
+Spencer: Let me see who's here so that I can see.
+
+70
+00:18:48.340 --> 00:19:01.479
+Spencer: People that are here. So I'm I'm gonna assign this task to Sosina and Michael. You know, you guys get together on Discord, do this research.
+
+71
+00:19:01.580 --> 00:19:12.479
+Spencer: When we're talking about the harness, I John gave me some links about research he did. I'll be giving that research that was kind of already done by John using Chat GPT.
+
+72
+00:19:13.580 --> 00:19:19.560
+Spencer: So then you guys have a jumping-off point, so you can kind of see what we're looking at, and what we kind of want to do.
+
+73
+00:19:21.610 --> 00:19:22.500
+Spencer: Bye.
+
+74
+00:19:22.790 --> 00:19:28.609
+Spencer: Yeah, I'll set up that task, and then it's just researching. You want to research, see if…
+
+75
+00:19:29.110 --> 00:19:33.819
+Spencer: Research the one that's shown and research others out that are out there,
+
+76
+00:19:34.200 --> 00:19:35.180
+Spencer: how…
+
+77
+00:19:35.590 --> 00:19:51.589
+Spencer: they do wireless charging for the RoboDog that John has. I'll give you the Pacific RoboDog that John has. And then pricing for, each of the things, how much, the harness would cost, and how much the wireless charging setup would cost.
+
+78
+00:19:54.410 --> 00:19:55.500
+Spencer: So I'll…
+
+79
+00:19:56.220 --> 00:20:02.790
+John Hazlewood: It's not wireless charging for the RoboDog, it's actually wireless charging for the mobile phone.
+
+80
+00:20:03.900 --> 00:20:04.470
+Spencer: will.
+
+81
+00:20:05.080 --> 00:20:13.930
+John Hazlewood: you There's, there's two things that we need. We need a…
+
+82
+00:20:15.100 --> 00:20:17.600
+John Hazlewood: What's it called, like, a holder?
+
+83
+00:20:19.130 --> 00:20:20.130
+Spencer: Harness.
+
+84
+00:20:20.420 --> 00:20:27.240
+John Hazlewood: I guess you call it a harness, but it's called something else, but anyway, it kind of holds… strap it onto the RoboDog's face, and then…
+
+85
+00:20:27.450 --> 00:20:31.079
+John Hazlewood: You put the phone in, like a cradle, you put the phone in.
+
+86
+00:20:32.160 --> 00:20:41.549
+John Hazlewood: So it looks like it's you know it's facing the we'll have an app on there with eyes or whatever, and ideally.
+
+87
+00:20:42.080 --> 00:20:47.730
+John Hazlewood: you'll be… it'll be FloBrain, and you'll talk to it, and it will be the AI.
+
+88
+00:20:50.800 --> 00:20:57.520
+John Hazlewood: you know, and and and then it'll also have the controller on there, the unitary controller. But
+
+89
+00:20:57.760 --> 00:21:02.880
+John Hazlewood: anyway, that that's that's 1 thing. And then and then the
+
+90
+00:21:03.380 --> 00:21:07.720
+John Hazlewood: Wireless charging is what we want. We'll have like a little small carpet.
+
+91
+00:21:08.100 --> 00:21:13.210
+John Hazlewood: where, when someone is is using the RoboDog remotely.
+
+92
+00:21:13.450 --> 00:21:23.930
+John Hazlewood: When they're finished they'll go. They'll walk into the carpet. They'll put it to sleep. The phone will be turned on will still be on.
+
+93
+00:21:24.050 --> 00:21:38.629
+John Hazlewood: because they're just going to put the Robo dog to sleep, and then, when the Robo dog goes down, it needs to be positioned close to wherever the wireless charging is. So the mobile phone is being charged and stays on.
+
+94
+00:21:39.020 --> 00:21:47.330
+John Hazlewood: So that's… that's kind of the idea. And yeah, the research that I did pretty… goes into detail about what we should use, and
+
+95
+00:21:49.110 --> 00:21:56.110
+John Hazlewood: The components and stuff, so you can look at that and see if that makes sense, and continue to do some research. But we need to try and order something
+
+96
+00:21:57.570 --> 00:22:04.400
+John Hazlewood: Like, within, you know, no later than Monday to order stuff so we can get it here to Lemnos.
+
+97
+00:22:05.580 --> 00:22:07.180
+John Hazlewood: Hopefully by next week.
+
+98
+00:22:12.440 --> 00:22:13.179
+Spencer: Thank you.
+
+99
+00:22:13.410 --> 00:22:18.619
+Spencer: I can do the next one, my phone's able to show your screen, so I'll read it off your screen, Antoine.
+
+100
+00:22:19.880 --> 00:22:20.760
+Antoine Beaugas: Okay.
+
+101
+00:22:21.770 --> 00:22:22.770
+Spencer: So…
+
+102
+00:22:23.230 --> 00:22:31.810
+Spencer: And this is more for Antoine anyway, the lab tasks, what we want to do with this, and what we want to kind of start setting up in the lab.
+
+103
+00:22:33.050 --> 00:22:35.859
+Spencer: You set up John's phone with the…
+
+104
+00:22:37.470 --> 00:22:44.110
+Spencer: Apps already, which is good, and you've already remote connected to it, so we know that works.
+
+105
+00:22:44.210 --> 00:22:54.930
+Spencer: What we want to do now is have John's being always on phone, so we can't let it go to sleep or turn off, so that's probably a setting within the phone.
+
+106
+00:22:54.950 --> 00:23:04.280
+Spencer: let you work on… that's one thing. Then we want to do always remote accessible, as you know that when we…
+
+107
+00:23:06.650 --> 00:23:12.599
+Spencer: Remote access the phone the way we're doing it, it needs to give permissions.
+
+108
+00:23:13.220 --> 00:23:18.950
+Spencer: The one that's being remote access needs to give people permission.
+
+109
+00:23:19.060 --> 00:23:24.419
+Spencer: So, we need to see if this application has, like, a slider or some…
+
+110
+00:23:24.830 --> 00:23:32.560
+Spencer: Way of tracking people that have already remote accessed it, and so then it gives those people
+
+111
+00:23:32.960 --> 00:23:41.399
+Spencer: Like, access to that device without the phone needing to say, hey, can this person access this phone?
+
+112
+00:23:43.220 --> 00:23:48.680
+Spencer: Another thing, we kind of want to align the webcam with webcam with the web.
+
+113
+00:23:48.830 --> 00:23:50.020
+Spencer: So…
+
+114
+00:23:50.180 --> 00:24:07.179
+Spencer: that would be, you know, you get on a Zoom meeting with me and John, and anyone else that wants to join. We want to kind of look at that webcam and, you know, point it to the lab floor, make sure the RoboDog is seen at the lab, make sure we kind of see that setup.
+
+115
+00:24:09.310 --> 00:24:24.889
+Spencer: And then finally, after the research task is done, and we actually start having stuff coming to you, you'll probably set up that charge… the wireless phone charging and the harness. And since you only got 3 weeks, we… again, the research task needs to be done.
+
+116
+00:24:25.180 --> 00:24:37.579
+Spencer: really, really quickly, so… I don't… and I… I will be truthful, I don't know if I'm gonna set up the task today, because I can barely, stay awake as is, so I'm pretty sick.
+
+117
+00:24:40.090 --> 00:24:44.800
+Spencer: I don't know if John sent anyone else the research.
+
+118
+00:24:47.400 --> 00:24:53.309
+Spencer: But with this here, John, you might want to send it to Antoine. Antoine might be able to set up that.
+
+119
+00:24:53.520 --> 00:25:02.089
+Spencer: task for the research task for Sosina and Michael if if you can do that can you do that for me Antoine since I'm
+
+120
+00:25:02.470 --> 00:25:04.320
+Spencer: Not feeling so well.
+
+121
+00:25:06.160 --> 00:25:10.609
+Antoine Beaugas: Yeah. I can do that. Just if if you if you can just write me.
+
+122
+00:25:11.260 --> 00:25:11.950
+Spencer: Okay.
+
+123
+00:25:11.950 --> 00:25:12.500
+Antoine Beaugas: want.
+
+124
+00:25:12.500 --> 00:25:12.840
+Spencer: you.
+
+125
+00:25:12.840 --> 00:25:17.180
+Antoine Beaugas: In the task like that, there's been no issue. When I just do the task and…
+
+126
+00:25:18.670 --> 00:25:23.200
+Spencer: Yeah, well, what I would want is what's already listed there, you know, research.
+
+127
+00:25:23.440 --> 00:25:32.390
+Spencer: the harness for the RoboDog, research, wireless charging for the phone, and pricing, and how to buy, and, you know, that kind of stuff.
+
+128
+00:25:32.390 --> 00:25:34.810
+Antoine Beaugas: Yeah, so everything, yeah.
+
+129
+00:25:34.990 --> 00:25:35.860
+Spencer: Yep.
+
+130
+00:25:36.700 --> 00:25:38.839
+Antoine Beaugas: Okay, okay. I'll do that then.
+
+131
+00:25:39.380 --> 00:25:41.140
+Spencer: Okay,
+
+132
+00:25:41.690 --> 00:25:46.559
+Spencer: And then finally, for the last bit of the meeting.
+
+133
+00:25:47.120 --> 00:25:52.640
+Spencer: My fun fact for this, day… It's actually…
+
+134
+00:25:52.640 --> 00:25:55.459
+Antoine Beaugas: You might wait, Spencer, have something to say.
+
+135
+00:25:55.790 --> 00:25:56.460
+Spencer: Okay.
+
+136
+00:25:57.310 --> 00:26:01.929
+Antoine Beaugas: I've been asked by John Wednesday, during the tech meeting.
+
+137
+00:26:02.100 --> 00:26:07.259
+Antoine Beaugas: to research how to… Access to the camera.
+
+138
+00:26:07.390 --> 00:26:11.310
+Antoine Beaugas: Via a browser instead of using the application.
+
+139
+00:26:13.080 --> 00:26:22.609
+Antoine Beaugas: And so, from what I remember from it, basically, we have the basic plan for Starlink.
+
+140
+00:26:22.760 --> 00:26:28.410
+Antoine Beaugas: And there's other plans, like a professional plan, and another one, I don't remember the name.
+
+141
+00:26:28.830 --> 00:26:33.030
+Antoine Beaugas: And with the standard plan, you can't open up your network.
+
+142
+00:26:33.240 --> 00:26:39.569
+Antoine Beaugas: With a public port. To let, to make an access.
+
+143
+00:26:39.680 --> 00:26:45.879
+Antoine Beaugas: You have to switch to at least the professional plan from Starlink.
+
+144
+00:26:46.880 --> 00:26:55.160
+Antoine Beaugas: And there's another solution, it's to basically have a server in the lab that's powered on 24-7.
+
+145
+00:26:55.540 --> 00:27:01.580
+Antoine Beaugas: And by using… I don't remember the name, but Spencer talked about it. It's an app.
+
+146
+00:27:01.580 --> 00:27:02.360
+Spencer: No.
+
+147
+00:27:02.360 --> 00:27:05.509
+Antoine Beaugas: It's an app for remote access with a VPN.
+
+148
+00:27:06.910 --> 00:27:07.550
+Antoine Beaugas: And,
+
+149
+00:27:07.550 --> 00:27:09.230
+Spencer: Yeah, I know what you're talking about.
+
+150
+00:27:09.470 --> 00:27:20.889
+Antoine Beaugas: Yeah, and so… you… so, Moenamine's server is basically a computer, in fact, just a computer that's always on. With the… the…
+
+151
+00:27:21.020 --> 00:27:22.509
+Antoine Beaugas: The software on it.
+
+152
+00:27:22.810 --> 00:27:28.489
+Antoine Beaugas: And with it, you can open up a secure connection without switching plans.
+
+153
+00:27:28.760 --> 00:27:30.160
+Antoine Beaugas: For Starlink.
+
+154
+00:27:32.380 --> 00:27:40.519
+Antoine Beaugas: So that's the two solutions. Either you change plan for Starlink, or either you put a computer always on with the software on it.
+
+155
+00:27:41.460 --> 00:27:42.060
+Spencer: Okay.
+
+156
+00:27:42.290 --> 00:27:43.010
+Spencer: Umm.
+
+157
+00:27:43.560 --> 00:27:52.209
+Spencer: For now, like I said, try with the software we currently have. If you can get the always on, always remote accessible.
+
+158
+00:27:52.210 --> 00:28:07.060
+Spencer: I… that… and that's the thing that I was most concerned about. Me and John had a quick phone call yesterday, and John kind of heard my concern about making that phone always remote accessible without having to give the permission. So…
+
+159
+00:28:07.200 --> 00:28:14.589
+Spencer: Try to figure out if the application that we're using right now allows for that kind of featureability.
+
+160
+00:28:14.720 --> 00:28:19.980
+Spencer: If it doesn't, then we can have a conversation on Sunday.
+
+161
+00:28:20.270 --> 00:28:25.659
+Spencer: about… the application… I know what application you're talking about, we talked about it.
+
+162
+00:28:27.100 --> 00:28:31.590
+Spencer: A couple Saturdays ago, when this meeting wasn't a Saturday.
+
+163
+00:28:32.460 --> 00:28:34.660
+Spencer: We'll… we'll talk about that.
+
+164
+00:28:34.780 --> 00:28:46.299
+Spencer: You know, what, you know, kinda what kind… if we have to, we can look at, computers, you know, since, like you said, it'd be just a server, so it really doesn't need…
+
+165
+00:28:46.390 --> 00:28:58.059
+Spencer: anything too big, it definitely needs data storage and all that kind of stuff. You know, decent… at least a decent setup, but you don't need to go, you know, false to the walls and get a lot of…
+
+166
+00:28:58.550 --> 00:29:03.240
+Spencer: size out of it. So, if that doesn't work.
+
+167
+00:29:04.900 --> 00:29:08.990
+Spencer: Then we'll have further discussions, about that.
+
+168
+00:29:10.790 --> 00:29:11.670
+Antoine Beaugas: Okay.
+
+169
+00:29:12.380 --> 00:29:13.220
+Spencer: Okay.
+
+170
+00:29:13.560 --> 00:29:16.470
+John Hazlewood: Yeah, Antoine, could you send that research
+
+171
+00:29:16.590 --> 00:29:20.819
+John Hazlewood: I guess on the… the scored humanoid?
+
+172
+00:29:20.820 --> 00:29:27.619
+Antoine Beaugas: I haven't written anything. I looked at it quickly during the tech meeting, when you talked about it.
+
+173
+00:29:28.410 --> 00:29:28.890
+Spencer: Okay.
+
+174
+00:29:28.890 --> 00:29:33.619
+Antoine Beaugas: Quick search and I found the info. That's why I don't remember the names and everything.
+
+175
+00:29:34.110 --> 00:29:41.280
+Spencer: Yeah, It's the… I know you sent it to me,
+
+176
+00:29:41.610 --> 00:29:44.059
+Spencer: It was a ChatGPT thing you did.
+
+177
+00:29:44.660 --> 00:29:54.450
+Spencer: Where you asked about the remote access. It's the one where we got the idea for the harness in the phone in the eyes the first time.
+
+178
+00:29:54.610 --> 00:30:00.849
+Spencer: So, you might actually be able to look back on your ChatGPT history and see it, John.
+
+179
+00:30:00.850 --> 00:30:06.750
+John Hazlewood: I'm sorry, I don't have an issue with my ChatGPT history. I'm going to post that.
+
+180
+00:30:07.070 --> 00:30:19.320
+John Hazlewood: I have 2 links that I'll post so Sosina and Michael can can work on their task based on that. I'm talking about the research that Antoine did
+
+181
+00:30:19.450 --> 00:30:28.309
+John Hazlewood: Accessing, the… the security camera, so, you know, we can…
+
+182
+00:30:28.640 --> 00:30:39.510
+John Hazlewood: We want to have people go to the website, look at us, you know, be able to look at the RoboDog, talk to it without having downloading the app.
+
+183
+00:30:40.550 --> 00:30:41.280
+Spencer: Yeah.
+
+184
+00:30:43.060 --> 00:30:43.590
+Spencer: Okay.
+
+185
+00:30:43.590 --> 00:30:53.979
+John Hazlewood: So Antoine, maybe you can just put that information into ChatGPT and just prompt it and see if it gives you the results and just share that.
+
+186
+00:30:54.190 --> 00:30:56.560
+John Hazlewood: It won't take you more than a couple minutes.
+
+187
+00:30:57.080 --> 00:31:02.689
+Antoine Beaugas: I should find the same thing, because Google has an AI also, so…
+
+188
+00:31:03.860 --> 00:31:04.720
+John Hazlewood: Okay.
+
+189
+00:31:04.720 --> 00:31:10.360
+Antoine Beaugas: From here, I I asked you I did a Google search, and the it's Gemini, I think, the name of the AI.
+
+190
+00:31:10.360 --> 00:31:11.190
+Spencer: Yeah, Gemini.
+
+191
+00:31:11.190 --> 00:31:13.900
+Antoine Beaugas: You told me about those two solutions.
+
+192
+00:31:14.360 --> 00:31:17.980
+Antoine Beaugas: And I looked at the link it provided.
+
+193
+00:31:18.360 --> 00:31:21.079
+Antoine Beaugas: To… to be sure of it, so…
+
+194
+00:31:21.620 --> 00:31:24.310
+Antoine Beaugas: It should take me, like, maybe 5-10 minutes, I think.
+
+195
+00:31:25.970 --> 00:31:28.630
+John Hazlewood: Okay, okay, if you could post that, and then I can…
+
+196
+00:31:29.030 --> 00:31:34.949
+John Hazlewood: you know, I'd like to kind of take that and then plug it into ChatGBT and just verify things.
+
+197
+00:31:36.500 --> 00:31:42.929
+John Hazlewood: Okay. Okay, and Hasnae is here, and we haven't really assigned anything to her.
+
+198
+00:31:43.200 --> 00:31:44.270
+John Hazlewood: Okay.
+
+199
+00:31:44.270 --> 00:31:45.030
+Spencer: Bye.
+
+200
+00:31:46.470 --> 00:32:02.129
+Spencer: Well, I actually, you know, how decently large the Sosina and Michael task are. she can work with them as well. You know, we want to get this done as fast as possible, and I feel like.
+
+201
+00:32:02.520 --> 00:32:18.609
+Spencer: two people can get it done decently quick, but I think three can get it done even faster, so I think she can work on this task with them. We don't have any real tasks right now for kind of a new incoming, besides the one that was assigned today.
+
+202
+00:32:18.720 --> 00:32:36.790
+Spencer: So, Antoine, if you want to put down, you know, Sosina, Michael, and Hasina, put those, you know, write down those people that that research task is going to be assigned to, so then at least when you go to create the task, you remember who needs to be assigned to it.
+
+203
+00:32:37.870 --> 00:32:47.340
+John Hazlewood: Yeah, and I guess it's three tasks, because now we're going to add the research for accessing the webcam, so…
+
+204
+00:32:47.340 --> 00:32:54.820
+Spencer: Yeah, so, yeah, so it's a, it's now a decently sized task, so, you know, make that…
+
+205
+00:32:55.450 --> 00:32:59.579
+Spencer: So, 3 people would be more better for it.
+
+206
+00:33:00.970 --> 00:33:14.090
+John Hazlewood: Okay, okay, that sounds great. And I think also, I did some research, I mean, I took… this is kind of IoT-related, but it's also with RoboDog-related, what we're talking about, because
+
+207
+00:33:15.460 --> 00:33:24.240
+John Hazlewood: The… Yeah, the app… it needs… for CAIPO,
+
+208
+00:33:24.490 --> 00:33:26.790
+John Hazlewood: You have to have a Bluetooth app.
+
+209
+00:33:27.290 --> 00:33:34.510
+John Hazlewood: An app… that's communicating with CAIPO, Mmm.
+
+210
+00:33:35.220 --> 00:33:42.330
+John Hazlewood: The idea for that app… well, we're gonna have CAIPO here, we have the mobile phone.
+
+211
+00:33:42.630 --> 00:33:50.790
+John Hazlewood: You know, I don't… Like… Yeah, the CAIPO app
+
+212
+00:33:52.160 --> 00:33:59.070
+John Hazlewood: I'm not sure I was thinking about having that CAIPO app. It's also like the eyes.
+
+213
+00:33:59.730 --> 00:34:01.320
+John Hazlewood: And it's also…
+
+214
+00:34:02.110 --> 00:34:11.310
+John Hazlewood: Yeah, I'm not sure. Maybe that doesn't make sense. Because I was thinking about when you're talking to the Robo dog. It's going to use FloBrain.
+
+215
+00:34:12.120 --> 00:34:12.670
+Spencer: Yeah.
+
+216
+00:34:12.670 --> 00:34:16.119
+John Hazlewood: I think it's just gonna use it through the phone…
+
+217
+00:34:16.290 --> 00:34:22.439
+John Hazlewood: And then the app, the for the CAIPO app is basically gonna
+
+218
+00:34:22.770 --> 00:34:26.340
+John Hazlewood: You know, use the phone with typo.
+
+219
+00:34:26.670 --> 00:34:36.810
+John Hazlewood: But anyway, that app, we wanted to have kind of the eyes on it and stuff, and we wanted to kind of see. But I know that, Hasna, you're a back-end
+
+220
+00:34:37.190 --> 00:34:40.030
+John Hazlewood: And you're also a multimodal perception
+
+221
+00:34:40.960 --> 00:34:46.460
+John Hazlewood: team. So yeah, maybe maybe we can look at you engaged in that app.
+
+222
+00:34:47.350 --> 00:34:49.510
+John Hazlewood: Because that's another thing.
+
+223
+00:34:50.570 --> 00:34:52.050
+John Hazlewood: Do we need to do that?
+
+224
+00:34:52.510 --> 00:34:58.750
+John Hazlewood: But I did, I did, I did take that app, and I did take the information, the, the…
+
+225
+00:34:58.990 --> 00:35:10.370
+John Hazlewood: that Antoine put together. I guess it was almost like a Prd and I plugged that into Chat Gbt. Created the app.
+
+226
+00:35:10.590 --> 00:35:17.500
+John Hazlewood: I mean, I sat there for an hour or so, and was, like, working, and it created the app and asked me some questions, and…
+
+227
+00:35:17.680 --> 00:35:26.709
+John Hazlewood: So I don't know. I sent that link in. Guess it was the IoT team link.
+
+228
+00:35:27.400 --> 00:35:46.090
+John Hazlewood: I don't know if it really created the app, but it may be very buggy or something, but, because Indra was saying, when I asked her about how long the app would take, she said, well, probably a couple weeks. I said, man, we need it in a couple days. She said, okay, well, we'll see what we can do, but… I mean, if ChatGPT actually created this app, it'll be amazing.
+
+229
+00:35:46.790 --> 00:35:47.720
+Hasnae: Yes.
+
+230
+00:35:49.090 --> 00:35:50.120
+Spencer: Okay.
+
+231
+00:35:53.240 --> 00:35:55.350
+Spencer: Yeah, okay, that's fine.
+
+232
+00:35:58.520 --> 00:36:06.529
+Spencer: So, that's kind of everything we wanted to cover, and some of the… some more, more ideas that we kind of came up with.
+
+233
+00:36:06.760 --> 00:36:13.030
+Spencer: But let me… the last thing, today's fun fact… And.
+
+234
+00:36:13.200 --> 00:36:17.890
+Spencer: The Nintendo company, the video game company's first product.
+
+235
+00:36:18.260 --> 00:36:25.670
+Spencer: was actually Toro Playing Cards, was a… was originally a playing card company.
+
+236
+00:36:25.910 --> 00:36:34.830
+Spencer: To make, playing cards that were given out at, hotels that they've also… that they also own, which is very unique.
+
+237
+00:36:35.290 --> 00:36:38.820
+Spencer: But that is your fun fact for today,
+
+238
+00:36:40.340 --> 00:36:54.109
+Spencer: So, I'm gonna try to recover from whatever I'm going through right now, because my stomach is so sore and my body's drained, but I will see all of you, hopefully, on Sunday.
+
+239
+00:36:55.030 --> 00:37:00.010
+John Hazlewood: Okay, okay, thank you. And I just want to ask Sosina, Michael, Hasna, do you all have any questions?
+
+240
+00:37:00.190 --> 00:37:03.830
+John Hazlewood: Comments before we hang up here?
+
+241
+00:37:06.910 --> 00:37:08.490
+Hasnae: Hello, everyone.
+
+242
+00:37:11.020 --> 00:37:11.740
+Antoine Beaugas: Hello?
+
+243
+00:37:13.890 --> 00:37:20.369
+Hasnae: First of all, it's my first time assisting to the Humanoids team meeting.
+
+244
+00:37:20.830 --> 00:37:22.819
+Hasnae: So… hello?
+
+245
+00:37:23.450 --> 00:37:24.320
+Spencer: Hello.
+
+246
+00:37:25.670 --> 00:37:29.979
+Spencer: Okay, if you wanna, if you wanna quickly introduce yourself,
+
+247
+00:37:30.700 --> 00:37:33.500
+Spencer: Background, education, that kind of stuff.
+
+248
+00:37:34.330 --> 00:37:40.480
+Hasnae: Yeah, yeah. Again, my name is Hasnaa. I am from Morocco, and I am a robotic engineer student.
+
+249
+00:37:40.790 --> 00:37:49.730
+Hasnae: That's it. I am involved right now in the IoT team, backend, multimodal, humanoids.
+
+250
+00:37:49.880 --> 00:37:53.569
+Hasnae: Humanoids actually was my first choice.
+
+251
+00:37:53.880 --> 00:38:00.240
+Hasnae: Because I wasn't sure of what are the projects exactly in Humanoid.
+
+252
+00:38:00.520 --> 00:38:06.950
+Hasnae: But then I started to understand a bit what are the projects are.
+
+253
+00:38:07.080 --> 00:38:12.720
+Hasnae: Considering my question, John…
+
+254
+00:38:13.770 --> 00:38:30.840
+Hasnae: said something about something connecting the IoT project with this one, but I didn't get it right. I'm not sure if I get his point, so if you please repeat your idea or your task.
+
+255
+00:38:31.700 --> 00:38:50.669
+Spencer: So there's definitely overlap with IoT and the Humanoid team. As you know, the remote connectivity and that kind of thing is definitely an Internet of Things type idea, having it all under one app.
+
+256
+00:38:50.790 --> 00:39:07.309
+Spencer: whether that be FloBrain or the CAIPO app, you can imagine that kind of… that is the definition of the Internet of Things. Humanoid also has, its own ideas for a bunch of smaller robots, like.
+
+257
+00:39:08.340 --> 00:39:20.669
+Spencer: Kind of like your everyday assistants, like Alexa and all of that kind of stuff. We have ones that… we have ideas for robots that move around, ideas for robots that…
+
+258
+00:39:20.670 --> 00:39:21.130
+Hasnae: Just.
+
+259
+00:39:21.130 --> 00:39:31.339
+Spencer: turn and all that kind of stuff and ideas for robots that just kind of sit there and kind of give information out like Alexa. So as you can imagine, some…
+
+260
+00:39:31.340 --> 00:39:31.800
+Hasnae: second.
+
+261
+00:39:31.800 --> 00:39:37.410
+Spencer: A good… yeah, so John's showing it right now. So, as you can imagine.
+
+262
+00:39:38.060 --> 00:39:45.360
+Spencer: definitely like that level of robotics and that level of humanoid is definitely IoT coded.
+
+263
+00:39:46.710 --> 00:39:50.559
+Hasnae: Yeah, but how is this related to humanoids?
+
+264
+00:39:50.860 --> 00:39:51.750
+Hasnae: team.
+
+265
+00:39:52.030 --> 00:39:58.010
+Spencer: The Humanoid project, like, we kind of came up with the idea to start off small.
+
+266
+00:39:58.030 --> 00:40:14.899
+Spencer: you first want to start off with smaller robots, or robots that are pre-existing. We don't want to develop for… want to go right to the hedge of building our own humanoid. We want to start off with the idea that
+
+267
+00:40:14.900 --> 00:40:19.110
+Spencer: We have our own smaller robots, but we also want to do
+
+268
+00:40:19.350 --> 00:40:27.660
+Spencer: Customization and design and changing of design for current pre-existing robots, because
+
+269
+00:40:27.660 --> 00:40:40.950
+Spencer: As we saw, it's not really being done by anybody right now. And if you want to know the validity of that idea, Unitree actually did their own idea like that, where they took their…
+
+270
+00:40:42.480 --> 00:40:55.589
+Spencer: go one robot and made it a bowl by adding horns and changing the color and all that kind of stuff. So, this is something that the people that we want to take their robots and modify have already thought of.
+
+271
+00:40:55.670 --> 00:41:02.929
+Spencer: are just thinking about, or making a very limited idea, and we want to do that kind of thing first. So…
+
+272
+00:41:02.930 --> 00:41:03.480
+Hasnae: Sorry.
+
+273
+00:41:04.380 --> 00:41:12.260
+Spencer: Essentially, think about it like this, where currently, right now, we're on an early path, where it's… the things that we see
+
+274
+00:41:12.390 --> 00:41:31.659
+Spencer: getting close to revenue first. Then, as Humanoid evolves, you're gonna find us moving more into that development phase, where we take what we learned from the smaller robots and the pre-existing robots, and start actually developing our own
+
+275
+00:41:31.770 --> 00:41:38.110
+Spencer: Robotic systems, whether that be chassis robots, whether that be.
+
+276
+00:41:38.550 --> 00:41:57.509
+Spencer: chassis, humanoid robots, and whether that be full-blown, walking humanoid robots. So, right now, we're still definitely in the early things and really learning the whole compassion side of it, but if you stick around for long enough, you're gonna see that
+
+277
+00:41:57.750 --> 00:41:59.240
+Spencer: transition.
+
+278
+00:42:00.660 --> 00:42:01.850
+Hasnae: Okay, for…
+
+279
+00:42:02.450 --> 00:42:13.210
+John Hazlewood: Hasan, just to kind of put it again, reiterate what he said in the kind of different words, the long-term plan is to have our own humanoid, 3D printable humanoid. We've done research in the past.
+
+280
+00:42:13.210 --> 00:42:36.679
+John Hazlewood: that Spencer led, with, open, humanoid hand and a humanoid arm. It's open source. We looked at how we could connect those two. So the plan, in the not-too-distant future is to have a hand connected to an arm and put it on a desk in the lab where we're using it, maybe put it on top of the.
+
+281
+00:42:36.680 --> 00:42:38.970
+John Hazlewood: On top of the RoboDog?
+
+282
+00:42:39.220 --> 00:42:57.570
+John Hazlewood: And then the RoboDog can walk around and open doors or whatever with that hand. So… but then from there, it's like, okay, we want to build a whole 3D printable humanoid that probably sits on an existing chassis with wheels as our first robot, and then kind of move…
+
+283
+00:42:57.570 --> 00:43:01.279
+John Hazlewood: In the short term, what we want to do is,
+
+284
+00:43:01.830 --> 00:43:21.749
+John Hazlewood: is a, kind of what you saw, but more like a cradle, what we've seen, another, desktop robot that sits on a cradle, has sensors, and it's actually the mobile phone that sits in the cradle, and it's the app in the mobile phone that's actually talking, and it's the AI, which is FloBrain.
+
+285
+00:43:21.750 --> 00:43:24.260
+John Hazlewood: And it has… it'll have some eyes and stuff.
+
+286
+00:43:24.340 --> 00:43:36.130
+John Hazlewood: So… so that's, you know, more of the short-term plan for, you know, for Humanoid, but what I was talking about
+
+287
+00:43:36.810 --> 00:43:49.839
+John Hazlewood: Oh, and of course, taking existing with RoboCollective, taking existing robots and reskinning them, and that's where you might be able to help. There's a task to create a webpage
+
+288
+00:43:50.020 --> 00:43:59.169
+John Hazlewood: For the line of business that we want to do, which is taking probably Unitree Humanoid or Unitree RoboDog.
+
+289
+00:43:59.170 --> 00:44:17.349
+John Hazlewood: And making it look like a robo cat or any type of different animal, 3D printing a a skin, let's say, that wraps, you know, that connects inside straps and straps onto the robo dog.
+
+290
+00:44:17.350 --> 00:44:28.199
+John Hazlewood: So maybe it's a robo bull, then take some horns or whatever and 3D print and put place it on top of the the head. And then so so we want to go sell.
+
+291
+00:44:28.200 --> 00:44:39.429
+John Hazlewood: customized robots that we buy from Unitree, and we just reskin them, either with a vinyl wrapper or a 3D-printed
+
+292
+00:44:39.580 --> 00:44:40.840
+John Hazlewood: New body.
+
+293
+00:44:40.840 --> 00:44:41.330
+Hasnae: have.
+
+294
+00:44:41.330 --> 00:44:58.070
+John Hazlewood: that we put on it. And we think we can sell those to like sports teams at universities or professional sports teams or fans or, you know, different. Nobody's offering that type of service right now. There's lots of…
+
+295
+00:44:58.070 --> 00:45:06.320
+John Hazlewood: companies representing Unitree and all these other companies that we're representing, but none of them are, like, reskinning
+
+296
+00:45:06.360 --> 00:45:13.499
+John Hazlewood: they're… they're robots and providing, you know, kind of custom… that type of customization. So that has actually…
+
+297
+00:45:13.840 --> 00:45:17.519
+John Hazlewood: The first thing that we want to do is create.
+
+298
+00:45:17.960 --> 00:45:30.980
+John Hazlewood: some sample robots, what they might look like, you know, create the website, because we're starting a campaign right now to universities and to sports teams at universities, for RoboCollective.
+
+299
+00:45:30.980 --> 00:45:39.819
+John Hazlewood: So that's our nearest thing to generating revenue, selling. We're also going to sell the existing robots as they are, but, you know.
+
+300
+00:45:39.820 --> 00:45:51.219
+John Hazlewood: But, you know, Unitree has reps, distributors in every country probably right now, you know, so that's really how we can differentiate ourselves, by providing that type of
+
+301
+00:45:51.220 --> 00:45:52.320
+John Hazlewood: Solution.
+
+302
+00:45:54.630 --> 00:46:02.789
+Hasnae: Okay, so we have the Unitree robot dogs right now, and we are reselling them.
+
+303
+00:46:02.990 --> 00:46:07.189
+Hasnae: With some customized things on them, right?
+
+304
+00:46:08.010 --> 00:46:22.520
+John Hazlewood: Well, we have one Unitree RoboDog. We have put a vinyl wrapper on it, a black vinyl wrapper. So we have kind of a proof of concept, because we've done that. It took a lot of research to figure out what we're going to do and stuff.
+
+305
+00:46:22.520 --> 00:46:29.099
+John Hazlewood: And, and, we… so, if someone orders a RoboDog from us.
+
+306
+00:46:29.260 --> 00:46:48.549
+John Hazlewood: We're gonna get a new RoboDog from Unitree. We'll get it shipped from China, we'll probably get it shipped here to Sofia, get the 3D printed, you know, put the things on it, or if it's a vinyl wrapper, I've got a place in Sofia, Bulgaria, it's not that far away from Luminos.
+
+307
+00:46:48.610 --> 00:47:07.429
+John Hazlewood: It's a really big printing company. They did the last one. They were very inexpensive compared to people in the States that we had contacted. Most of these vinyl wrapping companies, they do, like, vinyl wrap cars and things like that, so they were, like, really expensive, but this one in Bulgaria was…
+
+308
+00:47:07.760 --> 00:47:21.140
+John Hazlewood: really, you know, like 100 bucks to skin to put a vinyl wrapper on the on the Robo dog. So so so yeah, that's our plan. Basically.
+
+309
+00:47:21.850 --> 00:47:34.960
+Hasnae: Yeah, if I did understand correctly, I have one question. Why someone will order from us and not from the origin company?
+
+310
+00:47:35.230 --> 00:47:36.460
+Hasnae: The RoboDuck.
+
+311
+00:47:37.110 --> 00:47:43.340
+John Hazlewood: Well, first of all, Unitree… Doesn't sell direct.
+
+312
+00:47:43.610 --> 00:47:58.640
+John Hazlewood: They have a distributor network, just like car dealers and a lot of other dealers. You know, they have a network of distributors. So I was in their office for a couple of weeks. I got a personal relationship with them. I was at a couple of conferences with them.
+
+313
+00:47:58.680 --> 00:48:07.400
+John Hazlewood: You know, so, we have a way… they have, in some markets, they've got a distributor.
+
+314
+00:48:07.940 --> 00:48:17.259
+John Hazlewood: And if they have a distributor, an exclusivity relationship, then they'll put us in contact with that company.
+
+315
+00:48:17.420 --> 00:48:24.550
+John Hazlewood: And then we'll have to buy from them, and then, you know, we'll get, like, a 30% margin or something like that.
+
+316
+00:48:24.760 --> 00:48:44.029
+John Hazlewood: So that's typically how these companies work. I mean, I have personal relationships with all of these 8 or 9 different companies. I spent 3 months living in China last year, and so… so that was basically what came out of those… that trip.
+
+317
+00:48:44.160 --> 00:48:47.270
+John Hazlewood: So, so, so they might still…
+
+318
+00:48:47.610 --> 00:48:58.100
+John Hazlewood: purchase from someone else, and that's the… that's the problem, is when we target universities, they might already be dealing with someone that's selling Unitree robots, right? So…
+
+319
+00:48:58.360 --> 00:49:10.490
+John Hazlewood: So we have to compete with them for that, and… but where we won't have any competition is, like, putting a new wrapper, a new skin on it, and…
+
+320
+00:49:10.490 --> 00:49:24.279
+John Hazlewood: Because none of these distributors are doing that. They don't have the expertise. You know, they're not into that. Unitree doesn't do that. So I think that's really where we have an opportunity to differentiate ourselves.
+
+321
+00:49:26.680 --> 00:49:33.469
+Hasnae: So, yeah, that sounds, a good plan of business to be done.
+
+322
+00:49:33.700 --> 00:49:37.440
+Hasnae: But if I may ask about the technical
+
+323
+00:49:37.620 --> 00:49:45.440
+Hasnae: Side of it, for example, if we could or if we, if we have the ability to learn.
+
+324
+00:49:45.680 --> 00:49:53.180
+Hasnae: To do some customization in the technical skills of the robots, because I'm not sure
+
+325
+00:49:53.340 --> 00:49:57.849
+Hasnae: What is it doing, the robot dog itself?
+
+326
+00:49:58.980 --> 00:50:03.770
+Hasnae: Apart from dancing, moving, standing, sitting.
+
+327
+00:50:05.220 --> 00:50:06.100
+John Hazlewood: Okay.
+
+328
+00:50:06.100 --> 00:50:07.560
+Hasnae: Because…
+
+329
+00:50:12.330 --> 00:50:13.780
+John Hazlewood: You were gonna say, because what?
+
+330
+00:50:14.930 --> 00:50:16.180
+Hasnae: The.
+
+331
+00:50:16.410 --> 00:50:22.109
+Hasnae: I saw a video of robots dancing.
+
+332
+00:50:22.380 --> 00:50:26.040
+Hasnae: As part of the entertainment industry.
+
+333
+00:50:26.430 --> 00:50:40.999
+Hasnae: So, I don't know if the robot dogs or the robots in general, humanoid robots, are originally programmed to do so, or if it's easy or doable to…
+
+334
+00:50:41.040 --> 00:50:49.029
+Hasnae: To in train them to do some movements personalized one because I believe if we.
+
+335
+00:50:49.170 --> 00:50:55.139
+Hasnae: Succeed to do, to program the robots and make them do some.
+
+336
+00:50:55.360 --> 00:51:03.330
+Hasnae: Something different from others, it's maybe a good factor for them to be still.
+
+337
+00:51:04.100 --> 00:51:06.690
+Hasnae: Rapidly, more than being rapid.
+
+338
+00:51:07.500 --> 00:51:08.310
+Hasnae: I don't know.
+
+339
+00:51:08.310 --> 00:51:17.980
+John Hazlewood: So Unitree right now on their humanoids and on their robodogs, they already have, you know, pre-programmed.
+
+340
+00:51:17.980 --> 00:51:34.110
+John Hazlewood: moves, and dances, and stand up on two legs, and a bunch of different things. Even flipping, they have on their new version, they can jump up and flip, although they… sometimes they have accidents, and the robot, you know, ends up breaking and stuff. But,
+
+341
+00:51:34.870 --> 00:51:39.320
+John Hazlewood: But… and then when they have new releases, they have over-the-air updates.
+
+342
+00:51:39.320 --> 00:51:55.279
+John Hazlewood: For new functionality, new movements, and stuff like that. They were even talking about having, like, an open source where people develop, because on their EDU version, they have two versions. One is an EDU version, and one is the non-EDU version.
+
+343
+00:51:55.470 --> 00:51:56.180
+Hasnae: you.
+
+344
+00:51:56.180 --> 00:52:09.260
+John Hazlewood: EDU version is, like, twice as expensive, where you can actually program on the EDU version. So, you know, I'm not sure… I mean, if we have a customer that wants to have
+
+345
+00:52:09.350 --> 00:52:11.309
+John Hazlewood: Let's say, because that will…
+
+346
+00:52:11.320 --> 00:52:23.900
+John Hazlewood: You know, if you're in Greece, you know, if you're in Texas, like, have a humanoid that does the Cotton Eye Joe or the Texas Two-Step, you know, like, for weddings and stuff like that, they…
+
+347
+00:52:23.900 --> 00:52:35.520
+John Hazlewood: you know, it would be very entertaining, and in Greece, they have Greek dances, and, you know, Morocco, they have the Moroccan dances, and etc. So, you could program for specific
+
+348
+00:52:35.960 --> 00:52:39.340
+John Hazlewood: Things like that, that would be interesting to some customers.
+
+349
+00:52:39.650 --> 00:52:40.000
+Hasnae: Yeah.
+
+350
+00:52:40.720 --> 00:52:54.520
+John Hazlewood: Yeah, and so we will have that capability. If the customer wants us to do that, you know, we'd have to buy the EDU version, we'd have to… we could program it for them, and then we could sell it with
+
+351
+00:52:54.520 --> 00:53:04.569
+John Hazlewood: whatever you know, dances or movements that that they want, that are not already included in in the version of you that unitary provides.
+
+352
+00:53:06.660 --> 00:53:13.509
+Hasnae: Okay, that sounds interesting. And maybe we could go further with more technical details later.
+
+353
+00:53:14.120 --> 00:53:20.290
+Hasnae: But thanks for all the explanations. It's more clear right now, the vision of yours.
+
+354
+00:53:20.680 --> 00:53:24.349
+Hasnae: And I hope to start working on this.
+
+355
+00:53:24.800 --> 00:53:30.359
+Hasnae: very, closely. So…
+
+356
+00:53:30.360 --> 00:53:37.629
+John Hazlewood: Yeah, well, feel welcome. Maybe you can be on the team with Spencer to… I don't know who's working on the website.
+
+357
+00:53:37.630 --> 00:53:38.250
+Hasnae: Sorry.
+
+358
+00:53:40.050 --> 00:53:47.629
+John Hazlewood: you know, for, like, the robo-dogs. I mean, right now, we wanted to just… the robo-dogs, but maybe we could also take the Humanoid
+
+359
+00:53:48.110 --> 00:53:50.130
+John Hazlewood: And…
+
+360
+00:53:50.690 --> 00:54:03.479
+John Hazlewood: I don't know, like, maybe on the Humanoid, you could put a 3D printable and make it look like Incredible Hulk, you know, or some, you know, like a fighter or something, like Hercules with a big chest.
+
+361
+00:54:03.480 --> 00:54:04.020
+Hasnae: open.
+
+362
+00:54:04.020 --> 00:54:07.690
+John Hazlewood: Let's say, maybe that might be interesting.
+
+363
+00:54:08.960 --> 00:54:15.200
+John Hazlewood: You know, but right now, the thing is, we need to have the web pages
+
+364
+00:54:15.650 --> 00:54:24.909
+John Hazlewood: And say, this is what we can provide, you know, and so when we're marketing it, we can say, oh, okay, wow, yeah, you can do this? Okay, yeah, we're interested in this, and then…
+
+365
+00:54:25.120 --> 00:54:27.190
+John Hazlewood: We need to start generating leads.
+
+366
+00:54:27.320 --> 00:54:39.040
+John Hazlewood: Of course, when we have a lead, you and others here will be in the meeting with… if it's a professor, if it's a coach, you know, we'll have a team of our specialists.
+
+367
+00:54:39.040 --> 00:54:52.549
+John Hazlewood: We're talking to the prospect and seeing what their interests are, what we can provide. Hopefully, with all the talent that we have, we'll come across very credible, that we know what we're doing.
+
+368
+00:54:52.610 --> 00:55:03.839
+John Hazlewood: We have to do the first one is going to be the most difficult, and the second one, it's always the most difficult, but once we do one or two, we know what we're doing, and we have some customers under our belt.
+
+369
+00:55:03.930 --> 00:55:05.639
+John Hazlewood: I think that could be huge.
+
+370
+00:55:07.750 --> 00:55:08.460
+Hasnae: Oh, yeah.
+
+371
+00:55:09.270 --> 00:55:16.080
+Hasnae: If I did understand correctly, the webpage is for… And…
+
+372
+00:55:16.430 --> 00:55:26.010
+Hasnae: Like, I think of it like Snapchat. Snapchat like filters for the robot's dog itself.
+
+373
+00:55:26.250 --> 00:55:28.989
+Hasnae: Like, if we select…
+
+374
+00:55:29.210 --> 00:55:40.070
+Hasnae: An image, for example, of a wrap, and it goes on top of the robots and shows the clients how it will be looking like.
+
+375
+00:55:40.580 --> 00:55:43.369
+Hasnae: Is it? Is it right now? Yeah.
+
+376
+00:55:43.370 --> 00:55:57.860
+John Hazlewood: Exactly, exactly. A skin, a wrap, whatever you want to call it. Yeah, just, I mean, we can take the Unitree RoboDog and the Unitree Humanoid. They're really the best ones because they're the best in the market.
+
+377
+00:55:57.860 --> 00:56:05.700
+John Hazlewood: they're the cheapest for… as far as price, you know, I mean, they're… and I've got a really good relationship with them, so…
+
+378
+00:56:06.090 --> 00:56:19.909
+John Hazlewood: if you want to take their robots, and then just put it into an AI, and then have it kind of reskinned, so, you know, it's something that is really the robot, you know, we're not gonna…
+
+379
+00:56:20.000 --> 00:56:26.560
+John Hazlewood: You know, like, that's basically the foundation that we'll be using, and
+
+380
+00:56:26.590 --> 00:56:44.939
+John Hazlewood: You know, so they've… those robots work, right? They've… they went public, they have almost a thousand employees, they've been profitable, so we've got a great product. You know, all those companies that we're using, you know, we're not building it ourselves, you know, so that's the…
+
+381
+00:56:44.940 --> 00:56:52.079
+John Hazlewood: That's the beauty of it. We've we're customizing existing robots that are on the market and they're proven.
+
+382
+00:56:53.780 --> 00:56:58.220
+Hasnae: Yeah, and the wrap will be 3D printed in Bulgaria, right?
+
+383
+00:56:59.870 --> 00:57:03.580
+John Hazlewood: The vinyl…
+
+384
+00:57:03.650 --> 00:57:13.050
+John Hazlewood: the wrap that you put, it's just… basically, it's, you know, it's like vinyl wrap you put on a car or whatever, so… so that is in Bulgaria.
+
+385
+00:57:13.080 --> 00:57:28.359
+John Hazlewood: The 3D printed, you know, it could be printed anywhere, I guess, and shipped to Lemnos, because I've got the RoboDog here, to do, like, you know, to do, like, a sample one with the RoboDog.
+
+386
+00:57:28.360 --> 00:57:31.590
+Hasnae: So we have…
+
+387
+00:57:31.590 --> 00:57:35.070
+John Hazlewood: So, I don't know if we have a customer…
+
+388
+00:57:35.150 --> 00:57:36.250
+Hasnae: Says…
+
+389
+00:57:36.720 --> 00:57:38.599
+John Hazlewood: you know, well, okay, I want this…
+
+390
+00:57:39.300 --> 00:57:43.090
+John Hazlewood: And they pay us, you know, a fee.
+
+391
+00:57:43.160 --> 00:57:46.769
+John Hazlewood: We get the RoboDog, the real RoboDog that they're gonna use.
+
+392
+00:57:46.770 --> 00:58:04.709
+John Hazlewood: I mean, we could be doing things in parallel, where we're ordering the RoboDog, and we have our own RoboDog, we can build the casing on top of it, 3D print it, put it around. So I don't have a 3D printer here, and I don't know what kind of 3D printer we're gonna need, but there's companies, schools, a lot of places we can
+
+393
+00:58:04.920 --> 00:58:15.360
+John Hazlewood: 3D print the, you know, if it's a fat cat or horns or whatever, you know, that can be printed anywhere and shipped here.
+
+394
+00:58:15.360 --> 00:58:15.970
+Hasnae: Yeah.
+
+395
+00:58:16.090 --> 00:58:20.880
+Hasnae: I think it's… First, I think we…
+
+396
+00:58:21.030 --> 00:58:26.009
+Hasnae: We will think of the web page,
+
+397
+00:58:26.220 --> 00:58:31.160
+Hasnae: Like having the robot dog means that we have all its dimensions.
+
+398
+00:58:31.230 --> 00:58:42.140
+Hasnae: Which means we can do a design on the page of the doc itself. And then, like I said, like the Snapshots application, in do —
+
+399
+00:58:42.140 --> 00:59:01.839
+Hasnae: the filter on the robot dog to show clients how we'll be showing with the wrap, or with the kiss, or whatever. And then, if someone is interested with the final product of the robot wrapped, then we will think about the printing, or the wrap, or…
+
+400
+00:59:02.470 --> 00:59:07.730
+Hasnae: Because the web page will cost nothing.
+
+401
+00:59:10.000 --> 00:59:16.699
+Hasnae: But if someone interested, then we will be thinking of… How we can do.
+
+402
+00:59:17.420 --> 00:59:20.039
+Hasnae: How we can make it? The wrapping.
+
+403
+00:59:21.420 --> 00:59:37.839
+John Hazlewood: Yeah, yeah, I think the Snapchat idea is a really good one. If we can have an application that they can just choose colors or whatever, and then kind of… it's automatic, it's gonna create, you know, a skin of what it's gonna look like. Yeah, that would be…
+
+404
+00:59:38.050 --> 00:59:45.980
+John Hazlewood: Good. I don't know, maybe you can look and see how we can create that, web page to have that.
+
+405
+00:59:47.030 --> 00:59:56.860
+Hasnae: This, to me, to me sounds more of an artistic view, so it may be,
+
+406
+00:59:57.250 --> 01:00:08.229
+Hasnae: With the beauty, beautiful view of it in the application. That's must… like, make clients…
+
+407
+01:00:08.430 --> 01:00:26.179
+Hasnae: feel the ability to buy something like this, because the robot itself, it is beautiful. The robot dog from Unitree, it is beautiful. But for us to add a wrap and make people want to buy the whole thing means that the web app
+
+408
+01:00:26.340 --> 01:00:32.819
+Hasnae: Needs to have, more of the artistic view of the whole thing.
+
+409
+01:00:34.590 --> 01:00:37.050
+Hasnae: If I explained myself correctly.
+
+410
+01:00:38.300 --> 01:00:54.489
+John Hazlewood: Yeah, okay, well, look and see what we need. You know, actually, Unitree did do some different, let's say, skins customized with horns and things, and now that I remember when I was there, they had, like, a…
+
+411
+01:00:54.980 --> 01:00:57.209
+John Hazlewood: They did a show.
+
+412
+01:00:57.360 --> 01:01:01.180
+John Hazlewood: with… they were, like, dressed in Chinese,
+
+413
+01:01:01.180 --> 01:01:01.880
+Hasnae: It was for.
+
+414
+01:01:02.170 --> 01:01:16.750
+John Hazlewood: Chinese that were red and they had they had like I don't know 30 of the robo dogs dancing together. This was you know probably like a couple years ago. So I'm sure that that we can find some real examples.
+
+415
+01:01:17.140 --> 01:01:26.060
+John Hazlewood: Of ones that have been customized, that we can add to the webpage, so people can kind of see the, you know, stuff that is not just…
+
+416
+01:01:26.270 --> 01:01:33.270
+John Hazlewood: you know, kind of a Snapchat thing to look at, but see some ones in real life that have been customized.
+
+417
+01:01:33.950 --> 01:01:34.679
+Spencer: 1 5.
+
+418
+01:01:35.970 --> 01:01:36.780
+Hasnae: Okay.
+
+419
+01:01:36.910 --> 01:01:40.650
+Hasnae: I will do some research from my side.
+
+420
+01:01:40.650 --> 01:01:41.230
+Spencer: you.
+
+421
+01:01:41.230 --> 01:01:46.519
+Hasnae: of the technical side of how to do the web page.
+
+422
+01:01:46.670 --> 01:01:50.899
+Hasnae: And, hopefully on the next meeting,
+
+423
+01:01:51.050 --> 01:02:01.109
+Hasnae: To present something, like, start of something on how the… because the web page will show
+
+424
+01:02:01.340 --> 01:02:10.339
+Hasnae: It will be shown to the clients and make them buy the product. So it will be very well designed.
+
+425
+01:02:11.630 --> 01:02:12.590
+Spencer: available.
+
+426
+01:02:12.950 --> 01:02:13.560
+Spencer: Okay.
+
+427
+01:02:13.620 --> 01:02:15.230
+John Hazlewood: That sounds great.
+
+428
+01:02:16.050 --> 01:02:17.610
+John Hazlewood: Sounds great, Hasnai.
+
+429
+01:02:19.550 --> 01:02:26.520
+Hasnae: So that's it from me. And thank you for having me today. That was my first session, and I hope I didn't ask too many questions.
+
+430
+01:02:26.840 --> 01:02:27.320
+Spencer: way.
+
+431
+01:02:27.320 --> 01:02:33.129
+John Hazlewood: No, not at all. And I see Salwa joined us also. Hi, Salwa, how are you doing?
+
+432
+01:02:35.070 --> 01:02:50.220
+Salwa Akkad: Hello. I'm just doing good. I didn't know actually the the meeting is about to start, like, at 05:30 because I have classes at the university that end at six.
+
+433
+01:02:50.900 --> 01:02:51.540
+Salwa Akkad: PM.
+
+434
+01:02:52.730 --> 01:03:03.300
+Salwa Akkad: So I hope this wasn't a big issue. But yeah, this is my first meeting with the robotics team, so I'm excited about it.
+
+435
+01:03:04.350 --> 01:03:06.129
+John Hazlewood: You want to introduce yourself Salwa?
+
+436
+01:03:06.770 --> 01:03:10.759
+Salwa Akkad: Yeah, sure. So I'm Salwa Ahd.
+
+437
+01:03:10.880 --> 01:03:24.110
+Salwa Akkad: I'm actually on a double degree of engineering program, where I study mechanical engineering and general engineering with a specialization in robotics.
+
+438
+01:03:24.960 --> 01:03:33.419
+Salwa Akkad: And I'm actually eager to apply my knowledge and gain experience from this environment.
+
+439
+01:03:34.920 --> 01:03:37.719
+John Hazlewood: And you're, Lebanese?
+
+440
+01:03:38.490 --> 01:03:40.170
+Salwa Akkad: Yeah, I'm also Lebanese.
+
+441
+01:03:40.400 --> 01:03:41.989
+Salwa Akkad: That's on top of it.
+
+442
+01:03:42.720 --> 01:03:45.270
+John Hazlewood: Yeah, and you're now in France.
+
+443
+01:03:45.580 --> 01:03:47.110
+Salwa Akkad: Yeah, that's right.
+
+444
+01:03:47.550 --> 01:03:55.520
+John Hazlewood: It's your first time in France and in Europe and on a plane. And, yeah, where where in France are you?
+
+445
+01:03:56.050 --> 01:03:59.560
+Salwa Akkad: And not, which is… Like.
+
+446
+01:04:00.120 --> 01:04:03.770
+Salwa Akkad: Southwest, I guess, of France.
+
+447
+01:04:05.870 --> 01:04:08.589
+John Hazlewood: Okay, it's probably not far from where Antoine lives.
+
+448
+01:04:08.590 --> 01:04:09.400
+Salwa Akkad: Hmm.
+
+449
+01:04:10.010 --> 01:04:10.970
+Salwa Akkad: Hmm.
+
+450
+01:04:10.970 --> 01:04:13.900
+Antoine Beaugas: I'm Northwest, Northwest, so…
+
+451
+01:04:13.900 --> 01:04:14.580
+John Hazlewood: Yes.
+
+452
+01:04:15.390 --> 01:04:16.920
+Salwa Akkad: Oh, right.
+
+453
+01:04:19.180 --> 01:04:24.009
+John Hazlewood: So, but yeah, he's in Lemnos now for another couple weeks or so.
+
+454
+01:04:24.210 --> 01:04:32.930
+John Hazlewood: So okay, well, that that sounds great. It's great to have you on the team, Hasna, you too, and all of you.
+
+455
+01:04:33.120 --> 01:04:39.580
+John Hazlewood: Yeah, looking forward to moving some of these projects forward. Spencer has been moving.
+
+456
+01:04:39.580 --> 01:04:54.160
+John Hazlewood: to a new job from California out to Washington, D.C, where he's living now, working as a contractor for a company that contracts to the U.S. government.
+
+457
+01:04:54.210 --> 01:04:56.349
+John Hazlewood: to the Navy, or I guess in…
+
+458
+01:04:57.290 --> 01:05:00.919
+John Hazlewood: So, so we scheduled the meeting these days.
+
+459
+01:05:01.170 --> 01:05:17.740
+John Hazlewood: Today actually was a workday for him, and every other Friday he doesn't work, so on one Friday it'll be a shorter meeting, and then the next Friday it'll be a little bit longer meeting, because he's going to be taking his lunch breaks off.
+
+460
+01:05:17.770 --> 01:05:30.700
+John Hazlewood: For the meeting when he's working, so he'll only have about an hour for those, a little bit less than an hour. So, and he'll be doing the meetings from his car, because he has a better internet connection from the car.
+
+461
+01:05:32.910 --> 01:05:37.809
+John Hazlewood: So… Yeah, and Salwa, maybe, yeah, maybe you can…
+
+462
+01:05:38.150 --> 01:05:46.740
+John Hazlewood: Maybe this task that we talked about at the end with Hasnae. Maybe you can work on it with her.
+
+463
+01:05:47.530 --> 01:05:50.590
+John Hazlewood: Because you're both French speakers, also.
+
+464
+01:05:51.290 --> 01:05:55.780
+John Hazlewood: Since she's from Morocco, and… And
+
+465
+01:05:57.220 --> 01:06:06.019
+John Hazlewood: But yeah, maybe Antoine, if you're going to create those tasks for Spencer, if you can create the task for Hasnae and Salwa to work on the
+
+466
+01:06:06.150 --> 01:06:15.340
+John Hazlewood: Website for the, custom, customized robots.
+
+467
+01:06:15.990 --> 01:06:19.490
+Antoine Beaugas: A website for make a website. You mean?
+
+468
+01:06:20.250 --> 01:06:29.220
+John Hazlewood: They're going to work on the website, on some web pages. It's going to be RoboCollective.com slash
+
+469
+01:06:29.680 --> 01:06:35.400
+John Hazlewood: Custom Robots, or whatever we're gonna call it, it'll be a new web page on the existing website.
+
+470
+01:06:35.850 --> 01:06:52.750
+John Hazlewood: And it'll be where we're going to show customers how we can customize robots. What Hasnae was talking about is like a Snapchat feature where here's the robot and you can press different colors and different faces, and then it just automatically shows.
+
+471
+01:06:52.750 --> 01:06:58.220
+John Hazlewood: Those colors and or faces or whatever on the on the robots.
+
+472
+01:06:58.420 --> 01:07:01.540
+John Hazlewood: I don't know if you've used, like, Snapchat or some of these…
+
+473
+01:07:01.540 --> 01:07:04.360
+Antoine Beaugas: But there's not web developers.
+
+474
+01:07:06.680 --> 01:07:10.379
+John Hazlewood: there's AI, she's a web developer, she's actually back in.
+
+475
+01:07:10.380 --> 01:07:11.570
+Hasnae: I am, I am.
+
+476
+01:07:11.700 --> 01:07:12.670
+Hasnae: Antoine.
+
+477
+01:07:12.670 --> 01:07:13.940
+Antoine Beaugas: Oh, okay.
+
+478
+01:07:13.940 --> 01:07:15.560
+Hasnae: Yes, I am.
+
+479
+01:07:15.880 --> 01:07:18.129
+Antoine Beaugas: Is it you're doing everything or what?
+
+480
+01:07:18.130 --> 01:07:22.540
+Hasnae: No, no, I did a career shift.
+
+481
+01:07:23.230 --> 01:07:26.800
+Hasnae: After I get tired from web development.
+
+482
+01:07:26.800 --> 01:07:27.700
+Antoine Beaugas: Okay.
+
+483
+01:07:31.280 --> 01:07:37.559
+Hasnae: It's okay, I can do my best. That had been a long time ago, but I can do my best to do so.
+
+484
+01:07:39.780 --> 01:07:42.719
+Hasnae: With my friend also Salwa.
+
+485
+01:07:43.240 --> 01:07:44.180
+Hasnae: So, yeah.
+
+486
+01:07:44.700 --> 01:07:54.110
+John Hazlewood: Yes, yes, and Hasnae, also, the app that we were talking about for the IoT, I'm going to send that to you, because that mobile app
+
+487
+01:07:54.980 --> 01:08:07.409
+John Hazlewood: I AI vibe coded it using ChatGPT, but I don't, I don't know, just some links. I haven't checked it. But it's just a simple app that we need, just with Bluetooth.
+
+488
+01:08:07.550 --> 01:08:24.850
+John Hazlewood: to communicate from the mobile phone to CAIPO, so once we have everything, we have CAIPO ready here, you know, we'll have the hardware, but it still needs to communicate to the… to the mobile that's communicating from the mobile phone to FloBrain, or if we just plug in an AI.
+
+489
+01:08:25.160 --> 01:08:30.290
+Hasnae: I'm sorry, I didn't understand what the mobile application is for.
+
+490
+01:08:31.620 --> 01:08:34.360
+John Hazlewood: It's just a stream, Bluetooth.
+
+491
+01:08:34.500 --> 01:08:35.700
+John Hazlewood: to CAIPO.
+
+492
+01:08:36.479 --> 01:08:39.550
+John Hazlewood: So, when you wear a typo.
+
+493
+01:08:40.029 --> 01:08:46.499
+John Hazlewood: All the… everything's gonna be working on the mobile app, on the phone. It's gonna be using the phone.
+
+494
+01:08:48.090 --> 01:09:03.789
+John Hazlewood: for everything, and the AI is going to be from FloBrain, or we'll plug in ChatGBT, you know, and then… so, yeah, that's… it's a really simple app. The specs, Antoine put them together.
+
+495
+01:09:04.370 --> 01:09:04.910
+John Hazlewood: Also.
+
+496
+01:09:04.910 --> 01:09:15.699
+Hasnae: On one, are you using e… Hc05, Bluetooth module.
+
+497
+01:09:15.700 --> 01:09:20.549
+Antoine Beaugas: No, the Bluetooth is integrated into the car.
+
+498
+01:09:21.060 --> 01:09:21.600
+Antoine Beaugas: It's a.
+
+499
+01:09:21.609 --> 01:09:22.279
+Hasnae: Insurance.
+
+500
+01:09:23.999 --> 01:09:24.769
+Hasnae: In children.
+
+501
+01:09:24.770 --> 01:09:28.749
+Antoine Beaugas: It's it's embedded into the the Raspberry.
+
+502
+01:09:29.359 --> 01:09:30.389
+Hasnae: The raspberry, okay.
+
+503
+01:09:30.390 --> 01:09:30.880
+Antoine Beaugas: it.
+
+504
+01:09:30.880 --> 01:09:37.379
+Hasnae: 5, So, what do we need to be displayed on the mobile app?
+
+505
+01:09:37.580 --> 01:09:42.119
+Hasnae: Apart from, it says it will be connected to Bluetooth, that's an easy thing.
+
+506
+01:09:42.960 --> 01:09:43.270
+Spencer: Okay.
+
+507
+01:09:43.279 --> 01:09:46.759
+Antoine Beaugas: Well, for that, you have to talk with Indra.
+
+508
+01:09:47.970 --> 01:09:48.310
+Hasnae: invite.
+
+509
+01:09:48.310 --> 01:09:49.390
+Antoine Beaugas: and not…
+
+510
+01:09:49.390 --> 01:09:49.930
+Spencer: Thank you.
+
+511
+01:09:50.229 --> 01:09:51.560
+Antoine Beaugas: Yeah, Indra.
+
+512
+01:09:53.479 --> 01:09:54.279
+Hasnae: Okay.
+
+513
+01:09:54.550 --> 01:10:02.800
+John Hazlewood: Yeah. And Antoine put the specifications together. I'll send those to you Hasnain so you can take a look at what the document that he put together.
+
+514
+01:10:02.800 --> 01:10:07.870
+Antoine Beaugas: It's Cinderella, I just added a bit, but it's Cinderella who's managing that.
+
+515
+01:10:09.770 --> 01:10:16.190
+Hasnae: Just to understand correctly, why are we needing a mobile app?
+
+516
+01:10:16.360 --> 01:10:24.669
+Hasnae: We, we are, yes, we are connecting the mobile app with the CAIPO itself, but to do what, exactly?
+
+517
+01:10:25.120 --> 01:10:37.369
+Antoine Beaugas: To make a bridge, mainly to make a bridge between the AI and CAIPO, because the AI won't be on CAIPO, and CAIPO won't connect to internet by itself, so there's the app.
+
+518
+01:10:37.640 --> 01:10:45.809
+Antoine Beaugas: It will talk to the app, it will communicate with the app by Bluetooth, and the app on your phone will have a Wi-Fi, or whatever.
+
+519
+01:10:47.810 --> 01:10:49.440
+Hasnae: Okay, then?
+
+520
+01:10:49.610 --> 01:10:53.550
+Hasnae: You can get a button on the application, said.
+
+521
+01:10:53.550 --> 01:10:54.200
+Antoine Beaugas: Yeah, but.
+
+522
+01:10:54.200 --> 01:10:54.890
+Hasnae: the.
+
+523
+01:10:54.890 --> 01:10:59.469
+Antoine Beaugas: What will be on it? Like I said, you have to talk to Indra because it's not my thing. I don't know.
+
+524
+01:10:59.470 --> 01:11:01.480
+Hasnae: Yeah, okay, okay, okay, sorry, okay.
+
+525
+01:11:01.480 --> 01:11:05.080
+John Hazlewood: Antoine's not a software developer.
+
+526
+01:11:05.660 --> 01:11:06.439
+Hasnae: Okay, okay.
+
+527
+01:11:06.440 --> 01:11:10.490
+Antoine Beaugas: I mean embedded system, not mobile app or web or things like that.
+
+528
+01:11:10.490 --> 01:11:20.949
+Hasnae: It's not, it's not, it's not, I'm not thinking of the technical skills. That's just when we are doing a project, we do use cases. Use cases, or…
+
+529
+01:11:20.950 --> 01:11:22.189
+Antoine Beaugas: Working on the app.
+
+530
+01:11:22.600 --> 01:11:23.260
+Spencer: away.
+
+531
+01:11:23.590 --> 01:11:35.580
+Antoine Beaugas: I'm just making the bridge between CAIPO and the app. So, I added some things in the… in the requirements, because some requirements are linked to CAIPO directly.
+
+532
+01:11:35.800 --> 01:11:36.999
+Antoine Beaugas: But that's it.
+
+533
+01:11:37.590 --> 01:11:44.319
+Hasnae: Okay, I'm not going to bother you with that. I am going straight to Indra.
+
+534
+01:11:47.440 --> 01:12:02.089
+Hasnae: So that's it. Just create a task for me with all the linked existing work for not to repeat what others already did and to move forward a bit.
+
+535
+01:12:02.090 --> 01:12:04.880
+Antoine Beaugas: For the app, I think there's nothing done.
+
+536
+01:12:05.810 --> 01:12:06.739
+Antoine Beaugas: Because we just…
+
+537
+01:12:06.740 --> 01:12:07.100
+Hasnae: the.
+
+538
+01:12:07.100 --> 01:12:10.629
+Antoine Beaugas: making the requirements. So…
+
+539
+01:12:11.220 --> 01:12:11.610
+Hasnae: Yeah.
+
+540
+01:12:11.610 --> 01:12:17.659
+John Hazlewood: Yeah, maybe Antoine you can put in the IOC team.
+
+541
+01:12:18.820 --> 01:12:21.050
+John Hazlewood: A task…
+
+542
+01:12:21.320 --> 01:12:39.189
+John Hazlewood: for Hasnae to, from the IoT perspective, to lead the initiative on the mobile apps, and she's also a developer. She can take ownership of that and work with Indra and the development team to make sure we get it done. I think that would probably be a good…
+
+543
+01:12:39.190 --> 01:12:44.400
+Antoine Beaugas: Okay, task, design, yeah, design, plan, so I think, yeah, everything's wrong, okay.
+
+544
+01:12:46.070 --> 01:13:02.159
+John Hazlewood: Yeah, yeah, because we don't have the… she'll be the developer coming to the IoT teams, and we can move this forward. Anyway, it should be fairly easy to do this. This, Hasni, this is, like, the first version we want to just use for testing CAIPO, but
+
+545
+01:13:02.180 --> 01:13:08.769
+John Hazlewood: As we develop it, of course, we want to have more features, and we probably even want to take that,
+
+546
+01:13:09.080 --> 01:13:10.440
+John Hazlewood: TAIPO app.
+
+547
+01:13:10.580 --> 01:13:22.700
+John Hazlewood: and, you know, like, integrate it into a FloBrain app, because with FloBrain, right, we want to have FloBrain on the computer, FloBrain on your mobile phone as an app.
+
+548
+01:13:22.700 --> 01:13:31.190
+John Hazlewood: So, you know, we might want to have what we're talking about for CAIPO and FloBrain as a single app.
+
+549
+01:13:31.220 --> 01:13:37.749
+John Hazlewood: You know… We'll have to see whether that makes sense, or if it's too heavy, or how…
+
+550
+01:13:38.870 --> 01:13:40.509
+Hasnae: I have one question.
+
+551
+01:13:40.530 --> 01:13:47.700
+Hasnae: Why do we want it to be a mobile app? Because if you want it to be a mobile app.
+
+552
+01:13:47.700 --> 01:14:01.469
+Hasnae: We need to connect to the web app also because it contains the model itself. So if it exists in a web app, we're just going to open it on mobile easy.
+
+553
+01:14:01.540 --> 01:14:07.380
+Hasnae: But if we think of the mobile app itself, it's, technically,
+
+554
+01:14:07.640 --> 01:14:23.460
+Hasnae: will make us do an API first for the web app itself, so we can read all infos from web app to the mobile app, if we wanted to use the same thing.
+
+555
+01:14:23.590 --> 01:14:24.340
+Hasnae: Okay.
+
+556
+01:14:24.340 --> 01:14:24.660
+John Hazlewood: Oh.
+
+557
+01:14:24.660 --> 01:14:30.039
+Hasnae: The first question for me, is it a web app or a mobile app?
+
+558
+01:14:31.210 --> 01:14:32.810
+John Hazlewood: Oh, I'm sorry, it's a mobile app.
+
+559
+01:14:33.510 --> 01:14:34.629
+Hasnae: It's a mobile app.
+
+560
+01:14:35.310 --> 01:14:35.690
+John Hazlewood: Yeah.
+
+561
+01:14:35.690 --> 01:14:40.469
+Hasnae: If there is a web app already existing.
+
+562
+01:14:41.090 --> 01:14:41.490
+John Hazlewood: No.
+
+563
+01:14:42.190 --> 01:14:43.750
+Hasnae: No,
+
+564
+01:14:44.490 --> 01:14:57.750
+Hasnae: So why not starting first with the web app? Because it is the most important. The mobile apps are usually reading from database that is being created by web apps.
+
+565
+01:14:58.390 --> 01:15:01.960
+Hasnae: They are just displaying… displaying contents.
+
+566
+01:15:02.620 --> 01:15:10.819
+John Hazlewood: Okay, maybe that's a better solution. I haven't really thought about that. All I know is that when I use apps, when I'm using
+
+567
+01:15:11.300 --> 01:15:26.670
+John Hazlewood: ChatGPT, you know, I have an app that I go to, my ChatGPT app, I take pictures of things, I talk to it, you know, and we want FloBrain to have the same type of app that people can open, and they're using, you know, the mobile app.
+
+568
+01:15:26.840 --> 01:15:29.170
+John Hazlewood: And whether that mobile app
+
+569
+01:15:29.450 --> 01:15:40.109
+John Hazlewood: Also could be the Bluetooth connectivity to CAIPO, because CAIPO is going to be the wearable, but we still want to give them the same functionality on their mobile phone.
+
+570
+01:15:40.310 --> 01:15:49.280
+John Hazlewood: So if I'm wearing Kaipo, and I have a video, and I'm taking, and I'm talking to Kaipo, it's my buddy, but hey, I want to also use my mobile app.
+
+571
+01:15:49.280 --> 01:16:05.700
+John Hazlewood: And it has a camera and stuff. So now I have two devices. I've got CAIPO and I've got my mobile phone that I can use. And maybe I can use both. And now I have two different cameras that I have and two different devices.
+
+572
+01:16:05.700 --> 01:16:10.560
+John Hazlewood: that are a better combination to use two devices rather than one. But, you know, the problem with
+
+573
+01:16:11.570 --> 01:16:20.749
+John Hazlewood: Like, the the what CAIPO is gonna resolve is, like, you know, every time I'm someplace, I gotta, like, open up the phone, take to Kai you know, chat GBT.
+
+574
+01:16:20.750 --> 01:16:36.139
+John Hazlewood: selected, take pictures, so the Kypo is just gonna be… Kypo, take a picture of this and tell me, you know, it's just an always-on device. But definitely, the value of having both the mobile app and Kypo, I think that's… that's…
+
+575
+01:16:36.200 --> 01:16:37.389
+John Hazlewood: Could be huge.
+
+576
+01:16:39.080 --> 01:16:51.919
+Hasnae: Yeah, yeah, that sounds interesting, but I think I am lacking some… some information from there in there, so I need, I think, to get in touch with Indra better.
+
+577
+01:16:52.110 --> 01:16:56.760
+Hasnae: To… to, like, answer too many questions I had in mind.
+
+578
+01:16:59.220 --> 01:17:03.450
+Antoine Beaugas: Yeah, yeah, because they did, the web…
+
+579
+01:17:03.710 --> 01:17:07.250
+Antoine Beaugas: It's a web app for FloBrain.
+
+580
+01:17:08.030 --> 01:17:25.029
+Antoine Beaugas: So basically, they already work on the AI, basically, with an application. And so, for CAIPO, there'll be another app, a mobile app, that will connect to the AI, I guess, using the same API, or whatever.
+
+581
+01:17:25.150 --> 01:17:29.120
+Antoine Beaugas: So, Indra is also managing that, so…
+
+582
+01:17:29.280 --> 01:17:33.159
+Antoine Beaugas: All your questions will be answered by her.
+
+583
+01:17:33.500 --> 01:17:34.430
+Hasnae: Okay, thank you.
+
+584
+01:17:36.290 --> 01:17:38.290
+Hasnae: I will get in touch with her.
+
+585
+01:17:40.600 --> 01:17:44.669
+John Hazlewood: Okay, great. Well, we'll… we have the Multimodal Perception Meeting later today, so…
+
+586
+01:17:46.110 --> 01:17:48.530
+Hasnae: She is on that meeting.
+
+587
+01:17:49.010 --> 01:17:49.520
+John Hazlewood: Yeah.
+
+588
+01:17:49.520 --> 01:17:50.220
+Hasnae: Yes.
+
+589
+01:17:50.840 --> 01:17:51.850
+Hasnae: Okay.
+
+590
+01:17:52.380 --> 01:17:54.659
+Hasnae: I'll be present, inshallah.
+
+591
+01:17:55.710 --> 01:17:56.740
+John Hazlewood: Okay, great.
+
+592
+01:17:59.410 --> 01:18:17.339
+John Hazlewood: Right, well, it was a great meeting, great meeting, everybody. Thank you for all those questions, and we got some stuff clarified now, even for IoT, because they are very connected. Robotics, IoT, you know, everybody's kind of, yeah, same, same type of project, so…
+
+593
+01:18:18.760 --> 01:18:21.289
+John Hazlewood: Great. Sosina, Michael, anything from you guys?
+
+594
+01:18:27.310 --> 01:18:32.179
+Michael Ballantyne: Not yet, but I'll be sure to use Discord if I have questions.
+
+595
+01:18:33.670 --> 01:18:34.250
+Antoine Beaugas: Hmm.
+
+596
+01:18:35.850 --> 01:18:37.510
+John Hazlewood: Great. So Sina.
+
+597
+01:18:37.720 --> 01:18:42.840
+Sosina: Nothing for me as well. Okay.
+
+598
+01:18:42.840 --> 01:18:47.209
+John Hazlewood: Great, well, thank you, everybody. Have a nice day. We'll see you at the next meeting.
+
+599
+01:18:47.540 --> 01:18:48.410
+John Hazlewood: Bye.
+
+600
+01:18:49.130 --> 01:18:50.100
+Antoine Beaugas: Bye!
+

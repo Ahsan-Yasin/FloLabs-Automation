@@ -1,0 +1,436 @@
+{
+ "tag": "fix1_train",
+ "split": "train",
+ "rerank": true,
+ "fake": false,
+ "model": "claude-sonnet-5-5",
+ "when": "2026-10-06T00:18:09",
+ "status": "done",
+ "score": 94.49,
+ "metrics": {
+  "keep_safety": 0.975,
+  "removal_f1": 0.9586,
+  "junk_clean": 0.9447,
+  "code_agree": 0.9212,
+  "hl_concord": 0.9484,
+  "top_f1": 0.8,
+  "short_f1": 1.0
+ },
+ "removal_precision": 0.9706,
+ "removal_recall": 0.9468,
+ "must_keep_removed": 1,
+ "must_keep_total": 40,
+ "must_keep_removed_list": [
+  "w04_yt_status_by_name_jetson[16] Um, it's JSo N."
+ ],
+ "junk_kept": 13,
+ "junk_total": 235,
+ "junk_kept_list": [
+  "w02_zoom_silent_start_onboarding[20] And then we're gonna take, let's see,",
+  "w02_zoom_silent_start_onboarding[52] But yes, we can say it like… And.",
+  "w02_zoom_silent_start_onboarding[54] I'm gonna go with that.",
+  "w03_zoom_cancelled_meeting[35] I mean, like, for me, there's nothing to share, because I know that we were gonna go over ",
+  "w03_zoom_cancelled_meeting[37] to quite proceed, so I… besides that, I don't have much to say either.",
+  "w04_yt_status_by_name_jetson[60] uh in the background.",
+  "w10_zoom_wrapup_tools[20] When do you think you're gonna done with your master classes?",
+  "w10_zoom_wrapup_tools[21] Like how much hours?",
+  "w10_zoom_wrapup_tools[22] I'm gonna… Initially, like, right now, after this meeting.",
+  "w10_zoom_wrapup_tools[30] developer.",
+  "w10_zoom_wrapup_tools[31] Yeah?",
+  "w10_zoom_wrapup_tools[33] I finish it, like… An overview, or something?",
+  "w10_zoom_wrapup_tools[36] If it's…"
+ ],
+ "top_moments": {
+  "gold": 6,
+  "found": 4,
+  "strong_predicted": 3,
+  "strong_on_gold": 3
+ },
+ "format_problems": 0,
+ "weights": {
+  "keep_safety": 0.3,
+  "removal_f1": 0.25,
+  "junk_clean": 0.1,
+  "code_agree": 0.05,
+  "hl_concord": 0.15,
+  "top_f1": 0.1,
+  "short_f1": 0.05
+ },
+ "format_problem_details": [],
+ "calls": 15,
+ "usage": {
+  "calls": 15,
+  "prompt_tokens": 38061,
+  "output_tokens": 4401,
+  "cache_read_tokens": 24141,
+  "cache_write_tokens": 0,
+  "rate_limit_wait_s": 0.0,
+  "retries": 0
+ },
+ "cost_usd": 0.0767,
+ "estimate_usd": 0.1781,
+ "ledger_spent_usd": 0.6555,
+ "windows": {
+  "w01_zoom_join_toggl_bpmn": {
+   "sentences": 73,
+   "tp": 50.5,
+   "fp": 0.0,
+   "fn": 0.0,
+   "must_keep_total": 10,
+   "must_keep_removed": [],
+   "junk_total": 48,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 53,
+   "code_n": 53,
+   "hl_pairs": 830.0,
+   "hl_concordant": 822.5,
+   "top_gold": 1,
+   "top_hit": 1,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 6,
+   "kept_pred": 20,
+   "moments": [
+    {
+     "first": 36,
+     "last": 41,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Which coordination points matter to the company"
+    },
+    {
+     "first": 55,
+     "last": 72,
+     "score": 10.0,
+     "raw": 7.0,
+     "short": true,
+     "title": "BPMN basics: gateways, nodes and sub-processes"
+    }
+   ],
+   "usage": {
+    "calls": 3,
+    "prompt_tokens": 7128,
+    "output_tokens": 845,
+    "cache_read_tokens": 5053,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w02_zoom_silent_start_onboarding": {
+   "sentences": 58,
+   "tp": 25.5,
+   "fp": 3.0,
+   "fn": 3.0,
+   "must_keep_total": 4,
+   "must_keep_removed": [],
+   "junk_total": 24,
+   "junk_kept": [
+    "w02_zoom_silent_start_onboarding[20] And then we're gonna take, let's see,",
+    "w02_zoom_silent_start_onboarding[52] But yes, we can say it like… And.",
+    "w02_zoom_silent_start_onboarding[54] I'm gonna go with that."
+   ],
+   "wrong_removed": [
+    "w02_zoom_silent_start_onboarding[23] But we will start with, So please open your Toggle using the same credential and open it.",
+    "w02_zoom_silent_start_onboarding[32] Did you hear what I said about the Master Classes?"
+   ],
+   "code_ok": 29,
+   "code_n": 30,
+   "hl_pairs": 112.0,
+   "hl_concordant": 109.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 4,
+   "kept_pred": 24,
+   "moments": [
+    {
+     "first": 17,
+     "last": 23,
+     "score": 7.5,
+     "raw": 2.0,
+     "short": false,
+     "title": "Fixing the login struggle and reviewing onboarding"
+    },
+    {
+     "first": 32,
+     "last": 35,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "One masterclass question remaining"
+    },
+    {
+     "first": 40,
+     "last": 45,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Finishing the last masterclass question after the call"
+    },
+    {
+     "first": 47,
+     "last": 55,
+     "score": 10.0,
+     "raw": 4.0,
+     "short": false,
+     "title": "Estimating 30 hours for masterclasses on the timesheet"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 5160,
+    "output_tokens": 777,
+    "cache_read_tokens": 2994,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w03_zoom_cancelled_meeting": {
+   "sentences": 62,
+   "tp": 55.0,
+   "fp": 0.0,
+   "fn": 2.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 57,
+   "junk_kept": [
+    "w03_zoom_cancelled_meeting[35] I mean, like, for me, there's nothing to share, because I know that we were gonna go over ",
+    "w03_zoom_cancelled_meeting[37] to quite proceed, so I… besides that, I don't have much to say either."
+   ],
+   "wrong_removed": [],
+   "code_ok": 54,
+   "code_n": 55,
+   "hl_pairs": 0.0,
+   "hl_concordant": 0.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 3,
+   "kept_pred": 7,
+   "moments": [
+    {
+     "first": 25,
+     "last": 29,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Meeting held mostly for the LLC name"
+    },
+    {
+     "first": 33,
+     "last": 37,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Nothing to share, wrapping up early"
+    }
+   ],
+   "usage": {
+    "calls": 3,
+    "prompt_tokens": 7376,
+    "output_tokens": 699,
+    "cache_read_tokens": 5053,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w04_yt_status_by_name_jetson": {
+   "sentences": 61,
+   "tp": 19.5,
+   "fp": 3.5,
+   "fn": 1.0,
+   "must_keep_total": 20,
+   "must_keep_removed": [
+    "w04_yt_status_by_name_jetson[16] Um, it's JSo N."
+   ],
+   "junk_total": 19,
+   "junk_kept": [
+    "w04_yt_status_by_name_jetson[60] uh in the background."
+   ],
+   "wrong_removed": [
+    "w04_yt_status_by_name_jetson[12] So, putting together my apartment, I came a little I was thinking about, you know, just ju",
+    "w04_yt_status_by_name_jetson[35] Um, but do research into that computer module because I don't know why I didn't think of i"
+   ],
+   "code_ok": 16,
+   "code_n": 21,
+   "hl_pairs": 1182.0,
+   "hl_concordant": 1069.5,
+   "top_gold": 3,
+   "top_hit": 2,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 7,
+   "kept_pred": 36,
+   "moments": [
+    {
+     "first": 2,
+     "last": 5,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Remote access idea teased"
+    },
+    {
+     "first": 13,
+     "last": 32,
+     "score": 10.0,
+     "raw": 7.0,
+     "short": true,
+     "title": "Hosting remote control on the robot dog's Jetson"
+    }
+   ],
+   "usage": {
+    "calls": 3,
+    "prompt_tokens": 8587,
+    "output_tokens": 719,
+    "cache_read_tokens": 5053,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w08_zoom_late_start_intros": {
+   "sentences": 59,
+   "tp": 58.0,
+   "fp": 0.0,
+   "fn": 0.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 58,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 51,
+   "code_n": 58,
+   "hl_pairs": 58.0,
+   "hl_concordant": 58.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 3,
+   "kept_pred": 1,
+   "moments": [
+    {
+     "first": 38,
+     "last": 44,
+     "score": 10.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Team's backend stack: Python with Django"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 4369,
+    "output_tokens": 662,
+    "cache_read_tokens": 2994,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w10_zoom_wrapup_tools": {
+   "sentences": 48,
+   "tp": 23.0,
+   "fp": 0.5,
+   "fn": 7.0,
+   "must_keep_total": 6,
+   "must_keep_removed": [],
+   "junk_total": 29,
+   "junk_kept": [
+    "w10_zoom_wrapup_tools[20] When do you think you're gonna done with your master classes?",
+    "w10_zoom_wrapup_tools[21] Like how much hours?",
+    "w10_zoom_wrapup_tools[22] I'm gonna… Initially, like, right now, after this meeting.",
+    "w10_zoom_wrapup_tools[30] developer.",
+    "w10_zoom_wrapup_tools[31] Yeah?",
+    "w10_zoom_wrapup_tools[33] I finish it, like… An overview, or something?",
+    "w10_zoom_wrapup_tools[36] If it's…"
+   ],
+   "wrong_removed": [],
+   "code_ok": 19,
+   "code_n": 24,
+   "hl_pairs": 335.0,
+   "hl_concordant": 328.0,
+   "top_gold": 2,
+   "top_hit": 1,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 6,
+   "kept_pred": 23,
+   "moments": [
+    {
+     "first": 3,
+     "last": 7,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Granting AI tool access and a friendly intro call"
+    },
+    {
+     "first": 11,
+     "last": 15,
+     "score": 7.5,
+     "raw": 4.0,
+     "short": false,
+     "title": "Toggle bug was the vendor's, not browser caching"
+    },
+    {
+     "first": 20,
+     "last": 22,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Asking when the masterclasses will be done"
+    },
+    {
+     "first": 25,
+     "last": 42,
+     "score": 10.0,
+     "raw": 5.0,
+     "short": false,
+     "title": "Claude and Cursor are the top dev tools to master"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 5441,
+    "output_tokens": 699,
+    "cache_read_tokens": 2994,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  }
+ }
+}

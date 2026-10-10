@@ -124,6 +124,47 @@ def test_smtp_backend_ssl(monkeypatch):
     assert server.port == 465 and "starttls" not in server.calls and server.sent
 
 
+class _GmailLikeSMTP(_FakeSMTP):
+    """Offers AUTH LOGIN and refuses the password the way Gmail does."""
+
+    esmtp_features: ClassVar[dict] = {"auth": "LOGIN PLAIN XOAUTH2"}
+
+    def auth(self, mechanism, authobject, *, initial_response_ok=True):
+        self.calls.append(("auth", mechanism, self.user, self.password))
+        raise email.smtplib.SMTPAuthenticationError(535, b"5.7.8 Username and Password not accepted.")
+
+    def auth_login(self, challenge=None):
+        return self.user
+
+
+def test_a_refused_smtp_login_says_so_and_is_not_retried(monkeypatch, caplog):
+    _smtp_env(monkeypatch)
+    monkeypatch.setattr(email.smtplib, "SMTP", _GmailLikeSMTP)
+    monkeypatch.setattr(email, "RETRY_DELAYS_S", (0.0, 0.0))
+    with pytest.raises(email.EmailRejected, match="535"):
+        email.SmtpBackend().send(_message())
+    server = _FakeSMTP.instances[-1]
+    assert ("auth", "LOGIN", "mailer", "smtp-pass") in server.calls and not server.sent
+    _FakeSMTP.instances.clear()
+    with caplog.at_level(logging.ERROR, logger="services.email"):
+        assert email.send_now(_message()) == ("the mail server refused this site's sign-in, "
+                                              "so the site's email settings need fixing")
+        assert not email._deliver(email.SmtpBackend(), _message(), attempts=3)
+    assert len(_FakeSMTP.instances) == 2  # once for send_now, once (not three times) for _deliver
+    assert "app password" in caplog.text
+
+
+def test_send_now_reports_a_mail_server_that_did_not_answer(monkeypatch):
+    class Down:
+        synchronous = False
+
+        def send(self, message):
+            raise OSError("connection refused")
+
+    monkeypatch.setattr(email, "get_backend", lambda: Down())
+    assert email.send_now(_message()).startswith("the mail server didn't answer")
+
+
 def test_resend_backend(monkeypatch):
     monkeypatch.setenv("EMAIL_BACKEND", "resend")
     monkeypatch.setenv("RESEND_API_KEY", "re_test_key")

@@ -1,0 +1,1396 @@
+{
+ "id": "w03_zoom_cancelled_meeting",
+ "source": "raw:zoom-ethics-legal-team-meeting-2026-10-01",
+ "source_range": [
+  0,
+  61
+ ],
+ "split": "train",
+ "minutes": 3.84,
+ "hard": "A whole meeting that never really happens: late joining, a time-zone story, the lead is absent, they agree to leave and reschedule. Only two tiny status lines carry any content; nothing is a highlight.",
+ "sentences": [
+  {
+   "i": 0,
+   "src": 0,
+   "start": 170.82,
+   "end": 171.93,
+   "speaker": "Ashiana.Griffith",
+   "text": "Hi, Julia.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 1,
+   "src": 1,
+   "start": 176.76,
+   "end": 177.97,
+   "speaker": "Julia Matveyev",
+   "text": "Hello.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 2,
+   "src": 2,
+   "start": 178.23,
+   "end": 179.9908333333333,
+   "speaker": "Ashiana.Griffith",
+   "text": "Hey, sorry for the late.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 3,
+   "src": 3,
+   "start": 179.9908333333333,
+   "end": 184.569,
+   "speaker": "Ashiana.Griffith",
+   "text": "I just couldn't figure out how to like log in to that link.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 4,
+   "src": 4,
+   "start": 184.95,
+   "end": 186.759,
+   "speaker": "Julia Matveyev",
+   "text": "Oh, no worries.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 5,
+   "src": 5,
+   "start": 187.27,
+   "end": 193.8115,
+   "speaker": "Ashiana.Griffith",
+   "text": "It kept saying… it kept giving me, like, error, like, not now, like, the meeting's not now, or, like, not today.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 6,
+   "src": 6,
+   "start": 193.8115,
+   "end": 199.73,
+   "speaker": "Ashiana.Griffith",
+   "text": "And then I just… then I saw it popped up, and then it said it starts in 51 minutes.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 7,
+   "src": 7,
+   "start": 200.22,
+   "end": 203.04628571428572,
+   "speaker": "Julia Matveyev",
+   "text": "Yeah, that's kind of what happened for me.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 8,
+   "src": 8,
+   "start": 203.04628571428572,
+   "end": 207.639,
+   "speaker": "Julia Matveyev",
+   "text": "I just was idling on it and then it just kind of appeared.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 9,
+   "src": 9,
+   "start": 208.55,
+   "end": 209.98,
+   "speaker": "Julia Matveyev",
+   "text": "Bye.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 10,
+   "src": 10,
+   "start": 210.49,
+   "end": 211.12,
+   "speaker": "Ashiana.Griffith",
+   "text": "Hi.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 11,
+   "src": 11,
+   "start": 212.35,
+   "end": 227.18333333333334,
+   "speaker": "Ashiana.Griffith",
+   "text": "I thought I was… I thought I was gonna be late, because, on my phone, they have a, like, My time in Texas, and then my computer, because I… My computer's in Easter time, so on my phone I saw,",
+   "overlap_candidate": false
+  },
+  {
+   "i": 12,
+   "src": 12,
+   "start": 227.18333333333334,
+   "end": 228.8396153846154,
+   "speaker": "Ashiana.Griffith",
+   "text": "like, 4:40.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 13,
+   "src": 13,
+   "start": 228.8396153846154,
+   "end": 231.25538461538463,
+   "speaker": "Ashiana.Griffith",
+   "text": "Sorry, at first I'm like, am I early for this meeting?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 14,
+   "src": 14,
+   "start": 231.25538461538463,
+   "end": 234.33,
+   "speaker": "Ashiana.Griffith",
+   "text": "Then I looked at the computer, I'm like, oh my god, oh my god.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 15,
+   "src": 15,
+   "start": 234.67,
+   "end": 235.38,
+   "speaker": "Julia Matveyev",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 16,
+   "src": 16,
+   "start": 236.37,
+   "end": 238.9995,
+   "speaker": "Julia Matveyev",
+   "text": "Well… It's… it's fine.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 17,
+   "src": 17,
+   "start": 238.9995,
+   "end": 241.629,
+   "speaker": "Julia Matveyev",
+   "text": "Muhammad isn't even here.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 18,
+   "src": 18,
+   "start": 241.75,
+   "end": 245.0,
+   "speaker": "Julia Matveyev",
+   "text": "I do have a question.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 19,
+   "src": 19,
+   "start": 245.0,
+   "end": 246.3,
+   "speaker": "Julia Matveyev",
+   "text": "I, unfortunately.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 20,
+   "src": 20,
+   "start": 246.42,
+   "end": 248.73,
+   "speaker": "Julia Matveyev",
+   "text": "Do you have to leave by 3?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 21,
+   "src": 21,
+   "start": 248.73,
+   "end": 250.38,
+   "speaker": "Julia Matveyev",
+   "text": "Like, this is a rarity.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 22,
+   "src": 22,
+   "start": 250.38,
+   "end": 251.04,
+   "speaker": "Julia Matveyev",
+   "text": "That's fine.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 23,
+   "src": 23,
+   "start": 251.04,
+   "end": 252.986,
+   "speaker": "Ashiana.Griffith",
+   "text": "Do you want to go, like, now?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 24,
+   "src": 24,
+   "start": 252.986,
+   "end": 257.712,
+   "speaker": "Ashiana.Griffith",
+   "text": "Like, I mean, we've… I don't… I don't mind, because I don't have much to talk about.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 25,
+   "src": 25,
+   "start": 257.712,
+   "end": 266.33,
+   "speaker": "Ashiana.Griffith",
+   "text": "I know that we're supposed to meet later in the week for the rest of what we discussed, and I started on that, so I'm not going to go into detail.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 26,
+   "src": 26,
+   "start": 266.33,
+   "end": 273.46175,
+   "speaker": "Ashiana.Griffith",
+   "text": "I think the meeting today was mostly for, like, the LLC in terms of the name before we can quite proceed.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 27,
+   "src": 27,
+   "start": 273.46175,
+   "end": 280.04,
+   "speaker": "Ashiana.Griffith",
+   "text": "So, I mean, if you wanna, like, Leave now, we can both, like.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 28,
+   "src": 28,
+   "start": 280.23,
+   "end": 285.66,
+   "speaker": "Ashiana.Griffith",
+   "text": "Leave now, and then… I'll text in the legal team.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 29,
+   "src": 29,
+   "start": 286.09,
+   "end": 289.3845,
+   "speaker": "Ashiana.Griffith",
+   "text": "If it's, like, are we gonna reschedule or not?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 30,
+   "src": 30,
+   "start": 289.3845,
+   "end": 292.679,
+   "speaker": "Ashiana.Griffith",
+   "text": "And if not, I'll just, I'll pop back on.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 31,
+   "src": 31,
+   "start": 292.88,
+   "end": 294.109,
+   "speaker": "Ashiana.Griffith",
+   "text": "If you want to do that.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 32,
+   "src": 32,
+   "start": 294.87,
+   "end": 307.23,
+   "speaker": "Julia Matveyev",
+   "text": "I mean, we could just… I don't think, kind of, sharing too much information is going to be particularly useful, since we haven't really had that much time to work on things, but, like.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 33,
+   "src": 33,
+   "start": 307.23,
+   "end": 315.49,
+   "speaker": "Julia Matveyev",
+   "text": "I mean, I've started some work on the, what, like, terms and conditions, haven't really… don't have much to say about that.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 34,
+   "src": 34,
+   "start": 315.49,
+   "end": 319.62,
+   "speaker": "Julia Matveyev",
+   "text": "You mean the same exact spot I was with the LLC?",
+   "overlap_candidate": false
+  },
+  {
+   "i": 35,
+   "src": 35,
+   "start": 319.94,
+   "end": 324.1,
+   "speaker": "Ashiana.Griffith",
+   "text": "I mean, like, for me, there's nothing to share, because I know that we were gonna go over that, like.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 36,
+   "src": 36,
+   "start": 324.22,
+   "end": 330.119,
+   "speaker": "Ashiana.Griffith",
+   "text": "During the week next week, and today was basically just for the LLC name.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 37,
+   "src": 37,
+   "start": 330.22,
+   "end": 334.609,
+   "speaker": "Ashiana.Griffith",
+   "text": "to quite proceed, so I… besides that, I don't have much to say either.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 38,
+   "src": 38,
+   "start": 335.19,
+   "end": 336.27,
+   "speaker": "Julia Matveyev",
+   "text": "All right.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 39,
+   "src": 39,
+   "start": 336.27,
+   "end": 336.91,
+   "speaker": "Ashiana.Griffith",
+   "text": "Alright.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 40,
+   "src": 40,
+   "start": 337.18,
+   "end": 339.73,
+   "speaker": "Ashiana.Griffith",
+   "text": "Alright, Ben, I think we're good to go.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 41,
+   "src": 41,
+   "start": 339.99,
+   "end": 341.14,
+   "speaker": "Julia Matveyev",
+   "text": "Probably, yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 42,
+   "src": 42,
+   "start": 341.14,
+   "end": 349.51,
+   "speaker": "Ashiana.Griffith",
+   "text": "If ever, if ever Mohammed says anything, then I'll, I'll just, I'll just join on or something.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 43,
+   "src": 43,
+   "start": 349.79,
+   "end": 353.409,
+   "speaker": "Julia Matveyev",
+   "text": "I mean, I'll be online until roughly 3.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 44,
+   "src": 44,
+   "start": 353.41,
+   "end": 353.91,
+   "speaker": "Ashiana.Griffith",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 45,
+   "src": 45,
+   "start": 354.14,
+   "end": 358.89065,
+   "speaker": "Julia Matveyev",
+   "text": "Because that's when I largely have to, like, start getting ready to get out of the house.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 46,
+   "src": 46,
+   "start": 358.89065,
+   "end": 359.1701,
+   "speaker": "Julia Matveyev",
+   "text": "Yeah.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 47,
+   "src": 47,
+   "start": 359.1701,
+   "end": 359.729,
+   "speaker": "Julia Matveyev",
+   "text": "So, like.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 48,
+   "src": 48,
+   "start": 360.18,
+   "end": 362.3962777777778,
+   "speaker": "Julia Matveyev",
+   "text": "If I'm necessary, like, if I'm needed.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 49,
+   "src": 49,
+   "start": 362.3962777777778,
+   "end": 365.879,
+   "speaker": "Julia Matveyev",
+   "text": "Until then, I should be available, I should be online, so…",
+   "overlap_candidate": false
+  },
+  {
+   "i": 50,
+   "src": 50,
+   "start": 365.88,
+   "end": 366.25708333333336,
+   "speaker": "Ashiana.Griffith",
+   "text": "Right.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 51,
+   "src": 51,
+   "start": 366.25708333333336,
+   "end": 374.93,
+   "speaker": "Ashiana.Griffith",
+   "text": "I think… I don't think he's gonna, like… I'm not trying to say, like, annoying, sorry, but, like, I don't think he's gonna…",
+   "overlap_candidate": false
+  },
+  {
+   "i": 52,
+   "src": 52,
+   "start": 375.4,
+   "end": 378.219,
+   "speaker": "Julia Matveyev",
+   "text": "Yeah, that's okay.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 53,
+   "src": 53,
+   "start": 378.56,
+   "end": 379.15268292682924,
+   "speaker": "Ashiana.Griffith",
+   "text": "Alright, then.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 54,
+   "src": 54,
+   "start": 379.15268292682924,
+   "end": 383.8941463414634,
+   "speaker": "Ashiana.Griffith",
+   "text": "Alright, yeah, so just let me know for next week when you would like to meet.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 55,
+   "src": 55,
+   "start": 383.8941463414634,
+   "end": 390.71,
+   "speaker": "Ashiana.Griffith",
+   "text": "I'm not sure if it was best to meet with Mohammed first, but I'll message her, you can, like, text me or something.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 56,
+   "src": 56,
+   "start": 391.14,
+   "end": 392.75,
+   "speaker": "Julia Matveyev",
+   "text": "Yeah, that sounds good, definitely.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 57,
+   "src": 57,
+   "start": 392.75,
+   "end": 393.55449999999996,
+   "speaker": "Ashiana.Griffith",
+   "text": "All right, then.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 58,
+   "src": 58,
+   "start": 393.55449999999996,
+   "end": 394.359,
+   "speaker": "Ashiana.Griffith",
+   "text": "All right, Julia.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 59,
+   "src": 59,
+   "start": 394.74,
+   "end": 397.149,
+   "speaker": "Julia Matveyev",
+   "text": "All right, well, good meeting.",
+   "overlap_candidate": false
+  },
+  {
+   "i": 60,
+   "src": 60,
+   "start": 397.15,
+   "end": 399.61,
+   "speaker": "Ashiana.Griffith",
+   "text": "Have a great day, bye!",
+   "overlap_candidate": false
+  },
+  {
+   "i": 61,
+   "src": 61,
+   "start": 399.61,
+   "end": 401.029,
+   "speaker": "Julia Matveyev",
+   "text": "Yeah, you too.",
+   "overlap_candidate": false
+  }
+ ],
+ "gold": [
+  {
+   "i": 0,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 1,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 2,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 3,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 4,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 5,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 6,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 7,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 8,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 9,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 10,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "greet",
+    "house"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 11,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 12,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 13,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 14,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 15,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 16,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 17,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "tang",
+    "greet",
+    "house",
+    "fill"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 18,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 19,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 20,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 21,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 22,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 23,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 24,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 25,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 26,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 27,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 28,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 29,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 30,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 31,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 32,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 33,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 34,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 35,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 36,
+   "expect": "keep",
+   "must_keep": false,
+   "ambiguous": true,
+   "ok_removal_codes": [],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 37,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 38,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 39,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 40,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 41,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 42,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 43,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 44,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 45,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 46,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 47,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 48,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 49,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 50,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 51,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 52,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 53,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 54,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 55,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 56,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 57,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 58,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 59,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 60,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  },
+  {
+   "i": 61,
+   "expect": "remove",
+   "must_keep": false,
+   "ambiguous": false,
+   "ok_removal_codes": [
+    "house",
+    "greet",
+    "fill",
+    "rep"
+   ],
+   "highlight_band": 0,
+   "highlight_codes": []
+  }
+ ],
+ "top_moments": [],
+ "short_worthy": []
+}

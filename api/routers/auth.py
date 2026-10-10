@@ -245,7 +245,11 @@ def resend_verification(principal: CurrentUser, db: DB):
     _limit("verify_resend", user.id)
     token = users.issue_email_token(db, user, TOKEN_VERIFY)
     db.commit()
-    notifications.send_verification(user.email, user.name, token)
+    # someone is waiting on this button: send now and say so if it didn't go out
+    problem = notifications.send_verification(user.email, user.name, token, now=True)
+    if problem:
+        raise ServiceError(f"We couldn't send the email: {problem}.", code="email_not_sent", status=502,
+                           retryable=True)
     return {"ok": True}
 
 

@@ -1,0 +1,56 @@
+i	src	speaker	text	expect	must	amb	ok_codes	band	pred	code	score	hl	verdict	prior
+0	0	SPEAKER	Then we can begin with the humanoid team.	remove	0	1	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+1	1	SPEAKER	Uh for myself, I wasn't able to attend yesterday's meeting, but I am talking to Sina about the navigation of the mini desktop robot, and we haven't found a good	keep	1	0		1	remove	house	1	none	MUST_KEEP_REMOVED	k 3 none
+2	2	SPEAKER	I think this week we'll be able to.	keep	1	0		1	remove	house	1	none	MUST_KEEP_REMOVED	k 3 none
+3	3	SPEAKER	Um, let's hear from the other members before we hear from the team lead.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+4	4	SPEAKER	I don't know if this list is updated, but I have Machi as the other member.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+5	5	SPEAKER	Is Machi with us?	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+6	6	SPEAKER	Yeah, Machi, I got you open my camera.	remove	0	0	house,xtalk,fill	0	remove	xtalk	0	none	ok	r 0 housekeeping
+7	7	SPEAKER	I don't think Match is with us.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+8	8	SPEAKER	Um, who else is from the humanoid >> team?	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+9	9	SPEAKER	>> Okay, go ahead.	remove	0	0	house,xtalk,fill	0	remove	xtalk	0	none	ok	r 0 housekeeping
+10	10	SPEAKER	Thank >> um the the router.	remove	0	0	xtalk,fill	0	remove	xtalk	0	none	ok	r 0 crosstalk
+11	11	SPEAKER	Uh, we have received the router and maybe the camera.	keep	1	0		1	keep	-	4	new_feature	ok	k 3 none
+12	12	SPEAKER	So there's a chance in the next days I'll be working on making the camera work in the lab and so you'll have some news about how how	keep	1	0		1	keep	-	4	new_feature	ok	k 3 none
+13	13	SPEAKER	it's going.	keep	1	0		1	keep	-	3	new_feature	ok	k 3 none
+14	14	SPEAKER	>> Okay.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 housekeeping
+15	15	SPEAKER	Uh, anyone else?	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+16	16	SPEAKER	I think then we can go to the team me dispensary.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+17	17	SPEAKER	Do you want to update us on anything about the human IT?	remove	0	1	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+18	18	SPEAKER	>> Yes.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 housekeeping
+19	19	SPEAKER	Uh or some brief updates.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+20	20	SPEAKER	For now, the meeting will be staying on Saturday just because I've been having the joys of working with a working with the government which means my application	keep	0	1		0	remove	house	1	none	removed(amb)	k 2 none
+21	21	SPEAKER	So I have the joys of that.	remove	0	0	tang,fill	0	remove	tang	0	none	ok	k 2 none
+22	22	SPEAKER	Uh so that's fun.	remove	0	0	tang,fill	0	remove	tang	0	none	ok	r 0 filler
+23	23	SPEAKER	Uh I am quickly making a task that uh that I talked about um yesterday with Sabry and Antoine and those that were there.	keep	1	0		1	keep	-	3	decision	ok	k 2 none
+24	24	SPEAKER	Um the task is just a kind of a research task that uh that I talked about maybe I think a week ago about the Jensen computers for unitry robots.	keep	1	0		1	keep	-	4	decision	ok	k 2 none
+25	25	SPEAKER	I'm quickly making that while I sit here.	keep	1	0		0	keep	-	3	decision	ok	k 2 none
+26	26	SPEAKER	Um, and uh I would I would say for everyone that's on the humanoid team next Saturday I plan to have that as a big meeting so like a complete recap for me to le	keep	0	1		0	keep	-	3	decision	ok	k 3 none
+27	27	SPEAKER	guys are doing.	keep	0	1		0	keep	-	3	decision	ok	k 3 none
+28	28	SPEAKER	Um, and new members can introduce themselves to me.	remove	0	1	dead,fill,greet,house,intro,rep,tang,xtalk	0	remove	intro	1	none	ok	k 2 none
+29	29	SPEAKER	I plan that next week after next Saturday will be the time that I can kind of get finally get back up and get back moving uh back into the team lead position an	keep	0	1		0	keep	-	3	decision	ok	k 3 none
+30	30	SPEAKER	into pace.	keep	0	1		0	keep	-	3	decision	ok	k 3 none
+31	31	SPEAKER	um for when what day I think once I do move the meeting off the Saturdays um that day will most most likely based on rumors that I've heard from on base that th	remove	0	1	house,rep	0	keep	-	3	decision	kept(amb)	k 3 none
+32	32	SPEAKER	So I want to put that out in the air.	remove	0	1	house,rep	0	remove	house	1	none	ok	k 2 none
+33	33	SPEAKER	Um the reason for that is just the work schedule on base.	remove	0	1	house,rep	0	remove	house	1	none	ok	k 2 none
+34	34	SPEAKER	So I want to put that out there.	remove	0	1	house,rep	0	remove	house	1	none	ok	r 0 repetition
+35	35	SPEAKER	I don't know what time.	remove	0	1	house,rep	0	remove	house	1	none	ok	k 2 none
+36	36	SPEAKER	Uh I'll probably um send a group message on the uh Discord to the humanoid team to get your time zone so then I could see when everyone is and kind of adjust th	remove	0	1	house,rep	0	remove	house	1	none	ok	k 2 none
+37	37	SPEAKER	But I will say but that's all for what I have.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+38	38	SPEAKER	>> Hey Spencer, just when you're talking normally you're a lot more clear.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+39	39	SPEAKER	your little voice is kind of a little difficult to hear, but I mean we can still hear you, but not like it normally is.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+40	40	SPEAKER	>> Okay.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 housekeeping
+41	41	SPEAKER	Yeah, that's because u my microphone is my camera right now.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+42	42	SPEAKER	So, it's a little far away, so I'm trying to project towards it.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+43	43	SPEAKER	>> Ah, okay.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+44	44	SPEAKER	Now, now you're a little clearer.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+45	45	SPEAKER	>> Yeah.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 filler
+46	46	SPEAKER	So, I'm I'm leaning a little forward and projecting at the camera.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+47	47	SPEAKER	>> Okay.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 housekeeping
+48	48	SPEAKER	But that's that's the updates I have uh for now.	remove	0	0	house,xtalk,fill	0	remove	house	0	none	ok	r 0 housekeeping
+49	49	SPEAKER	So, so, so the meeting is going to be resuming on Saturdays the same time as usual.	remove	0	1	house,rep	0	keep	-	3	decision	kept(amb)	k 2 none
+50	50	SPEAKER	>> Yeah, for uh for now uh until I actually finally get my schedule for OnBase.	remove	0	1	house,rep	0	keep	-	2	none	kept(amb)	k 2 none
+51	51	SPEAKER	Um it's been a long long couple weeks here trying to get my trying to get my employer to answer questions and trying to get uh settled at Indian Head up here in	remove	0	0	tang,fill	0	remove	tang	1	none	ok	k 2 none
+52	52	SPEAKER	So, uh, sorry about that, but that's the joys of working with the federal government.	remove	0	0	tang,fill	0	remove	tang	0	none	ok	k 2 none
+53	53	SPEAKER	They like to take their time, uh, frustratingly.	remove	0	0	tang,fill	0	remove	tang	0	none	ok	k 2 none
+54	54	SPEAKER	>> Okay.	remove	0	0	house,xtalk,fill	0	remove	fill	0	none	ok	r 0 housekeeping

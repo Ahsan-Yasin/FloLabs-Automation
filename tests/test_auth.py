@@ -11,6 +11,7 @@ from api.ratelimit import limiter
 from core.config import get_settings
 from db.models import RefreshToken, User
 from db.session import session_scope
+from services import email as mail
 from services import passwords, tokens
 from tests.product_helpers import (
     CSRF,
@@ -146,6 +147,22 @@ def test_resend_verification_replaces_the_old_link_and_is_limited():
     signup(other, "bob@example.com")
     codes = [other.post("/api/v1/auth/resend-verification", headers=CSRF).status_code for _ in range(4)]
     assert codes == [200, 200, 200, 429]
+
+
+def test_resend_verification_says_when_the_email_did_not_go_out(monkeypatch):
+    client = new_client()
+    signup(client)
+
+    class Refusing:
+        synchronous = False
+
+        def send(self, message):
+            raise mail.EmailRejected("the mail server refused SMTP_USER/SMTP_PASSWORD (535 5.7.8)")
+
+    monkeypatch.setattr(mail, "get_backend", lambda: Refusing())
+    answer = client.post("/api/v1/auth/resend-verification", headers=CSRF)
+    assert answer.status_code == 502 and answer.json()["error_code"] == "email_not_sent"
+    assert answer.json()["detail"].startswith("We couldn't send the email: the mail server refused")
 
 
 def test_admin_emails_become_admins_only_once_verified(monkeypatch):

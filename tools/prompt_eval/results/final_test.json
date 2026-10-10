@@ -1,0 +1,277 @@
+{
+ "tag": "final_test",
+ "split": "test",
+ "rerank": true,
+ "fake": false,
+ "model": "claude-sonnet-5-5",
+ "when": "2026-10-06T00:07:57",
+ "status": "done",
+ "score": 92.35,
+ "metrics": {
+  "keep_safety": 0.9118,
+  "removal_f1": 0.9355,
+  "junk_clean": 0.9651,
+  "code_agree": 0.9341,
+  "hl_concord": 0.8934,
+  "top_f1": 0.8889,
+  "short_f1": 1.0
+ },
+ "removal_precision": 0.9206,
+ "removal_recall": 0.9508,
+ "must_keep_removed": 3,
+ "must_keep_total": 34,
+ "must_keep_removed_list": [
+  "w05_yt_roundrobin_mic_schedule[1] Uh for myself, I wasn't able to attend yesterday's meeting, but I am talking to Sina about",
+  "w05_yt_roundrobin_mic_schedule[2] I think this week we'll be able to.",
+  "w09_zoom_question_unitree_leads[13] But, But…"
+ ],
+ "junk_kept": 3,
+ "junk_total": 86,
+ "junk_kept_list": [
+  "w07_zoom_concept_then_long_goodbye[49] Yeah, yeah, because… Because I know, like, to be honest, the reason I wanted to discuss th",
+  "w07_zoom_concept_then_long_goodbye[50] with what I've… I'm discussing, like, even you yourself, you said, like, you've disputed t",
+  "w07_zoom_concept_then_long_goodbye[51] Have you on the same page as I am, like…"
+ ],
+ "top_moments": {
+  "gold": 5,
+  "found": 4,
+  "strong_predicted": 2,
+  "strong_on_gold": 2
+ },
+ "format_problems": 0,
+ "weights": {
+  "keep_safety": 0.3,
+  "removal_f1": 0.25,
+  "junk_clean": 0.1,
+  "code_agree": 0.05,
+  "hl_concord": 0.15,
+  "top_f1": 0.1,
+  "short_f1": 0.05
+ },
+ "format_problem_details": [],
+ "calls": 7,
+ "usage": {
+  "calls": 7,
+  "prompt_tokens": 18206,
+  "output_tokens": 2032,
+  "cache_read_tokens": 10625,
+  "cache_write_tokens": 0,
+  "rate_limit_wait_s": 0.0,
+  "retries": 0
+ },
+ "cost_usd": 0.0376,
+ "estimate_usd": 0.0866,
+ "ledger_spent_usd": 0.5069,
+ "windows": {
+  "w05_yt_roundrobin_mic_schedule": {
+   "sentences": 55,
+   "tp": 35.0,
+   "fp": 2.5,
+   "fn": 1.5,
+   "must_keep_total": 8,
+   "must_keep_removed": [
+    "w05_yt_roundrobin_mic_schedule[1] Uh for myself, I wasn't able to attend yesterday's meeting, but I am talking to Sina about",
+    "w05_yt_roundrobin_mic_schedule[2] I think this week we'll be able to."
+   ],
+   "junk_total": 31,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 39,
+   "code_n": 39,
+   "hl_pairs": 336.0,
+   "hl_concordant": 305.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 4,
+   "kept_pred": 13,
+   "moments": [
+    {
+     "first": 10,
+     "last": 13,
+     "score": 6.67,
+     "raw": 2.0,
+     "short": false,
+     "title": "Router arrived, camera work in the lab"
+    },
+    {
+     "first": 21,
+     "last": 31,
+     "score": 10.0,
+     "raw": 4.0,
+     "short": false,
+     "title": "Team lead return plan and meeting day shift"
+    },
+    {
+     "first": 47,
+     "last": 49,
+     "score": 0.0,
+     "raw": 1.0,
+     "short": false,
+     "title": "Meeting stays on Saturdays for now"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 5173,
+    "output_tokens": 681,
+    "cache_read_tokens": 2890,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w06_zoom_nearly_empty": {
+   "sentences": 1,
+   "tp": 1.0,
+   "fp": 0.0,
+   "fn": 0.0,
+   "must_keep_total": 0,
+   "must_keep_removed": [],
+   "junk_total": 1,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 1,
+   "code_n": 1,
+   "hl_pairs": 0.0,
+   "hl_concordant": 0.0,
+   "top_gold": 0,
+   "top_hit": 0,
+   "strong_pred": 0,
+   "strong_pred_hit": 0,
+   "short_gold": 0,
+   "short_hit": 0,
+   "short_pred": 0,
+   "short_pred_hit": 0,
+   "max_score": 0,
+   "kept_pred": 0,
+   "moments": [],
+   "usage": {
+    "calls": 1,
+    "prompt_tokens": 1986,
+    "output_tokens": 11,
+    "cache_read_tokens": 1955,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w07_zoom_concept_then_long_goodbye": {
+   "sentences": 59,
+   "tp": 37.0,
+   "fp": 2.5,
+   "fn": 3.0,
+   "must_keep_total": 6,
+   "must_keep_removed": [],
+   "junk_total": 40,
+   "junk_kept": [
+    "w07_zoom_concept_then_long_goodbye[49] Yeah, yeah, because… Because I know, like, to be honest, the reason I wanted to discuss th",
+    "w07_zoom_concept_then_long_goodbye[50] with what I've… I'm discussing, like, even you yourself, you said, like, you've disputed t",
+    "w07_zoom_concept_then_long_goodbye[51] Have you on the same page as I am, like…"
+   ],
+   "wrong_removed": [
+    "w07_zoom_concept_then_long_goodbye[1] But what I'm trying to say is that It's… it's, like… Like,"
+   ],
+   "code_ok": 32,
+   "code_n": 37,
+   "hl_pairs": 728.0,
+   "hl_concordant": 685.0,
+   "top_gold": 2,
+   "top_hit": 2,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 6,
+   "kept_pred": 18,
+   "moments": [
+    {
+     "first": 0,
+     "last": 21,
+     "score": 10.0,
+     "raw": 6.0,
+     "short": true,
+     "title": "Teaching a few principles of science, then tuning your AI"
+    },
+    {
+     "first": 49,
+     "last": 52,
+     "score": 5.0,
+     "raw": 2.0,
+     "short": false,
+     "title": "Why he wanted to talk to this person specifically"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 5133,
+    "output_tokens": 726,
+    "cache_read_tokens": 2890,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  },
+  "w09_zoom_question_unitree_leads": {
+   "sentences": 52,
+   "tp": 14.0,
+   "fp": 2.5,
+   "fn": 0.0,
+   "must_keep_total": 20,
+   "must_keep_removed": [
+    "w09_zoom_question_unitree_leads[13] But, But…"
+   ],
+   "junk_total": 14,
+   "junk_kept": [],
+   "wrong_removed": [],
+   "code_ok": 13,
+   "code_n": 14,
+   "hl_pairs": 935.0,
+   "hl_concordant": 796.0,
+   "top_gold": 3,
+   "top_hit": 2,
+   "strong_pred": 1,
+   "strong_pred_hit": 1,
+   "short_gold": 1,
+   "short_hit": 1,
+   "short_pred": 1,
+   "short_pred_hit": 1,
+   "max_score": 7,
+   "kept_pred": 34,
+   "moments": [
+    {
+     "first": 2,
+     "last": 27,
+     "score": 10.0,
+     "raw": 7.0,
+     "short": true,
+     "title": "Customizing robot dances for regional customers"
+    },
+    {
+     "first": 36,
+     "last": 51,
+     "score": 5.0,
+     "raw": 4.0,
+     "short": false,
+     "title": "Website first, then leads for robot offerings"
+    }
+   ],
+   "usage": {
+    "calls": 2,
+    "prompt_tokens": 5914,
+    "output_tokens": 614,
+    "cache_read_tokens": 2890,
+    "cache_write_tokens": 0,
+    "rate_limit_wait_s": 0.0,
+    "retries": 0
+   }
+  }
+ }
+}
