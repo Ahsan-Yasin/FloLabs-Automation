@@ -1,0 +1,2 @@
+Made Highlight Cutter. Paste a YouTube link: an AI editor marks every sentence of the transcript keep or cut, ffmpeg cuts it frame-exact, and you get one zip with the highlights first.
+Stop watching meetings twice.

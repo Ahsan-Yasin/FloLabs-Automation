@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* Highlight Cutter's own tokens (web/static/css/site.css) */
+      :root {
+        --page: #ffffff;
+        --paper: #f4f4f5;
+        --ink: #17171a;
+        --ink-2: #4a4a52;
+        --ink-3: #66666e;
+        --line: #e4e4e7;
+        --line-2: #d4d4d8;
+        --accent: #0a62d0;
+        --accent-press: #074a9e;
+        --marker: #ffd43b;
+        --marker-soft: #fff1b8;
+        --marker-edge: #8f6f00;
+        --strike: #8a8a91;
+        --seg-kept: #4a4a50;
+        --hatch: #a1a1aa;
+        --band: #111113;
+        --band-text: #ececef;
+        --band-text-2: #a3a3ab;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--page);
+      }
+      #main-ground {
+        position: absolute;
+        inset: 0;
+        background: var(--page);
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-wwvb"
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="23"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div data-hf-id="hf-k7m6" id="main-ground"></div>
+
+      <!-- scenes: one per sub-composition, back to back on one graphics track -->
+      <div data-hf-id="hf-s76q" id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html" data-start="0" data-duration="2.8" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-g418" id="entry" data-composition-id="entry" data-composition-src="compositions/entry.html" data-start="2.8" data-duration="3.2" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-e8mi" id="edit" data-composition-id="edit" data-composition-src="compositions/edit.html" data-start="6" data-duration="5.6" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-yzgm" id="reels" data-composition-id="reels" data-composition-src="compositions/reels.html" data-start="11.6" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-tq8w" id="zip" data-composition-id="zip" data-composition-src="compositions/zip.html" data-start="15.6" data-duration="4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div data-hf-id="hf-rbf5" id="outro" data-composition-id="outro" data-composition-src="compositions/outro.html" data-start="19.6" data-duration="3.4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+
+      <!-- music bed: bundled /brag track, ~120 BPM; fades in, fades out under the wordmark -->
+      <audio data-hf-id="hf-sozy" id="bg-music" class="clip" data-start="0" data-duration="23" data-track-index="10" data-volume="0.32" data-fade-in="0.6" data-fade-out="1.5" src="assets/music/happy-beats-business-moves-vol-1-by-ende-dot-app.mp3"></audio>
+
+      <!-- hook: strike line draws through 1:38:12 -->
+      <audio data-hf-id="hf-hdr3" id="sfx-hook-strike" class="clip" data-start="1.28" data-duration="0.6" data-track-index="11" data-volume="0.5" src="assets/sfx/casino/card-slide-1.ogg"></audio>
+      <!-- entry: sparse key ticks while the link types (3.5-4.7s), then the button click -->
+      <audio data-hf-id="hf-g2ka" id="sfx-key-1" class="clip" data-start="3.55" data-duration="0.25" data-track-index="12" data-volume="0.3" src="assets/sfx/keyboard/keypress-004.wav"></audio>
+      <audio data-hf-id="hf-aovf" id="sfx-key-2" class="clip" data-start="3.85" data-duration="0.25" data-track-index="13" data-volume="0.3" src="assets/sfx/keyboard/keypress-011.wav"></audio>
+      <audio data-hf-id="hf-ig7n" id="sfx-key-3" class="clip" data-start="4.15" data-duration="0.25" data-track-index="12" data-volume="0.3" src="assets/sfx/keyboard/keypress-019.wav"></audio>
+      <audio data-hf-id="hf-7lja" id="sfx-key-4" class="clip" data-start="4.45" data-duration="0.25" data-track-index="13" data-volume="0.3" src="assets/sfx/keyboard/keypress-004.wav"></audio>
+      <audio data-hf-id="hf-o0x7" id="sfx-click" class="clip" data-start="5.18" data-duration="0.01" data-track-index="14" data-volume="0.6" src="assets/sfx/interface/click_003.ogg"></audio>
+      <!-- edit: first strike, then the marker pass on the kept line -->
+      <audio data-hf-id="hf-lpnx" id="sfx-edit-strike" class="clip" data-start="8.48" data-duration="0.6" data-track-index="11" data-volume="0.45" src="assets/sfx/casino/card-slide-1.ogg"></audio>
+      <audio data-hf-id="hf-g96n" id="sfx-edit-marker" class="clip" data-start="8.95" data-duration="0.06" data-track-index="15" data-volume="0.5" src="assets/sfx/ui/rollover2.ogg"></audio>
+      <!-- reels: the final video bar locks -->
+      <audio data-hf-id="hf-e8lo" id="sfx-reel-lock" class="clip" data-start="13.78" data-duration="0.19" data-track-index="16" data-volume="0.6" src="assets/sfx/impact/impactSoft_medium_001.ogg"></audio>
+      <!-- zip: first and last file land (beat-grid 16.02 / 18.02) -->
+      <audio data-hf-id="hf-jhcu" id="sfx-zip-first" class="clip" data-start="16" data-duration="0.11" data-track-index="17" data-volume="0.5" src="assets/sfx/interface/drop_001.ogg"></audio>
+      <audio data-hf-id="hf-cdsr" id="sfx-zip-last" class="clip" data-start="18" data-duration="0.19" data-track-index="17" data-volume="0.5" src="assets/sfx/interface/drop_002.ogg"></audio>
+      <!-- outro: payoff on the 20.02 s strong cue -->
+      <audio data-hf-id="hf-1341" id="sfx-outro-bell" class="clip" data-start="20" data-duration="1.5" data-track-index="18" data-volume="0.45" src="assets/sfx/impact/impactBell_heavy_000.ogg"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

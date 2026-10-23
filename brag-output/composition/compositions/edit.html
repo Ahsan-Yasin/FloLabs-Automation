@@ -1,0 +1,156 @@
+<template>
+  <style>
+    @font-face { font-family: "IBM Plex Sans"; src: url("assets/fonts/ibm-plex-sans-400.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+    @font-face { font-family: "IBM Plex Sans"; src: url("assets/fonts/ibm-plex-sans-600.woff2") format("woff2"); font-weight: 600; font-style: normal; }
+    #root {
+      position: absolute;
+      inset: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", sans-serif;
+    }
+    #edit-stage {
+      position: absolute;
+      inset: 0;
+    }
+    #edit-kicker {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 132px;
+      text-align: center;
+      font: 600 66px/1.1 "IBM Plex Sans", sans-serif;
+      letter-spacing: -0.025em;
+    }
+    #edit-kicker .w {
+      display: inline-block;
+    }
+    #edit-panel {
+      position: absolute;
+      left: 180px;
+      top: 252px;
+      width: 1560px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.04), 0 2px 6px rgb(0 0 0 / 0.04), 0 12px 24px -10px rgb(0 0 0 / 0.08), 0 40px 80px -28px rgb(0 0 0 / 0.22);
+      overflow: hidden;
+    }
+    #edit-panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 36px;
+      border-bottom: 1px solid var(--line);
+    }
+    #edit-panel-head b {
+      font: 600 34px/1.3 "IBM Plex Sans", sans-serif;
+    }
+    #edit-panel-head span {
+      font: 400 28px/1.3 "IBM Plex Sans", sans-serif;
+      color: var(--ink-3);
+    }
+    #edit-lines {
+      padding: 10px 0;
+    }
+    .ed-line {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) 230px;
+      gap: 24px;
+      align-items: baseline;
+      padding: 13px 36px;
+    }
+    .ed-line .tc {
+      font: 400 28px/1.5 "IBM Plex Mono", monospace;
+      color: var(--ink-3);
+    }
+    .ed-line .who {
+      display: block;
+      font: 600 28px/1.3 "IBM Plex Sans", sans-serif;
+      color: var(--ink-2);
+      margin-bottom: 2px;
+    }
+    .ed-line .t {
+      font: 400 36px/1.42 "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      background-repeat: no-repeat;
+    }
+    .ed-line.is-cut .t {
+      display: inline-block;
+      white-space: nowrap;
+      background-image: linear-gradient(#8a8a91, #8a8a91);
+      background-position: 0 58%;
+    }
+    .ed-line.is-kept .t {
+      background-image: linear-gradient(#fff1b8, #fff1b8);
+      background-position: 0 62%;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
+    .ed-line .note {
+      font: 400 28px/1.5 "IBM Plex Sans", sans-serif;
+      color: var(--ink-3);
+      text-align: right;
+    }
+  </style>
+  <div data-hf-id="hf-ylhv" id="root" data-composition-id="edit" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-tdt0" id="edit-stage">
+      <h2 data-hf-id="hf-gipa" id="edit-kicker"><span data-hf-id="hf-ys6r" class="w">The</span> <span data-hf-id="hf-wafu" class="w">transcript</span> <span data-hf-id="hf-fj2o" class="w">is</span> <span data-hf-id="hf-9o0j" class="w">the</span> <span data-hf-id="hf-zlc6" class="w">edit.</span></h2>
+      <div data-hf-id="hf-gjpk" id="edit-panel">
+        <div data-hf-id="hf-c2tz" id="edit-panel-head"><b data-hf-id="hf-39fr">What made the cut</b><span data-hf-id="hf-puza">Struck text was cut, highlighted text is in the final video</span></div>
+        <div data-hf-id="hf-c3xv" id="edit-lines">
+          <div data-hf-id="hf-i7zd" class="ed-line is-cut" id="edit-l1">
+            <span data-hf-id="hf-bk7y" class="tc">0:00:04</span>
+            <p data-hf-id="hf-a8f0" class="said"><span data-hf-id="hf-ll3r" class="who" id="edit-l1-who">Sam</span><span data-hf-id="hf-8mg5" class="t" id="edit-l1-t">Can everyone hear me okay? Great, let's get started.</span></p>
+            <span data-hf-id="hf-9ugp" class="note" id="edit-l1-note">greeting</span>
+          </div>
+          <div data-hf-id="hf-62zg" class="ed-line is-kept" id="edit-l2">
+            <span data-hf-id="hf-26cq" class="tc">0:03:12</span>
+            <p data-hf-id="hf-zcpg" class="said"><span data-hf-id="hf-b0sy" class="who">Priya</span><span data-hf-id="hf-uswj" class="t" id="edit-l2-t">This quarter we shipped transcript reuse, which cut a third of our compute.</span></p>
+            <span data-hf-id="hf-imt1" class="note"></span>
+          </div>
+          <div data-hf-id="hf-sbt7" class="ed-line is-cut" id="edit-l3">
+            <span data-hf-id="hf-1ykp" class="tc">0:03:31</span>
+            <p data-hf-id="hf-y5sd" class="said"><span data-hf-id="hf-7jhx" class="who" id="edit-l3-who">Sam</span><span data-hf-id="hf-jpqj" class="t" id="edit-l3-t">Sorry, one second, my dog is barking.</span></p>
+            <span data-hf-id="hf-rm7j" class="note" id="edit-l3-note">interruption</span>
+          </div>
+          <div data-hf-id="hf-4ubo" class="ed-line is-cut" id="edit-l4">
+            <span data-hf-id="hf-whoy" class="tc">0:04:40</span>
+            <p data-hf-id="hf-yk3e" class="said"><span data-hf-id="hf-4opl" class="who" id="edit-l4-who">Alex</span><span data-hf-id="hf-zc6c" class="t" id="edit-l4-t">Uh, yeah, so, um, anyway.</span></p>
+            <span data-hf-id="hf-ga5n" class="note" id="edit-l4-note">filler</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // kicker: per word from light grey to ink
+    gsap.utils.toArray("#edit-kicker .w").forEach((w, i) => {
+      tl.fromTo(w, { opacity: 0, color: "#a1a1aa" }, { opacity: 1, color: "#17171a", duration: 0.16, ease: "power2.out" }, 0.1 + i * 0.08);
+    });
+    tl.fromTo("#edit-panel", { opacity: 0, y: 28, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0.3);
+    ["#edit-l1", "#edit-l2", "#edit-l3", "#edit-l4"].forEach((sel, i) => {
+      tl.fromTo(sel, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.32, ease: "power3.out" }, 0.55 + i * 0.18);
+    });
+    // reasons stay hidden until the editor marks the line
+    tl.fromTo(["#edit-l1-note", "#edit-l3-note", "#edit-l4-note"], { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
+    tl.fromTo(["#edit-l1-t", "#edit-l3-t", "#edit-l4-t"], { backgroundSize: "0% 3px" }, { backgroundSize: "0% 3px", duration: 0.01 }, 0);
+    tl.fromTo("#edit-l2-t", { backgroundSize: "0% 78%" }, { backgroundSize: "0% 78%", duration: 0.01 }, 0);
+
+    // the edit, top to bottom: strike, marker, strike, strike
+    const strike = (n, at) => {
+      tl.to("#edit-l" + n + "-t", { backgroundSize: "100% 3px", color: "#66666e", duration: 0.34, ease: "power2.inOut" }, at);
+      tl.to("#edit-l" + n + "-who", { color: "#66666e", duration: 0.2 }, at + 0.1);
+      tl.fromTo("#edit-l" + n + "-note", { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out" }, at + 0.16);
+    };
+    strike(1, 2.5);
+    tl.to("#edit-l2-t", { backgroundSize: "100% 78%", duration: 0.42, ease: "power2.inOut" }, 2.95);
+    strike(3, 3.4);
+    strike(4, 3.85);
+
+    tl.to("#edit-stage", { opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power3.in" }, 5.4);
+    window.__timelines["edit"] = tl;
+  </script>
+</template>

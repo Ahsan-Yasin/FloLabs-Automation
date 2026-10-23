@@ -1,0 +1,120 @@
+<template>
+  <style>
+    @font-face { font-family: "IBM Plex Sans"; src: url("assets/fonts/ibm-plex-sans-600.woff2") format("woff2"); font-weight: 600; font-style: normal; }
+    #root {
+      position: absolute;
+      inset: 0;
+      background: var(--page);
+      color: var(--ink);
+    }
+    #entry-stage {
+      position: absolute;
+      inset: 0;
+    }
+    #entry-head {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 230px;
+      text-align: center;
+      font: 600 92px/1.08 "IBM Plex Sans", sans-serif;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+    }
+    #entry-head .w {
+      display: inline-block;
+    }
+    #entry-input {
+      position: absolute;
+      left: 310px;
+      top: 570px;
+      width: 900px;
+      height: 100px;
+      border: 1.5px solid var(--line-2);
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 10px 28px -8px rgb(0 0 0 / 0.10);
+    }
+    #entry-placeholder,
+    #entry-url {
+      position: absolute;
+      left: 32px;
+      top: 0;
+      height: 100px;
+      font: 400 30px/100px "IBM Plex Mono", monospace;
+      white-space: nowrap;
+    }
+    #entry-placeholder {
+      color: var(--hatch);
+    }
+    #entry-url {
+      color: var(--ink);
+    }
+    #entry-caret {
+      position: absolute;
+      left: 32px;
+      top: 30px;
+      width: 3px;
+      height: 40px;
+      background: var(--accent);
+    }
+    #entry-btn {
+      position: absolute;
+      left: 1230px;
+      top: 570px;
+      width: 380px;
+      height: 100px;
+      border-radius: 14px;
+      background: var(--accent);
+      color: #ffffff;
+      font: 600 34px/100px "IBM Plex Sans", sans-serif;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+    #entry-cursor {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 44px;
+      height: 56px;
+    }
+  </style>
+  <div data-hf-id="hf-uz6t" id="root" data-composition-id="entry" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-r1na" id="entry-stage">
+      <h1 data-hf-id="hf-sx2w" id="entry-head"><span data-hf-id="hf-civn" class="w">Your</span> <span data-hf-id="hf-rckp" class="w">meeting</span> <span data-hf-id="hf-k3tw" class="w">recordings,</span><br data-hf-id="hf-x5px"><span data-hf-id="hf-umm0" class="w">cut</span> <span data-hf-id="hf-z575" class="w">to</span> <span data-hf-id="hf-9o0j" class="w">the</span> <span data-hf-id="hf-aj6i" class="w">parts</span> <span data-hf-id="hf-nuyo" class="w">worth</span> <span data-hf-id="hf-q18h" class="w">watching.</span></h1>
+      <div data-hf-id="hf-xwm0" id="entry-input">
+        <span data-hf-id="hf-mmd2" id="entry-placeholder">https://www.youtube.com/watch?v=...</span>
+        <span data-hf-id="hf-dqw4" id="entry-url">https://www.youtube.com/watch?v=wk1y5ync0rg</span>
+        <div data-hf-id="hf-plyh" id="entry-caret"></div>
+      </div>
+      <div data-hf-id="hf-f617" id="entry-btn">Cut this video</div>
+      <svg data-hf-id="hf-nvob" id="entry-cursor" viewBox="0 0 22 28" aria-hidden="true">
+        <path data-hf-id="hf-jx8n" d="M2 2 L2 23 L7.5 17.8 L11.4 26.2 L15 24.6 L11.2 16.4 L18.6 16.4 Z" fill="#17171a" stroke="#ffffff" stroke-width="1.6" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // headline: per word, blur to sharp, no translate
+    gsap.utils.toArray("#entry-head .w").forEach((w, i) => {
+      tl.fromTo(w, { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, ease: "power2.out" }, 0.05 + i * 0.067);
+    });
+    tl.fromTo(["#entry-input", "#entry-btn"], { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", stagger: 0.06 }, 0.3);
+    // the link types in: 43 monospace characters, 0.6em advance each
+    const chars = 43;
+    const advance = 30 * 0.6;
+    tl.fromTo("#entry-placeholder", { opacity: 1 }, { opacity: 0, duration: 0.05 }, 0.68);
+    tl.fromTo("#entry-url", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: "steps(" + chars + ")" }, 0.7);
+    tl.fromTo("#entry-caret", { x: 0 }, { x: chars * advance, duration: 1.2, ease: "steps(" + chars + ")" }, 0.7);
+    // the cursor comes in and presses "Cut this video"
+    tl.fromTo("#entry-cursor", { opacity: 0, x: 1720, y: 930 }, { opacity: 1, duration: 0.12, ease: "none" }, 1.72);
+    tl.fromTo("#entry-cursor", { x: 1720, y: 930 }, { x: 1432, y: 616, duration: 0.56, ease: "power2.inOut", immediateRender: false }, 1.75);
+    tl.fromTo("#entry-btn", { scale: 1 }, { scale: 0.955, duration: 0.07, ease: "power2.in" }, 2.38);
+    tl.to("#entry-btn", { scale: 1, duration: 0.18, ease: "power3.out" }, 2.45);
+    tl.fromTo("#entry-btn", { backgroundColor: "#0a62d0" }, { backgroundColor: "#074a9e", duration: 0.07 }, 2.38);
+    tl.fromTo("#entry-cursor", { scale: 1 }, { scale: 0.9, duration: 0.07, ease: "power2.in", immediateRender: false }, 2.38);
+    tl.to("#entry-cursor", { scale: 1, duration: 0.16, ease: "power3.out" }, 2.45);
+    tl.to("#entry-stage", { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in" }, 2.95);
+    window.__timelines["entry"] = tl;
+  </script>
+</template>

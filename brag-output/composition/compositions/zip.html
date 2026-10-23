@@ -1,0 +1,121 @@
+<template>
+  <style>
+    @font-face { font-family: "IBM Plex Sans"; src: url("assets/fonts/ibm-plex-sans-500.woff2") format("woff2"); font-weight: 500; font-style: normal; }
+    @font-face { font-family: "IBM Plex Sans"; src: url("assets/fonts/ibm-plex-sans-600.woff2") format("woff2"); font-weight: 600; font-style: normal; }
+    #root {
+      position: absolute;
+      inset: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", sans-serif;
+    }
+    #zip-stage {
+      position: absolute;
+      inset: 0;
+    }
+    #zip-head {
+      position: absolute;
+      left: 170px;
+      top: 410px;
+      width: 760px;
+      font: 600 76px/1.08 "IBM Plex Sans", sans-serif;
+      letter-spacing: -0.025em;
+    }
+    #zip-head .w {
+      display: inline-block;
+    }
+    #zip-card {
+      position: absolute;
+      left: 1000px;
+      top: 214px;
+      width: 760px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.04), 0 2px 6px rgb(0 0 0 / 0.04), 0 12px 24px -10px rgb(0 0 0 / 0.08), 0 40px 80px -28px rgb(0 0 0 / 0.22);
+      overflow: hidden;
+    }
+    #zip-card-head {
+      padding: 22px 32px;
+      border-bottom: 1px solid var(--line);
+      font: 400 28px/1.3 "IBM Plex Mono", monospace;
+      color: var(--ink-3);
+    }
+    .zf {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) auto;
+      gap: 22px;
+      align-items: center;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--line);
+    }
+    .zf:last-child {
+      border-bottom: 0;
+    }
+    .zf svg {
+      width: 40px;
+      height: 40px;
+      color: var(--ink-2);
+    }
+    .zf .fn {
+      display: block;
+      font: 500 32px/1.25 "IBM Plex Mono", monospace;
+      color: var(--ink);
+    }
+    .zf .lb {
+      display: block;
+      font: 500 28px/1.3 "IBM Plex Sans", sans-serif;
+      color: var(--ink-3);
+    }
+    .zf .meta {
+      font: 400 28px/1 "IBM Plex Mono", monospace;
+      color: var(--ink-3);
+    }
+  </style>
+  <div data-hf-id="hf-nuxi" id="root" data-composition-id="zip" data-width="1920" data-height="1080">
+    <div data-hf-id="hf-8l17" id="zip-stage">
+      <h2 data-hf-id="hf-a2ww" id="zip-head"><span data-hf-id="hf-ntop" class="w">Everything</span> <span data-hf-id="hf-7dih" class="w">comes</span> <span data-hf-id="hf-axyb" class="w">back</span> <span data-hf-id="hf-gpzr" class="w">in</span> <span data-hf-id="hf-rpws" class="w">one</span> <span data-hf-id="hf-cz3v" class="w">zip.</span></h2>
+      <div data-hf-id="hf-09hd" id="zip-card">
+        <div data-hf-id="hf-y000" id="zip-card-head">weekly_product_sync_8c1d2f07.zip</div>
+        <div data-hf-id="hf-d5bz" class="zf" id="zip-f1">
+          <svg data-hf-id="hf-dvkw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect data-hf-id="hf-uk8q" x="3" y="5" width="18" height="14" rx="2.5"/><path data-hf-id="hf-8wb7" d="M10 9.5v5l4-2.5z"/></svg>
+          <span data-hf-id="hf-uckh"><span data-hf-id="hf-qpvq" class="fn">final.mp4</span><span data-hf-id="hf-zh3i" class="lb">Final video</span></span>
+          <span data-hf-id="hf-xi32" class="meta">41:05</span>
+        </div>
+        <div data-hf-id="hf-4hg4" class="zf" id="zip-f2">
+          <svg data-hf-id="hf-9w60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect data-hf-id="hf-ju1n" x="7" y="2.5" width="10" height="19" rx="2.5"/><path data-hf-id="hf-6ubx" d="M11 18.5h2"/></svg>
+          <span data-hf-id="hf-l73p"><span data-hf-id="hf-wyjr" class="fn">shorts/</span><span data-hf-id="hf-6hjs" class="lb">Shorts</span></span>
+          <span data-hf-id="hf-hdnx" class="meta">4 clips</span>
+        </div>
+        <div data-hf-id="hf-593x" class="zf" id="zip-f3">
+          <svg data-hf-id="hf-8p8x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle data-hf-id="hf-k76i" cx="6" cy="7" r="3"/><circle data-hf-id="hf-ldbn" cx="6" cy="17" r="3"/><path data-hf-id="hf-n4rt" d="M8.6 8.6L20 19M8.6 15.4L20 5"/></svg>
+          <span data-hf-id="hf-me0s"><span data-hf-id="hf-1802" class="fn">removed.mp4</span><span data-hf-id="hf-acm7" class="lb">Removed parts</span></span>
+          <span data-hf-id="hf-xxpb" class="meta">58:40</span>
+        </div>
+        <div data-hf-id="hf-o0tm" class="zf" id="zip-f4">
+          <svg data-hf-id="hf-93jy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-66g1" d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path data-hf-id="hf-s3f1" d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+          <span data-hf-id="hf-lzpr"><span data-hf-id="hf-i0yv" class="fn">report.pdf</span><span data-hf-id="hf-qi84" class="lb">Report (PDF)</span></span>
+          <span data-hf-id="hf-2eim" class="meta"></span>
+        </div>
+        <div data-hf-id="hf-ryxn" class="zf" id="zip-f5">
+          <svg data-hf-id="hf-7wmv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path data-hf-id="hf-scl9" d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>
+          <span data-hf-id="hf-n6mu"><span data-hf-id="hf-hfed" class="fn">chapters.txt</span><span data-hf-id="hf-hagq" class="lb">YouTube chapters</span></span>
+          <span data-hf-id="hf-ixnm" class="meta"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    gsap.utils.toArray("#zip-head .w").forEach((w, i) => {
+      tl.fromTo(w, { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, ease: "power2.out" }, 0.05 + i * 0.067);
+    });
+    tl.fromTo("#zip-card", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 0.15);
+    // beat-grid: rows at 16.02, 16.52, 17.02 (strong cue), 17.52, 18.02 s; then the set holds
+    ["#zip-f1", "#zip-f2", "#zip-f3", "#zip-f4", "#zip-f5"].forEach((sel, i) => {
+      tl.fromTo(sel, { opacity: 0, x: 40, filter: "blur(6px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.32, ease: "expo.out" }, 0.42 + i * 0.5);
+    });
+    tl.to("#zip-stage", { opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power3.in" }, 3.8);
+    window.__timelines["zip"] = tl;
+  </script>
+</template>
